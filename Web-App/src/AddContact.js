@@ -1,11 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MdClose } from "react-icons/md";
 
 function AddContact({ handleView, addContact }) {
   const emailRef = useRef(null);
-
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    emailRef.current.focus();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
