@@ -1,5 +1,5 @@
-import Container from "./Container";
-import GlobalStyles from "./GlobalStyles";
+import Container from "./Components/Container";
+import GlobalStyles from "./Styles/GlobalStyles";
 
 function App() {
   return (
