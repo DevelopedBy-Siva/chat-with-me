@@ -1,12 +1,28 @@
-import Container from "./Components/Container";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Wrapper from "./Components/Wrapper";
+import NotFound from "./Components/NotFound";
 import GlobalStyles from "./Styles/GlobalStyles";
+import SignIn from "./Components/SignIn";
+import SignUp from "./Components/SignUp";
+import ProtectedRoute from "./Auth/ProtectedRoute";
 
 function App() {
   return (
-    <>
+    <BrowserRouter>
       <GlobalStyles />
-      <Container />
-    </>
+      <Routes>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Wrapper />} />
+          <Route path="/account" element={<Wrapper />} />
+          <Route path="/settings" element={<Wrapper />} />
+          <Route path="/:receiver" element={<Wrapper />} />
+        </Route>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/not-found" element={<NotFound />} />
+        <Route path="*" element={<Navigate to="/not-found" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

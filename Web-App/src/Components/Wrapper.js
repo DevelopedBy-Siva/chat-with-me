@@ -1,12 +1,12 @@
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 
 import UsersContainer from "./UsersContainer";
 import ChatContainer from "./ChatContainer";
 import Cover from "./Cover";
 import AddContact from "./AddContact";
-import { useState, useEffect } from "react";
 
-function Container() {
+function Wrapper() {
   useEffect(() => {}, []);
 
   const [contacts, setContacts] = useState(["Duke", "Nukem", "Sanker"]);
@@ -18,10 +18,10 @@ function Container() {
 
   return (
     <>
-      <Wrapper>
+      <Container>
         <UsersContainer addContact={handleAddContactView} contacts={contacts} />
         <ChatContainer />
-      </Wrapper>
+      </Container>
       {addContactView && (
         <Cover handleVisiblity={setAddContactView}>
           <AddContact
@@ -34,9 +34,9 @@ function Container() {
   );
 }
 
-export default Container;
+export default Wrapper;
 
-const Wrapper = styled.div`
+const Container = styled.div`
   width: 100%;
   max-height: 100vh;
   display: flex;
