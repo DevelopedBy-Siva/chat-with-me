@@ -1,16 +1,19 @@
 import FocusTrap from "focus-trap-react";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { MdClose } from "react-icons/md";
 
 export default function ModalContainer({ children, childRef }) {
-  useEffect(() => {});
+  useEffect(() => {}, []);
 
   return (
     <FocusTrap>
       <Container>
-        {children}
+        <Box>{children}</Box>
         <Overlay onClick={() => console.log("HJello")} />
+        <CloseBtn>
+          <CloseIcon />
+        </CloseBtn>
       </Container>
     </FocusTrap>
   );
@@ -28,7 +31,39 @@ const Container = styled.div`
 const Overlay = styled.button`
   width: 100%;
   height: 100%;
-  background: rgba(128, 128, 128, 0.6);
+  background: rgba(40, 40, 40, 0.8);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   outline: none;
   border: none;
+  z-index: -1;
+`;
+
+const Box = styled.div`
+  padding: 0.8rem;
+  border-radius: 10px;
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 650px;
+  max-height: 90%;
+  overflow-y: auto;
+  z-index: 1;
+`;
+
+const CloseBtn = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+`;
+
+const CloseIcon = styled(MdClose)`
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
 `;

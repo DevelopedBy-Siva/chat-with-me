@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Wrapper from "./Components/Wrapper";
-import NotFound from "./Components/NotFound";
-import SignIn from "./Components/SignIn";
-import SignUp from "./Components/SignUp";
-import ProtectedRoute from "./Auth/ProtectedRoute";
-import ForgotPassword from "./Components/ForgotPassword";
+import Wrapper from "./pages/UserHome";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/ForgotPassword";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
-function App() {
+export default function App() {
   return (
     <Routes>
       <Route element={<ProtectedRoute />}>
@@ -24,5 +24,3 @@ function App() {
     </Routes>
   );
 }
-
-export default App;

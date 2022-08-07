@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
 } from "../utils/Validations";
-import AppLogo from "./AppLogo";
+import AppLogo from "../components/AppLogo";
 
 export default function SignUp() {
   const navigate = useNavigate();

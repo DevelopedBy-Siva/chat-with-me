@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import notfound from "../Images/404.webp";
+import notfound from "../images/404.webp";
 
 function NotFound() {
   return (

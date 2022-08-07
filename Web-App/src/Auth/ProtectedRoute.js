@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Loading from "../Components/Loading";
-import SignIn from "../Components/SignIn";
+import Loading from "../components/Loading";
+import SignIn from "../pages/SignIn";
 
 export default function ProtectedRoute() {
   const [user, setUser] = useState({

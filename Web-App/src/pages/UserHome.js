@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
-import UsersContainer from "./UsersContainer";
-import ChatContainer from "./ChatContainer";
-import Cover from "./Cover";
-import AddContact from "./AddContact";
+import UsersContainer from "../components/UsersContainer";
+import ChatContainer from "../components/ChatContainer";
+import Cover from "../components/Cover";
+import AddContact from "../components/AddContact";
 
-function Wrapper() {
+export default function UserHome() {
   useEffect(() => {}, []);
 
   const [contacts, setContacts] = useState(["Duke", "Nukem", "Sanker"]);
@@ -33,8 +33,6 @@ function Wrapper() {
     </>
   );
 }
-
-export default Wrapper;
 
 const Container = styled.div`
   width: 100%;

@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
 } from "../utils/Validations";
-import AppLogo from "./AppLogo";
+import AppLogo from "../components/AppLogo";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -220,7 +220,7 @@ export default function SignIn() {
           Dont't have an account?{" "}
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-up", true)}
-            disabled={handleBtnSubmit()}
+            disabled={serverData.loading}
           >
             Sign up
           </PageNavigationBtn>
@@ -228,7 +228,7 @@ export default function SignIn() {
         <ForgetPassword>
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-in/forgot-password")}
-            disabled={handleBtnSubmit()}
+            disabled={serverData.loading}
           >
             Forgot Password?
           </PageNavigationBtn>

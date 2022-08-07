@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FaCaretRight } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
-import { dummyMessages } from "../DummyValues/DummyValues";
+import { dummyMessages } from "../utils/DummyValues";
 
 function ChatContainer() {
   const [messages, setMessages] = useState([]);
