@@ -7,7 +7,9 @@ import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
-} from "../utils/Validations";
+  inputChanges,
+  AllowedInputFields,
+} from "../utils/InputHandler";
 import AppLogo from "../components/AppLogo";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
@@ -15,17 +17,13 @@ import UserButtonContainer from "../components/ButtonContainer";
 export default function SignIn() {
   const navigate = useNavigate();
 
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-
-  const passwordErrorRef = useRef(null);
+  const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
 
-  const emailPlaceholderRef = useRef(null);
-  const passwordPlaceholderRef = useRef(null);
+  const passwordInputRef = useRef(null);
+  const passwordErrorRef = useRef(null);
 
   const [btnActive, setBtnActive] = useState(true);
-
   const [loginInfo, setLoginInfo] = useState({
     email: null,
     password: null,
@@ -42,31 +40,23 @@ export default function SignIn() {
 
   // Focus on Email Input box on page startup
   useEffect(() => {
-    emailRef.current.focus();
+    emailInputRef.current.focus();
   }, []);
 
   // Validate input changes
   useEffect(() => {
     const { email, password } = loginInfo;
 
-    const isEmailNotEmpty = email && !email.isEmpty;
-    const isPasswordNotEmpty = password && !password.isEmpty;
-
-    if (isEmailNotEmpty) emailPlaceholderRef.current.style.display = "none";
-    else emailPlaceholderRef.current.style.display = "block";
-    if (isPasswordNotEmpty)
-      passwordPlaceholderRef.current.style.display = "none";
-    else passwordPlaceholderRef.current.style.display = "block";
-
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
 
     // Remove/ Add input error messages from the DOM
     if (email) {
-      if (emailValid.isValid) handleErrorVisibility(emailRef, emailErrorRef);
+      if (emailValid.isValid)
+        handleErrorVisibility(emailInputRef, emailErrorRef);
       else
         handleErrorVisibility(
-          emailRef,
+          emailInputRef,
           emailErrorRef,
           validationColor.error,
           validationColor.error,
@@ -75,10 +65,10 @@ export default function SignIn() {
     }
     if (password) {
       if (passwordValid.isValid)
-        handleErrorVisibility(passwordRef, passwordErrorRef);
+        handleErrorVisibility(passwordInputRef, passwordErrorRef);
       else
         handleErrorVisibility(
-          passwordRef,
+          passwordInputRef,
           passwordErrorRef,
           validationColor.error,
           validationColor.error,
@@ -90,25 +80,6 @@ export default function SignIn() {
     else setBtnActive(true);
   }, [loginInfo]);
 
-  const handleInputChange = (e, type) => {
-    const value = e.target.value;
-    const data = { ...loginInfo };
-    switch (type) {
-      case "email":
-        data.email = value.toLowerCase();
-        break;
-      case "password":
-        data.password = value;
-        break;
-      case "rememberme":
-        data.rememberme = e.target.checked;
-        break;
-      default:
-        break;
-    }
-    setLoginInfo(data);
-  };
-
   const handleErrorVisibility = (
     inputRef,
     errorRef,
@@ -119,6 +90,16 @@ export default function SignIn() {
     inputRef.current.style.color = txtColor;
     inputRef.current.style.border = `1px solid ${borderColor}`;
     errorRef.current.innerText = errorMsg;
+  };
+
+  const handleInputChange = (e, type) => {
+    const allowedFields = [
+      AllowedInputFields.EMAIL,
+      AllowedInputFields.PASSWORD,
+      AllowedInputFields.REMEMBER_ME,
+    ];
+    const data = inputChanges(e, type, loginInfo, allowedFields);
+    setLoginInfo(data);
   };
 
   const handleSubmit = (e) => {
@@ -174,8 +155,7 @@ export default function SignIn() {
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
             title="Your e-mail"
-            placeholderRef={emailPlaceholderRef}
-            inputRef={emailRef}
+            inputRef={emailInputRef}
             errorRef={emailErrorRef}
             placeholder="name@domain.com"
             name="email"
@@ -188,8 +168,7 @@ export default function SignIn() {
 
           <UserInputContainer
             title="Password"
-            placeholderRef={passwordPlaceholderRef}
-            inputRef={passwordRef}
+            inputRef={passwordInputRef}
             errorRef={passwordErrorRef}
             placeholder="at least 8 characters"
             name="password"

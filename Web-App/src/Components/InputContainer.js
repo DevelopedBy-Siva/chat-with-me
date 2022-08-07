@@ -5,13 +5,11 @@ export default function InputContainer({
   placeholderRef,
   inputRef,
   errorRef,
-  placeholder,
   ...rest
 }) {
   return (
     <Container>
       <InputHeading>{title}</InputHeading>
-      <Placeholder ref={placeholderRef}>{placeholder}</Placeholder>
       <InputBox ref={inputRef} {...rest} />
       <InputErrorMessage ref={errorRef}></InputErrorMessage>
     </Container>
@@ -29,15 +27,6 @@ const InputHeading = styled.span`
   font-weight: 700;
 `;
 
-const Placeholder = styled.span`
-  position: absolute;
-  bottom: 44px;
-  left: 8px;
-  color: #737373;
-  font-size: 10px;
-  pointer-events: none;
-`;
-
 const InputBox = styled.input`
   width: 100%;
   height: 35px;
@@ -50,6 +39,12 @@ const InputBox = styled.input`
   background: none;
   &:hover:disabled {
     cursor: not-allowed;
+  }
+  &::placeholder,
+  &::-webkit-input-placeholder,
+  &:-ms-input-placeholder {
+    color: #737373;
+    font-size: 10px;
   }
 `;
 

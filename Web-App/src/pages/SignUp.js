@@ -6,7 +6,7 @@ import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
-} from "../utils/Validations";
+} from "../utils/InputHandler";
 import AppLogo from "../components/AppLogo";
 
 export default function SignUp() {
@@ -45,15 +45,6 @@ export default function SignUp() {
   // Validate input changes
   useEffect(() => {
     const { email, password } = loginInfo;
-
-    const isEmailNotEmpty = email && !email.isEmpty;
-    const isPasswordNotEmpty = password && !password.isEmpty;
-
-    if (isEmailNotEmpty) emailPlaceholderRef.current.style.display = "none";
-    else emailPlaceholderRef.current.style.display = "block";
-    if (isPasswordNotEmpty)
-      passwordPlaceholderRef.current.style.display = "none";
-    else passwordPlaceholderRef.current.style.display = "block";
 
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
