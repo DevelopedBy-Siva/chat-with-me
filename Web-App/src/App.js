@@ -4,7 +4,7 @@ import NotFound from "./Components/NotFound";
 import SignIn from "./Components/SignIn";
 import SignUp from "./Components/SignUp";
 import ProtectedRoute from "./Auth/ProtectedRoute";
-import ModalContainer from "./Components/ModalContainer";
+import ForgotPassword from "./Components/ForgotPassword";
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/:receiver" element={<Wrapper />} />
       </Route>
       <Route path="/sign-in" element={<SignIn />}>
-        <Route path="forgot-password" element={<ModalContainer />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
       </Route>
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/not-found" element={<NotFound />} />

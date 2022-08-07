@@ -168,7 +168,7 @@ export default function SignUp() {
       <LogoContainer></LogoContainer>
       <FormContainer>
         <Title>Sign up</Title>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <InputContainer>
             <InputHeading>Your e-mail</InputHeading>
             <Placeholder ref={emailPlaceholderRef}>name@domain.com</Placeholder>
