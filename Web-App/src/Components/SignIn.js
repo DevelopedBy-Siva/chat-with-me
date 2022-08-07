@@ -1,13 +1,17 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
 } from "../utils/Validations";
+import AppLogo from "./AppLogo";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
@@ -152,8 +156,15 @@ export default function SignIn() {
     return serverData.loading ? true : btnActive;
   };
 
+  const handlePageNavigation = (param, replace = false) => {
+    return navigate(param, {
+      replace,
+    });
+  };
+
   return (
     <Container>
+      <AppLogo top="10px" left="10px" width="20px" />
       <LogoContainer></LogoContainer>
       <FormContainer>
         <Title>Log in</Title>
@@ -205,7 +216,23 @@ export default function SignIn() {
             Log in
           </LoginBtn>
         </Form>
+        <DontHaveAccount>
+          Dont't have an account?{" "}
+          <PageNavigationBtn
+            onClick={() => handlePageNavigation("/sign-up", true)}
+          >
+            Sign up
+          </PageNavigationBtn>
+        </DontHaveAccount>
+        <ForgetPassword>
+          <PageNavigationBtn
+            onClick={() => handlePageNavigation("/sign-in/forgot-password")}
+          >
+            Forgot Password?
+          </PageNavigationBtn>
+        </ForgetPassword>
       </FormContainer>
+      <Outlet />
     </Container>
   );
 }
@@ -354,4 +381,30 @@ const InputErrorMessage = styled.span`
   left: 4px;
   font-size: 10px;
   color: red;
+`;
+
+const DontHaveAccount = styled.span`
+  display: block;
+  font-weight: 400;
+  font-size: 10px;
+  color: #737373;
+`;
+
+const PageNavigationBtn = styled.button`
+  color: #4a00e0;
+  background: none;
+  outline: none;
+  border: none;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 5px;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const ForgetPassword = styled.span`
+  display: block;
+  margin-top: 4px;
 `;
