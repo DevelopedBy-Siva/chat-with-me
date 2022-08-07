@@ -3,7 +3,7 @@ import Modal from "../components/ModalContainer";
 
 export default function ForgotPassword() {
   return (
-    <Modal>
+    <Modal isNavigate={true}>
       <Container>
         <Form>
           <h6>

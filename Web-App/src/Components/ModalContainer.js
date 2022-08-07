@@ -2,16 +2,23 @@ import FocusTrap from "focus-trap-react";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { MdClose } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-export default function ModalContainer({ children, childRef }) {
+export default function ModalContainer({ children, childRef, isNavigate }) {
+  const navigateTo = useNavigate();
+
   useEffect(() => {}, []);
+
+  const handleClose = () => {
+    if (isNavigate) return navigateTo(-1);
+  };
 
   return (
     <FocusTrap>
       <Container>
         <Box>{children}</Box>
-        <Overlay onClick={() => console.log("HJello")} />
-        <CloseBtn>
+        <Overlay onClick={handleClose} />
+        <CloseBtn onClick={handleClose}>
           <CloseIcon />
         </CloseBtn>
       </Container>
