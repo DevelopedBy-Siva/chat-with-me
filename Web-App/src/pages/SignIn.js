@@ -9,7 +9,8 @@ import {
   validationColor,
 } from "../utils/Validations";
 import AppLogo from "../components/AppLogo";
-import UserInputContainer from "../components/UserInputContainer";
+import UserInputContainer from "../components/InputContainer";
+import UserButtonContainer from "../components/ButtonContainer";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -207,15 +208,16 @@ export default function SignIn() {
             />
             <RememberMeText>Keep me logged in</RememberMeText>
           </CheckboxContainer>
-          <LoginBtn
+
+          <UserButtonContainer
+            label="Log in"
             type="submit"
             onClick={handleSubmit}
             disabled={handleBtnSubmit()}
-            apiCallInProgress={serverData.loading}
-          >
-            Log in
-          </LoginBtn>
+            loading={serverData.loading}
+          />
         </Form>
+
         <DontHaveAccount>
           Dont't have an account?{" "}
           <PageNavigationBtn
@@ -225,6 +227,7 @@ export default function SignIn() {
             Sign up
           </PageNavigationBtn>
         </DontHaveAccount>
+
         <ForgetPassword>
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-in/forgot-password")}
@@ -234,6 +237,7 @@ export default function SignIn() {
           </PageNavigationBtn>
         </ForgetPassword>
       </FormContainer>
+
       <Outlet />
     </Container>
   );
@@ -264,10 +268,6 @@ const LogoContainer = styled.div`
     z-index: -1;
   }
 `;
-
-// const LogoContainerImg = styled.img`
-//   width: 100%;
-// `;
 
 const Title = styled.h1`
   text-align: center;
@@ -307,41 +307,6 @@ const Form = styled.form`
   color: #737373;
 `;
 
-const InputContainer = styled.div`
-  position: relative;
-`;
-
-const InputHeading = styled.span`
-  display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: 700;
-`;
-
-const InputBox = styled.input`
-  width: 100%;
-  height: 35px;
-  outline: none;
-  border: 1px solid #737373;
-  border-radius: 5px;
-  margin-bottom: 32px;
-  font-size: 12px;
-  padding: 3px 6px;
-  background: none;
-  &:hover:disabled {
-    cursor: not-allowed;
-  }
-`;
-
-const Placeholder = styled.span`
-  position: absolute;
-  bottom: 44px;
-  left: 8px;
-  color: #737373;
-  font-size: 10px;
-  pointer-events: none;
-`;
-
 const CheckboxContainer = styled.div`
   position: relative;
   width: 100%;
@@ -365,30 +330,6 @@ const RememberMeText = styled.span`
   left: 22px;
   top: 50%;
   transform: translateY(-50%);
-`;
-
-const LoginBtn = styled.button`
-  width: 100%;
-  height: 35px;
-  border-radius: 5px;
-  outline: none;
-  border: none;
-  margin-bottom: 15px;
-  font-weight: 700;
-  color: white;
-  cursor: ${({ disabled, apiCallInProgress }) =>
-    apiCallInProgress ? "progress" : disabled ? "not-allowed" : "pointer"};
-  background: ${({ disabled }) =>
-    disabled ? "#c9c9c9" : "linear-gradient(to right, #8e2de2, #4a00e0)"};
-`;
-
-const InputErrorMessage = styled.span`
-  display: block;
-  position: absolute;
-  bottom: 12px;
-  left: 4px;
-  font-size: 10px;
-  color: red;
 `;
 
 const DontHaveAccount = styled.span`

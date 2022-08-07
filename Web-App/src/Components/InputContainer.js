@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function UserInputContainer({
+export default function InputContainer({
   title,
   placeholderRef,
   inputRef,
@@ -9,16 +9,16 @@ export default function UserInputContainer({
   ...rest
 }) {
   return (
-    <InputContainer>
+    <Container>
       <InputHeading>{title}</InputHeading>
       <Placeholder ref={placeholderRef}>{placeholder}</Placeholder>
       <InputBox ref={inputRef} {...rest} />
       <InputErrorMessage ref={errorRef}></InputErrorMessage>
-    </InputContainer>
+    </Container>
   );
 }
 
-const InputContainer = styled.div`
+const Container = styled.div`
   position: relative;
 `;
 
