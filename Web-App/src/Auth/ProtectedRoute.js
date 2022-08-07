@@ -6,7 +6,7 @@ import SignIn from "../pages/SignIn";
 export default function ProtectedRoute() {
   const [user, setUser] = useState({
     loading: false,
-    data: null,
+    data: "null",
   });
 
   useEffect(() => {

@@ -1,13 +1,15 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
+
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
 } from "../utils/Validations";
 import AppLogo from "../components/AppLogo";
+import UserInputContainer from "../components/UserInputContainer";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -169,35 +171,33 @@ export default function SignIn() {
       <FormContainer>
         <Title>Log in</Title>
         <Form onSubmit={handleSubmit}>
-          <InputContainer>
-            <InputHeading>Your e-mail</InputHeading>
-            <Placeholder ref={emailPlaceholderRef}>name@domain.com</Placeholder>
-            <InputBox
-              ref={emailRef}
-              name="email"
-              type="email"
-              spellCheck="false"
-              autoComplete="off"
-              disabled={serverData.loading}
-              onInput={(e) => handleInputChange(e, "email")}
-            />
-            <InputErrorMessage ref={emailErrorRef}></InputErrorMessage>
-          </InputContainer>
-          <InputContainer>
-            <InputHeading>Password</InputHeading>
-            <Placeholder ref={passwordPlaceholderRef}>
-              at least 8 characters
-            </Placeholder>
-            <InputBox
-              ref={passwordRef}
-              name="password"
-              type="password"
-              maxLength={32}
-              disabled={serverData.loading}
-              onInput={(e) => handleInputChange(e, "password")}
-            />
-            <InputErrorMessage ref={passwordErrorRef}></InputErrorMessage>
-          </InputContainer>
+          <UserInputContainer
+            title="Your e-mail"
+            placeholderRef={emailPlaceholderRef}
+            inputRef={emailRef}
+            errorRef={emailErrorRef}
+            placeholder="name@domain.com"
+            name="email"
+            type="email"
+            spellCheck="false"
+            autoComplete="off"
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "email")}
+          />
+
+          <UserInputContainer
+            title="Password"
+            placeholderRef={passwordPlaceholderRef}
+            inputRef={passwordRef}
+            errorRef={passwordErrorRef}
+            placeholder="at least 8 characters"
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+          />
+
           <CheckboxContainer>
             <RememberMe
               name="rememberme"
