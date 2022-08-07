@@ -220,6 +220,7 @@ export default function SignIn() {
           Dont't have an account?{" "}
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-up", true)}
+            disabled={handleBtnSubmit()}
           >
             Sign up
           </PageNavigationBtn>
@@ -227,6 +228,7 @@ export default function SignIn() {
         <ForgetPassword>
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-in/forgot-password")}
+            disabled={handleBtnSubmit()}
           >
             Forgot Password?
           </PageNavigationBtn>
@@ -326,6 +328,9 @@ const InputBox = styled.input`
   font-size: 12px;
   padding: 3px 6px;
   background: none;
+  &:hover:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const Placeholder = styled.span`
@@ -349,6 +354,9 @@ const RememberMe = styled.input`
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
+  &:hover:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const RememberMeText = styled.span`
@@ -399,8 +407,11 @@ const PageNavigationBtn = styled.button`
   font-weight: 700;
   margin-left: 5px;
   cursor: pointer;
-  &:hover {
+  &:hover:enabled {
     text-decoration: underline;
+  }
+  &:hover:disabled {
+    cursor: not-allowed;
   }
 `;
 
