@@ -6,6 +6,7 @@ export default function ButtonContainer({
   width = "100%",
   height = "35px",
   marginBottom = "15px",
+  marginTop = "none",
   borderRadius = "5px",
   ...rest
 }) {
@@ -16,6 +17,7 @@ export default function ButtonContainer({
       height={height}
       borderRadius={borderRadius}
       marginBottom={marginBottom}
+      marginTop={marginTop}
       {...rest}
     >
       {label}
@@ -29,6 +31,7 @@ const Button = styled.button`
   border-radius: ${({ borderRadius }) => borderRadius};
   border: none;
   margin-bottom: ${({ marginBottom }) => marginBottom};
+  margin-top: ${({ marginTop }) => marginTop};
   font-weight: 700;
   color: white;
   cursor: ${({ disabled, isLoading }) =>

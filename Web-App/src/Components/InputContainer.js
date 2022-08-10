@@ -5,13 +5,14 @@ export default function InputContainer({
   placeholderRef,
   inputRef,
   errorRef,
+  errorMessage,
   ...rest
 }) {
   return (
     <Container>
       <InputHeading>{title}</InputHeading>
       <InputBox ref={inputRef} {...rest} />
-      <InputErrorMessage ref={errorRef}></InputErrorMessage>
+      <InputErrorMessage ref={errorRef}>{errorMessage}</InputErrorMessage>
     </Container>
   );
 }

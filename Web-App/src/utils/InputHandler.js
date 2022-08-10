@@ -78,3 +78,15 @@ export const validationColor = {
   success: "#737373",
   error: "red",
 };
+
+export const errorVisibility = (
+  inputRef,
+  errorRef,
+  txtColor = validationColor.success,
+  borderColor = validationColor.success,
+  errorMsg = null
+) => {
+  inputRef.current.style.color = txtColor;
+  inputRef.current.style.border = `1px solid ${borderColor}`;
+  errorRef.current.innerText = errorMsg;
+};

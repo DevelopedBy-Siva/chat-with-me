@@ -1,62 +1,91 @@
-import { useState, useRef } from "react";
-import styled from "styled-components";
-import InputContainer from "../components/InputContainer";
+import axios from "axios";
+import { useState } from "react";
+import ForgotPassword_ChangePassword from "../components/ForgotPassword_ChangePassword";
+import ForgotPassword_Home from "../components/ForgotPassword_Home";
+import ForgotPassword_Verify from "../components/ForgotPassword_Verify";
 import Modal from "../components/ModalContainer";
+import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState(null);
+  const [serverResponse, setServerResponse] = useState({
+    loading: false,
+    error: null,
+  });
+  const [activeScreen, setActiveScreen] = useState(SCREEN.HOME);
+  const [info, setInfo] = useState({
+    email: null,
+    password: null,
+    confirmPassword: null,
+  });
+  const [btnActive, setBtnActive] = useState(true);
 
-  const emailInputRef = useRef(null);
-  const inputPlaceholderRef = useRef(null);
-  const errorRef = useRef(null);
+  const handleVerification = (e, screen = SCREEN.HOME) => {
+    e.preventDefault();
 
-  const handleInputChange = (e, type) => {
-    const value = e.target.value;
-    switch (type) {
-      case "email":
-        email = value.toLowerCase();
-        break;
+    setServerResponse({
+      loading: true,
+      error: null,
+    });
+
+    const URL = process.env.REACT_APP_API_BASEURL;
+    axios
+      .get(URL)
+      .then(() => {
+        setActiveScreen(screen);
+        setServerResponse({
+          loading: false,
+          error: null,
+        });
+      })
+      .catch(() => {
+        setServerResponse({
+          loading: false,
+          error: "ERROR MESSAGE",
+        });
+      });
+  };
+
+  const handleActiveScreen = () => {
+    const { HOME, VEIRFY_CODE, CNG_PSWD } = SCREEN;
+
+    switch (activeScreen) {
+      case HOME:
+        return (
+          <ForgotPassword_Home
+            verify={handleVerification}
+            serverResponse={serverResponse}
+            info={info}
+            setInfo={setInfo}
+            btnActive={btnActive}
+            setBtnActive={setBtnActive}
+          />
+        );
+      case VEIRFY_CODE:
+        return (
+          <ForgotPassword_Verify
+            verify={handleVerification}
+            serverResponse={serverResponse}
+            inof={info}
+            setInfo={setInfo}
+            btnActive={btnActive}
+            setBtnActive={setBtnActive}
+          />
+        );
+      case CNG_PSWD:
+        return (
+          <ForgotPassword_ChangePassword
+            verify={handleVerification}
+            serverResponse={serverResponse}
+            info={info}
+            setInfo={setInfo}
+            btnActive={btnActive}
+            setBtnActive={setBtnActive}
+          />
+        );
       default:
         break;
     }
-    setEmail(email);
   };
 
-  return (
-    <Modal isNavigate={true}>
-      <Container>
-        <Title>Forgot Password?</Title>
-        <Form>
-          <InputContainer
-            title="Your e-mail"
-            placeholderRef={inputPlaceholderRef}
-            inputRef={emailInputRef}
-            errorRef={errorRef}
-            placeholder="name@domain.com"
-            name="email"
-            type="email"
-            spellCheck="false"
-            autoComplete="off"
-            // disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "email")}
-          />
-        </Form>
-      </Container>
-    </Modal>
-  );
+  return <Modal isNavigate={true}>{handleActiveScreen()}</Modal>;
 }
-
-const Container = styled.div`
-  width: 100%;
-`;
-
-const Form = styled.form``;
-
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 24px;
-  margin-bottom: 15px;
-`;
-
-const SubmitBtn = styled.button``;

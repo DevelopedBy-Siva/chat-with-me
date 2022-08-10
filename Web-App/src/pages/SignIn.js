@@ -9,6 +9,7 @@ import {
   validationColor,
   inputChanges,
   AllowedInputFields,
+  errorVisibility,
 } from "../utils/InputHandler";
 import AppLogo from "../components/AppLogo";
 import UserInputContainer from "../components/InputContainer";
@@ -32,10 +33,7 @@ export default function SignIn() {
   const [serverData, setServerData] = useState({
     loading: false,
     response: null,
-    error: {
-      code: null,
-      desc: null,
-    },
+    error: null,
   });
 
   // Focus on Email Input box on page startup
@@ -50,28 +48,28 @@ export default function SignIn() {
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
 
+    const { error } = validationColor;
     // Remove/ Add input error messages from the DOM
     if (email) {
-      if (emailValid.isValid)
-        handleErrorVisibility(emailInputRef, emailErrorRef);
+      if (emailValid.isValid) errorVisibility(emailInputRef, emailErrorRef);
       else
-        handleErrorVisibility(
+        errorVisibility(
           emailInputRef,
           emailErrorRef,
-          validationColor.error,
-          validationColor.error,
+          error,
+          error,
           emailValid.message
         );
     }
     if (password) {
       if (passwordValid.isValid)
-        handleErrorVisibility(passwordInputRef, passwordErrorRef);
+        errorVisibility(passwordInputRef, passwordErrorRef);
       else
-        handleErrorVisibility(
+        errorVisibility(
           passwordInputRef,
           passwordErrorRef,
-          validationColor.error,
-          validationColor.error,
+          error,
+          error,
           passwordValid.message
         );
     }
@@ -79,18 +77,6 @@ export default function SignIn() {
     if (emailValid.isValid && passwordValid.isValid) setBtnActive(false);
     else setBtnActive(true);
   }, [loginInfo]);
-
-  const handleErrorVisibility = (
-    inputRef,
-    errorRef,
-    txtColor = validationColor.success,
-    borderColor = validationColor.success,
-    errorMsg = null
-  ) => {
-    inputRef.current.style.color = txtColor;
-    inputRef.current.style.border = `1px solid ${borderColor}`;
-    errorRef.current.innerText = errorMsg;
-  };
 
   const handleInputChange = (e, type) => {
     const allowedFields = [
@@ -128,10 +114,7 @@ export default function SignIn() {
           ...serverData,
           loading: false,
           response: null,
-          error: {
-            code: "",
-            desc: "",
-          },
+          error: "Error Message",
         });
       });
   };
@@ -241,6 +224,7 @@ const LogoContainer = styled.div`
 
   @media (max-width: 728px) {
     position: fixed;
+    padding: 0;
     height: 20vh;
     width: 100%;
     max-width: 100%;

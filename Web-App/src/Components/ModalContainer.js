@@ -47,7 +47,7 @@ const Overlay = styled.button`
 `;
 
 const Box = styled.div`
-  padding: 0.8rem;
+  padding: 1.2rem 0.8rem;
   border-radius: 10px;
   background: white;
   position: absolute;
