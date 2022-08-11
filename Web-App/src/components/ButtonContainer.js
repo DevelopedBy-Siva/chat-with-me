@@ -38,4 +38,5 @@ const Button = styled.button`
     isLoading ? "progress" : disabled ? "not-allowed" : "pointer"};
   background: ${({ disabled }) =>
     disabled ? "#c9c9c9" : "linear-gradient(to right, #8e2de2, #4a00e0)"};
+  outline-color: #05a4fa;
 `;

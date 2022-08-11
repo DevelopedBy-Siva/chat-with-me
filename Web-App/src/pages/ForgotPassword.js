@@ -65,7 +65,7 @@ export default function ForgotPassword() {
           <ForgotPassword_Verify
             verify={handleVerification}
             serverResponse={serverResponse}
-            inof={info}
+            info={info}
             setInfo={setInfo}
             btnActive={btnActive}
             setBtnActive={setBtnActive}
