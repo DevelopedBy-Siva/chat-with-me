@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
-import ForgotPassword_ChangePassword from "../components/ForgotPassword_ChangePassword";
-import ForgotPassword_Home from "../components/ForgotPassword_Home";
-import ForgotPassword_Verify from "../components/ForgotPassword_Verify";
+import ForgotPasswordChangePassword from "../components/ForgotPasswordChangePassword";
+import ForgotPasswordHome from "../components/ForgotPasswordHome";
+import ForgotPasswordVerify from "../components/ForgotPasswordVerify";
 import Modal from "../components/ModalContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
 
@@ -51,7 +51,7 @@ export default function ForgotPassword() {
     switch (activeScreen) {
       case HOME:
         return (
-          <ForgotPassword_Home
+          <ForgotPasswordHome
             verify={handleVerification}
             serverResponse={serverResponse}
             info={info}
@@ -62,7 +62,7 @@ export default function ForgotPassword() {
         );
       case VEIRFY_CODE:
         return (
-          <ForgotPassword_Verify
+          <ForgotPasswordVerify
             verify={handleVerification}
             serverResponse={serverResponse}
             info={info}
@@ -73,7 +73,7 @@ export default function ForgotPassword() {
         );
       case CNG_PSWD:
         return (
-          <ForgotPassword_ChangePassword
+          <ForgotPasswordChangePassword
             verify={handleVerification}
             serverResponse={serverResponse}
             info={info}

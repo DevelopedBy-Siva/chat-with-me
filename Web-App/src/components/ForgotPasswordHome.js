@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import styled from "styled-components";
-import ButtonContainer from "../components/ButtonContainer";
-import InputContainer from "../components/InputContainer";
+import ButtonContainer from "./ButtonContainer";
+import InputContainer from "./InputContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
 import {
   AllowedInputFields,
@@ -11,7 +11,7 @@ import {
   errorVisibility,
 } from "../utils/InputHandler";
 
-export default function ForgotPassword_Home({
+export default function ForgotPasswordHome({
   verify,
   serverResponse,
   info,

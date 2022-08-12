@@ -1,36 +1,78 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ButtonContainer from "./ButtonContainer";
 
-export default function ForgotPassword_Verify({ info }) {
-  const inputRef = useRef(new Array());
+export default function ForgotPasswordVerify({ info }) {
+  const navigate = useNavigate();
+  const FORGOT_PSWD_EXPIRY_TIME = 299;
+
+  const inputRef = useRef([]);
 
   const [verifyCode, setVerifyCode] = useState(["", "", "", "", ""]);
   const [activeInput, setActiveInput] = useState(0);
-
-  useEffect(() => {
-    inputRef.current[0].focus();
-  }, []);
+  const [expiry, setExpiry] = useState("05:00");
 
   const handleInputChange = (e, index) => {
-    let value = e.target.value;
-    value = parseInt(value);
-
-    if (value >= 0 && value <= 10) {
-      const code = [...verifyCode];
-      code[index] = e.target.value;
-      setVerifyCode(code);
-    } else return;
+    const { key } = e;
+    const code = [...verifyCode];
+    if (key === "Backspace" || key === "Delete") {
+      code[index] = "";
+      if (activeInput === 0) return;
+      index--;
+      setActiveInput(index);
+    }
+    if (key >= 0 && key <= 9) {
+      code[index] = key.toString();
+      index++;
+      setActiveInput(index);
+    }
+    setVerifyCode(code);
   };
 
   useEffect(() => {
-    if (parseInt(verifyCode[activeInput]) >= 0) {
-      console.log("YES");
+    if (activeInput > 4) {
+      inputRef.current[4].disabled = false;
+      inputRef.current[4].focus();
+      return;
     }
-    console.log("NO");
-  }, [verifyCode]);
+    inputRef.current[activeInput].focus();
+  }, [activeInput]);
 
-  const inputValidation = (val) => {};
+  useEffect(() => {
+    let timeleft = 0;
+    let timer = setInterval(function () {
+      if (timeleft >= FORGOT_PSWD_EXPIRY_TIME) {
+        clearInterval(timer);
+      }
+      let val = FORGOT_PSWD_EXPIRY_TIME - timeleft;
+      generateExpiryTime(val);
+      timeleft += 1;
+      if (val === 0) return navigate(-1, { replace: true });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  const generateExpiryTime = (val) => {
+    const minutes = Math.floor((val % 3600) / 60)
+        .toString()
+        .padStart(2, "0"),
+      seconds = Math.floor(val % 60)
+        .toString()
+        .padStart(2, "0");
+    setExpiry(minutes + ":" + seconds);
+  };
+
+  const isVerifyBtnDisabled = () => {
+    let disabled = true;
+    verifyCode.forEach((code) => {
+      if (code.length !== 0) disabled = false;
+    });
+    return disabled;
+  };
 
   return (
     <Container>
@@ -47,20 +89,20 @@ export default function ForgotPassword_Verify({ info }) {
             return (
               <InputBox
                 ref={elementRef}
-                disabled={activeInput !== index}
+                disabled={activeInput != index}
                 maxLength="1"
                 value={val}
                 key={index}
                 type="text"
-                onChange={(e) => handleInputChange(e, index)}
+                onKeyDown={(e) => handleInputChange(e, index)}
               />
             );
           })}
         </InputContainer>
         <CodeExpires>
-          Verification code expires in: <Timer>04:50</Timer>
+          Verification code expires in: <Timer>{expiry}</Timer>
         </CodeExpires>
-        <ButtonContainer label="Verify" />
+        <ButtonContainer disabled={isVerifyBtnDisabled()} label="Verify" />
       </Form>
     </Container>
   );
@@ -105,6 +147,7 @@ const InputBox = styled.input`
   font-size: 20px;
   outline-color: #05a4fa;
   background: none;
+  color: #000;
 `;
 
 const CodeExpires = styled.span`
