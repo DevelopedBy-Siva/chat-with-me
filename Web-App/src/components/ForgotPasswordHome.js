@@ -1,5 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+
 import ButtonContainer from "./ButtonContainer";
 import InputContainer from "./InputContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
@@ -11,16 +13,15 @@ import {
   errorVisibility,
 } from "../utils/InputHandler";
 
-export default function ForgotPasswordHome({
-  verify,
-  serverResponse,
-  info,
-  setInfo,
-  btnActive,
-  setBtnActive,
-}) {
+export default function ForgotPasswordHome({ info, setInfo, handleScreen }) {
   const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
+
+  const [serverResponse, setServerResponse] = useState({
+    loading: false,
+    error: null,
+  });
+  const [btnActive, setBtnActive] = useState(true);
 
   useEffect(() => {
     emailInputRef.current.focus();
@@ -49,14 +50,40 @@ export default function ForgotPasswordHome({
     setInfo(data);
   };
 
+  const verifyEmail = (e) => {
+    e.preventDefault();
+
+    setServerResponse({
+      loading: true,
+      error: null,
+    });
+
+    const URL = process.env.REACT_APP_API_BASEURL;
+    axios
+      .get(URL)
+      .then(() => {
+        handleScreen(SCREEN.VEIRFY_CODE);
+      })
+      .catch(() => {
+        setServerResponse({
+          loading: false,
+          error: "ERROR MESSAGE",
+        });
+      });
+  };
+
   const handleBtnSubmit = () => {
     return serverResponse.loading ? true : btnActive;
   };
 
   return (
     <Container>
-      <Title>Forgot Password?</Title>
-      <Form onSubmit={(e) => verify(e, SCREEN.VEIRFY_CODE)}>
+      <Title>Reset password</Title>
+      <Description>
+        Enter the email associated with your account and we'll send a
+        verifcation code to confirm your email
+      </Description>
+      <Form onSubmit={verifyEmail}>
         <InputContainer
           title="Your e-mail"
           inputRef={emailInputRef}
@@ -94,4 +121,20 @@ const Title = styled.h1`
   font-size: 20px;
   margin-bottom: 25px;
   margin-top: 5px;
+`;
+
+const Description = styled.h3`
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  line-height: 12px;
+  text-align: center;
+  width: 60%;
+  margin: auto;
+  margin-bottom: 25px;
+  line-height: 16px;
+
+  @media (max-width: 728px) {
+    width: 80%;
+  }
 `;

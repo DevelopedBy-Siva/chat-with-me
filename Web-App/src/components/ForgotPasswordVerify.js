@@ -1,26 +1,35 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import ButtonContainer from "./ButtonContainer";
+import axios from "axios";
 
-export default function ForgotPasswordVerify({ info }) {
-  const navigate = useNavigate();
+import ButtonContainer from "./ButtonContainer";
+import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
+
+export default function ForgotPasswordVerify({ info, handleScreen }) {
   const FORGOT_PSWD_EXPIRY_TIME = 299;
+  const navigate = useNavigate();
 
   const inputRef = useRef([]);
 
   const [verifyCode, setVerifyCode] = useState(["", "", "", "", ""]);
   const [activeInput, setActiveInput] = useState(0);
   const [expiry, setExpiry] = useState("05:00");
+  const [serverResponse, setServerResponse] = useState({
+    loading: false,
+    error: null,
+  });
 
   const handleInputChange = (e, index) => {
     const { key } = e;
     const code = [...verifyCode];
     if (key === "Backspace" || key === "Delete") {
-      code[index] = "";
       if (activeInput === 0) return;
-      index--;
-      setActiveInput(index);
+      if (code[activeInput].length === 0) {
+        index--;
+        setActiveInput(index);
+      }
+      code[index] = "";
     }
     if (key >= 0 && key <= 9) {
       code[index] = key.toString();
@@ -34,9 +43,11 @@ export default function ForgotPasswordVerify({ info }) {
     if (activeInput > 4) {
       inputRef.current[4].disabled = false;
       inputRef.current[4].focus();
+      inputRef.current[4].select();
       return;
     }
     inputRef.current[activeInput].focus();
+    inputRef.current[activeInput].select();
   }, [activeInput]);
 
   useEffect(() => {
@@ -66,12 +77,34 @@ export default function ForgotPasswordVerify({ info }) {
     setExpiry(minutes + ":" + seconds);
   };
 
-  const isVerifyBtnDisabled = () => {
-    let disabled = true;
-    verifyCode.forEach((code) => {
-      if (code.length !== 0) disabled = false;
+  const verifyEmail = (e) => {
+    e.preventDefault();
+
+    setServerResponse({
+      loading: true,
+      error: null,
     });
-    return disabled;
+
+    const URL = process.env.REACT_APP_API_BASEURL;
+    axios
+      .get(URL)
+      .then(() => {
+        handleScreen(SCREEN.CNG_PSWD);
+      })
+      .catch(() => {
+        setServerResponse({
+          loading: false,
+          error: "ERROR MESSAGE",
+        });
+      });
+  };
+
+  const isVerifyBtnDisabled = () => {
+    let disabled = false;
+    verifyCode.forEach((code) => {
+      if (code.length === 0) disabled = true;
+    });
+    return serverResponse.loading ? true : disabled;
   };
 
   return (
@@ -82,19 +115,19 @@ export default function ForgotPasswordVerify({ info }) {
         <br />
         Enter the code below to confirm your email address.
       </InputTitle>
-      <Form>
+      <Form onSubmit={verifyEmail}>
         <InputContainer>
           {verifyCode.map((val, index) => {
             const elementRef = (element) => inputRef.current.push(element);
             return (
               <InputBox
+                type="number"
                 ref={elementRef}
-                disabled={activeInput != index}
-                maxLength="1"
-                value={val}
+                // disabled={activeInput != index}
+                // maxLength="1"
+                // value={val}
                 key={index}
-                type="text"
-                onKeyDown={(e) => handleInputChange(e, index)}
+                // onKeyDown={(e) => handleInputChange(e, index)}
               />
             );
           })}
@@ -121,10 +154,10 @@ const Title = styled.h1`
 `;
 
 const InputTitle = styled.h1`
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   text-align: center;
-  line-height: 12px;
+  line-height: 14px;
 `;
 
 const InputContainer = styled.div`
@@ -148,6 +181,12 @@ const InputBox = styled.input`
   outline-color: #05a4fa;
   background: none;
   color: #000;
+  -moz-appearance: textfield;
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
 
 const CodeExpires = styled.span`
