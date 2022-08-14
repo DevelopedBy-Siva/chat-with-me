@@ -31,7 +31,7 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
       data.email = value.toLowerCase();
       break;
     case NAME:
-      data.name = value;
+      data.name = value.toLowerCase();
       break;
     case PASSWORD:
       data.password = value;
@@ -68,6 +68,16 @@ export const passwordValidation = (password) => {
   const isValid = password && password.length >= 8;
   let message = null;
   if (!isValid) message = "Minimum password length should be 8 characters";
+  return {
+    isValid,
+    message,
+  };
+};
+
+export const confirmPasswordValidation = (pswd, confirmPswd) => {
+  const isValid = pswd === confirmPswd;
+  let message = null;
+  if (!isValid) message = "Passwords are not matching";
   return {
     isValid,
     message,

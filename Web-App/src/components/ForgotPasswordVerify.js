@@ -8,11 +8,12 @@ import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
 
 export default function ForgotPasswordVerify({ info, handleScreen }) {
   const FORGOT_PSWD_EXPIRY_TIME = 299;
-  const navigate = useNavigate();
+  const MAX_VERIFICATION_CODE_INPUT_BOXES = 5;
 
+  const navigate = useRef(useNavigate());
   const inputRef = useRef([]);
 
-  const [verifyCode, setVerifyCode] = useState(["", "", "", "", ""]);
+  const [verificationCode, setVerificationCode] = useState("");
   const [activeInput, setActiveInput] = useState(0);
   const [expiry, setExpiry] = useState("05:00");
   const [serverResponse, setServerResponse] = useState({
@@ -20,62 +21,73 @@ export default function ForgotPasswordVerify({ info, handleScreen }) {
     error: null,
   });
 
-  const handleInputChange = (e, index) => {
-    const { key } = e;
-    const code = [...verifyCode];
-    if (key === "Backspace" || key === "Delete") {
-      if (activeInput === 0) return;
-      if (code[activeInput].length === 0) {
-        index--;
-        setActiveInput(index);
-      }
-      code[index] = "";
-    }
-    if (key >= 0 && key <= 9) {
-      code[index] = key.toString();
-      index++;
-      setActiveInput(index);
-    }
-    setVerifyCode(code);
+  useEffect(() => {
+    const index = activeInput;
+    inputRef.current[index].focus();
+  }, [activeInput]);
+
+  const handleInputChange = (e) => {
+    if (!e) return;
+
+    const ASCIICode = e.which ? e.which : e.keyCode;
+
+    if (ASCIICode === 8 || ASCIICode === 46)
+      return handleVerificationCodeDeletion();
+
+    if (verificationCode.length > 4) return;
+
+    const isAllowed = ASCIICode >= 48 && ASCIICode <= 57;
+    if (!isAllowed) return;
+
+    const val = e.key;
+    const activeInput_index = verificationCode.length + 1;
+    if (activeInput_index < 5) setActiveInput(activeInput_index);
+    setVerificationCode((code) => code + val);
+  };
+
+  const handleVerificationCodeDeletion = () => {
+    let code = verificationCode;
+    const codeLen = code.length;
+    code = code.substring(0, codeLen - 1);
+
+    const activeInput_index = verificationCode.length - 1;
+    if (activeInput_index < 0) return;
+    setActiveInput(activeInput_index);
+    setVerificationCode(code);
+  };
+
+  const getVerificationCodeFromIndex = (index) => {
+    let val = "";
+    try {
+      val = verificationCode.charAt(index);
+    } catch (e) {}
+    return val;
   };
 
   useEffect(() => {
-    if (activeInput > 4) {
-      inputRef.current[4].disabled = false;
-      inputRef.current[4].focus();
-      inputRef.current[4].select();
-      return;
-    }
-    inputRef.current[activeInput].focus();
-    inputRef.current[activeInput].select();
-  }, [activeInput]);
-
-  useEffect(() => {
     let timeleft = 0;
-    let timer = setInterval(function () {
+    let timer;
+    const generateExpiryTime = () => {
       if (timeleft >= FORGOT_PSWD_EXPIRY_TIME) {
         clearInterval(timer);
+        return navigate.current(-1, { replace: true });
       }
       let val = FORGOT_PSWD_EXPIRY_TIME - timeleft;
-      generateExpiryTime(val);
+      const minutes = Math.floor((val % 3600) / 60)
+          .toString()
+          .padStart(2, "0"),
+        seconds = Math.floor(val % 60)
+          .toString()
+          .padStart(2, "0");
+      setExpiry(minutes + ":" + seconds);
       timeleft += 1;
-      if (val === 0) return navigate(-1, { replace: true });
-    }, 1000);
+    };
+    timer = setInterval(generateExpiryTime, 1000);
 
     return () => {
       clearInterval(timer);
     };
   }, []);
-
-  const generateExpiryTime = (val) => {
-    const minutes = Math.floor((val % 3600) / 60)
-        .toString()
-        .padStart(2, "0"),
-      seconds = Math.floor(val % 60)
-        .toString()
-        .padStart(2, "0");
-    setExpiry(minutes + ":" + seconds);
-  };
 
   const verifyEmail = (e) => {
     e.preventDefault();
@@ -100,11 +112,14 @@ export default function ForgotPasswordVerify({ info, handleScreen }) {
   };
 
   const isVerifyBtnDisabled = () => {
-    let disabled = false;
-    verifyCode.forEach((code) => {
-      if (code.length === 0) disabled = true;
-    });
+    const disabled =
+      verificationCode.length < MAX_VERIFICATION_CODE_INPUT_BOXES;
+
     return serverResponse.loading ? true : disabled;
+  };
+
+  const inputBoxes = () => {
+    return Array.apply("", new Array(MAX_VERIFICATION_CODE_INPUT_BOXES));
   };
 
   return (
@@ -117,17 +132,18 @@ export default function ForgotPasswordVerify({ info, handleScreen }) {
       </InputTitle>
       <Form onSubmit={verifyEmail}>
         <InputContainer>
-          {verifyCode.map((val, index) => {
+          {inputBoxes().map((val, index) => {
             const elementRef = (element) => inputRef.current.push(element);
             return (
               <InputBox
-                type="number"
+                type="text"
+                maxLength="1"
                 ref={elementRef}
-                // disabled={activeInput != index}
-                // maxLength="1"
-                // value={val}
+                disabled={activeInput !== index}
                 key={index}
-                // onKeyDown={(e) => handleInputChange(e, index)}
+                value={getVerificationCodeFromIndex(index)}
+                onChange={() => handleInputChange(null)}
+                onKeyDown={handleInputChange}
               />
             );
           })}
