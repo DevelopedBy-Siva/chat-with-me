@@ -14,7 +14,12 @@ import {
 import ButtonContainer from "./ButtonContainer";
 import InputContainer from "./InputContainer";
 
-export default function ForgotPasswordChangePassword({ info, setInfo }) {
+export default function ForgotPasswordChangePassword({
+  info,
+  setInfo,
+  serverResponse,
+  setServerResponse,
+}) {
   const navigate = useNavigate();
 
   const newPasswordRef = useRef(null);
@@ -23,10 +28,6 @@ export default function ForgotPasswordChangePassword({ info, setInfo }) {
   const newPasswordErrorRef = useRef(null);
   const confirmPasswordErrorRef = useRef(null);
 
-  const [serverResponse, setServerResponse] = useState({
-    loading: false,
-    error: null,
-  });
   const [btnActive, setBtnActive] = useState(true);
 
   useEffect(() => {

@@ -6,7 +6,12 @@ import axios from "axios";
 import ButtonContainer from "./ButtonContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
 
-export default function ForgotPasswordVerify({ info, handleScreen }) {
+export default function ForgotPasswordVerify({
+  info,
+  handleScreen,
+  serverResponse,
+  setServerResponse,
+}) {
   const FORGOT_PSWD_EXPIRY_TIME = 299;
   const MAX_VERIFICATION_CODE_INPUT_BOXES = 5;
 
@@ -16,10 +21,6 @@ export default function ForgotPasswordVerify({ info, handleScreen }) {
   const [verificationCode, setVerificationCode] = useState("");
   const [activeInput, setActiveInput] = useState(0);
   const [expiry, setExpiry] = useState("05:00");
-  const [serverResponse, setServerResponse] = useState({
-    loading: false,
-    error: null,
-  });
 
   useEffect(() => {
     const index = activeInput;
@@ -139,7 +140,7 @@ export default function ForgotPasswordVerify({ info, handleScreen }) {
                 type="text"
                 maxLength="1"
                 ref={elementRef}
-                disabled={activeInput !== index}
+                disabled={serverResponse.loading || activeInput !== index}
                 key={index}
                 value={getVerificationCodeFromIndex(index)}
                 onChange={() => handleInputChange(null)}

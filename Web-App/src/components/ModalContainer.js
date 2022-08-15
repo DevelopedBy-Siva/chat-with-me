@@ -4,7 +4,11 @@ import styled from "styled-components";
 import { MdClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-export default function ModalContainer({ children, childRef, isNavigate }) {
+export default function ModalContainer({
+  children,
+  isNavigate = true,
+  loading = false,
+}) {
   const navigateTo = useNavigate();
 
   useEffect(() => {}, []);
@@ -17,9 +21,9 @@ export default function ModalContainer({ children, childRef, isNavigate }) {
     <FocusTrap>
       <Container>
         <Box>{children}</Box>
-        <Overlay onClick={handleClose} />
-        <CloseBtn onClick={handleClose}>
-          <CloseIcon />
+        <Overlay disabled={loading} onClick={handleClose} />
+        <CloseBtn disabled={loading} onClick={handleClose}>
+          <CloseIcon disabled={loading} />
         </CloseBtn>
       </Container>
     </FocusTrap>
@@ -44,6 +48,7 @@ const Overlay = styled.button`
   outline: none;
   border: none;
   z-index: -1;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "auto")};
 `;
 
 const Box = styled.div`
@@ -67,10 +72,11 @@ const CloseBtn = styled.button`
   right: 5px;
   background: none;
   border: none;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;
 
 const CloseIcon = styled(MdClose)`
   font-size: 24px;
   color: white;
-  cursor: pointer;
+  pointer-events: none;
 `;

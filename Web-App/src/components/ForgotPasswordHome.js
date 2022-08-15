@@ -13,14 +13,16 @@ import {
   errorVisibility,
 } from "../utils/InputHandler";
 
-export default function ForgotPasswordHome({ info, setInfo, handleScreen }) {
+export default function ForgotPasswordHome({
+  info,
+  setInfo,
+  handleScreen,
+  serverResponse,
+  setServerResponse,
+}) {
   const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
 
-  const [serverResponse, setServerResponse] = useState({
-    loading: false,
-    error: null,
-  });
   const [btnActive, setBtnActive] = useState(true);
 
   useEffect(() => {

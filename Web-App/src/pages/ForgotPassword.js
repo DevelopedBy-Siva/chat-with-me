@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ForgotPasswordChangePassword from "../components/ForgotPasswordChangePassword";
 import ForgotPasswordHome from "../components/ForgotPasswordHome";
@@ -13,14 +13,21 @@ export default function ForgotPassword() {
     password: null,
     confirmPassword: null,
   });
+  const [serverResponse, setServerResponse] = useState({
+    loading: false,
+    error: null,
+  });
 
   const handleScreen = (screen = SCREEN.HOME) => {
+    setServerResponse({
+      loading: false,
+      error: null,
+    });
     setActiveScreen(screen);
   };
 
   const handleActiveScreen = () => {
     const { HOME, VEIRFY_CODE, CNG_PSWD } = SCREEN;
-
     switch (activeScreen) {
       case HOME:
         return (
@@ -28,16 +35,32 @@ export default function ForgotPassword() {
             handleScreen={handleScreen}
             info={info}
             setInfo={setInfo}
+            serverResponse={serverResponse}
+            setServerResponse={setServerResponse}
           />
         );
       case VEIRFY_CODE:
-        return <ForgotPasswordVerify handleScreen={handleScreen} info={info} />;
+        return (
+          <ForgotPasswordVerify
+            handleScreen={handleScreen}
+            info={info}
+            serverResponse={serverResponse}
+            setServerResponse={setServerResponse}
+          />
+        );
       case CNG_PSWD:
-        return <ForgotPasswordChangePassword info={info} setInfo={setInfo} />;
+        return (
+          <ForgotPasswordChangePassword
+            info={info}
+            setInfo={setInfo}
+            serverResponse={serverResponse}
+            setServerResponse={setServerResponse}
+          />
+        );
       default:
         break;
     }
   };
 
-  return <Modal isNavigate={true}>{handleActiveScreen()}</Modal>;
+  return <Modal loading={serverResponse.loading}>{handleActiveScreen()}</Modal>;
 }
