@@ -11,7 +11,7 @@ import {
   AllowedInputFields,
   errorVisibility,
 } from "../utils/InputHandler";
-import AppLogo from "../components/AppLogo";
+import SignInUpContainer from "../components/SignInUpContainer";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
 
@@ -143,11 +143,7 @@ export default function SignIn() {
   };
 
   return (
-    <Container>
-      <AppLogo top="10px" left="10px" width="20px" />
-      <LogoContainer>
-        <h1>Hello</h1>
-      </LogoContainer>
+    <SignInUpContainer>
       <FormContainer>
         <Title>Sign up</Title>
         <Form onSubmit={handleSubmit}>
@@ -213,39 +209,6 @@ export default function SignIn() {
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "password")}
           />
-          <UserInputContainer
-            title="Password"
-            inputRef={confirmPswdInputRef}
-            errorRef={confirmPswdErrorRef}
-            placeholder="at least 8 characters"
-            name="password"
-            type="password"
-            maxLength={32}
-            disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "password")}
-          />
-          <UserInputContainer
-            title="Password"
-            inputRef={confirmPswdInputRef}
-            errorRef={confirmPswdErrorRef}
-            placeholder="at least 8 characters"
-            name="password"
-            type="password"
-            maxLength={32}
-            disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "password")}
-          />
-          <UserInputContainer
-            title="Password"
-            inputRef={confirmPswdInputRef}
-            errorRef={confirmPswdErrorRef}
-            placeholder="at least 8 characters"
-            name="password"
-            type="password"
-            maxLength={32}
-            disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "password")}
-          />
 
           <UserButtonContainer
             label="Sign up"
@@ -268,63 +231,24 @@ export default function SignIn() {
       </FormContainer>
 
       <Outlet />
-    </Container>
+    </SignInUpContainer>
   );
 }
 
-const Container = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  font-family: "Ubuntu", sans-serif;
-  @media (max-width: 728px) {
-    padding-bottom: 0.6rem;
-  }
-`;
-
-const LogoContainer = styled.div`
-  width: 50%;
-  max-width: 700px;
-  background-image: linear-gradient(to right, #8e2de2, #4a00e0);
-  padding: 0.8rem;
-
-  @media (max-width: 728px) {
-    position: fixed;
-    padding: 0;
-    height: 20vh;
-    width: 100%;
-    max-width: 100%;
-    z-index: -1;
-  }
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 34px;
-  margin-bottom: 15px;
-`;
-
 const FormContainer = styled.div`
-  padding: 0.8rem;
   display: flex;
-  flex: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-weight: 300;
+  padding: 0.8rem;
 
   @media (max-width: 728px) {
     background: white;
-    width: 90%;
+    width: 100%;
     max-width: 500px;
     flex: none;
-    border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    margin-top: 10vh;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 15px 0;
   }
 `;
 
@@ -334,6 +258,13 @@ const Form = styled.form`
   margin-left: auto;
   margin-right: auto;
   color: #737373;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  font-weight: 700;
+  font-size: 34px;
+  margin-bottom: 15px;
 `;
 
 const AlreadyHaveAccount = styled.span`
