@@ -1,112 +1,104 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
+
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
   validationColor,
+  inputChanges,
+  AllowedInputFields,
+  errorVisibility,
 } from "../utils/InputHandler";
 import AppLogo from "../components/AppLogo";
+import UserInputContainer from "../components/InputContainer";
+import UserButtonContainer from "../components/ButtonContainer";
 
-export default function SignUp() {
+export default function SignIn() {
   const navigate = useNavigate();
 
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const nameInputRef = useRef(null);
+  const nameErrorRef = useRef(null);
 
-  const passwordErrorRef = useRef(null);
+  const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
 
-  const emailPlaceholderRef = useRef(null);
-  const passwordPlaceholderRef = useRef(null);
+  const phoneInputRef = useRef(null);
+  const phoneErrorRef = useRef(null);
+
+  const passwordInputRef = useRef(null);
+  const passwordErrorRef = useRef(null);
+
+  const confirmPswdInputRef = useRef(null);
+  const confirmPswdErrorRef = useRef(null);
 
   const [btnActive, setBtnActive] = useState(true);
-
-  const [loginInfo, setLoginInfo] = useState({
+  const [signupInfo, setSignupInfo] = useState({
     email: null,
+    name: null,
+    phone: null,
     password: null,
-    rememberme: false,
+    confirmPassword: null,
   });
   const [serverData, setServerData] = useState({
     loading: false,
     response: null,
-    error: {
-      code: null,
-      desc: null,
-    },
+    error: null,
   });
 
   // Focus on Email Input box on page startup
   useEffect(() => {
-    emailRef.current.focus();
+    nameInputRef.current.focus();
   }, []);
 
   // Validate input changes
   useEffect(() => {
-    const { email, password } = loginInfo;
+    const { email, password } = signupInfo;
 
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
 
+    const { error } = validationColor;
     // Remove/ Add input error messages from the DOM
     if (email) {
-      if (emailValid.isValid) handleErrorVisibility(emailRef, emailErrorRef);
+      if (emailValid.isValid) errorVisibility(emailInputRef, emailErrorRef);
       else
-        handleErrorVisibility(
-          emailRef,
+        errorVisibility(
+          emailInputRef,
           emailErrorRef,
-          validationColor.error,
-          validationColor.error,
+          error,
+          error,
           emailValid.message
         );
     }
     if (password) {
       if (passwordValid.isValid)
-        handleErrorVisibility(passwordRef, passwordErrorRef);
+        errorVisibility(passwordInputRef, passwordErrorRef);
       else
-        handleErrorVisibility(
-          passwordRef,
+        errorVisibility(
+          passwordInputRef,
           passwordErrorRef,
-          validationColor.error,
-          validationColor.error,
+          error,
+          error,
           passwordValid.message
         );
     }
     // If Input is Valid, enable the login button
     if (emailValid.isValid && passwordValid.isValid) setBtnActive(false);
     else setBtnActive(true);
-  }, [loginInfo]);
+  }, [signupInfo]);
 
   const handleInputChange = (e, type) => {
-    const value = e.target.value;
-    const data = { ...loginInfo };
-    switch (type) {
-      case "email":
-        data.email = value.toLowerCase();
-        break;
-      case "password":
-        data.password = value;
-        break;
-      case "rememberme":
-        data.rememberme = e.target.checked;
-        break;
-      default:
-        break;
-    }
-    setLoginInfo(data);
-  };
-
-  const handleErrorVisibility = (
-    inputRef,
-    errorRef,
-    txtColor = validationColor.success,
-    borderColor = validationColor.success,
-    errorMsg = null
-  ) => {
-    inputRef.current.style.color = txtColor;
-    inputRef.current.style.border = `1px solid ${borderColor}`;
-    errorRef.current.innerText = errorMsg;
+    const allowedFields = [
+      AllowedInputFields.NAME,
+      AllowedInputFields.EMAIL,
+      AllowedInputFields.PHONE,
+      AllowedInputFields.PASSWORD,
+      AllowedInputFields.CONFIRM_PASSWORD,
+    ];
+    const data = inputChanges(e, type, signupInfo, allowedFields);
+    setSignupInfo(data);
   };
 
   const handleSubmit = (e) => {
@@ -135,10 +127,7 @@ export default function SignUp() {
           ...serverData,
           loading: false,
           response: null,
-          error: {
-            code: "",
-            desc: "",
-          },
+          error: "Error Message",
         });
       });
   };
@@ -156,66 +145,129 @@ export default function SignUp() {
   return (
     <Container>
       <AppLogo top="10px" left="10px" width="20px" />
-      <LogoContainer></LogoContainer>
+      <LogoContainer>
+        <h1>Hello</h1>
+      </LogoContainer>
       <FormContainer>
         <Title>Sign up</Title>
         <Form onSubmit={handleSubmit}>
-          <InputContainer>
-            <InputHeading>Your e-mail</InputHeading>
-            <Placeholder ref={emailPlaceholderRef}>name@domain.com</Placeholder>
-            <InputBox
-              ref={emailRef}
-              name="email"
-              type="email"
-              spellCheck="false"
-              autoComplete="off"
-              disabled={serverData.loading}
-              onInput={(e) => handleInputChange(e, "email")}
-            />
-            <InputErrorMessage ref={emailErrorRef}></InputErrorMessage>
-          </InputContainer>
-          <InputContainer>
-            <InputHeading>Password</InputHeading>
-            <Placeholder ref={passwordPlaceholderRef}>
-              at least 8 characters
-            </Placeholder>
-            <InputBox
-              ref={passwordRef}
-              name="password"
-              type="password"
-              maxLength={32}
-              disabled={serverData.loading}
-              onInput={(e) => handleInputChange(e, "password")}
-            />
-            <InputErrorMessage ref={passwordErrorRef}></InputErrorMessage>
-          </InputContainer>
-          <CheckboxContainer>
-            <RememberMe
-              name="rememberme"
-              type="checkbox"
-              disabled={serverData.loading}
-              onClick={(e) => handleInputChange(e, "rememberme")}
-            />
-            <RememberMeText>Keep me logged in</RememberMeText>
-          </CheckboxContainer>
-          <LoginBtn
+          <UserInputContainer
+            title="Your e-mail"
+            inputRef={nameInputRef}
+            errorRef={nameErrorRef}
+            placeholder="name@domain.com"
+            name="email"
+            type="email"
+            spellCheck="false"
+            autoComplete="off"
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "email")}
+          />
+
+          <UserInputContainer
+            title="Your e-mail"
+            inputRef={emailInputRef}
+            errorRef={emailErrorRef}
+            placeholder="name@domain.com"
+            name="email"
+            type="email"
+            spellCheck="false"
+            autoComplete="off"
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "email")}
+          />
+
+          <UserInputContainer
+            title="Your e-mail"
+            inputRef={phoneInputRef}
+            errorRef={phoneErrorRef}
+            placeholder="name@domain.com"
+            name="email"
+            type="email"
+            spellCheck="false"
+            autoComplete="off"
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "email")}
+          />
+
+          <UserInputContainer
+            title="Password"
+            inputRef={passwordInputRef}
+            errorRef={passwordErrorRef}
+            placeholder="at least 8 characters"
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+          />
+
+          <UserInputContainer
+            title="Password"
+            inputRef={confirmPswdInputRef}
+            errorRef={confirmPswdErrorRef}
+            placeholder="at least 8 characters"
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+          />
+          <UserInputContainer
+            title="Password"
+            inputRef={confirmPswdInputRef}
+            errorRef={confirmPswdErrorRef}
+            placeholder="at least 8 characters"
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+          />
+          <UserInputContainer
+            title="Password"
+            inputRef={confirmPswdInputRef}
+            errorRef={confirmPswdErrorRef}
+            placeholder="at least 8 characters"
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+          />
+          <UserInputContainer
+            title="Password"
+            inputRef={confirmPswdInputRef}
+            errorRef={confirmPswdErrorRef}
+            placeholder="at least 8 characters"
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+          />
+
+          <UserButtonContainer
+            label="Sign up"
             type="submit"
             onClick={handleSubmit}
             disabled={handleBtnSubmit()}
-            apiCallInProgress={serverData.loading}
-          >
-            Sign up
-          </LoginBtn>
+            loading={serverData.loading}
+          />
         </Form>
-        <DontHaveAccount>
-          Already have account?
-          <RedirectToSignUp
+
+        <AlreadyHaveAccount>
+          Already have an account?
+          <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-in", true)}
+            disabled={serverData.loading}
           >
             Sign in
-          </RedirectToSignUp>
-        </DontHaveAccount>
+          </PageNavigationBtn>
+        </AlreadyHaveAccount>
       </FormContainer>
+
+      <Outlet />
     </Container>
   );
 }
@@ -239,16 +291,13 @@ const LogoContainer = styled.div`
 
   @media (max-width: 728px) {
     position: fixed;
+    padding: 0;
     height: 20vh;
     width: 100%;
     max-width: 100%;
     z-index: -1;
   }
 `;
-
-// const LogoContainerImg = styled.img`
-//   width: 100%;
-// `;
 
 const Title = styled.h1`
   text-align: center;
@@ -276,7 +325,6 @@ const FormContainer = styled.div`
     margin-top: 10vh;
     margin-left: auto;
     margin-right: auto;
-    height: 400px;
   }
 `;
 
@@ -288,92 +336,14 @@ const Form = styled.form`
   color: #737373;
 `;
 
-const InputContainer = styled.div`
-  position: relative;
-`;
-
-const InputHeading = styled.span`
-  display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: 700;
-`;
-
-const InputBox = styled.input`
-  width: 100%;
-  height: 35px;
-  outline: none;
-  border: 1px solid #737373;
-  border-radius: 5px;
-  margin-bottom: 32px;
-  font-size: 12px;
-  padding: 3px 6px;
-  background: none;
-`;
-
-const Placeholder = styled.span`
-  position: absolute;
-  bottom: 44px;
-  left: 8px;
-  color: #737373;
-  font-size: 10px;
-  pointer-events: none;
-`;
-
-const CheckboxContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 20px;
-  margin-bottom: 15px;
-`;
-
-const RememberMe = styled.input`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-`;
-
-const RememberMeText = styled.span`
-  position: absolute;
-  font-size: 11px;
-  left: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-const LoginBtn = styled.button`
-  width: 100%;
-  height: 35px;
-  border-radius: 5px;
-  outline: none;
-  border: none;
-  margin-bottom: 15px;
-  font-weight: 700;
-  color: white;
-  cursor: ${({ disabled, apiCallInProgress }) =>
-    apiCallInProgress ? "progress" : disabled ? "not-allowed" : "pointer"};
-  background: ${({ disabled }) =>
-    disabled ? "#c9c9c9" : "linear-gradient(to right, #8e2de2, #4a00e0)"};
-`;
-
-const InputErrorMessage = styled.span`
-  display: block;
-  position: absolute;
-  bottom: 12px;
-  left: 4px;
-  font-size: 10px;
-  color: red;
-`;
-
-const DontHaveAccount = styled.span`
+const AlreadyHaveAccount = styled.span`
   display: block;
   font-weight: 400;
   font-size: 10px;
   color: #737373;
 `;
 
-const RedirectToSignUp = styled.button`
+const PageNavigationBtn = styled.button`
   color: #4a00e0;
   background: none;
   outline: none;
@@ -382,7 +352,10 @@ const RedirectToSignUp = styled.button`
   font-weight: 700;
   margin-left: 5px;
   cursor: pointer;
-  &:hover {
+  &:hover:enabled {
     text-decoration: underline;
+  }
+  &:hover:disabled {
+    cursor: not-allowed;
   }
 `;
