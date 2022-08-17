@@ -48,6 +48,7 @@ const RightContainer = styled.div`
     width: 92%;
     max-width: 500px;
     height: fit-content;
+    height: -moz-fit-content;
     max-height: 84%;
     display: block;
     overflow-y: auto;
