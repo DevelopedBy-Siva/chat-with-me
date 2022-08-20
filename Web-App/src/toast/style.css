@@ -1,0 +1,9 @@
+.Toastify__toast-container div {
+  width: 10px;
+}
+
+.Toastify__toast {
+}
+.Toastify__toast-body {
+  flex: none;
+}

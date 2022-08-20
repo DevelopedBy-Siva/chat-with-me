@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import ForgotPasswordChangePassword from "../components/ForgotPasswordChangePassword";
 import ForgotPasswordHome from "../components/ForgotPasswordHome";

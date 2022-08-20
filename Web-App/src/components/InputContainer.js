@@ -47,6 +47,10 @@ const InputBox = styled.input`
     color: #737373;
     font-size: 10px;
   }
+
+  @media (max-width: 728px) {
+    margin-bottom: 35px;
+  }
 `;
 
 const InputErrorMessage = styled.span`

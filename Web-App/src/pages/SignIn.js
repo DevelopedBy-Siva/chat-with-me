@@ -14,6 +14,7 @@ import {
 import SignInUpContainer from "../components/SignInUpContainer";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
+import * as toast from "../toast/UserToastUtils";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -101,10 +102,46 @@ export default function SignIn() {
     const URL = process.env.REACT_APP_API_BASEURL;
     axios
       .get(URL)
-      .then(({ data }) => {
+      .then(() => {
+        // toast.success("Password changed successfully_1");
+
+        // const us1 = {
+        //   id: 1,
+        //   name: "Siva",
+        //   message: "Hai siva",
+        // };
+        // toast.notify(us1);
+
+        // toast.success("Password changed successfully_4", {});
+        // const us = {
+        //   id: 4,
+        //   name: "Sanker",
+        //   message: "Hai sanker",
+        // };
+        // toast.notify(us);
+
+        // const us2 = {
+        //   id: 2,
+        //   name: "Duke",
+        //   message: "Hai duke",
+        // };
+        // toast.notify(us2);
+
+        // setTimeout(() => {
+        //   toast.success("Password changed successfully_2");
+        //   const us3 = {
+        //     id: 3,
+        //     name: "Nukem",
+        //     message: "Hai nukem",
+        //   };
+        //   toast.notify(us3);
+        // }, 3000);
+
+        toast.success("Password changed successfully1");
+
         setServerData({
           ...serverData,
-          loading: true,
+          loading: false,
           error: null,
           response: 200,
         });
