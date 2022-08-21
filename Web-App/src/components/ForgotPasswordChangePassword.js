@@ -13,6 +13,7 @@ import {
 } from "../utils/InputHandler";
 import ButtonContainer from "./ButtonContainer";
 import InputContainer from "./InputContainer";
+import * as toast from "../toast/UserToastUtils";
 
 export default function ForgotPasswordChangePassword({
   info,
@@ -94,6 +95,7 @@ export default function ForgotPasswordChangePassword({
       .get("/posts/1")
       .then(() => {
         navigate("/sign-in", { replace: true });
+        toast.success("Password has changed successfully");
       })
       .catch(() => {
         setServerResponse({
@@ -137,6 +139,7 @@ export default function ForgotPasswordChangePassword({
           label="Submit"
           marginTop="5px"
           marginBottom="10px"
+          loading={serverResponse.loading}
           disabled={handleBtnSubmit()}
         />
       </Form>

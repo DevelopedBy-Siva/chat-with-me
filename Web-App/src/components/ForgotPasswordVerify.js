@@ -151,7 +151,11 @@ export default function ForgotPasswordVerify({
         <CodeExpires>
           Verification code expires in: <Timer>{expiry}</Timer>
         </CodeExpires>
-        <ButtonContainer disabled={isVerifyBtnDisabled()} label="Verify" />
+        <ButtonContainer
+          loading={serverResponse.loading}
+          disabled={isVerifyBtnDisabled()}
+          label="Verify"
+        />
       </Form>
     </Container>
   );

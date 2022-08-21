@@ -43,7 +43,6 @@ export default function SignIn() {
   });
   const [serverData, setServerData] = useState({
     loading: false,
-    response: null,
     error: null,
   });
 
@@ -108,24 +107,15 @@ export default function SignIn() {
       ...serverData,
       loading: true,
       error: null,
-      response: null,
     });
 
     axios
       .get("/posts/1")
-      .then(({ data }) => {
-        setServerData({
-          ...serverData,
-          loading: true,
-          error: null,
-          response: 200,
-        });
-      })
+      .then(({ data }) => {})
       .catch((err) => {
         setServerData({
           ...serverData,
           loading: false,
-          response: null,
           error: "Error Message",
         });
       });

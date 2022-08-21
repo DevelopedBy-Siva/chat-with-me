@@ -103,6 +103,7 @@ export default function ForgotPasswordHome({
           label="Verify"
           marginTop="5px"
           marginBottom="10px"
+          loading={serverResponse.loading}
           disabled={handleBtnSubmit()}
         />
       </Form>
