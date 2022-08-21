@@ -27,10 +27,11 @@ axios.interceptors.response.use(
   (error) => {
     const promise = Promise.reject(error);
     promise.catch(({ code }) => {
-      const message = retrieveError(code);
-      toast.error(message, {
-        toastId: toast.TOAST_DISMISS_ID,
-      });
+      const { message, addToast } = retrieveError(code);
+      addToast &&
+        toast.error(message, {
+          toastId: toast.TOAST_DISMISS_ID,
+        });
     });
     return promise;
   }
