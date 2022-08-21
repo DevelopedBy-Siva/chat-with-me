@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-export const USER_TOAST_LIMIT = 2;
+export const USER_TOAST_LIMIT = 1;
 export const USER_TOAST_ID_PREFIX = "USR_";
 export const USER_TOAST_CONTAINER_ID = "user-toast-container";
 
@@ -11,26 +11,10 @@ const TOAST_TYPE = {
   ERROR: "error",
 };
 
-const DEFAULT_STYLE = {
-  background: "white",
-  minWidth: "220px",
-  maxWidth: "350px",
-  margin: "4px auto 0 auto",
-  padding: "8px 10px",
-  borderRadius: "8px",
-  boxShadow: "0 3px 10px rgb(0 0 0 / 10%), 0 3px 3px rgb(0 0 0 / 5%)",
-  fontFamily: "Ubuntu, sans-serif",
-  fontSize: "12px",
-  WebkitUserSelect: "none",
-  msUserSelect: "none",
-  userSelect: "none",
-  cursor: "pointer",
-  overflow: "hidden",
-};
-
 const TOAST_DEFAULT_PROPS = {
   position: "bottom-center",
-  autoClose: 400000,
+  autoClose: 4000,
+  delay: 400,
   containerId: USER_TOAST_CONTAINER_ID,
   hideProgressBar: true,
   closeOnClick: true,
@@ -39,7 +23,7 @@ const TOAST_DEFAULT_PROPS = {
   draggable: true,
   progress: undefined,
   closeButton: false,
-  style: { ...DEFAULT_STYLE },
+  style: {},
 };
 
 export const success = (message, props) => {
@@ -58,7 +42,7 @@ const handleDefaultToast = (
   props = {
     ...TOAST_DEFAULT_PROPS,
     ...props,
-    style: { ...TOAST_DEFAULT_PROPS.style, ...props.style },
+    ...props.style,
   };
   const TOAST_ID = USER_TOAST_ID_PREFIX + message;
   props.toastId = TOAST_ID;

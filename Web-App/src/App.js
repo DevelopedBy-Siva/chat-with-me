@@ -1,12 +1,25 @@
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+
 import Wrapper from "./pages/UserHome";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import networkStatus from "./toast/NetworkStatus";
 
 export default function App() {
+  useEffect(() => {
+    window.addEventListener("online", networkStatus);
+    window.addEventListener("offline", networkStatus);
+
+    return () => {
+      window.removeEventListener("online", networkStatus);
+      window.removeEventListener("offline", networkStatus);
+    };
+  });
+
   return (
     <Routes>
       <Route element={<ProtectedRoute />}>

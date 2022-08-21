@@ -1,9 +1,82 @@
-.Toastify__toast-container div {
-  width: 10px;
+:root {
+  --toast-container-min-width: 220px;
+  --toast-container-max-width: 350px;
 }
 
-.Toastify__toast {
+/*
+/ User default notification container styles
+*/
+
+#user-toast-container .Toastify__toast {
+  min-height: auto;
+  width: 90%;
+  min-width: var(--toast-container-min-width);
+  max-width: var(--toast-container-max-width);
+  background: white;
+  color: black;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px 5px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 10%), 0 3px 3px rgb(0 0 0 / 5%);
+  font-family: "Ubuntu", sans-serif;
+  font-size: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
 }
-.Toastify__toast-body {
-  flex: none;
+
+#user-toast-container .Toastify__toast:hover {
+  transform: scale(0.98);
+  transform-origin: center;
+}
+
+#user-toast-container .Toastify__toast-body {
+  overflow: hidden;
+}
+#user-toast-container .Toastify__toast-body > div:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+/ Message container styles
+*/
+
+#message-toast-container .Toastify__toast {
+  min-height: auto;
+  width: 90%;
+  min-width: var(--toast-container-min-width);
+  max-width: var(--toast-container-max-width);
+  background: white;
+  color: black;
+  margin: 5px auto 0 auto;
+  padding: 0px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 10%), 0 3px 3px rgb(0 0 0 / 5%);
+  font-family: "Ubuntu", sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+}
+
+#message-toast-container .Toastify__toast:hover {
+  transform: scale(0.98);
+  transform-origin: center;
+}
+
+#message-toast-container .Toastify__toast-body {
+  overflow: hidden;
+}
+
+#message-toast-container .Toastify__toast-body > div:last-child {
+  overflow: hidden;
 }

@@ -10,9 +10,17 @@ export const MESSAGE_TOAST_CONTAINER_ID = "message-toast-container";
 const DEFAULT_MESSAGE = "Hey...How do you do?";
 
 const MESSAGE_TOAST_DEFAULT_PROPS = {
-  id: "MESSAGE_DEFAULT_ID",
   position: "top-center",
-  duration: 6000,
+  autoClose: 5000,
+  containerId: MESSAGE_TOAST_CONTAINER_ID,
+  hideProgressBar: true,
+  closeOnClick: true,
+  pauseOnHover: false,
+  pauseOnFocusLoss: false,
+  draggable: true,
+  progress: undefined,
+  closeButton: false,
+  style: {},
 };
 
 const MESSAGE_TOAST_USER_DEFAULT_PROPS = {
@@ -25,20 +33,16 @@ const MESSAGE_TOAST_USER_DEFAULT_PROPS = {
 export const notify = (user, userDefined_props) => {
   let TOAST_ID;
   if (user && user.id) TOAST_ID = MESSAGE_TOAST_PREFIX + user.id;
-  if (userDefined_props && userDefined_props.id)
-    TOAST_ID = MESSAGE_TOAST_PREFIX + userDefined_props.id;
+  if (userDefined_props && userDefined_props.toastId)
+    TOAST_ID = MESSAGE_TOAST_PREFIX + userDefined_props.toastId;
 
   userDefined_props = {
     ...MESSAGE_TOAST_DEFAULT_PROPS,
     ...userDefined_props,
   };
 
-  if (TOAST_ID) userDefined_props = { ...userDefined_props, id: TOAST_ID };
-
+  if (TOAST_ID) userDefined_props = { ...userDefined_props, toastId: TOAST_ID };
   user = { ...MESSAGE_TOAST_USER_DEFAULT_PROPS, ...user };
 
-  toast.custom(
-    (props) => <ChatToastComponent user={user} toastProps={props} />,
-    userDefined_props
-  );
+  toast(<ChatToastComponent user={user} />, userDefined_props);
 };

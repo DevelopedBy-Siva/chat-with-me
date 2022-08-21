@@ -14,7 +14,8 @@ import {
 import SignInUpContainer from "../components/SignInUpContainer";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
-import * as toast from "../toast/UserToastUtils";
+import * as u_toast from "../toast/UserToastUtils";
+import * as m_toast from "../toast/MessageToastUtils";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -103,41 +104,14 @@ export default function SignIn() {
     axios
       .get(URL)
       .then(() => {
-        // toast.success("Password changed successfully_1");
+        u_toast.success("Password changed successfully_1");
 
-        // const us1 = {
-        //   id: 1,
-        //   name: "Siva",
-        //   message: "Hai siva",
-        // };
-        // toast.notify(us1);
-
-        // toast.success("Password changed successfully_4", {});
-        // const us = {
-        //   id: 4,
-        //   name: "Sanker",
-        //   message: "Hai sanker",
-        // };
-        // toast.notify(us);
-
-        // const us2 = {
-        //   id: 2,
-        //   name: "Duke",
-        //   message: "Hai duke",
-        // };
-        // toast.notify(us2);
-
-        // setTimeout(() => {
-        //   toast.success("Password changed successfully_2");
-        //   const us3 = {
-        //     id: 3,
-        //     name: "Nukem",
-        //     message: "Hai nukem",
-        //   };
-        //   toast.notify(us3);
-        // }, 3000);
-
-        toast.success("Password changed successfully1");
+        const us1 = {
+          id: 1,
+          name: "Siva",
+          message: "Hai siva",
+        };
+        m_toast.notify(us1);
 
         setServerData({
           ...serverData,
