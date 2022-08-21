@@ -28,6 +28,7 @@
   cursor: pointer;
   overflow: hidden;
   transition: transform 0.2s ease-in-out;
+  z-index: 99999999;
 }
 
 #user-toast-container .Toastify__toast:hover {

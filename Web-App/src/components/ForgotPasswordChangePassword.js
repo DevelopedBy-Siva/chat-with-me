@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "../api/axios";
 
 import {
   AllowedInputFields,
@@ -90,9 +90,8 @@ export default function ForgotPasswordChangePassword({
       error: null,
     });
 
-    const URL = process.env.REACT_APP_API_BASEURL;
     axios
-      .get(URL)
+      .get("/posts/1")
       .then(() => {
         navigate("/sign-in", { replace: true });
       })

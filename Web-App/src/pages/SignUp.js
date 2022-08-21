@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import axios from "../api/axios";
 
 import {
   emailValidation as validateEmail,
@@ -111,9 +111,8 @@ export default function SignIn() {
       response: null,
     });
 
-    const URL = process.env.REACT_APP_API_BASEURL;
     axios
-      .get(URL)
+      .get("/posts/1")
       .then(({ data }) => {
         setServerData({
           ...serverData,

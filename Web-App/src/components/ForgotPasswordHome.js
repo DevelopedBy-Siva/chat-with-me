@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
+import axios from "../api/axios";
 
 import ButtonContainer from "./ButtonContainer";
 import InputContainer from "./InputContainer";
@@ -60,9 +60,8 @@ export default function ForgotPasswordHome({
       error: null,
     });
 
-    const URL = process.env.REACT_APP_API_BASEURL;
     axios
-      .get(URL)
+      .get("/posts/1")
       .then(() => {
         handleScreen(SCREEN.VEIRFY_CODE);
       })

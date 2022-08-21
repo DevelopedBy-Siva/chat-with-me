@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import axios from "../api/axios";
 
 import ButtonContainer from "./ButtonContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
@@ -98,9 +98,8 @@ export default function ForgotPasswordVerify({
       error: null,
     });
 
-    const URL = process.env.REACT_APP_API_BASEURL;
     axios
-      .get(URL)
+      .get("/posts/1")
       .then(() => {
         handleScreen(SCREEN.CNG_PSWD);
       })

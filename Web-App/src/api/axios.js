@@ -1,0 +1,39 @@
+import _ from "axios";
+import * as toast from "../toast/UserToastUtils";
+import retrieveError from "./ExceptionHandler";
+
+const baseURL = process.env.REACT_APP_API_BASEURL;
+const apiTimeout = process.env.REACT_APP_API_TIMEOUT;
+
+const axios = _.create({ baseURL });
+axios.defaults.timeout = apiTimeout;
+
+axios.interceptors.request.use(
+  (request) => {
+    toast.dismiss();
+    // TODO
+    // add Headers
+    return request;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    const promise = Promise.reject(error);
+    promise.catch(({ code }) => {
+      const message = retrieveError(code);
+      toast.error(message, {
+        toastId: toast.TOAST_DISMISS_ID,
+      });
+    });
+    return promise;
+  }
+);
+
+export default axios;

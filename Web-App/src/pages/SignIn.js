@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import axios from "../api/axios";
 
 import {
   emailValidation as validateEmail,
@@ -14,8 +14,6 @@ import {
 import SignInUpContainer from "../components/SignInUpContainer";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
-import * as u_toast from "../toast/UserToastUtils";
-import * as m_toast from "../toast/MessageToastUtils";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -100,19 +98,9 @@ export default function SignIn() {
       response: null,
     });
 
-    const URL = process.env.REACT_APP_API_BASEURL;
     axios
-      .get(URL)
+      .get("/posts/1")
       .then(() => {
-        u_toast.success("Password changed successfully_1");
-
-        const us1 = {
-          id: 1,
-          name: "Siva",
-          message: "Hai siva",
-        };
-        m_toast.notify(us1);
-
         setServerData({
           ...serverData,
           loading: false,
@@ -120,12 +108,12 @@ export default function SignIn() {
           response: 200,
         });
       })
-      .catch((err) => {
+      .catch((error) => {
         setServerData({
           ...serverData,
           loading: false,
           response: null,
-          error: "Error Message",
+          error,
         });
       });
   };
