@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 
-export default function ChatToastComponent({ user }) {
+export default function ChatToastComponent({ user, toastId }) {
   const navigate = useNavigate();
 
   const switchToChat = () => {
+    toast.dismiss({ toastId });
     navigate("/sign-up");
   };
 

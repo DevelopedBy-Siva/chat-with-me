@@ -44,5 +44,8 @@ export const notify = (user, userDefined_props) => {
   if (TOAST_ID) userDefined_props = { ...userDefined_props, toastId: TOAST_ID };
   user = { ...MESSAGE_TOAST_USER_DEFAULT_PROPS, ...user };
 
-  toast(<ChatToastComponent user={user} />, userDefined_props);
+  toast(
+    <ChatToastComponent user={user} toastId={TOAST_ID} />,
+    userDefined_props
+  );
 };
