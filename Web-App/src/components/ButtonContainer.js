@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function ButtonContainer({
   label,
@@ -20,7 +21,7 @@ export default function ButtonContainer({
       marginTop={marginTop}
       {...rest}
     >
-      {label}
+      {loading ? <LoadingSpinner /> : label}
     </Button>
   );
 }
