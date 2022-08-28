@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @ToString
@@ -20,6 +21,6 @@ public class GroupChat {
     private List<String> members;
     private String sender;
     private String message;
-    private String createdAt;
+    private String createdAt = OffsetDateTime.now().toString();
 
 }

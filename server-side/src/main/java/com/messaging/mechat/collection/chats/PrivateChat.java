@@ -6,6 +6,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.OffsetDateTime;
+
 @ToString
 @Getter
 @Setter
@@ -18,6 +20,6 @@ public class PrivateChat {
     private String sender;
     private String receiver;
     private String message;
-    private String createdAt;
+    private String createdAt = OffsetDateTime.now().toString();
 
 }

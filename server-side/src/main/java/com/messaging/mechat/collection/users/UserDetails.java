@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @ToString
@@ -20,7 +21,7 @@ public class UserDetails {
     private String phone;
     private String password;
     private String avatar;
-    private String joined;
+    private String joined = OffsetDateTime.now().toString();
     private List<String> blockedUsers;
     private ChatDetails chat;
 
