@@ -13,7 +13,9 @@ public class PassthroughService {
     private ChatService chatService;
 
     public UserInformationResponse getInfo() {
-        return null;
+        UserInformationResponse resp = new UserInformationResponse();
+        resp.setName("SIVA");
+        return resp;
     }
 
 }

@@ -15,7 +15,7 @@ public class ProtectedController {
     private PassthroughService service;
 
     @GetMapping("/info")
-    public UserInformationResponse getInformation(){
+    public UserInformationResponse getInformation() {
         return service.getInfo();
     }
 
