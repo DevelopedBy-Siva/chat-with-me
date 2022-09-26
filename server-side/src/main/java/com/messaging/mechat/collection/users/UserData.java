@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Document(collection = "Users")
-public class UserDetails {
+public class UserData {
 
     @Id
     private String id;
@@ -29,7 +29,7 @@ public class UserDetails {
     private List<String> chatIds;
     private UserSettings settings;
 
-    public UserDetails() {
+    public UserData() {
         this.joined = OffsetDateTime.now().toString();
     }
 
