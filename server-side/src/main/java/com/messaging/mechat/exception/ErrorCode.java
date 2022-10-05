@@ -2,6 +2,7 @@ package com.messaging.mechat.exception;
 
 public enum ErrorCode {
     UNKNOWN_ERROR("Unknown Exception occurred"),
+    METHOD_NOT_SUPPORTED("Method not supported"),
     ACCESS_FORBIDDEN("You don't have the permission to access"),
     ERR_PAGE_NOT_FOUND("Page that you are looking for is not found"),
     ERR_USR_UNAUTHORIZED("User is unauthorized"),
@@ -11,7 +12,7 @@ public enum ErrorCode {
 
     public final String message;
 
-    private ErrorCode(String message) {
+    ErrorCode(String message) {
         this.message = message;
     }
 }
