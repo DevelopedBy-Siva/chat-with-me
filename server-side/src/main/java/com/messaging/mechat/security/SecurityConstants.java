@@ -7,7 +7,8 @@ public class SecurityConstants {
     protected static final long defaultTokenExpiryPeriod = 10;
     protected static final ChronoUnit defaultTokenExpiryPeriodUnit = ChronoUnit.MINUTES;
 
-    protected static final String authHeader_key= "Authorization";
+    protected static final String authEmail_key= "email";
+    protected static final String authPassword_key= "password";
     protected static final String accessToken_key= "access_token";
     protected static final String refreshToken_key= "refresh_token";
 
