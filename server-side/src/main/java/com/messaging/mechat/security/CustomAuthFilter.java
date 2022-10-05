@@ -2,9 +2,8 @@ package com.messaging.mechat.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,43 +14,53 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-@Slf4j
-@RequiredArgsConstructor
+import static com.messaging.mechat.security.SecurityConstants.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final long defaultTokenExpiryPeriod = 10;
-    private final ChronoUnit defaultTokenExpiryPeriodUnit = ChronoUnit.MINUTES;
-    @Value("${auth.jwt.secret.key}")
-    private String jwtSecret;
-    @Value("${auth.jwt.expiry.exp}")
-    private String jwtExpiresAt;
-    @Value("${auth.refresh.token.expiry.exp}")
-    private String refreshTokenExpiresAt;
+    private final ObjectMapper objectMapper;
+    private final String jwtSecret;
+    private final String accessTokenExpiresAt;
+    private final String refreshTokenExpiresAt;
+
+    public CustomAuthFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, Environment environment) {
+        this.authenticationManager = authenticationManager;
+        this.objectMapper = objectMapper;
+        this.jwtSecret = environment.getProperty(jwtSecret_key);
+        this.accessTokenExpiresAt = environment.getProperty(accessTokenExpiresAt_key);
+        this.refreshTokenExpiresAt = environment.getProperty(refreshTokenExpiresAt_key);
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        log.info("Email: {}, Password: {}", email, password);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret.getBytes());
-        String accessToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(getTokenExpireTime(jwtExpiresAt)).withIssuer(request.getRequestURI()).sign(algorithm);
-        String refreshToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(getTokenExpireTime(refreshTokenExpiresAt)).withIssuer(request.getRequestURI()).sign(algorithm);
-        response.setHeader("access_token", accessToken);
-        response.setHeader("refresh_token", refreshToken);
+        String accessToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(getTokenExpireTime(accessTokenExpiresAt)).withIssuer(request.getRequestURL().toString()).sign(algorithm);
+        String refreshToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(getTokenExpireTime(refreshTokenExpiresAt)).withIssuer(request.getRequestURL().toString()).sign(algorithm);
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put(accessToken_key, accessToken);
+        tokens.put(refreshToken_key, refreshToken);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        objectMapper.writeValue(response.getOutputStream(), tokens);
     }
 
     private Date getTokenExpireTime(String expiresAt) {

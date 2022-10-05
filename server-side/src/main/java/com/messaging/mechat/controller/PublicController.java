@@ -17,12 +17,6 @@ public class PublicController {
         return "SIGNED UP";
     }
 
-    @PostMapping("/login")
-    public String login() {
-        // TODO
-        return "LOGGED IN";
-    }
-
     @PostMapping("/forgot-pswd")
     public String forgotPswd() {
         // TODO
