@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>2.6.12</version>
+        <relativePath/>
     </parent>
     <groupId>com.messaging</groupId>
     <artifactId>mechat</artifactId>
@@ -15,6 +15,8 @@
     <description>A Web and Mobile Messaging Application</description>
     <properties>
         <java.version>11</java.version>
+        <lombok.version>1.18.20</lombok.version>
+        <jwt.version>4.0.0</jwt.version>
     </properties>
 
     <dependencies>
@@ -53,8 +55,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
     </dependencies>
 
