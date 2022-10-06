@@ -23,7 +23,7 @@ public class AuthConstants {
     protected static String accessTokenExpiresAt_key = "auth.access.token.expiry.exp";
     protected static String refreshTokenExpiresAt_key = "auth.refresh.token.expiry.exp";
 
-    public enum Access {
+    public enum AccessErrorCode {
         JWT_TOKEN_EXPIRED("Access denied. JWT token expired"),
         JWT_TOKEN_INVALID("Access denied. Invalid JWT token"),
         ACCESS_FORBIDDEN("You don't have the permission to access"),
@@ -33,7 +33,7 @@ public class AuthConstants {
 
         public final String message;
 
-        Access(String message) {
+        AccessErrorCode(String message) {
             this.message = message;
         }
     }

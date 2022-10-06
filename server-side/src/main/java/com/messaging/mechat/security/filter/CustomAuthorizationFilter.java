@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-import static com.messaging.mechat.security.filter.AuthConstants.Access.*;
+import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.*;
 import static com.messaging.mechat.security.filter.AuthConstants.*;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -50,7 +50,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 } catch (Exception ex) {
 
-                    AuthConstants.Access errorCode = ACCESS_FORBIDDEN;
+                    AuthConstants.AccessErrorCode errorCode = ACCESS_FORBIDDEN;
                     if (ex instanceof TokenExpiredException)
                         errorCode = JWT_TOKEN_EXPIRED;
                     else if (ex instanceof SignatureVerificationException)

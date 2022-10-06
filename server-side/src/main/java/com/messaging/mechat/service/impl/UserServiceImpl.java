@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import static com.messaging.mechat.security.filter.AuthConstants.Access.*;
+import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.*;
 
 @Service
 @Slf4j

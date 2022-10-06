@@ -15,7 +15,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
-import static com.messaging.mechat.security.filter.AuthConstants.Access.*;
+import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.*;
 
 @Controller
 @RequiredArgsConstructor
