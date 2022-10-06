@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.messaging.mechat.security.filter.AuthConstants.authenticatedApi_mapping;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(authenticatedApi_mapping)
 @RequiredArgsConstructor
 public class ProtectedController {
 

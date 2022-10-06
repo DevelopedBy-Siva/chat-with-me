@@ -1,4 +1,4 @@
-package com.messaging.mechat.security;
+package com.messaging.mechat.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -23,10 +23,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.messaging.mechat.security.SecurityConstants.*;
+import static com.messaging.mechat.security.filter.AuthConstants.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
@@ -34,7 +34,7 @@ public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
     private final String accessTokenExpiresAt;
     private final String refreshTokenExpiresAt;
 
-    public CustomAuthFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, Environment environment) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper, Environment environment) {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.jwtSecret = environment.getProperty(jwtSecret_key);

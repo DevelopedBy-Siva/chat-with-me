@@ -1,6 +1,8 @@
 package com.messaging.mechat.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.messaging.mechat.security.filter.CustomAuthenticationFilter;
+import com.messaging.mechat.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.messaging.mechat.security.filter.AuthConstants.authenticatedApi_exp;
 
 @Configuration
 @EnableWebSecurity
@@ -36,8 +41,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/auth/*").authenticated();
-        http.addFilter(authFilter());
+        http.authorizeRequests().antMatchers(authenticatedApi_exp).authenticated();
+        http.addFilter(authenticationFilter());
+        http.addFilterBefore(authorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -46,7 +52,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    public CustomAuthFilter authFilter() throws Exception {
-        return new CustomAuthFilter(authenticationManagerBean(), objectMapper, environment);
+    private CustomAuthenticationFilter authenticationFilter() throws Exception {
+        return new CustomAuthenticationFilter(authenticationManagerBean(), objectMapper, environment);
+    }
+
+    private CustomAuthorizationFilter authorizationFilter() throws Exception {
+        return new CustomAuthorizationFilter(environment, objectMapper);
     }
 }

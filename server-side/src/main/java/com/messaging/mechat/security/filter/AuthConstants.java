@@ -1,12 +1,19 @@
-package com.messaging.mechat.security;
+package com.messaging.mechat.security.filter;
 
 import java.time.temporal.ChronoUnit;
 
-public class SecurityConstants {
+public class AuthConstants {
+
+    public static final String authenticatedApi_mapping = "/auth";
+    public static final String authenticatedApi_exp = "/auth/*";
 
     protected static final long defaultTokenExpiryPeriod = 10;
     protected static final ChronoUnit defaultTokenExpiryPeriodUnit = ChronoUnit.MINUTES;
 
+    protected static final String errorMsg = "error_message";
+
+    protected static final String authHeader_key = "Authorization";
+    protected static final String authHeader_tokenPrefix = "Bearer ";
     protected static final String authEmail_key= "email";
     protected static final String authPassword_key= "password";
     protected static final String accessToken_key= "access_token";
