@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+import static com.messaging.mechat.security.filter.AuthConstants.Access.*;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserData user = userRepository.findByEmail(email);
         if (Objects.isNull(user)) {
             log.error("No user found with mail id: {}", email);
-            throw new UsernameNotFoundException(ErrorCode.ERR_USR_NOT_FOUND.toString());
+            throw new UsernameNotFoundException(ERR_USR_NOT_FOUND.toString());
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         UserDetails userDetails = new User(user.getEmail(), user.getPassword(), authorities);

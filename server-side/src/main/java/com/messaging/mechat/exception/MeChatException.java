@@ -13,7 +13,7 @@ public class MeChatException extends RuntimeException {
     private HttpStatus status;
     private ErrorDetails error;
 
-    public MeChatException(ErrorCode errorCode, String errorDescription, HttpStatus status) {
+    public MeChatException(String errorCode, String errorDescription, HttpStatus status) {
         super();
         this.status = status;
         error = new ErrorDetails(errorCode, errorDescription);
