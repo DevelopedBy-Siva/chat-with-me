@@ -1,5 +1,6 @@
 package com.messaging.mechat.controller;
 
+import com.messaging.mechat.model.JwtTokens;
 import com.messaging.mechat.model.UserInformationResponse;
 import com.messaging.mechat.service.PassThroughService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,11 @@ public class ProtectedController {
     @GetMapping("/info")
     public UserInformationResponse getInformation() {
         return service.getInfo();
+    }
+
+    @GetMapping("/refresh-token")
+    public JwtTokens getTokens() {
+        return null;
     }
 
 }
