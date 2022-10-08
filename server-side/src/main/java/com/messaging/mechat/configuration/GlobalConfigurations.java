@@ -12,4 +12,5 @@ public class GlobalConfigurations {
     public ObjectWriter objectMapper() {
         return new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
+
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.METHOD_NOT_SUPPORTED;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -27,14 +29,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDetails methodNotSupportedExceptions(Exception ex) {
         logger.error("Method not supported error occurred: {}", ex.getMessage());
-        return new ErrorDetails(ErrorCode.METHOD_NOT_SUPPORTED.toString(), ex.getMessage());
+        return new ErrorDetails(METHOD_NOT_SUPPORTED.toString(), ex.getMessage());
     }
 
     @ExceptionHandler(MeChatException.class)
     public ResponseEntity<ErrorDetails> meChatExceptions(MeChatException ex) {
-        logger.error("MeChatException occurred: {}", ex.getMessage());
+        logger.error("MeChatException occurred: {}", ex.getError());
         if (logger.isDebugEnabled())
-            logger.debug("MeChatException occurred: {}, stackTrace: {}", ex.getMessage(), ex.getStackTrace());
+            logger.debug("MeChatException occurred: {}, stackTrace: {}", ex.getError(), ex.getStackTrace());
         return new ResponseEntity<>(ex.getError(), ex.getStatus());
     }
 

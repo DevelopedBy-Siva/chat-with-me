@@ -2,7 +2,6 @@ package com.messaging.mechat.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.messaging.mechat.exception.ErrorCode;
 import com.messaging.mechat.exception.ErrorDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -31,7 +30,7 @@ public class CustomErrorController implements ErrorController {
         if (Objects.nonNull(status)) {
             Integer statusCode = Integer.valueOf(status.toString());
             if (statusCode == HttpStatus.NOT_FOUND.value())
-                error = new ErrorDetails(ErrorCode.ERR_PAGE_NOT_FOUND.toString(), ErrorCode.ERR_PAGE_NOT_FOUND.message);
+                error = new ErrorDetails(ERR_PAGE_NOT_FOUND.toString(), ERR_PAGE_NOT_FOUND.message);
             else if (statusCode == HttpStatus.UNAUTHORIZED.value())
                 error = new ErrorDetails(ERR_USR_UNAUTHORIZED.toString(), ERR_USR_UNAUTHORIZED.message);
         }

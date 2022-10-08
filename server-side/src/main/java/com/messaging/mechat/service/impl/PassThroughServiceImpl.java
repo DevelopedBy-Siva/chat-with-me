@@ -7,6 +7,8 @@ import com.messaging.mechat.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class PassThroughServiceImpl implements PassThroughService {
@@ -18,6 +20,11 @@ public class PassThroughServiceImpl implements PassThroughService {
         UserInformationResponse resp = new UserInformationResponse();
         resp.setName("SIVA");
         return resp;
+    }
+
+    @Override
+    public void registerUser(Map<String, String> user) {
+        userService.registerUser(user);
     }
 
 }
