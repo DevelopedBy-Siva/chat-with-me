@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final UserRequestValidations validator;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -62,6 +64,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 throw new MeChatException(ERR_USR_ALREADY_EXISTS.toString(), ERR_USR_ALREADY_EXISTS.message, HttpStatus.BAD_REQUEST);
             }
             UserData registerUser = objectMapper.convertValue(user, UserData.class);
+            // Encode Password before storing to DB
+            registerUser.setPassword(passwordEncoder.encode(registerUser.getPassword()));
             userRepository.save(registerUser);
             log.info("User with email: {} is registered successfully.", user.getEmail());
         } catch (Exception ex) {

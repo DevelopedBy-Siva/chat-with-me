@@ -25,7 +25,7 @@ public class UserRequestValidations {
             StringJoiner error = new StringJoiner(", ");
             for (ConstraintViolation<UserRegistration> constraintViolation : violations)
                 error.add(constraintViolation.getPropertyPath() + ": " + constraintViolation.getMessage());
-            throw new ConstraintViolationException(error.toString(), violations);
+            throw new ConstraintViolationException("Invalid field(s):- " + error, violations);
         }
     }
 
