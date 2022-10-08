@@ -19,10 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.messaging.mechat.exception.ErrorCode.ERR_INVALID_REQUEST;
 import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.*;
@@ -40,11 +37,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        UserData user = userRepository.findByEmail(email);
-        if (Objects.isNull(user)) {
+        UserData user = userRepository.findByEmail(email).orElseThrow(() -> {
             log.error("No user found with mail id: {}", email);
             throw new UsernameNotFoundException(ERR_USR_NOT_FOUND.toString());
-        }
+        });
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         UserDetails userDetails = new User(user.getEmail(), user.getPassword(), authorities);
         return userDetails;
@@ -56,13 +52,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             if (Objects.isNull(user))
                 throw new ValidationException("Failed to obtain registration details. User is null.");
-
             validator.validateRegisterRequest(user);
-            UserData userData = userRepository.findByEmail(user.getEmail());
-            if (Objects.nonNull(userData)) {
+
+            boolean isUserPresent = userRepository.findByEmail(user.getEmail()).isPresent();
+            if (isUserPresent) {
                 log.error("Email: {} already registered", user.getEmail());
                 throw new MeChatException(ERR_USR_ALREADY_EXISTS.toString(), ERR_USR_ALREADY_EXISTS.message, HttpStatus.BAD_REQUEST);
             }
+
             UserData registerUser = objectMapper.convertValue(user, UserData.class);
             // Encode Password before storing to DB
             registerUser.setPassword(passwordEncoder.encode(registerUser.getPassword()));
