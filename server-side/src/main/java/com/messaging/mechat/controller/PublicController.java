@@ -4,11 +4,15 @@ import com.messaging.mechat.service.PassThroughService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import static com.messaging.mechat.constants.AuthConstants.publicApi_mapping;
+
 @RestController
+@RequestMapping(publicApi_mapping)
 @RequiredArgsConstructor
 public class PublicController {
 

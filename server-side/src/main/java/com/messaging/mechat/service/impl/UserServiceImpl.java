@@ -35,6 +35,7 @@ import java.util.Objects;
 import static com.messaging.mechat.constants.AuthConstants.*;
 import static com.messaging.mechat.exception.ErrorCode.*;
 import static com.messaging.mechat.utils.JwtTokenUtils.getTokenExpireTime;
+import static com.messaging.mechat.utils.JwtTokenUtils.userRoles;
 
 @Service
 @Slf4j
@@ -103,7 +104,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             DecodedJWT decodedJWT = verifier.verify(refreshToken);
             String username = decodedJWT.getSubject();
             UserData user = userRepository.findByEmail(username).get();
-            String accessToken = JWT.create().withSubject(user.getEmail()).withExpiresAt(getTokenExpireTime(environment.getProperty(accessTokenExpiresAt_key))).withIssuer(request.getRequestURL().toString()).sign(algorithm);
+            String accessToken = JWT.create().withSubject(user.getEmail())
+                    .withExpiresAt(getTokenExpireTime(environment.getProperty(accessTokenExpiresAt_key)))
+                    .withIssuer(request.getRequestURL().toString())
+                    .withClaim(jwtRolesPlaceholder_key, userRoles())
+                    .sign(algorithm);
             log.info("New Access Token is generated");
             return new JwtTokens(accessToken, refreshToken);
         } catch (Exception ex) {

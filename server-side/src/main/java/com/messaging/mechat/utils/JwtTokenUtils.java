@@ -13,7 +13,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static com.messaging.mechat.constants.AuthConstants.*;
 import static com.messaging.mechat.exception.ErrorCode.*;
@@ -22,6 +24,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class JwtTokenUtils {
+
+    private static final String[] USER_ROLES = {"USER"};
 
     public static Date getTokenExpireTime(String expiresAt) {
         long period;
@@ -55,5 +59,9 @@ public class JwtTokenUtils {
         if (path.startsWith(authenticatedApi_mapping) && !path.contains(refreshTokenApi_mapping))
             return true;
         return false;
+    }
+
+    public static List<String> userRoles() {
+        return Arrays.asList(USER_ROLES);
     }
 }

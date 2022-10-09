@@ -19,7 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.messaging.mechat.constants.AuthConstants.*;
-import static org.springframework.http.HttpMethod.GET;
+import static com.messaging.mechat.utils.JwtTokenUtils.userRoles;
 
 @Configuration
 @EnableWebSecurity
@@ -43,8 +43,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers(GET, loginApi_exp, refreshTokenApi_exp).permitAll();
-        http.authorizeRequests().antMatchers(authenticatedApi_exp).authenticated();
+        http.authorizeRequests().antMatchers(publicApi_exp, refreshTokenApi_exp).permitAll();
+        http.authorizeRequests().antMatchers(authenticatedApi_exp).hasAnyAuthority(userRoles().get(0));
+        http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(authenticationFilter());
         http.addFilterBefore(authorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
@@ -57,7 +58,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private CustomAuthenticationFilter authenticationFilter() throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), objectMapper, environment);
-        customAuthenticationFilter.setFilterProcessesUrl(loginApi_mapping);
         return customAuthenticationFilter;
     }
 

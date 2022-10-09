@@ -23,6 +23,7 @@ import static com.messaging.mechat.constants.AuthConstants.*;
 import static com.messaging.mechat.exception.ErrorCode.ERR_USR_NOT_FOUND;
 import static com.messaging.mechat.exception.ErrorCode.ERR_USR_UNAUTHORIZED;
 import static com.messaging.mechat.utils.JwtTokenUtils.getTokenExpireTime;
+import static com.messaging.mechat.utils.JwtTokenUtils.userRoles;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -55,8 +56,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret.getBytes());
-        String accessToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(getTokenExpireTime(accessTokenExpiresAt)).withIssuer(request.getRequestURL().toString()).sign(algorithm);
-        String refreshToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(getTokenExpireTime(refreshTokenExpiresAt)).withIssuer(request.getRequestURL().toString()).sign(algorithm);
+        String accessToken = JWT.create().withSubject(user.getUsername())
+                .withExpiresAt(getTokenExpireTime(accessTokenExpiresAt))
+                .withIssuer(request.getRequestURL().toString())
+                .withClaim(jwtRolesPlaceholder_key, userRoles())
+                .sign(algorithm);
+        String refreshToken = JWT.create().withSubject(user.getUsername())
+                .withExpiresAt(getTokenExpireTime(refreshTokenExpiresAt))
+                .withIssuer(request.getRequestURL().toString())
+                .sign(algorithm);
         JwtTokens tokens = new JwtTokens(accessToken, refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getOutputStream(), tokens);

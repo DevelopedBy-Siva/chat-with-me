@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,11 +18,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 import static com.messaging.mechat.constants.AuthConstants.*;
 import static com.messaging.mechat.utils.JwtTokenUtils.authenticatePath;
 import static com.messaging.mechat.utils.JwtTokenUtils.handleJwtTokenErrors;
+import static java.util.Arrays.stream;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,7 +45,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String username = decodedJWT.getSubject();
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, null);
+                    String[] roles = decodedJWT.getClaim(jwtRolesPlaceholder_key).asArray(String.class);
+                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                    stream(roles).forEach(role -> {
+                        authorities.add(new SimpleGrantedAuthority(role));
+                    });
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception ex) {
