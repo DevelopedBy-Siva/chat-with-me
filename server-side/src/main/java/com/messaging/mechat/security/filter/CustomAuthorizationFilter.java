@@ -3,11 +3,8 @@ package com.messaging.mechat.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.messaging.mechat.exception.ErrorDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
@@ -22,10 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.*;
-import static com.messaging.mechat.security.filter.AuthConstants.*;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static com.messaging.mechat.constants.AuthConstants.*;
+import static com.messaging.mechat.utils.JwtTokenUtils.handleJwtTokenErrors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -49,17 +44,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception ex) {
-
-                    AuthConstants.AccessErrorCode errorCode = ACCESS_FORBIDDEN;
-                    if (ex instanceof TokenExpiredException)
-                        errorCode = JWT_TOKEN_EXPIRED;
-                    else if (ex instanceof SignatureVerificationException)
-                        errorCode = JWT_TOKEN_INVALID;
-
-                    log.error("Failed to authenticate: {}", ex.getMessage());
-                    response.setStatus(FORBIDDEN.value());
-                    response.setContentType(APPLICATION_JSON_VALUE);
-                    objectMapper.writeValue(response.getOutputStream(), new ErrorDetails(errorCode.toString(), errorCode.message));
+                    handleJwtTokenErrors(ex, response, objectMapper);
                 }
                 return;
             }

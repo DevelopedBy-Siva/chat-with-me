@@ -46,7 +46,7 @@ public class UserRegistration {
                 throw new NullPointerException("UserRegistration object is null");
         } catch (Exception ex) {
             log.error("Error invalid request: {}", ex.getMessage());
-            throw new MeChatException(ERR_INVALID_REQUEST.toString(), ERR_INVALID_REQUEST.message, HttpStatus.BAD_REQUEST);
+            throw new MeChatException(ERR_INVALID_REQUEST, ERR_INVALID_REQUEST.message, HttpStatus.BAD_REQUEST);
         }
         this.name = userRegistration.getName();
         this.email = userRegistration.getEmail();

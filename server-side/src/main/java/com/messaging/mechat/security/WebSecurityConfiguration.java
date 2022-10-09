@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.messaging.mechat.security.filter.AuthConstants.authenticatedApi_exp;
+import static com.messaging.mechat.constants.AuthConstants.authenticatedApi_exp;
 
 @Configuration
 @EnableWebSecurity

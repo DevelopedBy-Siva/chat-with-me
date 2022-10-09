@@ -14,7 +14,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
-import static com.messaging.mechat.security.filter.AuthConstants.AccessErrorCode.*;
+import static com.messaging.mechat.exception.ErrorCode.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,12 +30,12 @@ public class CustomErrorController implements ErrorController {
         if (Objects.nonNull(status)) {
             Integer statusCode = Integer.valueOf(status.toString());
             if (statusCode == HttpStatus.NOT_FOUND.value())
-                error = new ErrorDetails(ERR_PAGE_NOT_FOUND.toString(), ERR_PAGE_NOT_FOUND.message);
+                error = new ErrorDetails(ERR_PAGE_NOT_FOUND, ERR_PAGE_NOT_FOUND.message);
             else if (statusCode == HttpStatus.UNAUTHORIZED.value())
-                error = new ErrorDetails(ERR_USR_UNAUTHORIZED.toString(), ERR_USR_UNAUTHORIZED.message);
+                error = new ErrorDetails(ERR_USR_UNAUTHORIZED, ERR_USR_UNAUTHORIZED.message);
         }
         if (Objects.isNull(error))
-            error = new ErrorDetails(ACCESS_FORBIDDEN.toString(), ACCESS_FORBIDDEN.message);
+            error = new ErrorDetails(ACCESS_FORBIDDEN, ACCESS_FORBIDDEN.message);
         return objectMapper.writeValueAsString(error);
     }
 

@@ -3,6 +3,7 @@ package com.messaging.mechat.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.messaging.mechat.exception.ErrorCode;
 import com.messaging.mechat.exception.ErrorDetails;
 import com.messaging.mechat.model.JwtTokens;
 import org.springframework.core.env.Environment;
@@ -17,13 +18,11 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
-import static com.messaging.mechat.security.filter.AuthConstants.*;
+import static com.messaging.mechat.constants.AuthConstants.*;
+import static com.messaging.mechat.exception.ErrorCode.ERR_USR_NOT_FOUND;
+import static com.messaging.mechat.exception.ErrorCode.ERR_USR_UNAUTHORIZED;
+import static com.messaging.mechat.utils.JwtTokenUtils.getTokenExpireTime;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -63,35 +62,20 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         objectMapper.writeValue(response.getOutputStream(), tokens);
     }
 
-    private Date getTokenExpireTime(String expiresAt) {
-        long period;
-        ChronoUnit unit;
-        try {
-            String[] expiryAttributes = expiresAt.split(":");
-            period = Integer.parseInt(expiryAttributes[0]);
-            unit = ChronoUnit.valueOf(expiryAttributes[1].trim().toUpperCase());
-        } catch (Exception ex) {
-            period = defaultTokenExpiryPeriod;
-            unit = defaultTokenExpiryPeriodUnit;
-        }
-        LocalDateTime dateTime = LocalDateTime.now().plus(Duration.of(period, unit));
-        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
-
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setStatus(FORBIDDEN.value());
         response.setContentType(APPLICATION_JSON_VALUE);
-        AccessErrorCode errorCode = AccessErrorCode.ERR_USR_UNAUTHORIZED;
+        ErrorCode errorCode = ERR_USR_UNAUTHORIZED;
         try {
-            if (AccessErrorCode.valueOf(failed.getMessage()) == AccessErrorCode.ERR_USR_NOT_FOUND) {
-                errorCode = AccessErrorCode.ERR_USR_NOT_FOUND;
+            if (ErrorCode.valueOf(failed.getMessage()) == ERR_USR_NOT_FOUND) {
+                errorCode = ERR_USR_NOT_FOUND;
                 response.setStatus(UNAUTHORIZED.value());
             }
         } catch (Exception ex) {
             logger.debug(ex.getMessage());
         }
-        ErrorDetails error = new ErrorDetails(errorCode.toString(), errorCode.message);
+        ErrorDetails error = new ErrorDetails(errorCode, errorCode.message);
         objectMapper.writeValue(response.getOutputStream(), error);
     }
 

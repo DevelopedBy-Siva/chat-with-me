@@ -9,10 +9,10 @@ import lombok.ToString;
 @Setter
 public class ErrorDetails {
 
-    private String errorCode;
+    private ErrorCode errorCode;
     private String errorDescription;
 
-    public ErrorDetails(String errorCode, String errorDescription) {
+    public ErrorDetails(ErrorCode errorCode, String errorDescription) {
         super();
         this.errorCode = errorCode;
         this.errorDescription = errorDescription;

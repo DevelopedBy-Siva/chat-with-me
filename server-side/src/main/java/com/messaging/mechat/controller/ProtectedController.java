@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.messaging.mechat.security.filter.AuthConstants.authenticatedApi_mapping;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+import static com.messaging.mechat.constants.AuthConstants.authenticatedApi_mapping;
 
 @RestController
 @RequestMapping(authenticatedApi_mapping)
@@ -22,9 +25,9 @@ public class ProtectedController {
         return service.getInfo();
     }
 
-    @GetMapping("/refresh-token")
-    public JwtTokens getTokens() {
-        return null;
+    @GetMapping("/token/refresh")
+    public JwtTokens getTokens(HttpServletRequest request) throws IOException {
+        return service.getTokens(request);
     }
 
 }
