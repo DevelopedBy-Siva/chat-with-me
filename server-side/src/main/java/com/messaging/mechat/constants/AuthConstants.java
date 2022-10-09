@@ -5,7 +5,11 @@ import java.time.temporal.ChronoUnit;
 public class AuthConstants {
 
     public static final String authenticatedApi_mapping = "/auth";
-    public static final String authenticatedApi_exp = "/auth/*";
+    public static final String authenticatedApi_exp = "/auth/**";
+    public static final String refreshTokenApi_mapping = "/token/refresh";
+    public static final String refreshTokenApi_exp = "/auth/token/refresh/**";
+    public static final String loginApi_mapping = "/login";
+    public static final String loginApi_exp = "/login/**";
 
     public static final long defaultTokenExpiryPeriod = 10;
     public static final ChronoUnit defaultTokenExpiryPeriodUnit = ChronoUnit.MINUTES;

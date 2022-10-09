@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static com.messaging.mechat.constants.AuthConstants.*;
+import static com.messaging.mechat.utils.JwtTokenUtils.authenticatePath;
 import static com.messaging.mechat.utils.JwtTokenUtils.handleJwtTokenErrors;
 
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().startsWith(authenticatedApi_mapping)) {
+        if (authenticatePath(request.getServletPath())) {
             String authorizationHeader = request.getHeader(authHeader_key);
             if (Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith(authHeader_tokenPrefix)) {
                 try {

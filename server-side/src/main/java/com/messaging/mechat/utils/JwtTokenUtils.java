@@ -15,8 +15,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import static com.messaging.mechat.constants.AuthConstants.defaultTokenExpiryPeriod;
-import static com.messaging.mechat.constants.AuthConstants.defaultTokenExpiryPeriodUnit;
+import static com.messaging.mechat.constants.AuthConstants.*;
 import static com.messaging.mechat.exception.ErrorCode.*;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -50,5 +49,11 @@ public class JwtTokenUtils {
         response.setStatus(FORBIDDEN.value());
         response.setContentType(APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getOutputStream(), new ErrorDetails(errorCode, errorCode.message));
+    }
+
+    public static boolean authenticatePath(String path) {
+        if (path.startsWith(authenticatedApi_mapping) && !path.contains(refreshTokenApi_mapping))
+            return true;
+        return false;
     }
 }

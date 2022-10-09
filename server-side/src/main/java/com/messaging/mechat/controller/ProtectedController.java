@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static com.messaging.mechat.constants.AuthConstants.authenticatedApi_mapping;
+import static com.messaging.mechat.constants.AuthConstants.refreshTokenApi_mapping;
 
 @RestController
 @RequestMapping(authenticatedApi_mapping)
@@ -25,7 +26,7 @@ public class ProtectedController {
         return service.getInfo();
     }
 
-    @GetMapping("/token/refresh")
+    @GetMapping(refreshTokenApi_mapping)
     public JwtTokens getTokens(HttpServletRequest request) throws IOException {
         return service.getTokens(request);
     }
