@@ -1,1 +1,6 @@
-{}
+{
+    "logging" : {
+        "level" : "info",
+        "trace" : true
+    }
+}

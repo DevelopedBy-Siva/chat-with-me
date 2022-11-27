@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const config = require("config");
+const logger = require("./logging/logger");
 const app = express();
 require("./routes/route")(app);
 
@@ -14,5 +15,5 @@ const server = http.createServer(app);
  */
 const port = config.get("app_port");
 server.listen(port, () => {
-  console.log(`Application started at Port ${port}`);
+  logger.info(`Application started at Port ${port}`);
 });
