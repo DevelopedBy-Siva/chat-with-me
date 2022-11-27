@@ -4,7 +4,7 @@
   "description": "A Chat Application",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon index.js",
+    "dev": "nodemon index.js",
     "start": "node index.js"
   },
   "author": "Sivasanker Nandakumar",
