@@ -1,5 +1,6 @@
 const chat = require("./sub/chat");
 const user = require("./sub/user");
+const exceptionHandler = require("../exceptions/expressExceptions");
 
 module.exports = function (app) {
   /**
@@ -18,4 +19,9 @@ module.exports = function (app) {
   app.get("*", (req, resp) => {
     resp.send("Invalid Path");
   });
+
+  /**
+   * Middleware that handles Route exceptions
+   */
+  app.use(exceptionHandler);
 };
