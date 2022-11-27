@@ -1,8 +1,15 @@
+const express = require("express");
 const chat = require("./sub/chat");
 const user = require("./sub/user");
+const AppError = require("../models/AppError");
 const exceptionHandler = require("../exceptions/expressExceptions");
 
 module.exports = function (app) {
+  /**
+   * RequestBody Parser
+   */
+  app.use(express.json());
+
   /**
    * Handles User API calls
    */
@@ -17,7 +24,11 @@ module.exports = function (app) {
    * Handles invalid path mapping
    */
   app.get("*", (req, resp) => {
-    resp.send("Invalid Path");
+    resp
+      .status(404)
+      .send(
+        new AppError("INVALID_PATH", `Invalid request path: '${req.path}'`)
+      );
   });
 
   /**
