@@ -1,8 +1,9 @@
 const express = require("express");
 const compression = require("compression");
 const helmet = require("helmet");
-const chat = require("./sub/chat");
-const user = require("./sub/user");
+const chat = require("./private/chat");
+const user = require("./private/user");
+const public = require("./public/public");
 const AppError = require("../models/AppError");
 const exceptionHandler = require("../exceptions/expressExceptions");
 
@@ -31,6 +32,11 @@ module.exports = function (app) {
    * Middleware to handle Chat API calls
    */
   app.use("/api/chat", chat);
+
+  /**
+   * Middleware to handle all public API calls
+   */
+  app.use("/api", public);
 
   /**
    * Invalid path route mapping
