@@ -1,4 +1,6 @@
 const express = require("express");
+const compression = require("compression");
+const helmet = require("helmet");
 const chat = require("./sub/chat");
 const user = require("./sub/user");
 const AppError = require("../models/AppError");
@@ -6,22 +8,32 @@ const exceptionHandler = require("../exceptions/expressExceptions");
 
 module.exports = function (app) {
   /**
-   * RequestBody Parser
+   *  Middleware to decreases API request response size
+   */
+  app.use(compression());
+
+  /**
+   *  Middleware to secure HTTP headers
+   */
+  app.use(helmet());
+
+  /**
+   * Middleware to parse the RequestBody
    */
   app.use(express.json());
 
   /**
-   * Handles User API calls
+   * Middleware to handle User API calls
    */
   app.use("/api/user", user);
 
   /**
-   * Handles Chat API calls
+   * Middleware to handle Chat API calls
    */
   app.use("/api/chat", chat);
 
   /**
-   * Handles invalid path mapping
+   * Invalid path route mapping
    */
   app.get("*", (req, resp) => {
     resp
