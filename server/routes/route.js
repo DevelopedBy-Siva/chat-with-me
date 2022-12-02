@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const chat = require("./private/chat");
 const user = require("./private/user");
 const public = require("./public");
-const AppError = require("../models/AppError");
+const { AppError } = require("../exceptions");
 const exceptionHandler = require("../exceptions/expressExceptions");
 
 module.exports = function (app) {

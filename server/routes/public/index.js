@@ -1,5 +1,5 @@
 const express = require("express");
-const { ErrorCodes, AppError } = require("../../models/AppError");
+const { ErrorCodes, AppError } = require("../../exceptions");
 const auth = require("../../auth");
 
 const route = express.Router();
