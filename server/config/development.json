@@ -2,5 +2,6 @@
     "logging" : {
         "level" : "info",
         "trace" : true
-    }
+    },
+    "app_secret_key":"default"
 }

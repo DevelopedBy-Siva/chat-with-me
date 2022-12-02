@@ -3,7 +3,7 @@ const compression = require("compression");
 const helmet = require("helmet");
 const chat = require("./private/chat");
 const user = require("./private/user");
-const public = require("./public/public");
+const public = require("./public");
 const AppError = require("../models/AppError");
 const exceptionHandler = require("../exceptions/expressExceptions");
 

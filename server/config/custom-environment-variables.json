@@ -1,3 +1,4 @@
 {
-    "app_port" : "PORT"
+    "app_port" : "PORT",
+    "app_secret_key":"SECRET_KEY"
 }

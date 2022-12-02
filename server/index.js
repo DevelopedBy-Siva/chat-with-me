@@ -1,7 +1,7 @@
 const express = require("express");
 const http = require("http");
 const config = require("config");
-const logger = require("./logger/logger");
+const logger = require("./logger");
 const app = express();
 require("./exceptions/globalExceptions");
 require("express-async-errors");

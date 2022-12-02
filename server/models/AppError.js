@@ -9,4 +9,11 @@ class AppError {
   }
 }
 
-module.exports = AppError;
+const ErrorCodes = {
+  ERR_INVALID_REQUEST: "ERR_INVALID_REQUEST",
+  ERR_UNAUTHORIZED: "ERR_UNAUTHORIZED",
+  ERR_FORBIDDEN: "ERR_FORBIDDEN",
+};
+
+module.exports.AppError = AppError;
+module.exports.ErrorCodes = ErrorCodes;
