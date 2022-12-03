@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const user_schema = {
+const USER_SCHEMA = {
   name: Joi.string().min(3).max(16).required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
@@ -8,7 +8,7 @@ const user_schema = {
 };
 
 function validateUserRegistration(user) {
-  const joiObj = Joi.object(user_schema);
+  const joiObj = Joi.object(USER_SCHEMA);
   return joiObj.validate(user);
 }
 

@@ -14,8 +14,6 @@ function jwtToken(email, role = DEFAULT_ROLE) {
   return token;
 }
 
-function authenticateJwt() {}
-
 async function login(plainPswd, hashedPswd) {
   let success = true;
   try {
@@ -25,5 +23,14 @@ async function login(plainPswd, hashedPswd) {
   }
 }
 
+async function hashPswd(pswd) {
+  // Generate Salt
+  const salt = await bcrypt.genSalt(10);
+  // Hash the password using the Salt
+  const hashedPswd = await bcrypt.hash(pswd, salt);
+  return hashedPswd;
+}
+
 module.exports.jwtToken = jwtToken;
 module.exports.login = login;
+module.exports.hash = hashPswd;

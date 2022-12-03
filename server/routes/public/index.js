@@ -1,6 +1,7 @@
 const express = require("express");
 const { ErrorCodes, AppError } = require("../../exceptions");
 const auth = require("../../auth");
+const validate = require("../../utils/validation");
 
 const route = express.Router();
 
@@ -40,10 +41,25 @@ route.post("/login", async (req, resp) => {
 /**
  * Register User
  */
-route.post("/register", (req, resp) => {
+route.post("/register", async (req, resp) => {
   const body = req.body;
+  const { value, error } = validate.validateRegister(body);
+  if (error)
+    return resp.status(400).send(ErrorCodes.ERR_INVALID_REQUEST, error.message);
 
-  resp.send("register");
+  // TODO: check if the User is already present
+  const user = {};
+  if (user)
+    return resp
+      .status(400)
+      .send(ErrorCodes.ERR_INVALID_REQUEST, "User already registered");
+
+  const hashedPswd = await auth.hash(value.password);
+  // TODO: store data to DB
+
+  // Generate JWT token
+  const token = auth.jwtToken(value.email);
+  resp.setHeader("x-auth-token", token).send();
 });
 
 /**
