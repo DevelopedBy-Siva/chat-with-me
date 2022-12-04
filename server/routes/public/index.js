@@ -3,6 +3,8 @@ const { ErrorCodes, AppError } = require("../../exceptions");
 const auth = require("../../auth");
 const { validateUser, schema } = require("../../utils/validation");
 const { sendMail, type } = require("../../utils/mail");
+const UserCollection = require("../../db/model/User");
+const VerificationCodeCollection = require("../../db/model/VerificationCode");
 
 const route = express.Router();
 
@@ -20,8 +22,9 @@ route.post("/login", async (req, resp) => {
       );
   email = email.toLowerCase().trim();
 
-  // TODO: Get User credentials from Database
-  const user = { email: "", password: "" };
+  // Get User Details from DB
+  const user = await UserCollection.findOne({ email }).select("email password");
+  console.log(user);
   if (!user)
     return resp
       .status(401)
@@ -54,8 +57,10 @@ route.post("/register", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
-  // TODO: check if the User is already present
-  const user = {};
+  // Check if User is already present or not
+  const user = await UserCollection.findOne({
+    email: value.email.trim().toLowerCase(),
+  });
   if (user)
     return resp
       .status(400)
@@ -63,8 +68,13 @@ route.post("/register", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "User already registered")
       );
 
+  // Hash the password
   const hashedPswd = await auth.hash(value.password);
-  // TODO: store data to DB
+
+  // Create User Document
+  const document = new UserCollection({ ...value, password: hashedPswd });
+  // Save Document to DB
+  await document.save();
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
@@ -82,9 +92,11 @@ route.post("/forgot-pswd", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
-  // TODO: Verify user is present in the DB
-  const isPresent = {};
-  if (!isPresent)
+  // Verify user is present in the DB
+  const user = await UserCollection.findOne({
+    email: value.email.trim().toLowerCase(),
+  }).select("email name");
+  if (!user)
     return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
@@ -92,9 +104,9 @@ route.post("/forgot-pswd", async (req, resp) => {
   // TODO: Update the Expiry records
 
   const data = {
-    requestedBy: value.email,
-    username: "playwith_duke",
-    createdAt: new Date(),
+    requestedBy: user.email,
+    username: user.name,
+    createdAt: Date.now(),
     verifyCode: Math.floor(Math.random() * 90000) + 10000,
   };
 
@@ -139,7 +151,7 @@ route.post("/verify-account", (req, resp) => {
   resp.send();
 });
 
-route.post("/change-pswd", async (req, resp) => {
+route.put("/change-pswd", async (req, resp) => {
   const password = req.header("x-password");
   const email = req.query.email;
 
@@ -152,9 +164,19 @@ route.post("/change-pswd", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
-  // TODO: update the password in DB
-
+  // Hash Password
   const hashedPswd = await auth.hash(value.password);
+
+  // Update the password in DB
+  const { modifiedCount } = await UserCollection.updateOne(
+    { email: email.trim().toLowerCase() },
+    { $set: { password: hashedPswd } }
+  );
+
+  if (modifiedCount === 0)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
   // TODO: remove verification code from DB
 
