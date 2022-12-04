@@ -1,4 +1,8 @@
 {
-    "app_port" : "PORT",
-    "app_secret_key":"SECRET_KEY"
+  "app_port": "PORT",
+  "app_secret_key": "SECRET_KEY",
+  "mail_service": {
+    "user": "MAIL_ID",
+    "pass": "MAIL_PASSWORD"
+  }
 }
