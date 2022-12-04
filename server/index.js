@@ -4,6 +4,7 @@ const config = require("config");
 const logger = require("./logger");
 const app = express();
 require("./exceptions/globalExceptions");
+require("./db");
 require("express-async-errors");
 require("./routes/route")(app);
 

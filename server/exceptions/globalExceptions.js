@@ -13,4 +13,5 @@ process.on("uncaughtException", (ex) => {
  */
 process.on("unhandledRejection", (ex) => {
   logger.error(ex);
+  process.exit(1);
 });

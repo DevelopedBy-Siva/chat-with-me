@@ -4,5 +4,8 @@
   "mail_service": {
     "user": "MAIL_ID",
     "pass": "MAIL_PASSWORD"
+  },
+  "db": {
+    "url": "DB_URL"
   }
 }

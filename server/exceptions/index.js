@@ -4,8 +4,8 @@
 
 class AppError {
   constructor(errorCode, errorDescription) {
-    this.errorCode = errorCode;
-    this.errorDescription = errorDescription;
+    this.errorCode = String(errorCode);
+    this.errorDescription = String(errorDescription);
   }
 }
 
@@ -17,6 +17,7 @@ const ErrorCodes = {
   ERR_MAIL_FAILED: "ERR_MAIL_FAILED",
   ERR_USR_NOT_FOUND: "ERR_USR_NOT_FOUND",
   ERR_VERIFY_CODE_EXPIRED: "ERR_VERIFY_CODE_EXPIRED",
+  ERR_MONGODB_CONNECTION_FAILED: "ERR_MONGODB_CONNECTION_FAILED",
 };
 
 module.exports.AppError = AppError;
