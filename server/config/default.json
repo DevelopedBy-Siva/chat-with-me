@@ -6,8 +6,8 @@
     "trace": true
   },
   "mail_service": {
-    "service": "outlook",
-    "user": "default@outlook.com",
+    "service": "gmail",
+    "user": "default@gmail.com",
     "pass": "default_pass"
   }
 }

@@ -1,11 +1,16 @@
 const mailer = require("nodemailer");
 const config = require("config");
-const logger = require("../logger");
-const { ErrorCodes } = require("../exceptions");
+const logger = require("../../logger");
+const { ErrorCodes } = require("../../exceptions");
+const handlebars = require("handlebars");
+const fs = require("fs");
+const path = require("path");
 
-const TYPE = {
-  FORGOT_PSWD: "FORGOT_PSWD",
-};
+const emailTemplateSource = fs.readFileSync(
+  path.join(__dirname, "/template.hbs"),
+  "utf8"
+);
+const template = handlebars.compile(emailTemplateSource);
 
 const user = config.get("mail_service.user");
 
@@ -17,18 +22,22 @@ const transport = mailer.createTransport({
   },
 });
 
+const TYPE = {
+  FORGOT_PSWD: "FORGOT_PSWD",
+};
+
 function send(type, data) {
   const options = {
     from: user,
     to: data.requestedBy,
     subject: null,
-    text: null,
+    html: null,
   };
   return new Promise((resolve, reject) => {
     switch (type) {
       case "FORGOT_PSWD":
-        options.subject = `${config.get("app_name")} password change request`;
-        options.text = "HEY MAN";
+        options.subject = `Verify your ${config.get("app_name")} account`;
+        options.html = template({ name: data.username });
         break;
       default:
         reject(ErrorCodes.ERR_INVALID_REQUEST);

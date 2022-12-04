@@ -92,6 +92,7 @@ route.post("/forgot-pswd", async (req, resp) => {
 
   const data = {
     requestedBy: user,
+    username: "playwith_duke",
     createdAt: new Date(),
     verifyCode: Math.floor(Math.random() * 90000) + 10000,
   };
@@ -104,15 +105,13 @@ route.post("/forgot-pswd", async (req, resp) => {
 
 route.post("/verify-account", (req, resp) => {
   const verifyCode = req.header("x-verify-code");
-  if (!verifyCode)
+  const email = req.query.email;
+
+  if (!verifyCode || !email)
     return resp
       .status(400)
-      .send(
-        new AppError(
-          ErrorCodes.ERR_INVALID_REQUEST,
-          "Verification code required"
-        )
-      );
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
+
   // TODO: Get verification data from DB
   const user = { verificationCode: "" };
 
@@ -137,19 +136,24 @@ route.post("/verify-account", (req, resp) => {
   resp.send();
 });
 
-route.post("/change-pswd", (req, resp) => {
+route.post("/change-pswd", async (req, resp) => {
   const password = req.header("x-password");
+  const email = req.query.email;
 
   const { error, value } = validateUser(
     { password },
     { password: schema.password }
   );
-  if (error)
+  if (!email || error)
     return resp
       .status(400)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid password"));
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
 
   // TODO: update the password in DB
+
+  const hashedPswd = await auth.hash(value.password);
+
+  // TODO: remove verification code from DB
 
   resp.send();
 });
