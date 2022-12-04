@@ -1,8 +1,7 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
 const { ErrorCodes, AppError } = require("../../exceptions");
 const auth = require("../../auth");
-const validate = require("../../utils/validation");
+const { validateUser, schema } = require("../../utils/validation");
 const { sendMail, type } = require("../../utils/mail");
 
 const route = express.Router();
@@ -49,7 +48,7 @@ route.post("/login", async (req, resp) => {
  */
 route.post("/register", async (req, resp) => {
   const body = req.body;
-  const { value, error } = validate.validateRegister(body);
+  const { value, error } = validateUser(body);
   if (error)
     return resp
       .status(400)
@@ -135,6 +134,23 @@ route.post("/verify-account", (req, resp) => {
           "Invalid verification code"
         )
       );
+  resp.send();
+});
+
+route.post("/change-pswd", (req, resp) => {
+  const password = req.header("x-password");
+
+  const { error, value } = validateUser(
+    { password },
+    { password: schema.password }
+  );
+  if (error)
+    return resp
+      .status(400)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid password"));
+
+  // TODO: update the password in DB
+
   resp.send();
 });
 

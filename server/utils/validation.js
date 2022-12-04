@@ -7,9 +7,10 @@ const USER_SCHEMA = {
   phone: Joi.string().min(10).max(11).required(),
 };
 
-function validateUserRegistration(user) {
-  const joiObj = Joi.object(USER_SCHEMA);
+function validateUser(user, schema = USER_SCHEMA) {
+  const joiObj = Joi.object(schema);
   return joiObj.validate(user);
 }
 
-module.exports.validateRegister = validateUserRegistration;
+module.exports.validateUser = validateUser;
+module.exports.schema = USER_SCHEMA;
