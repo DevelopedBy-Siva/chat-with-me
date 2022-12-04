@@ -6,12 +6,6 @@ const handlebars = require("handlebars");
 const fs = require("fs");
 const path = require("path");
 
-const emailTemplateSource = fs.readFileSync(
-  path.join(__dirname, "/template.hbs"),
-  "utf8"
-);
-const template = handlebars.compile(emailTemplateSource);
-
 const user = config.get("mail_service.user");
 
 const transport = mailer.createTransport({
@@ -37,7 +31,17 @@ function send(type, data) {
     switch (type) {
       case "FORGOT_PSWD":
         options.subject = `Verify your ${config.get("app_name")} account`;
-        options.html = template({ name: data.username });
+
+        const emailTemplateSource = fs.readFileSync(
+          path.join(__dirname, "/verify_template.hbs"),
+          "utf8"
+        );
+        const template = handlebars.compile(emailTemplateSource);
+        options.html = template({
+          name: data.username,
+          code: data.verifyCode,
+          expiry: config.get("verify_code_expiry"),
+        });
         break;
       default:
         reject(ErrorCodes.ERR_INVALID_REQUEST);

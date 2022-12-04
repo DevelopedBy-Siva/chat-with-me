@@ -75,11 +75,12 @@ route.post("/register", async (req, resp) => {
  * User forget password
  */
 route.post("/forgot-pswd", async (req, resp) => {
-  const user = req.query.user;
-  if (!user)
+  const email = req.query.email;
+  const { error, value } = validateUser({ email }, { email: schema.email });
+  if (error)
     return resp
       .status(400)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "User expected"));
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
   // TODO: Verify user is present in the DB
   const isPresent = {};
@@ -91,7 +92,7 @@ route.post("/forgot-pswd", async (req, resp) => {
   // TODO: Update the Expiry records
 
   const data = {
-    requestedBy: user,
+    requestedBy: value.email,
     username: "playwith_duke",
     createdAt: new Date(),
     verifyCode: Math.floor(Math.random() * 90000) + 10000,
@@ -107,7 +108,9 @@ route.post("/verify-account", (req, resp) => {
   const verifyCode = req.header("x-verify-code");
   const email = req.query.email;
 
-  if (!verifyCode || !email)
+  const { error, value } = validateUser({ email }, { email: schema.email });
+
+  if (!verifyCode || error)
     return resp
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
@@ -141,13 +144,13 @@ route.post("/change-pswd", async (req, resp) => {
   const email = req.query.email;
 
   const { error, value } = validateUser(
-    { password },
-    { password: schema.password }
+    { password, email },
+    { password: schema.password, email: schema.email }
   );
-  if (!email || error)
+  if (error)
     return resp
       .status(400)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
   // TODO: update the password in DB
 

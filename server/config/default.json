@@ -9,5 +9,6 @@
     "service": "gmail",
     "user": "default@gmail.com",
     "pass": "default_pass"
-  }
+  },
+  "verify_code_expiry": 5
 }
