@@ -5,6 +5,9 @@ const schema = new mongoose.Schema({
   requestedBy: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
   },
   createdAt: {
     type: Date,
@@ -14,9 +17,11 @@ const schema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    trim: true,
+    lowercase: true,
   },
-  verifyCode: {
-    type: String,
+  verificationCode: {
+    type: Number,
     required: true,
   },
 });

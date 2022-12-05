@@ -24,8 +24,9 @@ route.post("/login", async (req, resp) => {
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
   // Get User Details from DB
-  const user = await UserCollection.findOne({ email: value.email }).select(
-    "email password"
+  const user = await UserCollection.findOne(
+    { email: value.email },
+    { email: 1, password: 1 }
   );
   if (!user)
     return resp
@@ -95,15 +96,19 @@ route.post("/forgot-pswd", async (req, resp) => {
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
   // Verify user is present in the DB
-  const user = await UserCollection.findOne({
-    email: value.email,
-  }).select("email name");
+  const user = await UserCollection.findOne(
+    {
+      email: value.email,
+    },
+    { email: 1, name: 1 }
+  );
   if (!user)
     return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
-  // TODO: Update the Expiry records
+  // Delete all records of a user
+  await VerificationCodeCollection.deleteMany({ email: user.email });
 
   const data = {
     requestedBy: user.email,
@@ -111,14 +116,16 @@ route.post("/forgot-pswd", async (req, resp) => {
     createdAt: Date.now(),
     verifyCode: Math.floor(Math.random() * 90000) + 10000,
   };
+  // Save Doc to DB
+  const verificationDoc = new VerificationCodeCollection(data);
+  await verificationDoc.save();
 
-  // TODO: Save To DB
-
+  // Send verification code to the user
   await sendMail(type.FORGOT_PSWD, data);
   resp.send();
 });
 
-route.post("/verify-account", (req, resp) => {
+route.post("/verify-account", async (req, resp) => {
   const verifyCode = req.header("x-verify-code");
   const email = req.query.email;
 
@@ -129,10 +136,22 @@ route.post("/verify-account", (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
 
-  // TODO: Get verification data from DB
-  const user = { verificationCode: "" };
-
+  const user = await UserCollection.findOne({
+    email: value.email,
+  });
   if (!user)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
+
+  const verify = await VerificationCodeCollection.findOne(
+    {
+      requestedBy: value.email,
+    },
+    { verificationCode: 1 }
+  );
+
+  if (!verify)
     return resp
       .status(410)
       .send(
@@ -141,7 +160,7 @@ route.post("/verify-account", (req, resp) => {
           "Verification code expired"
         )
       );
-  if (verifyCode !== user.verificationCode)
+  if (parseFloat(verifyCode) !== verify.verificationCode)
     return resp
       .status(400)
       .send(
@@ -180,7 +199,8 @@ route.put("/change-pswd", async (req, resp) => {
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
-  // TODO: remove verification code from DB
+  // Delete all records of a user
+  await VerificationCodeCollection.deleteMany({ requestedBy: value.email });
 
   resp.send();
 });
