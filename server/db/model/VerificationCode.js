@@ -12,7 +12,7 @@ const schema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: () => Date.now(),
-    expires: config.get("verify_code_expiry") * 60,
+    expires: config.get("verify_code_expiry") * 60 + 10,
   },
   username: {
     type: String,
