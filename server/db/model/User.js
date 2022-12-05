@@ -40,7 +40,7 @@ const schema = new mongoose.Schema({
   },
   joinedOn: {
     type: Date,
-    default: () => Date.now(),
+    default: () => new Date(),
   },
 });
 

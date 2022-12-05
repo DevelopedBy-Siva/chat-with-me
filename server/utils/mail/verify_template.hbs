@@ -29,6 +29,12 @@
         text-align: left;
         margin-bottom: 1.6rem;
       }
+      h1 span {
+        text-transform: capitalize;
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: rgb(196, 196, 196);
+      }
       h2 {
         margin-bottom: 1.4rem;
         text-align: left;
@@ -61,7 +67,7 @@
   </head>
   <body>
     <section>
-      <h1>Dear {{name}},</h1>
+      <h1>Dear <span>{{name}}</span>,</h1>
       <h2>
         Here is the ChatWithMe app verification code to change the account
         password:

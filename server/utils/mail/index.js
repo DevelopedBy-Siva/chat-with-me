@@ -40,7 +40,7 @@ function send(type, data) {
         options.html = template({
           name: data.username,
           code: data.verificationCode,
-          expiry: config.get("verify_code_expiry"),
+          expiry: Math.round(config.get("verify_code_expiry_secs") / 60),
         });
         break;
       default:

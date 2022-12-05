@@ -108,20 +108,21 @@ route.post("/forgot-pswd", async (req, resp) => {
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
   // Delete all records of a user
-  await VerificationCodeCollection.deleteMany({ email: user.email });
+  await VerificationCodeCollection.deleteMany({ requestedBy: user.email });
 
   const data = {
     requestedBy: user.email,
     username: user.name,
-    createdAt: Date.now(),
     verificationCode: Math.floor(Math.random() * 90000) + 10000,
   };
+
+  // Send verification code to the user
+  await sendMail(type.FORGOT_PSWD, data);
+
   // Save Doc to DB
   const verificationDoc = new VerificationCodeCollection(data);
   await verificationDoc.save();
 
-  // Send verification code to the user
-  await sendMail(type.FORGOT_PSWD, data);
   resp.send();
 });
 
