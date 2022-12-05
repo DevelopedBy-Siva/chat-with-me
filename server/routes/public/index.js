@@ -12,19 +12,21 @@ const route = express.Router();
  * User Login
  */
 route.post("/login", async (req, resp) => {
-  let email = req.header("x-auth-email");
+  const email = req.header("x-auth-email");
   const password = req.header("x-auth-password");
-  if (!email || !password)
+  const { error, value } = validateUser(
+    { email, password },
+    { email: schema.email, password: schema.password }
+  );
+  if (error)
     return resp
       .status(400)
-      .send(
-        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid email/ password")
-      );
-  email = email.toLowerCase().trim();
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
 
   // Get User Details from DB
-  const user = await UserCollection.findOne({ email }).select("email password");
-  console.log(user);
+  const user = await UserCollection.findOne({ email: value.email }).select(
+    "email password"
+  );
   if (!user)
     return resp
       .status(401)
@@ -33,7 +35,7 @@ route.post("/login", async (req, resp) => {
       );
 
   // Compare the plain password with the hashed password from the DB
-  const success = await auth.login(password, user.password);
+  const success = await auth.login(value.password, user.password);
   if (!success)
     return resp
       .status(401)
@@ -59,7 +61,7 @@ route.post("/register", async (req, resp) => {
 
   // Check if User is already present or not
   const user = await UserCollection.findOne({
-    email: value.email.trim().toLowerCase(),
+    email: value.email,
   });
   if (user)
     return resp
@@ -94,7 +96,7 @@ route.post("/forgot-pswd", async (req, resp) => {
 
   // Verify user is present in the DB
   const user = await UserCollection.findOne({
-    email: value.email.trim().toLowerCase(),
+    email: value.email,
   }).select("email name");
   if (!user)
     return resp
@@ -169,7 +171,7 @@ route.put("/change-pswd", async (req, resp) => {
 
   // Update the password in DB
   const { modifiedCount } = await UserCollection.updateOne(
-    { email: email.trim().toLowerCase() },
+    { email: value.email },
     { $set: { password: hashedPswd } }
   );
 

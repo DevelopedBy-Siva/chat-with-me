@@ -5,6 +5,8 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    minLength: 3,
+    maxLength: 16,
     lowercase: true,
   },
   email: {
@@ -19,12 +21,21 @@ const schema = new mongoose.Schema({
     required: true,
   },
   phone: {
-    type: Number,
+    type: String,
     required: true,
     trim: true,
+    minLength: 10,
+    maxLength: 11,
+    validate: {
+      validator: function (value) {
+        const pattern = /^\d+$/;
+        return pattern.test(value);
+      },
+      message: "Invalid phone number",
+    },
   },
   contacts: {
-    type: Array,
+    type: [Object],
     default: [],
   },
   joinedOn: {

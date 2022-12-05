@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: () => Date.now(),
     expires: config.get("verify_code_expiry"),
   },
   username: {
