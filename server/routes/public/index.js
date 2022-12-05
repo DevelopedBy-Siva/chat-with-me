@@ -114,7 +114,7 @@ route.post("/forgot-pswd", async (req, resp) => {
     requestedBy: user.email,
     username: user.name,
     createdAt: Date.now(),
-    verifyCode: Math.floor(Math.random() * 90000) + 10000,
+    verificationCode: Math.floor(Math.random() * 90000) + 10000,
   };
   // Save Doc to DB
   const verificationDoc = new VerificationCodeCollection(data);

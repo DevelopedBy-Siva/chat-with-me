@@ -39,7 +39,7 @@ function send(type, data) {
         const template = handlebars.compile(emailTemplateSource);
         options.html = template({
           name: data.username,
-          code: data.verifyCode,
+          code: data.verificationCode,
           expiry: config.get("verify_code_expiry"),
         });
         break;
