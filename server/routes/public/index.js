@@ -125,6 +125,9 @@ route.post("/forgot-pswd", async (req, resp) => {
   resp.send();
 });
 
+/**
+ * Verify User Account
+ */
 route.post("/verify-account", async (req, resp) => {
   const verifyCode = req.header("x-verify-code");
   const email = req.query.email;
@@ -172,6 +175,9 @@ route.post("/verify-account", async (req, resp) => {
   resp.send();
 });
 
+/**
+ * Change User password
+ */
 route.put("/change-pswd", async (req, resp) => {
   const password = req.header("x-password");
   const email = req.query.email;
