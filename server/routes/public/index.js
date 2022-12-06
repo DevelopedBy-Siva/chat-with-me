@@ -139,14 +139,6 @@ route.post("/verify-account", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
 
-  const user = await UserCollection.findOne({
-    email: value.email,
-  });
-  if (!user)
-    return resp
-      .status(404)
-      .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
-
   const verify = await VerificationCodeCollection.find(
     {
       requestedBy: value.email,
@@ -171,7 +163,7 @@ route.post("/verify-account", async (req, resp) => {
       .status(400)
       .send(
         new AppError(
-          ErrorCodes.ERR_INVALID_REQUEST,
+          ErrorCodes.ERR_INVALID_VERIFY_CODE,
           "Invalid verification code"
         )
       );
@@ -203,7 +195,7 @@ route.put("/change-pswd", async (req, resp) => {
     .sort({ createdAt: -1 })
     .limit(1);
 
-  if (!verify || verify.length === 0)
+  if (verify.length === 0)
     return resp
       .status(410)
       .send(
