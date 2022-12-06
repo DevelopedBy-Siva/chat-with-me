@@ -14,13 +14,8 @@ function jwtToken(email, role = DEFAULT_ROLE) {
   return token;
 }
 
-async function login(plainPswd, hashedPswd) {
-  let success = true;
-  try {
-    await bcrypt.compare(plainPswd, hashedPswd);
-  } catch (e) {
-    success = false;
-  }
+function login(plainPswd, hashedPswd) {
+  return bcrypt.compare(plainPswd, hashedPswd);
 }
 
 async function hashPswd(pswd) {

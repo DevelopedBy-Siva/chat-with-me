@@ -37,6 +37,7 @@ route.post("/login", async (req, resp) => {
 
   // Compare the plain password with the hashed password from the DB
   const success = await auth.login(value.password, user.password);
+
   if (!success)
     return resp
       .status(401)
@@ -102,13 +103,11 @@ route.post("/forgot-pswd", async (req, resp) => {
     },
     { email: 1, name: 1 }
   );
+
   if (!user)
     return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
-
-  // Delete all records of a user
-  await VerificationCodeCollection.deleteMany({ requestedBy: user.email });
 
   const data = {
     requestedBy: user.email,
@@ -148,14 +147,17 @@ route.post("/verify-account", async (req, resp) => {
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
-  const verify = await VerificationCodeCollection.findOne(
+  const verify = await VerificationCodeCollection.find(
     {
       requestedBy: value.email,
+      expiresAt: { $gt: new Date() },
     },
     { verificationCode: 1 }
-  );
+  )
+    .sort({ createdAt: -1 })
+    .limit(1);
 
-  if (!verify)
+  if (verify.length === 0)
     return resp
       .status(410)
       .send(
@@ -181,16 +183,35 @@ route.post("/verify-account", async (req, resp) => {
  */
 route.put("/change-pswd", async (req, resp) => {
   const password = req.header("x-password");
+  const verifyCode = req.header("x-verify-code");
   const email = req.query.email;
 
   const { error, value } = validateUser(
     { password, email },
     { password: schema.password, email: schema.email }
   );
-  if (error)
+  if (!verifyCode || error)
     return resp
       .status(400)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid Request"));
+
+  const verify = await VerificationCodeCollection.find({
+    requestedBy: value.email,
+    verificationCode: parseFloat(verifyCode),
+    expiresAt: { $gt: new Date() },
+  })
+    .sort({ createdAt: -1 })
+    .limit(1);
+
+  if (!verify || verify.length === 0)
+    return resp
+      .status(410)
+      .send(
+        new AppError(
+          ErrorCodes.ERR_VERIFY_CODE_EXPIRED,
+          "Verification code expired"
+        )
+      );
 
   // Hash Password
   const hashedPswd = await auth.hash(value.password);
@@ -205,9 +226,6 @@ route.put("/change-pswd", async (req, resp) => {
     return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
-
-  // Delete all records of a user
-  await VerificationCodeCollection.deleteMany({ requestedBy: value.email });
 
   resp.send();
 });
