@@ -158,7 +158,8 @@ route.post("/verify-account", async (req, resp) => {
           "Verification code expired"
         )
       );
-  if (parseFloat(verifyCode) !== verify.verificationCode)
+
+  if (parseFloat(verifyCode) !== verify[0].verificationCode)
     return resp
       .status(400)
       .send(
