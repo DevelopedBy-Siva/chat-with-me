@@ -7,7 +7,6 @@ const schema = new mongoose.Schema({
   requestedBy: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
     lowercase: true,
   },

@@ -139,6 +139,7 @@ route.post("/verify-account", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid request"));
 
+  // Check whether the Verification Code is expired or not
   const verify = await VerificationCodeCollection.find(
     {
       requestedBy: value.email,
@@ -188,9 +189,9 @@ route.put("/change-pswd", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid Request"));
 
+  // Check whether the Verification Code is expired or not
   const verify = await VerificationCodeCollection.find({
     requestedBy: value.email,
-    verificationCode: parseFloat(verifyCode),
     expiresAt: { $gt: new Date() },
   })
     .sort({ createdAt: -1 })
@@ -203,6 +204,16 @@ route.put("/change-pswd", async (req, resp) => {
         new AppError(
           ErrorCodes.ERR_VERIFY_CODE_EXPIRED,
           "Verification code expired"
+        )
+      );
+
+  if (parseFloat(verifyCode) !== verify[0].verificationCode)
+    return resp
+      .status(400)
+      .send(
+        new AppError(
+          ErrorCodes.ERR_INVALID_VERIFY_CODE,
+          "Invalid verification code"
         )
       );
 
