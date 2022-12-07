@@ -6,6 +6,7 @@ const user = require("./private/user");
 const public = require("./public");
 const { AppError } = require("../exceptions");
 const exceptionHandler = require("../exceptions/expressExceptions");
+const { authorizeJWT } = require("../auth");
 
 module.exports = function (app) {
   /**
@@ -24,14 +25,14 @@ module.exports = function (app) {
   app.use(express.json());
 
   /**
-   * Middleware to handle User API calls
+   * Middleware to handle User API calls (PROTECTED ROUTE)
    */
-  app.use("/api/user", user);
+  app.use("/api/user", authorizeJWT, user);
 
   /**
-   * Middleware to handle Chat API calls
+   * Middleware to handle Chat API calls (PROTECTED ROUTE)
    */
-  app.use("/api/chat", chat);
+  app.use("/api/chat", authorizeJWT, chat);
 
   /**
    * Middleware to handle all public API calls
