@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
-import Avatar from "../../svgs/Avatars/1.svg";
+import Avatar from "../../assets/svgs/avatars/3.svg";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
 export default function QueryContainer() {
@@ -8,11 +8,11 @@ export default function QueryContainer() {
     <Container>
       <Search>
         <SearchIcon />
-        <SearchInput placeholder="Search for contacts" />
+        <SearchInput placeholder="Search for contacts..." />
       </Search>
       <UserInfo>
         <ProfileAvatar src={Avatar} />
-        <UserName>Sivasanker</UserName>
+        <UserName>sivasanker n</UserName>
         <DropdownIcon />
       </UserInfo>
     </Container>
@@ -45,6 +45,8 @@ const SearchInput = styled.input`
   outline: none;
   background: none;
   color: ${(props) => props.theme.text.sub};
+  font-size: 40%;
+  width: 160px;
 `;
 
 const UserInfo = styled.button`
@@ -57,15 +59,21 @@ const UserInfo = styled.button`
 `;
 
 const UserName = styled.span`
-  margin-left: 4px;
-  color: white;
+  margin-left: 10px;
+  color: ${(props) => props.theme.text.main};
   font-weight: 200;
   font-size: 80%;
-  letter-spacing: 2px;
+  letter-spacing: 1.2px;
+  text-transform: capitalize;
 `;
 
-const ProfileAvatar = styled.img``;
+const ProfileAvatar = styled.img`
+  height: 30px;
+  background: none;
+  border-radius: 50%;
+`;
 
 const DropdownIcon = styled(RiArrowDropDownLine)`
-  color: white;
+  color: ${(props) => props.theme.text.main};
+  font-size: 140%;
 `;
