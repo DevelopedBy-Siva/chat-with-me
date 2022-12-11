@@ -6,6 +6,9 @@ import ChatContainer from "../components/ChatContainer";
 import Cover from "../components/Cover";
 import AddContact from "../components/AddContact";
 
+import { FiSearch } from "react-icons/fi";
+import Header from "../components/Home/Header";
+
 export default function UserHome() {
   useEffect(() => {}, []);
 
@@ -19,23 +22,48 @@ export default function UserHome() {
   return (
     <>
       <Container>
+        <LeftContainer></LeftContainer>
+
+        <MiddleContainer></MiddleContainer>
+
+        <RightContainer></RightContainer>
+
+        {/* 
         <UsersContainer addContact={handleAddContactView} contacts={contacts} />
-        <ChatContainer />
+        <ChatContainer /> */}
       </Container>
-      {addContactView && (
+      {/* {addContactView && (
         <Cover handleVisiblity={setAddContactView}>
           <AddContact
             addContact={setContacts}
             handleView={handleAddContactView}
           />
         </Cover>
-      )}
+      )} */}
     </>
   );
 }
 
 const Container = styled.div`
   width: 100%;
-  max-height: 100vh;
+  height: 100vh;
   display: flex;
+  overflow: hidden;
+`;
+
+const LeftContainer = styled.div`
+  width: 50px;
+  height: 100%;
+  background: red;
+`;
+
+const MiddleContainer = styled.div`
+  flex: 0.3;
+  height: 100%;
+  background-color: yellow;
+`;
+
+const RightContainer = styled.div`
+  flex: 1;
+  background-color: green;
 `;
