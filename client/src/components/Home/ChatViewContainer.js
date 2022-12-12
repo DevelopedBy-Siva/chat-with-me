@@ -39,7 +39,7 @@ export default function ChatViewContainer() {
             />
             <EmojiContainer />
           </InputWrapper>
-          <SendBtn>
+          <SendBtn type="submit">
             <SendBtnIcon />
           </SendBtn>
         </MessageInputContainer>
@@ -109,6 +109,6 @@ const SendBtn = styled.button`
 `;
 
 const SendBtnIcon = styled(RiSendPlaneFill)`
-  color: #8a69f5 !important;
-  font-size: 120%;
+  color: ${(props) => props.theme.background.highlight};
+  font-size: 140%;
 `;

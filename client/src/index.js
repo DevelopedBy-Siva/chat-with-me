@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import App from "./App";
 import Toaster from "./toast/AppToastWrapper";
 import GlobalStyles from "./assets/styles/GlobalStyles";
-import { DarkTheme, LightTheme } from "./assets/styles/Themes";
+import { DarkTheme } from "./assets/styles/Themes";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
