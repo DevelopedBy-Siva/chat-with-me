@@ -3,6 +3,7 @@ const DarkTheme = {
     app: "#282834",
     container: "#171820",
     containerLight: "#1d1d25",
+    highlight: "#8a69f5",
   },
   text: {
     main: "#FFFFFF",
@@ -15,6 +16,7 @@ const LightTheme = {
     app: "#f2f1f6",
     container: "#FFFFFF",
     containerLight: "#f2f1f6",
+    highlight: "#8a69f5",
   },
   text: {
     main: "#00000",
