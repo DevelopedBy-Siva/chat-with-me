@@ -15,7 +15,7 @@ export default function EmojiContainer() {
         type="button"
         onClick={() => setVisible((val) => !val)}
       >
-        <EmojiIcon />
+        <EmojiIcon visible={visible} />
       </EmojiBtn>
       {visible && (
         <EmojiPicker visibility={setVisible} pickerBtnRef={pickerBtnRef} />
@@ -72,9 +72,15 @@ const EmojiBtn = styled.button`
 `;
 
 const EmojiIcon = styled(BsEmojiSmile)`
-  color: ${(props) => props.theme.text.sub};
+  color: ${(props) =>
+    props.visible
+      ? props.theme.background.highlight.hex
+      : props.theme.text.sub};
   height: auto;
   font-size: 150%;
+  :hover {
+    color: ${(props) => props.theme.background.highlight.hex};
+  }
 `;
 
 const EmojiWrapper = styled.div`
