@@ -44,6 +44,7 @@ const Container = styled.nav`
   width: 55px;
   height: 100%;
   background: ${(props) => props.theme.background.container};
+  flex-shrink: 0;
 `;
 
 const Logo = styled.div`
@@ -51,7 +52,7 @@ const Logo = styled.div`
   align-items: center;
   justify-content: center;
   background: ${(props) => props.theme.background.highlight.hex};
-  height: 70px;
+  height: 60px;
 `;
 
 const AppLogo = styled(RiChatSmile3Fill)`

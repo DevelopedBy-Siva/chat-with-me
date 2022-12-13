@@ -8,7 +8,7 @@ export default function SideBar() {
       <SearchContainer>
         <Search>
           <SearchIcon />
-          <SearchInput>Find or start a conversation</SearchInput>
+          <SearchInput>Find or start a conversation...</SearchInput>
         </Search>
       </SearchContainer>
     </Container>
@@ -18,6 +18,7 @@ export default function SideBar() {
 const Container = styled.div`
   width: 260px;
   background: ${(props) => props.theme.background.containerLight};
+  flex-shrink: 0;
 `;
 
 const SearchContainer = styled.div`
@@ -26,7 +27,7 @@ const SearchContainer = styled.div`
   align-items: center;
   justify-content: center;
   background: ${(props) => props.theme.background.container};
-  height: 70px;
+  height: 60px;
 `;
 
 const Search = styled.div`

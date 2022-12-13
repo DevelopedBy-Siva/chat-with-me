@@ -1,15 +1,11 @@
+import React from "react";
 import styled from "styled-components";
-import { FiSearch } from "react-icons/fi";
 import Avatar from "../../assets/svgs/avatars/3.svg";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
-export default function QueryContainer() {
+export default function Header() {
   return (
     <Container>
-      <Search>
-        <SearchIcon />
-        <SearchInput placeholder="Search for contacts..." />
-      </Search>
       <UserInfo>
         <ProfileAvatar src={Avatar} />
         <UserName>sivasanker n</UserName>
@@ -19,34 +15,13 @@ export default function QueryContainer() {
   );
 }
 
-const Container = styled.div`
-  grid-area: query;
-  background: ${(props) => props.theme.background.container};
-  height: 100%;
+const Container = styled.header`
+  width: 100%;
+  height: 60px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 1.2rem;
-`;
-
-const Search = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const SearchIcon = styled(FiSearch)`
-  color: ${(props) => props.theme.text.main};
-  font-size: 70%;
-`;
-
-const SearchInput = styled.input`
-  margin-left: 10px;
-  border: none;
-  outline: none;
-  background: none;
-  color: ${(props) => props.theme.text.sub};
-  font-size: 40%;
-  width: 160px;
+  padding: 0 1.4rem;
 `;
 
 const UserInfo = styled.button`

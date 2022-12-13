@@ -59,6 +59,9 @@ function EmojiPicker({ visibility, pickerBtnRef }) {
 
 const Container = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const EmojiBtn = styled.button`
@@ -77,7 +80,7 @@ const EmojiIcon = styled(BsEmojiSmile)`
       ? props.theme.background.highlight.hex
       : props.theme.text.sub};
   height: auto;
-  font-size: 150%;
+  font-size: 160%;
   :hover {
     color: ${(props) => props.theme.background.highlight.hex};
   }
