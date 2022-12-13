@@ -3,7 +3,10 @@ const DarkTheme = {
     app: "#282834",
     container: "#131517",
     containerLight: "#1d1f24",
-    highlight: "#284ff2",
+    highlight: {
+      hex: "#284ff2",
+      rgba: "rgba(49,78,233,0.2)",
+    },
   },
   text: {
     main: "#FFFFFF",
@@ -21,7 +24,10 @@ const LightTheme = {
     app: "#f2f1f6",
     container: "#FFFFFF",
     containerLight: "#f5f5f5",
-    highlight: "#284ff2",
+    highlight: {
+      hex: "#284ff2",
+      rgba: "rgba(49,78,233,0.2)",
+    },
   },
   text: {
     main: "#00000",

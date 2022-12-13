@@ -74,12 +74,12 @@ const EmojiBtn = styled.button`
 const EmojiIcon = styled(BsEmojiSmile)`
   color: ${(props) => props.theme.text.sub};
   height: auto;
-  font-size: 140%;
+  font-size: 150%;
 `;
 
 const EmojiWrapper = styled.div`
   position: absolute;
-  bottom: 28px;
+  bottom: 40px;
   right: 0;
   em-emoji-picker {
     --category-icon-size: 16px;
