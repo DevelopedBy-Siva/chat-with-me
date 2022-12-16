@@ -11,6 +11,7 @@ export default function SideBar() {
           <SearchInput>Find or start a conversation...</SearchInput>
         </Search>
       </SearchContainer>
+      <ContactsContainer></ContactsContainer>
     </Container>
   );
 }
@@ -19,6 +20,8 @@ const Container = styled.div`
   width: 260px;
   background: ${(props) => props.theme.background.containerLight};
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const SearchContainer = styled.div`
@@ -53,4 +56,10 @@ const SearchInput = styled.button`
   width: 100%;
   cursor: pointer;
   text-align: left;
+`;
+
+const ContactsContainer = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 `;

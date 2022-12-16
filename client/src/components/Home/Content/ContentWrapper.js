@@ -1,21 +1,33 @@
 import React from "react";
 import styled from "styled-components";
-import Avatar from "../../assets/svgs/avatars/3.svg";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
-export default function Header() {
+import Avatar from "../../../assets/svgs/avatars/3.svg";
+
+export default function ContentWrapper({ children }) {
   return (
     <Container>
-      <UserInfo>
-        <ProfileAvatar src={Avatar} />
-        <UserName>sivasanker n</UserName>
-        <DropdownIcon />
-      </UserInfo>
+      <Header>
+        <UserInfo>
+          <ProfileAvatar src={Avatar} />
+          <UserName>sivasanker n</UserName>
+          <DropdownIcon />
+        </UserInfo>
+      </Header>
+      {children}
     </Container>
   );
 }
 
-const Container = styled.header`
+const Container = styled.div`
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: ${(props) => props.theme.background.container};
+`;
+
+const Header = styled.header`
   width: 100%;
   height: 60px;
   display: flex;

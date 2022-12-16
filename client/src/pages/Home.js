@@ -2,14 +2,14 @@ import styled from "styled-components";
 
 import Navbar from "../components/Home/NavBarContainer";
 import SideBar from "../components/Home/SideBarContainer";
-import ChatContainer from "../components/Home/ChatContainer";
+import Chat from "../components/Home/Content/ChatContainer";
 
 export default function UserHome() {
   return (
     <Container>
       <Navbar />
       <SideBar />
-      <ChatContainer />
+      <Chat />
     </Container>
   );
 }

@@ -17,6 +17,10 @@ const DarkTheme = {
     title: "122, 122, 133",
     navIcon: "40, 79, 242",
   },
+  msgBox: {
+    sender: "#284ff2",
+    receiver: "#1d1f24",
+  },
 };
 
 const LightTheme = {
@@ -37,6 +41,10 @@ const LightTheme = {
     background: "245, 245, 245",
     title: "122, 122, 133",
     navIcon: "40, 79, 242",
+  },
+  msgBox: {
+    sender: "#284ff2",
+    receiver: "#1d1f24",
   },
 };
 
