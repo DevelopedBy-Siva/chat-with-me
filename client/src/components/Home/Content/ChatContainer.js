@@ -42,61 +42,71 @@ export default function ChatContainer() {
 
   return (
     <ContentWrapper>
-      <ChatBox>
-        <ReceiverContainer>
-          <Receiver>
-            <ReceiverAvatar src={Avatar} />
-            <ReceiverInfo>
-              <ReceiverName>Duke nukem</ReceiverName>
-              <ReceiverStatus>Online</ReceiverStatus>
-            </ReceiverInfo>
-          </Receiver>
-          <ReceiverInfoBtn>
-            <InfoIcon />
-          </ReceiverInfoBtn>
-        </ReceiverContainer>
-        <MessageContainer>
-          <MessageWrapper>
-            {contacts.map((i, index) =>
-              i.sender === current_user ? (
-                <MessageSender key={index}>
-                  <Message>{i.message}</Message>
-                </MessageSender>
-              ) : (
-                <MessageReceiver key={index}>
-                  <Message>{i.message}</Message>
-                </MessageReceiver>
-              )
-            )}
-          </MessageWrapper>
-        </MessageContainer>
-      </ChatBox>
-      <MessageInputContainer onSubmit={sendMessage}>
-        <TextContainer>
-          <MessageInput
-            ref={msgRef}
-            contentEditable
-            onPaste={convertToPlainText}
-            role="textbox"
-          />
-        </TextContainer>
-        <MessageOprs>
-          <EmojiContainer />
-          <SendBtn type="submit">
-            <SendBtnIcon />
-          </SendBtn>
-        </MessageOprs>
-      </MessageInputContainer>
+      <Container>
+        <ChatBox>
+          <ReceiverContainer>
+            <Receiver>
+              <ReceiverAvatar src={Avatar} />
+              <ReceiverInfo>
+                <ReceiverName>Duke nukem</ReceiverName>
+                <ReceiverStatus>Online</ReceiverStatus>
+              </ReceiverInfo>
+            </Receiver>
+            <ReceiverInfoBtn>
+              <InfoIcon />
+            </ReceiverInfoBtn>
+          </ReceiverContainer>
+          <MessageContainer>
+            <MessageWrapper>
+              {contacts.map((i, index) =>
+                i.sender === current_user ? (
+                  <MessageSender key={index}>
+                    <Message>{i.message}</Message>
+                  </MessageSender>
+                ) : (
+                  <MessageReceiver key={index}>
+                    <Message>{i.message}</Message>
+                  </MessageReceiver>
+                )
+              )}
+            </MessageWrapper>
+          </MessageContainer>
+        </ChatBox>
+        <MessageInputContainer onSubmit={sendMessage}>
+          <TextContainer>
+            <MessageInput
+              ref={msgRef}
+              contentEditable
+              onPaste={convertToPlainText}
+              role="textbox"
+            />
+          </TextContainer>
+          <MessageOprs>
+            <EmojiContainer />
+            <SendBtn type="submit">
+              <SendBtnIcon />
+            </SendBtn>
+          </MessageOprs>
+        </MessageInputContainer>
+      </Container>
     </ContentWrapper>
   );
 }
 
+const Container = styled.section`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: ${(props) => props.theme.background.container};
+`;
+
 const ChatBox = styled.div`
   flex: 1;
+  min-height: 0;
   border-top: 1px solid ${(props) => props.theme.background.app};
   display: flex;
   flex-direction: column;
-  min-height: 0;
 `;
 
 const ReceiverContainer = styled.div`
@@ -167,8 +177,8 @@ const InfoIcon = styled(RiInformationFill)`
 const MessageContainer = styled.div`
   display: flex;
   flex: 1;
+  min-height: 0;
   position: relative;
-  padding: 1.4rem;
   font-size: 32%;
   display: flex;
   flex-direction: column;
@@ -176,10 +186,22 @@ const MessageContainer = styled.div`
 
 const MessageWrapper = styled.div`
   flex: 1;
-  width: 100%;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
+  padding: 1.4rem;
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.background.app};
+    border-radius: 5px;
+  }
 `;
 
 const MessageSender = styled.ul`

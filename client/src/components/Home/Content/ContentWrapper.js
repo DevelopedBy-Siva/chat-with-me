@@ -22,9 +22,9 @@ export default function ContentWrapper({ children }) {
 const Container = styled.div`
   flex: 1;
   min-width: 0;
+  background: ${(props) => props.theme.background.container};
   display: flex;
   flex-direction: column;
-  background: ${(props) => props.theme.background.container};
 `;
 
 const Header = styled.header`
