@@ -44,7 +44,7 @@ const LightTheme = {
   },
   msgBox: {
     sender: "#284ff2",
-    receiver: "#1d1f24",
+    receiver: "#f5f5f5",
   },
 };
 
