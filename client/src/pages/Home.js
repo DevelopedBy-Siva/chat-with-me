@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import "react-tooltip/dist/react-tooltip.css";
 
 import Navbar from "../components/Home/NavBarContainer";
 import SideBar from "../components/Home/SideBarContainer";

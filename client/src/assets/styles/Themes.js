@@ -21,6 +21,10 @@ const DarkTheme = {
     sender: "#284ff2",
     receiver: "#1d1f24",
   },
+  tooltip: {
+    background: "#1d1f24",
+    text: "#7a7a85",
+  },
 };
 
 const LightTheme = {
@@ -45,6 +49,10 @@ const LightTheme = {
   msgBox: {
     sender: "#284ff2",
     receiver: "#f5f5f5",
+  },
+  tooltip: {
+    background: "#7a7a85",
+    text: "#FFFFFF",
   },
 };
 
