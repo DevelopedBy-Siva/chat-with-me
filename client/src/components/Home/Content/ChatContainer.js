@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { RiSendPlaneFill } from "react-icons/ri";
+import { RiSendPlaneFill, RiErrorWarningLine } from "react-icons/ri";
 import { CgDetailsMore } from "react-icons/cg";
-import { IoIosArrowDropleft } from "react-icons/io";
 import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
-import { BiPencil } from "react-icons/bi";
+import { BiPencil, BiRightArrowAlt } from "react-icons/bi";
+import { useTransition, animated } from "react-spring";
+import { TiTick } from "react-icons/ti";
 
 import EmojiContainer from "../../EmojiContainer";
 import ContentWrapper from "./ContentWrapper";
@@ -34,11 +35,24 @@ const friendOperations = [
 
 export default function ChatContainer() {
   const msgRef = useRef(null);
+
   const [infoVisible, setInfoVisible] = useState(false);
 
   useEffect(() => {
     msgRef.current.focus();
   }, []);
+
+  const transition = useTransition(infoVisible, {
+    from: {
+      marginRight: "-280px",
+    },
+    enter: {
+      marginRight: "0px",
+    },
+    leave: {
+      marginRight: "-280px",
+    },
+  });
 
   function sendMessage(e) {
     e.preventDefault();
@@ -77,6 +91,7 @@ export default function ChatContainer() {
                   <ReceiverStatus>Online</ReceiverStatus>
                 </ReceiverInfo>
               </Receiver>
+
               {!infoVisible && (
                 <ReceiverInfoBtn onClick={() => setInfoVisible(true)}>
                   <CgDetailsMore />
@@ -88,11 +103,27 @@ export default function ChatContainer() {
                 {contacts.map((i, index) =>
                   i.sender === current_user ? (
                     <MessageSender key={index}>
-                      <Message>{i.message}</Message>
+                      <Message>
+                        <MsgWrap>{i.message}</MsgWrap>
+                        <MsgStatus>
+                          <MsgStatusIcon>
+                            <RiErrorWarningLine />
+                          </MsgStatusIcon>
+                          <MsgTimestamp>12:08pm</MsgTimestamp>
+                        </MsgStatus>
+                      </Message>
                     </MessageSender>
                   ) : (
                     <MessageReceiver key={index}>
-                      <Message>{i.message}</Message>
+                      <Message>
+                        <MsgWrap>{i.message}</MsgWrap>
+                        <MsgStatus>
+                          <MsgStatusIcon>
+                            <TiTick />
+                          </MsgStatusIcon>
+                          <MsgTimestamp>12:08pm</MsgTimestamp>
+                        </MsgStatus>
+                      </Message>
                     </MessageReceiver>
                   )
                 )}
@@ -116,37 +147,42 @@ export default function ChatContainer() {
             </MessageOprs>
           </MessageInputContainer>
         </SubContainer>
-        {infoVisible && (
-          <UserInfoContainer infoVisible={infoVisible}>
-            <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
-              <IoIosArrowDropleft />
-            </UserInfoCloseBtn>
-            <UserInfoWrapper>
-              <UserAvatar src={Avatar} />
-              <UserInfoName>Hrithik roshan</UserInfoName>
-              <NicknameContainer>
-                <NicknameTitle>#nick</NicknameTitle>
-                <Nickname>duke nukem</Nickname>
-                <ChangeNicknameBtn id="change-nickname">
-                  <BiPencil />
-                </ChangeNicknameBtn>
-                <Tooltip id="change-nickname" msg="Change nickname" />
-              </NicknameContainer>
-              <UserDescription>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s
-              </UserDescription>
-              <UserOperations>
-                {friendOperations.map((op) => (
-                  <>
-                    <UserOperationBtn id={op.id}>{op.icon}</UserOperationBtn>
-                    <Tooltip id={op.id} msg={op.placeholder} />
-                  </>
-                ))}
-              </UserOperations>
-            </UserInfoWrapper>
-          </UserInfoContainer>
+        {transition(
+          (style, item) =>
+            item && (
+              <UserInfoContainer as={animated.div} style={style}>
+                <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
+                  <BiRightArrowAlt />
+                </UserInfoCloseBtn>
+                <UserInfoWrapper>
+                  <UserAvatar src={Avatar} />
+                  <UserInfoName>Hrithik roshan</UserInfoName>
+                  <NicknameContainer>
+                    <NicknameTitle>#nick</NicknameTitle>
+                    <Nickname>duke nukem</Nickname>
+                    <ChangeNicknameBtn id="change-nickname">
+                      <BiPencil />
+                    </ChangeNicknameBtn>
+                    <Tooltip id="change-nickname" msg="Change nickname" />
+                  </NicknameContainer>
+                  <UserDescription>
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s
+                  </UserDescription>
+                  <UserOperations>
+                    {friendOperations.map((op) => (
+                      <>
+                        <UserOperationBtn id={op.id}>
+                          {op.icon}
+                        </UserOperationBtn>
+                        <Tooltip id={op.id} msg={op.placeholder} />
+                      </>
+                    ))}
+                  </UserOperations>
+                </UserInfoWrapper>
+              </UserInfoContainer>
+            )
         )}
       </Container>
     </ContentWrapper>
@@ -157,7 +193,6 @@ const Container = styled.section`
   flex: 1;
   min-height: 0;
   display: flex;
-  flex-direction: row;
   background-color: ${(props) => props.theme.background.container};
 `;
 
@@ -169,18 +204,18 @@ const SubContainer = styled.div`
 `;
 
 const UserInfoContainer = styled.div`
-  max-width: 280px;
-  width: 30%;
+  width: 280px;
   border: 1px solid ${(props) => props.theme.background.app};
   border-right: 0;
   border-bottom: 0;
   flex-shrink: 0;
   position: relative;
+  margin-right: -280px;
 `;
 
 const UserInfoCloseBtn = styled.button`
   position: absolute;
-  left: -10px;
+  left: 8px;
   top: 24px;
   display: flex;
   justify-content: center;
@@ -192,12 +227,12 @@ const UserInfoCloseBtn = styled.button`
   border-radius: 50%;
   font-size: 60%;
   cursor: pointer;
-  transform: rotate(180deg) scale(1);
+  transform: scale(1);
   z-index: 1;
   transition: transform 0.4s ease-in-out;
 
   :hover {
-    transform: rotate(180deg) scale(1.1);
+    transform: scale(1.1);
   }
 `;
 
@@ -430,6 +465,7 @@ const MessageSender = styled.ul`
   justify-content: flex-end;
   list-style: none;
   margin-top: 8px;
+
   li {
     background-color: ${(props) => props.theme.msgBox.sender};
     color: ${(props) => props.theme.text.main};
@@ -441,6 +477,7 @@ const MessageReceiver = styled.ul`
   justify-content: flex-start;
   list-style: none;
   margin-top: 8px;
+
   li {
     background-color: ${(props) => props.theme.msgBox.receiver};
     color: ${(props) => props.theme.text.sub};
@@ -449,8 +486,54 @@ const MessageReceiver = styled.ul`
 
 const Message = styled.li`
   max-width: 60%;
-  padding: 8px;
+  padding: 0.8rem 0.3rem 1.3rem 0.3rem;
   border-radius: 4px;
+  position: relative;
+`;
+
+const MsgWrap = styled.span`
+  display: block;
+  width: 100%;
+  max-height: 150px;
+  padding: 0 0.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.background.app};
+    border-radius: 4px;
+  }
+`;
+
+const MsgStatus = styled.div`
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.text.main};
+  opacity: 0.5;
+`;
+
+const MsgTimestamp = styled.span`
+  font-size: 65%;
+`;
+
+const MsgStatusIcon = styled.span`
+  font-size: 85%;
+  display: block;
+  margin-right: 3px;
+  margin-top: -1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const MessageInputContainer = styled.form`
