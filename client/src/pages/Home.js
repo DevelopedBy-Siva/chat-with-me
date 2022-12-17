@@ -3,7 +3,7 @@ import "react-tooltip/dist/react-tooltip.css";
 
 import Navbar from "../components/Home/NavBarContainer";
 import SideBar from "../components/Home/SideBarContainer";
-import Chat from "../components/Home/Content/ChatContainer";
+import Chat from "../components/Home/Content/Chat";
 
 export default function UserHome() {
   return (
