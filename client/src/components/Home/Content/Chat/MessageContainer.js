@@ -27,22 +27,17 @@ export default function MessageContainer({
   }
 
   return (
-    <>
-      <ContainerBreak>
-        <BreakTimestamp>Monday, 20 Dec 22</BreakTimestamp>
-      </ContainerBreak>
-      <Container as={isSender() ? MessageSender : MessageReceiver} key={index}>
-        <MsgWrapper>
-          <Message>{message}</Message>
-          <MsgStatus>
-            <MsgStatusIcon>
-              {isSent ? <TiTick /> : <RiErrorWarningLine />}
-            </MsgStatusIcon>
-            <MsgTimestamp>{getTime()}</MsgTimestamp>
-          </MsgStatus>
-        </MsgWrapper>
-      </Container>
-    </>
+    <Container as={isSender() ? MessageSender : MessageReceiver} key={index}>
+      <MsgWrapper>
+        <Message>{message}</Message>
+        <MsgStatus>
+          <MsgStatusIcon>
+            {isSent ? <TiTick /> : <RiErrorWarningLine />}
+          </MsgStatusIcon>
+          <MsgTimestamp>{getTime()}</MsgTimestamp>
+        </MsgStatus>
+      </MsgWrapper>
+    </Container>
   );
 }
 
@@ -50,21 +45,6 @@ const Container = styled.ul`
   display: flex;
   list-style: none;
   margin-top: 8px;
-`;
-
-const ContainerBreak = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px;
-  margin-top: 8px;
-`;
-
-const BreakTimestamp = styled.span`
-  padding: 2px 4px;
-  background-color: ${(props) => props.theme.background.app};
-  color: ${(props) => props.theme.text.sub};
-  border-radius: 2px;
 `;
 
 const MessageSender = styled.ul`

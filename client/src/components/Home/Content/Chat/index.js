@@ -7,6 +7,7 @@ import InputContainer from "../Chat/InputContainer";
 import ReceiverInfoContainer from "../Chat/ReceiverInfoContainer";
 import ReceiverHeader from "../Chat/ReceiverHeader";
 import MessageContainer from "../Chat/MessageContainer";
+import { groupByTimestamp, sortByTimestamp } from "../../../../utils/DateTime";
 
 const current_user = "siva";
 
@@ -15,8 +16,10 @@ export default function ChatContainer() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const dummy = dummyMessages("duke nukem");
-    setMessages(dummy);
+    const response = dummyMessages("duke nukem");
+    sortByTimestamp(response);
+    const groupedMessages = groupByTimestamp(response);
+    setMessages(groupedMessages);
   }, []);
 
   return (
@@ -30,15 +33,22 @@ export default function ChatContainer() {
             />
             <MessageBox>
               <MessageWrapper>
-                {messages.map((item, index) => (
-                  <MessageContainer
-                    index={index}
-                    timestamp={item.timestamp}
-                    currentUser={current_user}
-                    message={item.message}
-                    sender={item.sender}
-                    isSent={true}
-                  />
+                {messages.map((itemK, indexK) => (
+                  <>
+                    {itemK.messages.map((itemM, indexM) => (
+                      <MessageContainer
+                        index={indexM}
+                        timestamp={itemM.timestamp}
+                        currentUser={current_user}
+                        message={itemM.message}
+                        sender={itemM.sender}
+                        isSent={true}
+                      />
+                    ))}
+                    <ContainerBreak>
+                      <BreakTimestamp>{itemK.date}</BreakTimestamp>
+                    </ContainerBreak>
+                  </>
                 ))}
               </MessageWrapper>
             </MessageBox>
@@ -104,4 +114,19 @@ const MessageWrapper = styled.div`
     background: ${(props) => props.theme.background.app};
     border-radius: 6px;
   }
+`;
+
+const ContainerBreak = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin: 14px 0 6px 0;
+`;
+
+const BreakTimestamp = styled.span`
+  padding: 2px 8px;
+  background-color: ${(props) => props.theme.background.app};
+  color: ${(props) => props.theme.text.sub};
+  border-radius: 4px;
 `;
