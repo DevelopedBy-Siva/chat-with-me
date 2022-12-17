@@ -85,6 +85,7 @@ const MessageReceiver = styled.ul`
 
 const MsgWrapper = styled.li`
   max-width: 60%;
+  min-width: 60px;
   padding: 0.8rem 0.3rem 1.3rem 0.3rem;
   border-radius: 4px;
   position: relative;

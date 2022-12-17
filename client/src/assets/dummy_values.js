@@ -5,7 +5,7 @@ const messages = (contact) => {
       messages: [
         {
           sender: "siva",
-          message: "hey man",
+          message: "i",
           timestamp: new Date("2022-12-18T09:30:51.01"),
         },
         {
