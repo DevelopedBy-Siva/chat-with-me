@@ -15,6 +15,17 @@ export default function MessageContainer({
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
   }
 
+  function getTime() {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const dateTime = timestamp.toLocaleString("en-US", {
+      timeZone,
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    return dateTime;
+  }
+
   return (
     <>
       <ContainerBreak>
@@ -27,7 +38,7 @@ export default function MessageContainer({
             <MsgStatusIcon>
               {isSent ? <TiTick /> : <RiErrorWarningLine />}
             </MsgStatusIcon>
-            <MsgTimestamp>{timestamp}</MsgTimestamp>
+            <MsgTimestamp>{getTime()}</MsgTimestamp>
           </MsgStatus>
         </MsgWrapper>
       </Container>

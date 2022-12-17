@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import ContentWrapper from "../ContentWrapper";
-import { contacts } from "../../../../assets/dummy_values";
+import { messages as dummyMessages } from "../../../../assets/dummy_values";
 import InputContainer from "../Chat/InputContainer";
 import ReceiverInfoContainer from "../Chat/ReceiverInfoContainer";
 import ReceiverHeader from "../Chat/ReceiverHeader";
@@ -12,6 +12,12 @@ const current_user = "siva";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const dummy = dummyMessages("duke nukem");
+    setMessages(dummy);
+  }, []);
 
   return (
     <ContentWrapper>
@@ -24,10 +30,10 @@ export default function ChatContainer() {
             />
             <MessageBox>
               <MessageWrapper>
-                {contacts.map((item, index) => (
+                {messages.map((item, index) => (
                   <MessageContainer
                     index={index}
-                    timestamp="12:08pm"
+                    timestamp={item.timestamp}
                     currentUser={current_user}
                     message={item.message}
                     sender={item.sender}
