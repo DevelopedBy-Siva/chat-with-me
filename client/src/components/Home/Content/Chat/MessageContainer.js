@@ -27,7 +27,7 @@ export default function MessageContainer({
   }
 
   return (
-    <Container as={isSender() ? MessageSender : MessageReceiver} key={index}>
+    <Container key={index} as={isSender() ? MessageSender : MessageReceiver}>
       <MsgWrapper>
         <Message>{message}</Message>
         <MsgStatus>

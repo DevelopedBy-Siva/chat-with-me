@@ -13,13 +13,13 @@ const current_user = "siva";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
     const response = dummyMessages("duke nukem");
     sortByTimestamp(response);
     const groupedMessages = groupByTimestamp(response);
-    setMessages(groupedMessages);
+    setChats(groupedMessages);
   }, []);
 
   return (
@@ -33,11 +33,11 @@ export default function ChatContainer() {
             />
             <MessageBox>
               <MessageWrapper>
-                {messages.map((itemK, indexK) => (
-                  <>
+                {chats.map((itemK, indexK) => (
+                  <React.Fragment key={`K-${indexK}`}>
                     {itemK.messages.map((itemM, indexM) => (
                       <MessageContainer
-                        index={indexM}
+                        index={`${itemK.date}-${indexM}`}
                         timestamp={itemM.timestamp}
                         currentUser={current_user}
                         message={itemM.message}
@@ -45,10 +45,10 @@ export default function ChatContainer() {
                         isSent={true}
                       />
                     ))}
-                    <ContainerBreak>
+                    <MessageBreak>
                       <BreakTimestamp>{itemK.date}</BreakTimestamp>
-                    </ContainerBreak>
-                  </>
+                    </MessageBreak>
+                  </React.Fragment>
                 ))}
               </MessageWrapper>
             </MessageBox>
@@ -116,7 +116,7 @@ const MessageWrapper = styled.div`
   }
 `;
 
-const ContainerBreak = styled.div`
+const MessageBreak = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
