@@ -62,11 +62,11 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
               ever since the 1500s
             </UserDescription>
             <UserOperations>
-              {options.map((op) => (
-                <>
+              {options.map((op, index) => (
+                <React.Fragment key={index}>
                   <UserOperationBtn id={op.id}>{op.icon}</UserOperationBtn>
                   <Tooltip id={op.id} msg={op.placeholder} />
-                </>
+                </React.Fragment>
               ))}
             </UserOperations>
           </UserInfoWrapper>
