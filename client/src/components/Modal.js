@@ -1,17 +1,24 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import FocusTrap from "focus-trap-react";
+import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
 
 export default function Modal() {
+  const navigate = useNavigate();
+
+  function handleClose() {
+    return navigate(-1);
+  }
+
   return (
     <FocusTrap>
       <Container>
-        <Overlay />
+        <Overlay onClick={handleClose} />
         <Wrapper>
           <Outlet />
-          <CloseBtn>
+          <CloseBtn onClick={handleClose}>
             <AiOutlineClose />
           </CloseBtn>
         </Wrapper>
