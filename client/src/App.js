@@ -9,7 +9,9 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import networkStatus from "./toast/NetworkStatus";
 import Chat from "./components/Home/Chat";
 import Friends from "./components/Home/Friends";
+import Group from "./components/Home/Group";
 import Settings from "./components/Home/Settings";
+import Modal from "./components/Modal";
 
 export default function App() {
   useEffect(() => {
@@ -29,7 +31,9 @@ export default function App() {
           <Route path="/" element={<Chat />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/group" element={<Friends />} />
+          <Route path="/group" element={<Modal />}>
+            <Route path="/group" element={<Group />} />
+          </Route>
         </Route>
       </Route>
       <Route path="/sign-in" element={<SignIn />}>

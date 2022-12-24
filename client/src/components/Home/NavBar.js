@@ -25,13 +25,13 @@ const navBtns = [
     id: "nav_group",
     placeholder: "Create group",
     icon: <AiOutlinePlus className="iconStyle" />,
-    navTo: "/settings",
+    navTo: "/group",
   },
   {
     id: "nav_settings",
     placeholder: "Settings",
     icon: <IoIosSettings className="iconStyle" />,
-    navTo: "/group",
+    navTo: "/settings",
   },
 ];
 
