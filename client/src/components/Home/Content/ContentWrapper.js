@@ -10,7 +10,7 @@ export default function ContentWrapper({ children }) {
     <Container>
       <Header>
         <NotificationBtn>
-          <NotificationCount>1</NotificationCount>
+          <NotificationCount>22</NotificationCount>
           <IoIosNotificationsOutline />
         </NotificationBtn>
         <UserInfo>
@@ -93,9 +93,7 @@ const NotificationCount = styled.span`
   font-size: 40%;
   border-radius: 50%;
   position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding-top: 1.3px;
   top: -10px;
   right: -5px;
 `;

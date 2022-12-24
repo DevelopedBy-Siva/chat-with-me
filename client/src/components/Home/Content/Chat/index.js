@@ -13,13 +13,17 @@ const current_user = "siva";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState({
+    loading: true,
+    isPrivate: true,
+    messages: [],
+  });
 
   useEffect(() => {
     const response = dummyMessages("duke nukem");
     sortByTimestamp(response);
     const groupedMessages = groupByTimestamp(response);
-    setChats(groupedMessages);
+    setChats({ loading: true, isPrivate: true, messages: groupedMessages });
   }, []);
 
   return (
@@ -33,23 +37,27 @@ export default function ChatContainer() {
             />
             <MessageBox>
               <MessageWrapper>
-                {chats.map((itemK, indexK) => (
-                  <React.Fragment key={`K-${indexK}`}>
-                    {itemK.messages.map((itemM, indexM) => (
-                      <MessageContainer
-                        index={`${itemK.date}-${indexM}`}
-                        timestamp={itemM.timestamp}
-                        currentUser={current_user}
-                        message={itemM.message}
-                        sender={itemM.sender}
-                        isSent={true}
-                      />
-                    ))}
-                    <MessageBreak>
-                      <BreakTimestamp>{itemK.date}</BreakTimestamp>
-                    </MessageBreak>
-                  </React.Fragment>
-                ))}
+                {chats.loading ? (
+                  <span>loading</span>
+                ) : (
+                  chats.messages.map((itemK, indexK) => (
+                    <React.Fragment key={`K-${indexK}`}>
+                      {itemK.messages.map((itemM, indexM) => (
+                        <MessageContainer
+                          index={`${itemK.date}**${indexM}`}
+                          timestamp={itemM.timestamp}
+                          currentUser={current_user}
+                          message={itemM.message}
+                          sender={itemM.sender}
+                          isSent={true}
+                        />
+                      ))}
+                      <MessageBreak>
+                        <BreakTimestamp>{itemK.date}</BreakTimestamp>
+                      </MessageBreak>
+                    </React.Fragment>
+                  ))
+                )}
               </MessageWrapper>
             </MessageBox>
           </ChatBox>
