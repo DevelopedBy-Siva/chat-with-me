@@ -7,6 +7,7 @@ import { BiPencil, BiRightArrowAlt } from "react-icons/bi";
 import Tooltip from "../../../Tooltip";
 import Avatar from "../../../../assets/svgs/avatars/6.svg";
 
+const CONTAINER_WIDTH = "280px";
 const options = [
   {
     id: "block-user",
@@ -28,13 +29,13 @@ const options = [
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
   const transition = useTransition(infoVisible, {
     from: {
-      marginRight: "-280px",
+      marginRight: `-${CONTAINER_WIDTH}`,
     },
     enter: {
       marginRight: "0px",
     },
     leave: {
-      marginRight: "-280px",
+      marginRight: `-${CONTAINER_WIDTH}`,
     },
   });
 
@@ -76,13 +77,12 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
 }
 
 const UserInfoContainer = styled.div`
-  width: 280px;
+  width: ${CONTAINER_WIDTH};
   border: 1px solid ${(props) => props.theme.background.app};
   border-right: 0;
   border-bottom: 0;
   flex-shrink: 0;
   position: relative;
-  margin-right: -280px;
 `;
 
 const UserInfoCloseBtn = styled.button`
