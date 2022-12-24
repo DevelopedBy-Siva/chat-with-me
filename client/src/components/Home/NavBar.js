@@ -1,15 +1,38 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdSupervisorAccount } from "react-icons/md";
 import { TbMessages } from "react-icons/tb";
 
+import Tooltip from "../Tooltip";
+
 const navBtns = [
-  { icon: <TbMessages className="iconStyle" />, navTo: "" },
-  { icon: <MdSupervisorAccount className="iconStyle" />, navTo: "" },
-  { icon: <AiOutlinePlus className="iconStyle" />, navTo: "" },
-  { icon: <IoIosSettings className="iconStyle" />, navTo: "" },
+  {
+    id: "nav_msg",
+    placeholder: "Chat",
+    icon: <TbMessages className="iconStyle" />,
+    navTo: "/",
+  },
+  {
+    id: "nav_friends",
+    placeholder: "Friends",
+    icon: <MdSupervisorAccount className="iconStyle" />,
+    navTo: "/friends",
+  },
+  {
+    id: "nav_group",
+    placeholder: "Create group",
+    icon: <AiOutlinePlus className="iconStyle" />,
+    navTo: "/settings",
+  },
+  {
+    id: "nav_settings",
+    placeholder: "Settings",
+    icon: <IoIosSettings className="iconStyle" />,
+    navTo: "/group",
+  },
 ];
 
 export default function NavBarContainer() {
@@ -22,13 +45,17 @@ export default function NavBarContainer() {
   return (
     <Container>
       {navBtns.map((nav, index) => (
-        <NavBtn
-          onClick={() => handleNavigation(index)}
-          active={index === activeNav}
-          key={index}
-        >
-          {nav.icon}
-        </NavBtn>
+        <React.Fragment key={index}>
+          <NavBtn
+            onClick={() => handleNavigation(index)}
+            active={index === activeNav}
+            to={nav.navTo}
+            id={nav.id}
+          >
+            {nav.icon}
+          </NavBtn>
+          <Tooltip id={nav.id} msg={nav.placeholder} />
+        </React.Fragment>
       ))}
     </Container>
   );
@@ -43,7 +70,7 @@ const Container = styled.nav`
   flex-direction: column;
 `;
 
-const NavBtn = styled.button`
+const NavBtn = styled(Link)`
   width: 100%;
   height: 60px;
   display: flex;
@@ -73,6 +100,6 @@ const NavBtn = styled.button`
         : props.theme.background.container
     }`};
   .iconStyle {
-    font-size: 200%;
+    font-size: 90%;
   }
 `;

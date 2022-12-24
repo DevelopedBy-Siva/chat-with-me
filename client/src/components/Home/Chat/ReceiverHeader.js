@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { CgDetailsMore } from "react-icons/cg";
 
-import Avatar from "../../../../assets/svgs/avatars/6.svg";
+import Avatar from "../../../assets/svgs/avatars/6.svg";
 
 export default function ReceiverHeader({ infoVisible, setInfoVisible }) {
   return (

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { messages as dummyMessages } from "../../../../assets/dummy_values";
+import { messages as dummyMessages } from "../../../assets/dummy_values";
 import InputContainer from "./InputContainer";
 import ReceiverInfoContainer from "./ReceiverInfoContainer";
 import ReceiverHeader from "./ReceiverHeader";
 import MessageContainer from "./MessageContainer";
-import { groupByTimestamp, sortByTimestamp } from "../../../../utils/DateTime";
+import { groupByTimestamp, sortByTimestamp } from "../../../utils/DateTime";
 
 const current_user = "siva";
 

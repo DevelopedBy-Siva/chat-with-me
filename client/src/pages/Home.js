@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import "react-tooltip/dist/react-tooltip.css";
+import { Outlet } from "react-router-dom";
 
-import Navbar from "../components/Home/NavBarContainer";
-import Chat from "../components/Home/Content/Chat";
+import Navbar from "../components/Home/NavBar";
 import Header from "../components/Home/Header";
 
 export default function UserHome() {
@@ -11,7 +10,7 @@ export default function UserHome() {
       <Header />
       <Wrapper>
         <Navbar />
-        <Chat />
+        <Outlet />
       </Wrapper>
     </Container>
   );

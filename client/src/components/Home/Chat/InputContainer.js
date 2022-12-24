@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { RiSendPlaneFill } from "react-icons/ri";
-import EmojiContainer from "../../../EmojiContainer";
+import EmojiContainer from "../../EmojiContainer";
 
 export default function InputContainer() {
   const msgInputRef = useRef(null);

@@ -4,8 +4,8 @@ import { useTransition, animated } from "react-spring";
 import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
 import { BiPencil, BiRightArrowAlt } from "react-icons/bi";
 
-import Tooltip from "../../../Tooltip";
-import Avatar from "../../../../assets/svgs/avatars/6.svg";
+import Tooltip from "../../Tooltip";
+import Avatar from "../../../assets/svgs/avatars/6.svg";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
