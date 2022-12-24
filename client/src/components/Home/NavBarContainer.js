@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { RiChatSmile3Fill } from "react-icons/ri";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdSupervisorAccount } from "react-icons/md";
@@ -22,20 +21,15 @@ export default function NavBarContainer() {
 
   return (
     <Container>
-      <Logo>
-        <AppLogo />
-      </Logo>
-      <NavContainer>
-        {navBtns.map((nav, index) => (
-          <NavBtn
-            onClick={() => handleNavigation(index)}
-            active={index === activeNav}
-            key={index}
-          >
-            {nav.icon}
-          </NavBtn>
-        ))}
-      </NavContainer>
+      {navBtns.map((nav, index) => (
+        <NavBtn
+          onClick={() => handleNavigation(index)}
+          active={index === activeNav}
+          key={index}
+        >
+          {nav.icon}
+        </NavBtn>
+      ))}
     </Container>
   );
 }
@@ -44,25 +38,6 @@ const Container = styled.nav`
   width: 55px;
   height: 100%;
   background: ${(props) => props.theme.background.container};
-  flex-shrink: 0;
-`;
-
-const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${(props) => props.theme.background.highlight.hex};
-  height: 60px;
-`;
-
-const AppLogo = styled(RiChatSmile3Fill)`
-  font-size: 90%;
-  color: ${(props) => props.theme.text.main};
-`;
-
-const NavContainer = styled.div`
-  width: 100%;
-  height: calc(100% - 70px);
   display: flex;
   justify-content: center;
   flex-direction: column;

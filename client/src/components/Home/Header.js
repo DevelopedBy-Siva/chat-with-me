@@ -1,16 +1,29 @@
 import React from "react";
 import styled from "styled-components";
+import { RiChatSmile3Fill } from "react-icons/ri";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { FiSearch } from "react-icons/fi";
 
-import Avatar from "../../../assets/svgs/avatars/3.svg";
+import Avatar from "../../assets/svgs/avatars/3.svg";
 
-export default function ContentWrapper({ children }) {
+export default function Header() {
   return (
     <Container>
-      <Header>
+      <Logo>
+        <RiChatSmile3Fill />
+      </Logo>
+      <SearchContainer>
+        <Search>
+          <SearchIcon />
+          <SearchInput>Find or start a conversation...</SearchInput>
+        </Search>
+      </SearchContainer>
+      <Account>
         <NotificationBtn>
-          <NotificationCount>22</NotificationCount>
+          <NotificationCountContainer>
+            <NotificationCount>22</NotificationCount>
+          </NotificationCountContainer>
           <IoIosNotificationsOutline />
         </NotificationBtn>
         <UserInfo>
@@ -18,24 +31,33 @@ export default function ContentWrapper({ children }) {
           <UserName>sivasanker n</UserName>
           <DropdownIcon />
         </UserInfo>
-      </Header>
-      {children}
+      </Account>
     </Container>
   );
 }
 
-const Container = styled.div`
-  flex: 1;
-  min-width: 0;
-  background: ${(props) => props.theme.background.container};
+const Container = styled.header`
+  height: 60px;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  background: ${(props) => props.theme.background.container};
 `;
 
-const Header = styled.header`
-  width: 100%;
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${(props) => props.theme.background.highlight.hex};
+  color: ${(props) => props.theme.text.main};
+  height: 60px;
+  width: 55px;
+`;
+
+const Account = styled.header`
   height: 60px;
   display: flex;
+  flex: 1;
+  min-width: 0;
   justify-content: flex-end;
   align-items: center;
   padding: 0 1.4rem;
@@ -85,7 +107,7 @@ const NotificationBtn = styled.button`
   position: relative;
 `;
 
-const NotificationCount = styled.span`
+const NotificationCountContainer = styled.div`
   background: ${(props) => props.theme.background.highlight.hex};
   color: ${(props) => props.theme.text.main};
   width: 16px;
@@ -93,7 +115,48 @@ const NotificationCount = styled.span`
   font-size: 40%;
   border-radius: 50%;
   position: absolute;
-  padding-top: 1.3px;
   top: -10px;
   right: -5px;
+  overflow: hidden;
+`;
+
+const NotificationCount = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const SearchContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  width: 260px;
+`;
+
+const Search = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 100%;
+`;
+
+const SearchIcon = styled(FiSearch)`
+  color: ${(props) => props.theme.text.main};
+  font-size: 70%;
+`;
+
+const SearchInput = styled.button`
+  margin-left: 10px;
+  border: none;
+  outline: none;
+  background: none;
+  color: ${(props) => props.theme.text.sub};
+  font-size: 40%;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
 `;
