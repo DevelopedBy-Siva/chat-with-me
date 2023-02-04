@@ -4,7 +4,10 @@ export default function SignInUpContainer({ title, children }) {
   return (
     <Container>
       <Wrapper>
-        <Heading>Welcome to Chat with me</Heading>
+        <Heading>
+          <HeadingSplit>Welcome to</HeadingSplit>
+          <HeadingSplit>Chat with me_</HeadingSplit>
+        </Heading>
         <SubHeading>{title}</SubHeading>
         {children}
       </Wrapper>
@@ -24,16 +27,32 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   width: 100%;
-  max-width: 520px;
+  max-width: 580px;
   display: flex;
   flex-direction: column;
 `;
 
-const Heading = styled.h1`
-  color: ${(props) => props.theme.txt.main};
+const Heading = styled.div`
+  color: ${(props) => props.theme.txt.highlight};
   text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+`;
+
+const HeadingSplit = styled.h1`
   font-weight: 400;
   font-size: 2.4rem;
+
+  &:nth-child(1) {
+    font-size: 1.6rem;
+    color: ${(props) => props.theme.txt.main};
+  }
+
+  &:nth-child(1)::after {
+    content: " ";
+    white-space: pre;
+  }
 `;
 
 const SubHeading = styled.h2`
@@ -41,5 +60,5 @@ const SubHeading = styled.h2`
   font-size: 1rem;
   color: ${(props) => props.theme.txt.sub};
   font-weight: 300;
-  margin: 12px 0 32px 0;
+  margin: 15px 0 32px 0;
 `;
