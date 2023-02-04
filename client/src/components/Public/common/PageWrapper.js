@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-import Logo from "./Logo";
+import Logo from "../../Logo";
 
-export default function PublicPageWrapper({ title, children }) {
+export default function PageWrapper({ title, children }) {
   return (
     <Container>
       <Logo />
@@ -41,7 +41,7 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
   width: 100%;
-  max-width: 580px;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
 `;
@@ -76,4 +76,12 @@ const SubHeading = styled.h2`
   color: ${(props) => props.theme.txt.sub};
   font-weight: 400;
   margin: 18px 0 32px 0;
+
+  &::before {
+    content: "\u003C ";
+  }
+
+  &::after {
+    content: "\u005F";
+  }
 `;

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "../api/axios";
 
-import ButtonContainer from "./ButtonContainer";
-import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
+import axios from "../../../api/axios";
+import ButtonContainer from "../common/ButtonContainer";
+import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
 
 export default function ForgotPasswordVerify({
   info,

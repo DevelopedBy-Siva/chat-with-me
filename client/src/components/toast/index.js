@@ -6,7 +6,7 @@ import {
 } from "./MessageToastUtils";
 import { USER_TOAST_CONTAINER_ID, USER_TOAST_LIMIT } from "./UserToastUtils";
 
-export default function AppToastWrapper() {
+export default function AppToasts() {
   return (
     <>
       <MessageToaster

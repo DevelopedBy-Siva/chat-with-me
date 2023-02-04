@@ -1,6 +1,6 @@
 import React from "react";
-import { RiChatSmile3Fill } from "react-icons/ri";
 import styled from "styled-components";
+import { RiChatSmile3Fill } from "react-icons/ri";
 
 export default function Logo({ background = false }) {
   return (

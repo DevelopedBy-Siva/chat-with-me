@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import ForgotPasswordChangePassword from "../../../components/ForgotPasswordChangePassword";
-import ForgotPasswordHome from "../../../components/ForgotPasswordHome";
-import ForgotPasswordVerify from "../../../components/ForgotPasswordVerify";
-import PublicPageWrapper from "../../../components/PublicPageWrapper";
+import ForgotPasswordChangePassword from "../../../components/Public/FrgtPswd/ForgotPasswordChangePassword";
+import ForgotPasswordHome from "../../../components/Public/FrgtPswd/ForgotPasswordHome";
+import ForgotPasswordVerify from "../../../components/Public/FrgtPswd/ForgotPasswordVerify";
+import PageWrapper from "../../../components/Public/common/PageWrapper";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
 
 export default function ForgotPassword() {
@@ -78,8 +78,8 @@ export default function ForgotPassword() {
   };
 
   return (
-    <PublicPageWrapper title={getPageTitle(activeScreen)}>
+    <PageWrapper title={getPageTitle(activeScreen)}>
       {handleActiveScreen()}
-    </PublicPageWrapper>
+    </PageWrapper>
   );
 }

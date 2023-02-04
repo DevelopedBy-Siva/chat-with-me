@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import LoadingSpinner from "./LoadingSpinner";
+
+import LoadingSpinner from "../../Loader";
 
 export default function ButtonContainer({ label, loading = false, ...rest }) {
   return (

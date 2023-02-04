@@ -6,7 +6,7 @@ import SignIn from "./pages/public/SignIn";
 import SignUp from "./pages/public/SignUp";
 import ForgotPassword from "./pages/public/FrgtPwsd";
 import ProtectedRoute from "./auth/ProtectedRoute";
-import networkStatus from "./toast/NetworkStatus";
+import networkStatus from "./components/toast/NetworkStatus";
 import Chat from "./components/Home/Chat";
 import Friends from "./components/Home/Friends";
 import Group from "./components/Home/Group";

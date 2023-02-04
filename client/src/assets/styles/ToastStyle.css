@@ -4,8 +4,8 @@
 }
 
 /*
-/ User default notification container styles
-*/
+  / User default notification container styles
+  */
 
 #user-toast-container .Toastify__toast {
   min-height: auto;
@@ -46,8 +46,8 @@
 }
 
 /*
-/ Message container styles
-*/
+  / Message container styles
+  */
 
 #message-toast-container .Toastify__toast {
   min-height: auto;

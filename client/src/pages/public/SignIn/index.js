@@ -13,10 +13,10 @@ import {
   AllowedInputFields,
   errorVisibility,
 } from "../../../utils/InputHandler";
-import PublicPageWrapper from "../../../components/PublicPageWrapper";
-import UserInputContainer from "../../../components/InputContainer";
-import UserButtonContainer from "../../../components/ButtonContainer";
-import Checkbox from "../../../components/CheckBox";
+import PageWrapper from "../../../components/Public/common/PageWrapper";
+import UserInputContainer from "../../../components/Public/common/InputContainer";
+import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
+import Checkbox from "../../../components/Public/common/CheckBox";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -124,7 +124,7 @@ export default function SignIn() {
   };
 
   return (
-    <PublicPageWrapper title="Sign in">
+    <PageWrapper title="Sign in">
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
@@ -193,7 +193,7 @@ export default function SignIn() {
           </PageNavigationBtn>
         </DontHaveAccount>
       </FormContainer>
-    </PublicPageWrapper>
+    </PageWrapper>
   );
 }
 

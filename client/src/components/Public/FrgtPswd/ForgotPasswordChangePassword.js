@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "../api/axios";
+import axios from "../../../api/axios";
 
 import {
   AllowedInputFields,
@@ -10,10 +10,10 @@ import {
   validationColor,
   errorVisibility,
   passwordValidation as validatePassword,
-} from "../utils/InputHandler";
-import ButtonContainer from "./ButtonContainer";
-import InputContainer from "./InputContainer";
-import * as toast from "../toast/UserToastUtils";
+} from "../../../utils/InputHandler";
+import ButtonContainer from "../common/ButtonContainer";
+import InputContainer from "../common/InputContainer";
+import * as toast from "../../toast/UserToastUtils";
 
 export default function ForgotPasswordChangePassword({
   info,
@@ -146,14 +146,6 @@ export default function ForgotPasswordChangePassword({
 
 const Container = styled.div`
   width: 100%;
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 25px;
-  margin-top: 5px;
 `;
 
 const Form = styled.form``;

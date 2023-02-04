@@ -15,9 +15,9 @@ import {
   AllowedInputFields,
   errorVisibility,
 } from "../../../utils/InputHandler";
-import PublicPageWrapper from "../../../components/PublicPageWrapper";
-import UserInputContainer from "../../../components/InputContainer";
-import UserButtonContainer from "../../../components/ButtonContainer";
+import PageWrapper from "../../../components/Public/common/PageWrapper";
+import UserInputContainer from "../../../components/Public/common/InputContainer";
+import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -136,7 +136,7 @@ export default function SignUp() {
   };
 
   return (
-    <PublicPageWrapper title="Sign up">
+    <PageWrapper title="Sign up">
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
@@ -223,7 +223,7 @@ export default function SignUp() {
       </FormContainer>
 
       <Outlet />
-    </PublicPageWrapper>
+    </PageWrapper>
   );
 }
 

@@ -2,18 +2,18 @@ import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { MdAlternateEmail } from "react-icons/md";
 
-import axios from "../api/axios";
+import axios from "../../../api/axios";
 
-import ButtonContainer from "./ButtonContainer";
-import InputContainer from "./InputContainer";
-import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
+import ButtonContainer from "../../Public/common/ButtonContainer";
+import InputContainer from "../../Public/common/InputContainer";
+import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
 import {
   AllowedInputFields,
   emailValidation,
   inputChanges,
   validationColor,
   errorVisibility,
-} from "../utils/InputHandler";
+} from "../../../utils/InputHandler";
 
 export default function ForgotPasswordHome({
   info,

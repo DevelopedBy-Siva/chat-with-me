@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import Loading from "../components/Loading";
 import SignIn from "../pages/public/SignIn";
 
 export default function ProtectedRoute() {
@@ -16,5 +15,11 @@ export default function ProtectedRoute() {
     if (a) setUser({ loading: false, data: "" });
   }, []);
 
-  return user.loading ? <Loading /> : user.data ? <Outlet /> : <SignIn />;
+  return user.loading ? (
+    <h2>Loading...</h2>
+  ) : user.data ? (
+    <Outlet />
+  ) : (
+    <SignIn />
+  );
 }

@@ -1,7 +1,7 @@
 import { ToastContainer as Toaster } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import "./style.css";
+import "../../assets/styles/ToastStyle.css";
 
 export default function ToastContainer({ containerId, limit }) {
   return (
