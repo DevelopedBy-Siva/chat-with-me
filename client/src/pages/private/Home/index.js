@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 
-import Navbar from "../components/Home/NavBar";
-import Header from "../components/Home/Header";
+import Navbar from "../../../components/Home/NavBar";
+import Header from "../../../components/Home/Header";
 
 export default function UserHome() {
   return (

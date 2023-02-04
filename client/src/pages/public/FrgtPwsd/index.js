@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import ForgotPasswordChangePassword from "../components/ForgotPasswordChangePassword";
-import ForgotPasswordHome from "../components/ForgotPasswordHome";
-import ForgotPasswordVerify from "../components/ForgotPasswordVerify";
-import PublicPageWrapper from "../components/PublicPageWrapper";
-import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
+import ForgotPasswordChangePassword from "../../../components/ForgotPasswordChangePassword";
+import ForgotPasswordHome from "../../../components/ForgotPasswordHome";
+import ForgotPasswordVerify from "../../../components/ForgotPasswordVerify";
+import PublicPageWrapper from "../../../components/PublicPageWrapper";
+import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
 
 export default function ForgotPassword() {
   const [activeScreen, setActiveScreen] = useState(SCREEN.HOME);

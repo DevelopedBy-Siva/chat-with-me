@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import Home from "./pages/Home";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import ForgotPassword from "./pages/ForgotPassword";
+import Home from "./pages/private/Home";
+import SignIn from "./pages/public/SignIn";
+import SignUp from "./pages/public/SignUp";
+import ForgotPassword from "./pages/public/FrgtPwsd";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import networkStatus from "./toast/NetworkStatus";
 import Chat from "./components/Home/Chat";

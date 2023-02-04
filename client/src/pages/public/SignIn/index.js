@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
-import { FaRegUser } from "react-icons/fa";
-import { AiOutlinePhone } from "react-icons/ai";
 
-import axios from "../api/axios";
+import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
@@ -14,36 +12,26 @@ import {
   inputChanges,
   AllowedInputFields,
   errorVisibility,
-} from "../utils/InputHandler";
-import PublicPageWrapper from "../components/PublicPageWrapper";
-import UserInputContainer from "../components/InputContainer";
-import UserButtonContainer from "../components/ButtonContainer";
+} from "../../../utils/InputHandler";
+import PublicPageWrapper from "../../../components/PublicPageWrapper";
+import UserInputContainer from "../../../components/InputContainer";
+import UserButtonContainer from "../../../components/ButtonContainer";
+import Checkbox from "../../../components/CheckBox";
 
 export default function SignIn() {
   const navigate = useNavigate();
 
-  const nameInputRef = useRef(null);
-  const nameErrorRef = useRef(null);
-
   const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
-
-  const phoneInputRef = useRef(null);
-  const phoneErrorRef = useRef(null);
 
   const passwordInputRef = useRef(null);
   const passwordErrorRef = useRef(null);
 
-  const confirmPswdInputRef = useRef(null);
-  const confirmPswdErrorRef = useRef(null);
-
   const [btnActive, setBtnActive] = useState(true);
-  const [signupInfo, setSignupInfo] = useState({
+  const [loginInfo, setLoginInfo] = useState({
     email: null,
-    name: null,
-    phone: null,
     password: null,
-    confirmPassword: null,
+    rememberme: false,
   });
   const [serverData, setServerData] = useState({
     loading: false,
@@ -52,12 +40,12 @@ export default function SignIn() {
 
   // Focus on Email Input box on page startup
   useEffect(() => {
-    nameInputRef.current.focus();
+    emailInputRef.current.focus();
   }, []);
 
   // Validate input changes
   useEffect(() => {
-    const { email, password } = signupInfo;
+    const { email, password } = loginInfo;
 
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
@@ -90,18 +78,16 @@ export default function SignIn() {
     // If Input is Valid, enable the login button
     if (emailValid.isValid && passwordValid.isValid) setBtnActive(false);
     else setBtnActive(true);
-  }, [signupInfo]);
+  }, [loginInfo]);
 
   const handleInputChange = (e, type) => {
     const allowedFields = [
-      AllowedInputFields.NAME,
       AllowedInputFields.EMAIL,
-      AllowedInputFields.PHONE,
       AllowedInputFields.PASSWORD,
-      AllowedInputFields.CONFIRM_PASSWORD,
+      AllowedInputFields.REMEMBER_ME,
     ];
-    const data = inputChanges(e, type, signupInfo, allowedFields);
-    setSignupInfo(data);
+    const data = inputChanges(e, type, loginInfo, allowedFields);
+    setLoginInfo(data);
   };
 
   const handleSubmit = (e) => {
@@ -115,12 +101,14 @@ export default function SignIn() {
 
     axios
       .get("/posts/1")
-      .then(({ data }) => {})
-      .catch((err) => {
+      .then(() => {
+        // TODO: Handle Success
+      })
+      .catch((error) => {
         setServerData({
           ...serverData,
           loading: false,
-          error: "Error Message",
+          error,
         });
       });
   };
@@ -136,13 +124,13 @@ export default function SignIn() {
   };
 
   return (
-    <PublicPageWrapper title="Sign up">
+    <PublicPageWrapper title="Sign in">
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
             title="E-mail"
-            inputRef={nameInputRef}
-            errorRef={nameErrorRef}
+            inputRef={emailInputRef}
+            errorRef={emailErrorRef}
             name="email"
             type="text"
             spellCheck="false"
@@ -150,32 +138,6 @@ export default function SignIn() {
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
             icon={<MdAlternateEmail />}
-          />
-
-          <UserInputContainer
-            title="Name"
-            inputRef={emailInputRef}
-            errorRef={emailErrorRef}
-            name="name"
-            type="text"
-            spellCheck="false"
-            autoComplete="off"
-            disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "email")}
-            icon={<FaRegUser />}
-          />
-
-          <UserInputContainer
-            title="Phone"
-            inputRef={phoneInputRef}
-            errorRef={phoneErrorRef}
-            name="phone"
-            type="text"
-            spellCheck="false"
-            autoComplete="off"
-            disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "email")}
-            icon={<AiOutlinePhone />}
           />
 
           <UserInputContainer
@@ -190,20 +152,30 @@ export default function SignIn() {
             icon={<FiKey />}
           />
 
-          <UserInputContainer
-            title="Confirm Password"
-            inputRef={confirmPswdInputRef}
-            errorRef={confirmPswdErrorRef}
-            name="password"
-            type="password"
-            maxLength={32}
-            disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "password")}
-            icon={<FiKey />}
-          />
+          <CheckBoxFrgtPswd>
+            <RememberMeWrapper>
+              <Checkbox
+                name="rememberme"
+                type="checkbox"
+                disabled={serverData.loading}
+                isChecked={loginInfo.rememberme}
+                onChange={(e) => handleInputChange(e, "rememberme")}
+              />
+              <RememberMeText>Remember me</RememberMeText>
+            </RememberMeWrapper>
+            <ForgetPassword>
+              <PageNavigationBtn
+                type="button"
+                onClick={() => handlePageNavigation("/forgot-password")}
+                disabled={serverData.loading}
+              >
+                Forgot Password?
+              </PageNavigationBtn>
+            </ForgetPassword>
+          </CheckBoxFrgtPswd>
 
           <UserButtonContainer
-            label="Sign up"
+            label="Log in"
             type="submit"
             onClick={handleSubmit}
             disabled={handleBtnSubmit()}
@@ -211,18 +183,16 @@ export default function SignIn() {
           />
         </Form>
 
-        <AlreadyHaveAccount>
-          Already have an account?{" "}
+        <DontHaveAccount>
+          Dont't have an account?{" "}
           <PageNavigationBtn
-            onClick={() => handlePageNavigation("/sign-in", true)}
+            onClick={() => handlePageNavigation("/sign-up", true)}
             disabled={serverData.loading}
           >
-            Sign in
+            Sign up
           </PageNavigationBtn>
-        </AlreadyHaveAccount>
+        </DontHaveAccount>
       </FormContainer>
-
-      <Outlet />
     </PublicPageWrapper>
   );
 }
@@ -233,7 +203,27 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const AlreadyHaveAccount = styled.span`
+const CheckBoxFrgtPswd = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+`;
+
+const RememberMeWrapper = styled.label``;
+
+const RememberMeText = styled.span`
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  font-size: 0.7rem;
+  transform: translateY(-50%);
+  color: ${(props) => props.theme.txt.sub};
+`;
+
+const DontHaveAccount = styled.span`
   display: block;
   font-size: 0.7rem;
   color: ${(props) => props.theme.txt.sub};
@@ -253,4 +243,8 @@ const PageNavigationBtn = styled.button`
   &:hover:disabled {
     cursor: not-allowed;
   }
+`;
+
+const ForgetPassword = styled.span`
+  display: block;
 `;

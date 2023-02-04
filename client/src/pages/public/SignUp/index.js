@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
+import { FaRegUser } from "react-icons/fa";
+import { AiOutlinePhone } from "react-icons/ai";
 
-import axios from "../api/axios";
+import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
@@ -12,26 +14,36 @@ import {
   inputChanges,
   AllowedInputFields,
   errorVisibility,
-} from "../utils/InputHandler";
-import PublicPageWrapper from "../components/PublicPageWrapper";
-import UserInputContainer from "../components/InputContainer";
-import UserButtonContainer from "../components/ButtonContainer";
-import Checkbox from "../components/CheckBox";
+} from "../../../utils/InputHandler";
+import PublicPageWrapper from "../../../components/PublicPageWrapper";
+import UserInputContainer from "../../../components/InputContainer";
+import UserButtonContainer from "../../../components/ButtonContainer";
 
-export default function SignIn() {
+export default function SignUp() {
   const navigate = useNavigate();
+
+  const nameInputRef = useRef(null);
+  const nameErrorRef = useRef(null);
 
   const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
 
+  const phoneInputRef = useRef(null);
+  const phoneErrorRef = useRef(null);
+
   const passwordInputRef = useRef(null);
   const passwordErrorRef = useRef(null);
 
+  const confirmPswdInputRef = useRef(null);
+  const confirmPswdErrorRef = useRef(null);
+
   const [btnActive, setBtnActive] = useState(true);
-  const [loginInfo, setLoginInfo] = useState({
+  const [signupInfo, setSignupInfo] = useState({
     email: null,
+    name: null,
+    phone: null,
     password: null,
-    rememberme: false,
+    confirmPassword: null,
   });
   const [serverData, setServerData] = useState({
     loading: false,
@@ -40,12 +52,12 @@ export default function SignIn() {
 
   // Focus on Email Input box on page startup
   useEffect(() => {
-    emailInputRef.current.focus();
+    nameInputRef.current.focus();
   }, []);
 
   // Validate input changes
   useEffect(() => {
-    const { email, password } = loginInfo;
+    const { email, password } = signupInfo;
 
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
@@ -78,16 +90,18 @@ export default function SignIn() {
     // If Input is Valid, enable the login button
     if (emailValid.isValid && passwordValid.isValid) setBtnActive(false);
     else setBtnActive(true);
-  }, [loginInfo]);
+  }, [signupInfo]);
 
   const handleInputChange = (e, type) => {
     const allowedFields = [
+      AllowedInputFields.NAME,
       AllowedInputFields.EMAIL,
+      AllowedInputFields.PHONE,
       AllowedInputFields.PASSWORD,
-      AllowedInputFields.REMEMBER_ME,
+      AllowedInputFields.CONFIRM_PASSWORD,
     ];
-    const data = inputChanges(e, type, loginInfo, allowedFields);
-    setLoginInfo(data);
+    const data = inputChanges(e, type, signupInfo, allowedFields);
+    setSignupInfo(data);
   };
 
   const handleSubmit = (e) => {
@@ -101,14 +115,12 @@ export default function SignIn() {
 
     axios
       .get("/posts/1")
-      .then(() => {
-        // TODO: Handle Success
-      })
-      .catch((error) => {
+      .then(({ data }) => {})
+      .catch((err) => {
         setServerData({
           ...serverData,
           loading: false,
-          error,
+          error: "Error Message",
         });
       });
   };
@@ -124,13 +136,13 @@ export default function SignIn() {
   };
 
   return (
-    <PublicPageWrapper title="Sign in">
+    <PublicPageWrapper title="Sign up">
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
             title="E-mail"
-            inputRef={emailInputRef}
-            errorRef={emailErrorRef}
+            inputRef={nameInputRef}
+            errorRef={nameErrorRef}
             name="email"
             type="text"
             spellCheck="false"
@@ -138,6 +150,32 @@ export default function SignIn() {
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
             icon={<MdAlternateEmail />}
+          />
+
+          <UserInputContainer
+            title="Name"
+            inputRef={emailInputRef}
+            errorRef={emailErrorRef}
+            name="name"
+            type="text"
+            spellCheck="false"
+            autoComplete="off"
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "email")}
+            icon={<FaRegUser />}
+          />
+
+          <UserInputContainer
+            title="Phone"
+            inputRef={phoneInputRef}
+            errorRef={phoneErrorRef}
+            name="phone"
+            type="text"
+            spellCheck="false"
+            autoComplete="off"
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "email")}
+            icon={<AiOutlinePhone />}
           />
 
           <UserInputContainer
@@ -152,30 +190,20 @@ export default function SignIn() {
             icon={<FiKey />}
           />
 
-          <CheckBoxFrgtPswd>
-            <RememberMeWrapper>
-              <Checkbox
-                name="rememberme"
-                type="checkbox"
-                disabled={serverData.loading}
-                isChecked={loginInfo.rememberme}
-                onChange={(e) => handleInputChange(e, "rememberme")}
-              />
-              <RememberMeText>Remember me</RememberMeText>
-            </RememberMeWrapper>
-            <ForgetPassword>
-              <PageNavigationBtn
-                type="button"
-                onClick={() => handlePageNavigation("/forgot-password")}
-                disabled={serverData.loading}
-              >
-                Forgot Password?
-              </PageNavigationBtn>
-            </ForgetPassword>
-          </CheckBoxFrgtPswd>
+          <UserInputContainer
+            title="Confirm Password"
+            inputRef={confirmPswdInputRef}
+            errorRef={confirmPswdErrorRef}
+            name="password"
+            type="password"
+            maxLength={32}
+            disabled={serverData.loading}
+            onInput={(e) => handleInputChange(e, "password")}
+            icon={<FiKey />}
+          />
 
           <UserButtonContainer
-            label="Log in"
+            label="Sign up"
             type="submit"
             onClick={handleSubmit}
             disabled={handleBtnSubmit()}
@@ -183,16 +211,18 @@ export default function SignIn() {
           />
         </Form>
 
-        <DontHaveAccount>
-          Dont't have an account?{" "}
+        <AlreadyHaveAccount>
+          Already have an account?{" "}
           <PageNavigationBtn
-            onClick={() => handlePageNavigation("/sign-up", true)}
+            onClick={() => handlePageNavigation("/sign-in", true)}
             disabled={serverData.loading}
           >
-            Sign up
+            Sign in
           </PageNavigationBtn>
-        </DontHaveAccount>
+        </AlreadyHaveAccount>
       </FormContainer>
+
+      <Outlet />
     </PublicPageWrapper>
   );
 }
@@ -203,27 +233,7 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const CheckBoxFrgtPswd = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 0;
-`;
-
-const RememberMeWrapper = styled.label``;
-
-const RememberMeText = styled.span`
-  position: absolute;
-  left: 22px;
-  top: 50%;
-  font-size: 0.7rem;
-  transform: translateY(-50%);
-  color: ${(props) => props.theme.txt.sub};
-`;
-
-const DontHaveAccount = styled.span`
+const AlreadyHaveAccount = styled.span`
   display: block;
   font-size: 0.7rem;
   color: ${(props) => props.theme.txt.sub};
@@ -243,8 +253,4 @@ const PageNavigationBtn = styled.button`
   &:hover:disabled {
     cursor: not-allowed;
   }
-`;
-
-const ForgetPassword = styled.span`
-  display: block;
 `;
