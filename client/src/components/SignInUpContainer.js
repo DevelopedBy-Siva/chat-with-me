@@ -16,6 +16,7 @@ export default function SignInUpContainer({ title, children }) {
           {children}
         </Content>
       </Wrapper>
+      <Footer />
     </Container>
   );
 }
@@ -25,9 +26,13 @@ const Container = styled.div`
   height: 100vh;
 `;
 
+const Footer = styled.footer`
+  height: 40px;
+`;
+
 const Wrapper = styled.div`
   width: 100%;
-  height: calc(100% - 60px);
+  height: calc(100% - 100px);
   padding: 1rem;
   display: flex;
   align-items: center;
