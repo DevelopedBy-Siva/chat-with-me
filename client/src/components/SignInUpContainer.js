@@ -46,6 +46,7 @@ const HeadingSplit = styled.h1`
 
   &:nth-child(1) {
     font-size: 1.6rem;
+    font-weight: 300;
     color: ${(props) => props.theme.txt.main};
   }
 
@@ -57,8 +58,8 @@ const HeadingSplit = styled.h1`
 
 const SubHeading = styled.h2`
   text-align: left;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: ${(props) => props.theme.txt.sub};
-  font-weight: 300;
-  margin: 15px 0 32px 0;
+  font-weight: 400;
+  margin: 18px 0 32px 0;
 `;
