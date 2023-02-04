@@ -1,17 +1,19 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import Home from "./pages/private/Home";
-import SignIn from "./pages/public/SignIn";
-import SignUp from "./pages/public/SignUp";
-import ForgotPassword from "./pages/public/FrgtPwsd";
-import ProtectedRoute from "./auth/ProtectedRoute";
 import networkStatus from "./components/toast/NetworkStatus";
-import Chat from "./components/Home/Chat";
-import Friends from "./components/Home/Friends";
-import Group from "./components/Home/Group";
-import Settings from "./components/Home/Settings";
-import Modal from "./components/Modal";
+import Public from "./pages/public";
+import Private from "./pages/private";
+
+const SignIn = lazy(() => import("./pages/public/SignIn"));
+const SignUp = lazy(() => import("./pages/public/SignUp"));
+const ForgotPassword = lazy(() => import("./pages/public/FrgtPwsd"));
+const Home = lazy(() => import("./pages/private/Home"));
+const Chat = lazy(() => import("./components/Home/Chat"));
+const Friends = lazy(() => import("./components/Home/Friends"));
+const Group = lazy(() => import("./components/Home/Group"));
+const Settings = lazy(() => import("./components/Home/Settings"));
+const Modal = lazy(() => import("./components/Modal"));
 
 export default function App() {
   useEffect(() => {
@@ -25,21 +27,25 @@ export default function App() {
   });
 
   return (
-    <Routes>
-      <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<Home />}>
-          <Route path="/" element={<Chat />} />
-          <Route path="/friends" element={<Friends />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/group" element={<Modal />}>
-            <Route path="/group" element={<Group />} />
+    <Suspense>
+      <Routes>
+        <Route element={<Private />}>
+          <Route path="/" element={<Home />}>
+            <Route path="/" element={<Chat />} />
+            <Route path="/friends" element={<Friends />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/group" element={<Modal />}>
+              <Route path="/group" element={<Group />} />
+            </Route>
           </Route>
         </Route>
-      </Route>
-      <Route path="/sign-in" element={<SignIn />} />
-      <Route path="forgot-password" element={<ForgotPassword />} />
-      <Route path="/sign-up" element={<SignUp />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route element={<Public />}>
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="/sign-up" element={<SignUp />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Suspense>
   );
 }
