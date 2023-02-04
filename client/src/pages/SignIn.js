@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "../api/axios";
+import { MdAlternateEmail } from "react-icons/md";
+import { FiKey } from "react-icons/fi";
 
+import axios from "../api/axios";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
@@ -14,6 +16,7 @@ import {
 import SignInUpContainer from "../components/SignInUpContainer";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
+import Checkbox from "../components/CheckBox";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -121,44 +124,54 @@ export default function SignIn() {
   };
 
   return (
-    <SignInUpContainer>
+    <SignInUpContainer title="Sign in">
       <FormContainer>
-        <Title>Log in</Title>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
-            title="Your e-mail"
+            title="E-mail"
             inputRef={emailInputRef}
             errorRef={emailErrorRef}
-            placeholder="name@domain.com"
             name="email"
-            type="email"
+            type="text"
             spellCheck="false"
             autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
+            icon={<MdAlternateEmail />}
           />
 
           <UserInputContainer
             title="Password"
             inputRef={passwordInputRef}
             errorRef={passwordErrorRef}
-            placeholder="at least 8 characters"
             name="password"
             type="password"
             maxLength={32}
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "password")}
+            icon={<FiKey />}
           />
 
-          <CheckboxContainer>
-            <RememberMe
-              name="rememberme"
-              type="checkbox"
-              disabled={serverData.loading}
-              onClick={(e) => handleInputChange(e, "rememberme")}
-            />
-            <RememberMeText>Keep me logged in</RememberMeText>
-          </CheckboxContainer>
+          <CheckBoxFrgtPswd>
+            <RememberMeWrapper>
+              <Checkbox
+                name="rememberme"
+                type="checkbox"
+                disabled={serverData.loading}
+                isChecked={loginInfo.rememberme}
+                onClick={(e) => handleInputChange(e, "rememberme")}
+              />
+              <RememberMeText>Remember me</RememberMeText>
+            </RememberMeWrapper>
+            <ForgetPassword>
+              <PageNavigationBtn
+                onClick={() => handlePageNavigation("/sign-in/forgot-password")}
+                disabled={serverData.loading}
+              >
+                Forgot Password?
+              </PageNavigationBtn>
+            </ForgetPassword>
+          </CheckBoxFrgtPswd>
 
           <UserButtonContainer
             label="Log in"
@@ -178,94 +191,51 @@ export default function SignIn() {
             Sign up
           </PageNavigationBtn>
         </DontHaveAccount>
-
-        <ForgetPassword>
-          <PageNavigationBtn
-            onClick={() => handlePageNavigation("/sign-in/forgot-password")}
-            disabled={serverData.loading}
-          >
-            Forgot Password?
-          </PageNavigationBtn>
-        </ForgetPassword>
       </FormContainer>
-
-      <Outlet />
     </SignInUpContainer>
   );
 }
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-weight: 300;
-  padding: 0.8rem;
-
-  @media (max-width: 728px) {
-    background: white;
-    width: 100%;
-    max-width: 500px;
-    flex: none;
-    margin: 15px 0;
-  }
-`;
+const FormContainer = styled.div``;
 
 const Form = styled.form`
-  width: 95%;
-  max-width: 500px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
-  color: #737373;
 `;
 
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 34px;
-  margin-bottom: 15px;
-`;
-
-const CheckboxContainer = styled.div`
+const CheckBoxFrgtPswd = styled.div`
   position: relative;
   width: 100%;
-  height: 20px;
-  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
 `;
 
-const RememberMe = styled.input`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  &:hover:disabled {
-    cursor: not-allowed;
-  }
-`;
+const RememberMeWrapper = styled.label``;
 
 const RememberMeText = styled.span`
   position: absolute;
-  font-size: 11px;
   left: 22px;
   top: 50%;
+  font-size: 0.7rem;
   transform: translateY(-50%);
+  color: ${(props) => props.theme.txt.sub};
 `;
 
 const DontHaveAccount = styled.span`
   display: block;
-  font-weight: 400;
-  font-size: 10px;
-  color: #737373;
+  font-size: 0.7rem;
+  color: ${(props) => props.theme.txt.sub};
 `;
 
 const PageNavigationBtn = styled.button`
-  color: #4a00e0;
+  color: ${(props) => props.theme.txt.highlight};
   background: none;
   outline: none;
   border: none;
-  font-size: 10px;
-  font-weight: 700;
-  margin-left: 5px;
+  font-size: 0.7rem;
   cursor: pointer;
   &:hover:enabled {
     text-decoration: underline;
@@ -277,5 +247,4 @@ const PageNavigationBtn = styled.button`
 
 const ForgetPassword = styled.span`
   display: block;
-  margin-top: 4px;
 `;

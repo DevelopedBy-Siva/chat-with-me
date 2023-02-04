@@ -12,8 +12,8 @@ import { DarkTheme } from "./assets/styles/Themes";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    <GlobalStyles />
     <ThemeProvider theme={DarkTheme}>
+      <GlobalStyles />
       <Toaster />
       <App />
     </ThemeProvider>

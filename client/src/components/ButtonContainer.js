@@ -1,43 +1,27 @@
 import styled from "styled-components";
 import LoadingSpinner from "./LoadingSpinner";
 
-export default function ButtonContainer({
-  label,
-  loading = false,
-  width = "100%",
-  height = "35px",
-  marginBottom = "15px",
-  marginTop = "none",
-  borderRadius = "5px",
-  ...rest
-}) {
+export default function ButtonContainer({ label, loading = false, ...rest }) {
   return (
-    <Button
-      isLoading={loading}
-      width={width}
-      height={height}
-      borderRadius={borderRadius}
-      marginBottom={marginBottom}
-      marginTop={marginTop}
-      {...rest}
-    >
+    <Button isLoading={loading} {...rest}>
       {loading ? <LoadingSpinner /> : label}
     </Button>
   );
 }
 
 const Button = styled.button`
-  width: ${({ width }) => width};
-  height: ${({ height }) => height};
+  width: 100%;
+  height: 40px;
+  position: relative;
   border-radius: ${({ borderRadius }) => borderRadius};
   border: none;
-  margin-bottom: ${({ marginBottom }) => marginBottom};
-  margin-top: ${({ marginTop }) => marginTop};
-  font-weight: 700;
-  color: white;
+  background: none;
+  margin: 15px 0 15px 0;
+  border-radius: 5px;
   cursor: ${({ disabled, isLoading }) =>
     isLoading ? "progress" : disabled ? "not-allowed" : "pointer"};
-  background: ${({ disabled }) =>
-    disabled ? "#c9c9c9" : "linear-gradient(to right, #8e2de2, #4a00e0)"};
-  outline-color: #05a4fa;
+  background: ${(props) => props.theme.btn.inactive};
+  color: ${(props) => props.theme.txt.highlight};
+  font-size: 0.8rem;
+  font-weight: 400;
 `;

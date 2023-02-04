@@ -6,58 +6,75 @@ export default function InputContainer({
   inputRef,
   errorRef,
   errorMessage,
+  icon,
   ...rest
 }) {
   return (
     <Container>
+      <InputBox required="required" ref={inputRef} {...rest} />
       <InputHeading>{title}</InputHeading>
-      <InputBox ref={inputRef} {...rest} />
+      <Icon>{icon}</Icon>
       <InputErrorMessage ref={errorRef}>{errorMessage}</InputErrorMessage>
     </Container>
   );
 }
 
-const Container = styled.div`
+const Container = styled.label`
+  display: block;
   position: relative;
+  padding-top: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
 `;
 
-const InputHeading = styled.span`
-  display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: 700;
+const InputHeading = styled.label`
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+  position: absolute;
+  bottom: 3px;
+  pointer-events: none;
+  transition: transform 0.3s ease-in-out;
+  color: ${(props) => props.theme.txt.sub};
 `;
 
 const InputBox = styled.input`
-  width: 100%;
-  height: 35px;
-  outline: none;
-  border: 1px solid #737373;
-  border-radius: 5px;
-  margin-bottom: 32px;
-  font-size: 12px;
-  padding: 3px 6px;
+  width: calc(100% - 24px);
+  display: block;
   background: none;
-  &:hover:disabled {
-    cursor: not-allowed;
-  }
-  &::placeholder,
-  &::-webkit-input-placeholder,
-  &:-ms-input-placeholder {
-    color: #737373;
-    font-size: 10px;
+  outline: none;
+  border: none;
+  padding: 6px 0;
+  color: ${(props) => props.theme.txt.input};
+  font-size: 0.8rem;
+
+  &:disabled
+    ~ ${InputHeading},
+    &:valid
+    ~ ${InputHeading},
+    &:focus
+    ~ ${InputHeading} {
+    transform: translateY(-26px);
   }
 
-  @media (max-width: 728px) {
-    margin-bottom: 35px;
+  &.input-error {
+    color: ${(props) => props.theme.txt.error};
   }
+`;
+
+const Icon = styled.span`
+  position: absolute;
+  right: 0;
+  bottom: 3px;
+  pointer-events: none;
+  font-size: 1rem;
+  color: ${(props) => props.theme.txt.sub};
 `;
 
 const InputErrorMessage = styled.span`
   display: block;
   position: absolute;
-  bottom: 12px;
-  left: 4px;
-  font-size: 10px;
+  bottom: -20px;
+  font-size: 0.7rem;
   color: red;
+  pointer-events: none;
 `;

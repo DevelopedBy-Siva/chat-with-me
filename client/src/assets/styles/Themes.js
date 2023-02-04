@@ -1,4 +1,21 @@
 const DarkTheme = {
+  bg: {
+    app: "#02020E",
+  },
+  txt: {
+    main: "#fff",
+    sub: "#888992",
+    input: "#F7F6FA",
+    error: "#E24339",
+    highlight: "#F3C994",
+  },
+  border: {
+    inputbox: "#21222B",
+    error: "#E24339",
+  },
+  btn: {
+    inactive: "#1A1B26",
+  },
   background: {
     app: "#282834",
     container: "#131517",
@@ -7,6 +24,7 @@ const DarkTheme = {
       hex: "#284ff2",
       rgba: "rgba(49,78,233,0.2)",
     },
+    blue: "#284ff2",
   },
   text: {
     main: "#FFFFFF",
@@ -28,6 +46,9 @@ const DarkTheme = {
 };
 
 const LightTheme = {
+  bg: {
+    app: "#02020E",
+  },
   background: {
     app: "#f2f1f6",
     container: "#FFFFFF",
@@ -36,6 +57,7 @@ const LightTheme = {
       hex: "#284ff2",
       rgba: "rgba(49,78,233,0.2)",
     },
+    blue: "#284ff2",
   },
   text: {
     main: "#00000",

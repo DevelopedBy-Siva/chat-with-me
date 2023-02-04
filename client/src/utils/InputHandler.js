@@ -1,4 +1,4 @@
-const _ = require("lodash");
+import _ from "lodash";
 
 export const AllowedInputFields = {
   EMAIL: "email",
@@ -85,7 +85,7 @@ export const confirmPasswordValidation = (pswd, confirmPswd) => {
 };
 
 export const validationColor = {
-  success: "#737373",
+  success: "#21222B",
   error: "red",
 };
 
@@ -96,7 +96,7 @@ export const errorVisibility = (
   borderColor = validationColor.success,
   errorMsg = null
 ) => {
-  inputRef.current.style.color = txtColor;
-  inputRef.current.style.border = `1px solid ${borderColor}`;
+  // inputRef.current.style.color = txtColor;
+  // inputRef.current.style.borderBottom = `1px solid ${borderColor}`;
   errorRef.current.innerText = errorMsg;
 };
