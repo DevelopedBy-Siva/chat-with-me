@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import Logo from "./Logo";
 
-export default function SignInUpContainer({ title, children }) {
+export default function PublicPageWrapper({ title, children }) {
   return (
     <Container>
       <Logo />

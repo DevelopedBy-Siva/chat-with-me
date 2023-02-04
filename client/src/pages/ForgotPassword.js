@@ -3,7 +3,7 @@ import { useState } from "react";
 import ForgotPasswordChangePassword from "../components/ForgotPasswordChangePassword";
 import ForgotPasswordHome from "../components/ForgotPasswordHome";
 import ForgotPasswordVerify from "../components/ForgotPasswordVerify";
-import Modal from "../components/ModalContainer";
+import PublicPageWrapper from "../components/PublicPageWrapper";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../utils/Screens";
 
 export default function ForgotPassword() {
@@ -62,5 +62,24 @@ export default function ForgotPassword() {
     }
   };
 
-  return <Modal loading={serverResponse.loading}>{handleActiveScreen()}</Modal>;
+  const getPageTitle = (screen) => {
+    let title;
+    switch (screen) {
+      case SCREEN.CNG_PSWD:
+        title = "New Password";
+        break;
+      case SCREEN.VEIRFY_CODE:
+        title = "Verify Email";
+        break;
+      default:
+        title = "Forget Password";
+    }
+    return title;
+  };
+
+  return (
+    <PublicPageWrapper title={getPageTitle(activeScreen)}>
+      {handleActiveScreen()}
+    </PublicPageWrapper>
+  );
 }

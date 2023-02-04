@@ -15,7 +15,7 @@ import {
   AllowedInputFields,
   errorVisibility,
 } from "../utils/InputHandler";
-import SignInUpContainer from "../components/SignInUpContainer";
+import PublicPageWrapper from "../components/PublicPageWrapper";
 import UserInputContainer from "../components/InputContainer";
 import UserButtonContainer from "../components/ButtonContainer";
 
@@ -136,7 +136,7 @@ export default function SignIn() {
   };
 
   return (
-    <SignInUpContainer title="Sign up">
+    <PublicPageWrapper title="Sign up">
       <FormContainer>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
@@ -223,7 +223,7 @@ export default function SignIn() {
       </FormContainer>
 
       <Outlet />
-    </SignInUpContainer>
+    </PublicPageWrapper>
   );
 }
 

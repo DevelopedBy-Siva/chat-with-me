@@ -111,11 +111,9 @@ export default function ForgotPasswordChangePassword({
 
   return (
     <Container>
-      <Title>Create new password</Title>
       <Form onSubmit={handleChangePswd}>
         <InputContainer
           title="New password"
-          placeholder="Enter the new password"
           name="new-password"
           type="password"
           inputRef={newPasswordRef}
@@ -125,7 +123,6 @@ export default function ForgotPasswordChangePassword({
         />
         <InputContainer
           title="Confirm password"
-          placeholder="Confirm the new password"
           name="confirm-password"
           type="password"
           inputRef={confirmPasswordRef}

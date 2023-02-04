@@ -124,11 +124,9 @@ export default function ForgotPasswordVerify({
 
   return (
     <Container>
-      <Title>Verify your e-mail address</Title>
       <InputTitle>
-        We emailed you a five-digit code to <i>{info.email}</i>.
-        <br />
-        Enter the code below to confirm your email address.
+        We emailed a five-digit code to <i>{info.email}</i>. Enter the code
+        below to confirm your email address.
       </InputTitle>
       <Form onSubmit={verifyEmail}>
         <InputContainer>
@@ -165,19 +163,17 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 25px;
-  margin-top: 5px;
-`;
+const InputTitle = styled.h3`
+  text-align: left;
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.8rem;
+  line-height: 1.1rem;
 
-const InputTitle = styled.h1`
-  font-size: 12px;
-  font-weight: 400;
-  text-align: center;
-  line-height: 14px;
+  &::before {
+    content: "\u003E ";
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -194,13 +190,13 @@ const InputBox = styled.input`
   width: 100%;
   max-width: 50px;
   text-align: center;
-  border: 1px solid #737373;
+  color: ${(props) => props.theme.txt.main};
+  border: 1px solid ${(props) => props.theme.border.inputbox};
   border-radius: 5px;
   margin-left: 5px;
-  font-size: 20px;
+  font-size: 1.4rem;
   outline-color: #05a4fa;
   background: none;
-  color: #000;
   -moz-appearance: textfield;
   ::-webkit-outer-spin-button,
   ::-webkit-inner-spin-button {
@@ -211,14 +207,17 @@ const InputBox = styled.input`
 
 const CodeExpires = styled.span`
   display: block;
-  font-size: 10px;
   margin-bottom: 25px;
   text-align: center;
+  font-size: 0.8rem;
+  color: ${(props) => props.theme.txt.sub};
+  user-select: none;
 `;
 
 const Timer = styled.span`
-  font-size: 14px;
-  color: red;
+  color: ${(props) => props.theme.txt.sub};
+  font-weight: 400;
+  user-select: none;
 `;
 
 const Form = styled.form``;

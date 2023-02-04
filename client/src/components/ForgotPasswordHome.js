@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
+import { MdAlternateEmail } from "react-icons/md";
+
 import axios from "../api/axios";
 
 import ButtonContainer from "./ButtonContainer";
@@ -79,17 +81,11 @@ export default function ForgotPasswordHome({
 
   return (
     <Container>
-      <Title>Reset password</Title>
-      <Description>
-        Enter the email associated with your account and we'll send a
-        verifcation code to confirm your email
-      </Description>
       <Form onSubmit={verifyEmail}>
         <InputContainer
-          title="Your e-mail"
+          title="E-mail"
           inputRef={emailInputRef}
           errorRef={emailErrorRef}
-          placeholder="name@domain.com"
           name="email"
           type="email"
           spellCheck="false"
@@ -97,6 +93,7 @@ export default function ForgotPasswordHome({
           disabled={serverResponse.loading}
           errorMessage={serverResponse.error}
           onInput={(e) => handleInputChange(e, "email")}
+          icon={<MdAlternateEmail />}
         />
         <ButtonContainer
           type="submit"
@@ -116,27 +113,3 @@ const Container = styled.div`
 `;
 
 const Form = styled.form``;
-
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 25px;
-  margin-top: 5px;
-`;
-
-const Description = styled.h3`
-  font-size: 12px;
-  font-weight: 400;
-  text-align: center;
-  line-height: 12px;
-  text-align: center;
-  width: 60%;
-  margin: auto;
-  margin-bottom: 25px;
-  line-height: 16px;
-
-  @media (max-width: 728px) {
-    width: 80%;
-  }
-`;
