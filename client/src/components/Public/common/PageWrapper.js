@@ -68,6 +68,10 @@ const HeadingSplit = styled.h1`
     content: " ";
     white-space: pre;
   }
+
+  &:nth-child(2)::before {
+    content: "\u003C ";
+  }
 `;
 
 const SubHeading = styled.h2`
