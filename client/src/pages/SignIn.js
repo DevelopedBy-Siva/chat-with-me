@@ -159,7 +159,7 @@ export default function SignIn() {
                 type="checkbox"
                 disabled={serverData.loading}
                 isChecked={loginInfo.rememberme}
-                onClick={(e) => handleInputChange(e, "rememberme")}
+                onChange={(e) => handleInputChange(e, "rememberme")}
               />
               <RememberMeText>Remember me</RememberMeText>
             </RememberMeWrapper>

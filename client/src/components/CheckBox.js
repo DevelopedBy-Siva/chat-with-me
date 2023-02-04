@@ -5,7 +5,7 @@ export default function Checkbox({ isChecked, ...rest }) {
   return (
     <CheckboxContainer>
       <HiddenCheckbox checked={isChecked} {...rest} />
-      <StyledCheckbox checked={isChecked}>
+      <StyledCheckbox checked={isChecked ? 1 : 0}>
         <Icon viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12" />
         </Icon>

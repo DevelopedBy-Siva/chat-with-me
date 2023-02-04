@@ -9,7 +9,6 @@ export const GlobalStyles = createGlobalStyle`
         font-weight: 300;
     }
     html, body {
-        overflow: hidden;
         font-size: 32px;
         letter-spacing: 1px;
         font-size: 16px;

@@ -1,15 +1,20 @@
 import styled from "styled-components";
 
+import Logo from "./Logo";
+
 export default function SignInUpContainer({ title, children }) {
   return (
     <Container>
+      <Logo />
       <Wrapper>
-        <Heading>
-          <HeadingSplit>Welcome to</HeadingSplit>
-          <HeadingSplit>Chat with me_</HeadingSplit>
-        </Heading>
-        <SubHeading>{title}</SubHeading>
-        {children}
+        <Content>
+          <Heading>
+            <HeadingSplit>Welcome to</HeadingSplit>
+            <HeadingSplit>Chat with me_</HeadingSplit>
+          </Heading>
+          <SubHeading>{title}</SubHeading>
+          {children}
+        </Content>
       </Wrapper>
     </Container>
   );
@@ -18,14 +23,18 @@ export default function SignInUpContainer({ title, children }) {
 const Container = styled.div`
   width: 100%;
   height: 100vh;
-  padding: 1rem;
-  overflow-y: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Wrapper = styled.div`
+  width: 100%;
+  height: calc(100% - 60px);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Content = styled.div`
   width: 100%;
   max-width: 580px;
   display: flex;
