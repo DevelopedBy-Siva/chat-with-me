@@ -4,6 +4,7 @@ const DarkTheme = {
   },
   txt: {
     main: "#fff",
+    mainDark: "#02020E",
     sub: "#888992",
     input: "#F7F6FA",
     error: "#E24339",

@@ -23,7 +23,7 @@ const CheckboxContainer = styled.div`
 
 const Icon = styled.svg`
   fill: none;
-  stroke: white;
+  stroke: ${(props) => props.theme.txt.mainDark};
   stroke-width: 4px;
   display: flex;
   justify-content: center;

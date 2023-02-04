@@ -165,7 +165,8 @@ export default function SignIn() {
             </RememberMeWrapper>
             <ForgetPassword>
               <PageNavigationBtn
-                onClick={() => handlePageNavigation("/sign-in/forgot-password")}
+                type="button"
+                onClick={() => handlePageNavigation("/forgot-password")}
                 disabled={serverData.loading}
               >
                 Forgot Password?
