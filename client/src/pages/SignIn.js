@@ -200,8 +200,6 @@ const FormContainer = styled.div``;
 
 const Form = styled.form`
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
 `;
 
 const CheckBoxFrgtPswd = styled.div`
@@ -236,6 +234,7 @@ const PageNavigationBtn = styled.button`
   outline: none;
   border: none;
   font-size: 0.7rem;
+  letter-spacing: 1px;
   cursor: pointer;
   &:hover:enabled {
     text-decoration: underline;

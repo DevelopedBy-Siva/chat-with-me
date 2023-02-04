@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "../api/axios";
+import { MdAlternateEmail } from "react-icons/md";
+import { FiKey } from "react-icons/fi";
+import { FaRegUser } from "react-icons/fa";
+import { AiOutlinePhone } from "react-icons/ai";
 
+import axios from "../api/axios";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
@@ -132,71 +136,70 @@ export default function SignIn() {
   };
 
   return (
-    <SignInUpContainer>
+    <SignInUpContainer title="Sign up">
       <FormContainer>
-        <Title>Sign up</Title>
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
-            title="Your e-mail"
+            title="E-mail"
             inputRef={nameInputRef}
             errorRef={nameErrorRef}
-            placeholder="name@domain.com"
             name="email"
-            type="email"
+            type="text"
             spellCheck="false"
             autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
+            icon={<MdAlternateEmail />}
           />
 
           <UserInputContainer
-            title="Your e-mail"
+            title="Name"
             inputRef={emailInputRef}
             errorRef={emailErrorRef}
-            placeholder="name@domain.com"
-            name="email"
-            type="email"
+            name="name"
+            type="text"
             spellCheck="false"
             autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
+            icon={<FaRegUser />}
           />
 
           <UserInputContainer
-            title="Your e-mail"
+            title="Phone"
             inputRef={phoneInputRef}
             errorRef={phoneErrorRef}
-            placeholder="name@domain.com"
-            name="email"
-            type="email"
+            name="phone"
+            type="text"
             spellCheck="false"
             autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
+            icon={<AiOutlinePhone />}
           />
 
           <UserInputContainer
             title="Password"
             inputRef={passwordInputRef}
             errorRef={passwordErrorRef}
-            placeholder="at least 8 characters"
             name="password"
             type="password"
             maxLength={32}
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "password")}
+            icon={<FiKey />}
           />
 
           <UserInputContainer
-            title="Password"
+            title="Confirm Password"
             inputRef={confirmPswdInputRef}
             errorRef={confirmPswdErrorRef}
-            placeholder="at least 8 characters"
             name="password"
             type="password"
             maxLength={32}
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "password")}
+            icon={<FiKey />}
           />
 
           <UserButtonContainer
@@ -209,7 +212,7 @@ export default function SignIn() {
         </Form>
 
         <AlreadyHaveAccount>
-          Already have an account?
+          Already have an account?{" "}
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-in", true)}
             disabled={serverData.loading}
@@ -224,53 +227,25 @@ export default function SignIn() {
   );
 }
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-weight: 300;
-  padding: 0.8rem;
-
-  @media (max-width: 728px) {
-    background: white;
-    width: 100%;
-    max-width: 500px;
-    flex: none;
-    margin: 15px 0;
-  }
-`;
+const FormContainer = styled.div``;
 
 const Form = styled.form`
-  width: 95%;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  color: #737373;
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  font-size: 34px;
-  margin-bottom: 15px;
+  width: 100%;
 `;
 
 const AlreadyHaveAccount = styled.span`
   display: block;
-  font-weight: 400;
-  font-size: 10px;
-  color: #737373;
+  font-size: 0.7rem;
+  color: ${(props) => props.theme.txt.sub};
 `;
 
 const PageNavigationBtn = styled.button`
-  color: #4a00e0;
+  color: ${(props) => props.theme.txt.highlight};
   background: none;
   outline: none;
   border: none;
-  font-size: 10px;
-  font-weight: 700;
-  margin-left: 5px;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
   cursor: pointer;
   &:hover:enabled {
     text-decoration: underline;
