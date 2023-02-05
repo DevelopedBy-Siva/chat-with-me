@@ -153,7 +153,7 @@ export default function SignIn() {
           />
 
           <CheckBoxFrgtPswd>
-            <RememberMeWrapper>
+            <RememberMeWrapper disable={serverData.loading}>
               <Checkbox
                 name="rememberme"
                 type="checkbox"
@@ -212,14 +212,15 @@ const CheckBoxFrgtPswd = styled.div`
   margin: 8px 0;
 `;
 
-const RememberMeWrapper = styled.label``;
+const RememberMeWrapper = styled.label`
+  cursor: ${(props) => (props.disable ? "not-allowed" : "pointer")};
+  display: flex;
+  align-items: center;
+`;
 
 const RememberMeText = styled.span`
-  position: absolute;
-  left: 22px;
-  top: 50%;
   font-size: 0.7rem;
-  transform: translateY(-50%);
+  padding-left: 22px;
   color: ${(props) => props.theme.txt.sub};
 `;
 

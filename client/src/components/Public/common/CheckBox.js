@@ -16,7 +16,6 @@ export default function Checkbox({ isChecked, ...rest }) {
 
 const CheckboxContainer = styled.div`
   display: inline-block;
-  vertical-align: middle;
   position: absolute;
   top: 1px;
 `;
