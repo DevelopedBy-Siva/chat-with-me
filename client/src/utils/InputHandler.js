@@ -40,7 +40,9 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
       data.confirmPassword = value;
       break;
     case PHONE:
-      data.phone = value;
+      let parsedVal = parseInt(value).toString();
+      if (isNaN(parsedVal)) parsedVal = "";
+      data.phone = parsedVal;
       break;
     case REMEMBER_ME:
       data.rememberme = e.target.checked;
@@ -59,9 +61,29 @@ export const emailValidation = (email) => {
 
   const isValid = email && email.match(regex);
   let message = null;
-  if (!isValid) message = "Invalid e-mail id";
+  if (!isValid) message = "Invalid e-mail";
 
   return { isValid, message };
+};
+
+export const phoneValidation = (number) => {
+  const isValid = number && number.length > 8 && number.length < 11;
+  let message = null;
+  if (!isValid) message = "Invalid Phone number";
+  return {
+    isValid,
+    message,
+  };
+};
+
+export const nameValidation = (name) => {
+  const isValid = name && name.length >= 3 && name.length <= 16;
+  let message = null;
+  if (!isValid) message = "Name length must be >=3 or <=16";
+  return {
+    isValid,
+    message,
+  };
 };
 
 export const passwordValidation = (password) => {

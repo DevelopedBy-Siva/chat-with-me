@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { Outlet, useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
@@ -10,10 +10,11 @@ import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
-  validationColor,
+  nameValidation as validateName,
+  phoneValidation as validatePhone,
+  confirmPasswordValidation as validateConfirmPswd,
   inputChanges,
   AllowedInputFields,
-  errorVisibility,
 } from "../../../utils/InputHandler";
 import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
@@ -22,26 +23,18 @@ import UserButtonContainer from "../../../components/Public/common/ButtonContain
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const nameInputRef = useRef(null);
-  const nameErrorRef = useRef(null);
-
   const emailInputRef = useRef(null);
+
   const emailErrorRef = useRef(null);
-
-  const phoneInputRef = useRef(null);
+  const nameErrorRef = useRef(null);
   const phoneErrorRef = useRef(null);
-
-  const passwordInputRef = useRef(null);
   const passwordErrorRef = useRef(null);
-
-  const confirmPswdInputRef = useRef(null);
   const confirmPswdErrorRef = useRef(null);
 
-  const [btnActive, setBtnActive] = useState(true);
   const [signupInfo, setSignupInfo] = useState({
     email: null,
     name: null,
-    phone: null,
+    phone: "",
     password: null,
     confirmPassword: null,
   });
@@ -50,47 +43,34 @@ export default function SignUp() {
     error: null,
   });
 
-  // Focus on Email Input box on page startup
   useEffect(() => {
-    nameInputRef.current.focus();
+    emailInputRef.current.focus();
   }, []);
 
-  // Validate input changes
   useEffect(() => {
-    const { email, password } = signupInfo;
+    emailErrorRef.current.innerText = "";
+    emailErrorRef.current.classList.remove("input-error");
+  }, [signupInfo.email]);
 
-    const emailValid = validateEmail(email);
-    const passwordValid = validatePassword(password);
+  useEffect(() => {
+    nameErrorRef.current.innerText = "";
+    nameErrorRef.current.classList.remove("input-error");
+  }, [signupInfo.name]);
 
-    const { error } = validationColor;
-    // Remove/ Add input error messages from the DOM
-    if (email) {
-      if (emailValid.isValid) errorVisibility(emailInputRef, emailErrorRef);
-      else
-        errorVisibility(
-          emailInputRef,
-          emailErrorRef,
-          error,
-          error,
-          emailValid.message
-        );
-    }
-    if (password) {
-      if (passwordValid.isValid)
-        errorVisibility(passwordInputRef, passwordErrorRef);
-      else
-        errorVisibility(
-          passwordInputRef,
-          passwordErrorRef,
-          error,
-          error,
-          passwordValid.message
-        );
-    }
-    // If Input is Valid, enable the login button
-    if (emailValid.isValid && passwordValid.isValid) setBtnActive(false);
-    else setBtnActive(true);
-  }, [signupInfo]);
+  useEffect(() => {
+    phoneErrorRef.current.innerText = "";
+    phoneErrorRef.current.classList.remove("input-error");
+  }, [signupInfo.phone]);
+
+  useEffect(() => {
+    passwordErrorRef.current.innerText = "";
+    passwordErrorRef.current.classList.remove("input-error");
+  }, [signupInfo.password]);
+
+  useEffect(() => {
+    confirmPswdErrorRef.current.innerText = "";
+    confirmPswdErrorRef.current.classList.remove("input-error");
+  }, [signupInfo.confirmPassword]);
 
   const handleInputChange = (e, type) => {
     const allowedFields = [
@@ -106,6 +86,45 @@ export default function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const { email, password, phone, name, confirmPassword } = signupInfo;
+
+    const emailValid = validateEmail(email);
+    const passwordValid = validatePassword(password);
+    const nameValid = validateName(name);
+    const phoneValid = validatePhone(phone);
+    const confirmPswd = validateConfirmPswd(password, confirmPassword);
+
+    const validInput =
+      emailValid.isValid &&
+      passwordValid.isValid &&
+      nameValid.isValid &&
+      phoneValid.isValid &&
+      confirmPswd.isValid;
+
+    if (!validInput) {
+      if (!emailValid.isValid) {
+        emailErrorRef.current.innerText = emailValid.message;
+        emailErrorRef.current.classList.add("input-error");
+      }
+      if (!nameValid.isValid) {
+        nameErrorRef.current.innerText = nameValid.message;
+        nameErrorRef.current.classList.add("input-error");
+      }
+      if (!phoneValid.isValid) {
+        phoneErrorRef.current.innerText = phoneValid.message;
+        phoneErrorRef.current.classList.add("input-error");
+      }
+      if (!passwordValid.isValid) {
+        passwordErrorRef.current.innerText = passwordValid.message;
+        passwordErrorRef.current.classList.add("input-error");
+      }
+      if (!confirmPswd.isValid) {
+        confirmPswdErrorRef.current.innerText = confirmPswd.message;
+        confirmPswdErrorRef.current.classList.add("input-error");
+      }
+      return;
+    }
 
     setServerData({
       ...serverData,
@@ -125,10 +144,6 @@ export default function SignUp() {
       });
   };
 
-  const handleBtnSubmit = () => {
-    return serverData.loading ? true : btnActive;
-  };
-
   const handlePageNavigation = (param, replace = false) => {
     return navigate(param, {
       replace,
@@ -141,8 +156,8 @@ export default function SignUp() {
         <Form onSubmit={handleSubmit}>
           <UserInputContainer
             title="E-mail"
-            inputRef={nameInputRef}
-            errorRef={nameErrorRef}
+            inputRef={emailInputRef}
+            errorRef={emailErrorRef}
             name="email"
             type="text"
             spellCheck="false"
@@ -154,33 +169,32 @@ export default function SignUp() {
 
           <UserInputContainer
             title="Name"
-            inputRef={emailInputRef}
-            errorRef={emailErrorRef}
+            errorRef={nameErrorRef}
             name="name"
             type="text"
             spellCheck="false"
             autoComplete="off"
             disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "email")}
+            onInput={(e) => handleInputChange(e, "name")}
             icon={<FaRegUser />}
           />
 
           <UserInputContainer
             title="Phone"
-            inputRef={phoneInputRef}
             errorRef={phoneErrorRef}
             name="phone"
             type="text"
             spellCheck="false"
             autoComplete="off"
+            inputMode="numeric"
+            value={signupInfo.phone}
             disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "email")}
+            onChange={(e) => handleInputChange(e, "phone")}
             icon={<AiOutlinePhone />}
           />
 
           <UserInputContainer
             title="Password"
-            inputRef={passwordInputRef}
             errorRef={passwordErrorRef}
             name="password"
             type="password"
@@ -192,13 +206,12 @@ export default function SignUp() {
 
           <UserInputContainer
             title="Confirm Password"
-            inputRef={confirmPswdInputRef}
             errorRef={confirmPswdErrorRef}
             name="password"
             type="password"
             maxLength={32}
             disabled={serverData.loading}
-            onInput={(e) => handleInputChange(e, "password")}
+            onInput={(e) => handleInputChange(e, "confirmPassword")}
             icon={<FiKey />}
           />
 
@@ -206,7 +219,7 @@ export default function SignUp() {
             label="Sign up"
             type="submit"
             onClick={handleSubmit}
-            disabled={handleBtnSubmit()}
+            disabled={serverData.loading}
             loading={serverData.loading}
           />
         </Form>
