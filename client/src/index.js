@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
 
 import App from "./App";
-import Toaster from "./components/Toast";
+import Toaster from "./components/Toastify";
 import GlobalStyles from "./assets/styles/GlobalStyles";
 import { DarkTheme } from "./assets/styles/Themes";
 

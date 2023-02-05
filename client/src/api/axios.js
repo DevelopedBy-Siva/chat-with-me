@@ -1,5 +1,5 @@
 import _ from "axios";
-import * as toast from "../components/Toast/UserToastUtils";
+import * as toast from "../components/Toastify/UserToastUtils";
 import retrieveError from "./ExceptionHandler";
 
 const baseURL = process.env.REACT_APP_API_BASEURL;
