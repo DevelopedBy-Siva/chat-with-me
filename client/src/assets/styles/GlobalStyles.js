@@ -15,6 +15,8 @@ export const GlobalStyles = createGlobalStyle`
         height: 100%;
         width: 100%;
         background: ${(props) => props.theme.bg.app};
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 `;
 

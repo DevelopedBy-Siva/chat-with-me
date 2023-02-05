@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
 
@@ -8,10 +8,8 @@ import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
   passwordValidation as validatePassword,
-  validationColor,
   inputChanges,
   AllowedInputFields,
-  errorVisibility,
 } from "../../../utils/InputHandler";
 import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
@@ -22,12 +20,10 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const emailInputRef = useRef(null);
-  const emailErrorRef = useRef(null);
 
-  const passwordInputRef = useRef(null);
+  const emailErrorRef = useRef(null);
   const passwordErrorRef = useRef(null);
 
-  const [btnActive, setBtnActive] = useState(true);
   const [loginInfo, setLoginInfo] = useState({
     email: null,
     password: null,
@@ -38,47 +34,19 @@ export default function SignIn() {
     error: null,
   });
 
-  // Focus on Email Input box on page startup
   useEffect(() => {
     emailInputRef.current.focus();
   }, []);
 
-  // Validate input changes
   useEffect(() => {
-    const { email, password } = loginInfo;
+    emailErrorRef.current.innerText = "";
+    emailErrorRef.current.classList.remove("input-error");
+  }, [loginInfo.email]);
 
-    const emailValid = validateEmail(email);
-    const passwordValid = validatePassword(password);
-
-    const { error } = validationColor;
-    // Remove/ Add input error messages from the DOM
-    if (email) {
-      if (emailValid.isValid) errorVisibility(emailInputRef, emailErrorRef);
-      else
-        errorVisibility(
-          emailInputRef,
-          emailErrorRef,
-          error,
-          error,
-          emailValid.message
-        );
-    }
-    if (password) {
-      if (passwordValid.isValid)
-        errorVisibility(passwordInputRef, passwordErrorRef);
-      else
-        errorVisibility(
-          passwordInputRef,
-          passwordErrorRef,
-          error,
-          error,
-          passwordValid.message
-        );
-    }
-    // If Input is Valid, enable the login button
-    if (emailValid.isValid && passwordValid.isValid) setBtnActive(false);
-    else setBtnActive(true);
-  }, [loginInfo]);
+  useEffect(() => {
+    passwordErrorRef.current.innerText = "";
+    passwordErrorRef.current.classList.remove("input-error");
+  }, [loginInfo.password]);
 
   const handleInputChange = (e, type) => {
     const allowedFields = [
@@ -92,6 +60,24 @@ export default function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const { email, password } = loginInfo;
+
+    const emailValid = validateEmail(email);
+    const passwordValid = validatePassword(password);
+
+    const validInput = emailValid.isValid && passwordValid.isValid;
+    if (!validInput) {
+      if (!emailValid.isValid) {
+        emailErrorRef.current.innerText = emailValid.message;
+        emailErrorRef.current.classList.add("input-error");
+      }
+      if (!passwordValid.isValid) {
+        passwordErrorRef.current.innerText = passwordValid.message;
+        passwordErrorRef.current.classList.add("input-error");
+      }
+      return;
+    }
 
     setServerData({
       ...serverData,
@@ -111,10 +97,6 @@ export default function SignIn() {
           error,
         });
       });
-  };
-
-  const handleBtnSubmit = () => {
-    return serverData.loading ? true : btnActive;
   };
 
   const handlePageNavigation = (param, replace = false) => {
@@ -142,7 +124,6 @@ export default function SignIn() {
 
           <UserInputContainer
             title="Password"
-            inputRef={passwordInputRef}
             errorRef={passwordErrorRef}
             name="password"
             type="password"
@@ -178,7 +159,7 @@ export default function SignIn() {
             label="Log in"
             type="submit"
             onClick={handleSubmit}
-            disabled={handleBtnSubmit()}
+            disabled={serverData.loading}
             loading={serverData.loading}
           />
         </Form>
@@ -209,7 +190,7 @@ const CheckBoxFrgtPswd = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 8px 0;
+  margin: 12px 0;
 `;
 
 const RememberMeWrapper = styled.label`

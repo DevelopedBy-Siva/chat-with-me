@@ -14,7 +14,7 @@ export default function InputContainer({
       <InputBox required="required" ref={inputRef} {...rest} />
       <InputHeading>{title}</InputHeading>
       <Icon>{icon}</Icon>
-      <InputErrorMessage ref={errorRef}>{errorMessage}</InputErrorMessage>
+      <InputErrorMessage ref={errorRef} />
     </Container>
   );
 }
@@ -27,14 +27,16 @@ const Container = styled.label`
   border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
 `;
 
-const InputHeading = styled.label`
+const InputHeading = styled.span`
+  color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
-  margin-bottom: 4px;
   position: absolute;
   bottom: 3px;
   pointer-events: none;
-  transition: transform 0.3s ease-in-out;
-  color: ${(props) => props.theme.txt.sub};
+  transition: all 0.3s ease-in-out;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 `;
 
 const InputBox = styled.input`
@@ -55,10 +57,6 @@ const InputBox = styled.input`
     ~ ${InputHeading} {
     transform: translateY(-26px);
   }
-
-  &.input-error {
-    color: ${(props) => props.theme.txt.error};
-  }
 `;
 
 const Icon = styled.span`
@@ -71,10 +69,16 @@ const Icon = styled.span`
 `;
 
 const InputErrorMessage = styled.span`
-  display: block;
+  display: none;
   position: absolute;
   bottom: -20px;
   font-size: 0.7rem;
-  color: red;
-  pointer-events: none;
+  color: ${(props) => props.theme.txt.error};
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+
+  &.input-error {
+    display: block;
+  }
 `;
