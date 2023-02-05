@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import networkStatus from "./components/toast/NetworkStatus";
+import networkStatus from "./components/Toast/NetworkStatus";
 import Public from "./pages/public";
 import Private from "./pages/private";
 
@@ -13,7 +13,7 @@ const Chat = lazy(() => import("./components/Home/Chat"));
 const Friends = lazy(() => import("./components/Home/Friends"));
 const Group = lazy(() => import("./components/Home/Group"));
 const Settings = lazy(() => import("./components/Home/Settings"));
-const Modal = lazy(() => import("./components/Modal"));
+const Modal = lazy(() => import("./components/Home/Modal"));
 
 export default function App() {
   useEffect(() => {

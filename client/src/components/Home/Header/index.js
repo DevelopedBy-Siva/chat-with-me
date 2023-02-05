@@ -5,7 +5,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 
-import Avatar from "../../assets/svgs/avatars/3.svg";
+import Avatar from "../../../assets/svgs/avatars/3.svg";
 
 export default function Header() {
   return (

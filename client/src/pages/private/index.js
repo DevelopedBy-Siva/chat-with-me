@@ -7,10 +7,8 @@ export default function Private() {
   const [proceed, setProceed] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      const isValid = validateToken();
-      setProceed(isValid);
-    }, 5000);
+    const isValid = validateToken();
+    setProceed(isValid);
   }, []);
 
   return proceed === null ? (

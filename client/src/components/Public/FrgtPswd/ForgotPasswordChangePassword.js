@@ -13,7 +13,7 @@ import {
 } from "../../../utils/InputHandler";
 import ButtonContainer from "../common/ButtonContainer";
 import InputContainer from "../common/InputContainer";
-import * as toast from "../../toast/UserToastUtils";
+import * as toast from "../../Toast/UserToastUtils";
 
 export default function ForgotPasswordChangePassword({
   info,
