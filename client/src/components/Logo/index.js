@@ -11,6 +11,7 @@ export default function Logo({ background = false }) {
 }
 
 const LogoContainer = styled.div`
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;

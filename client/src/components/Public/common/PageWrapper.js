@@ -23,16 +23,18 @@ export default function PageWrapper({ title, children }) {
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Footer = styled.footer`
   height: 40px;
+  flex-shrink: 0;
 `;
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: calc(100% - 100px);
+  flex: 1;
   padding: 1rem;
   display: flex;
   align-items: center;
