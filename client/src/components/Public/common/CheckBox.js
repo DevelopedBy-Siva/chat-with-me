@@ -17,7 +17,7 @@ export default function Checkbox({ isChecked, ...rest }) {
 const CheckboxContainer = styled.div`
   display: inline-block;
   position: absolute;
-  top: 1px;
+  top: 2px;
 `;
 
 const Icon = styled.svg`

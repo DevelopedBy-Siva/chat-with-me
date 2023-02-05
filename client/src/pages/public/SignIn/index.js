@@ -214,8 +214,6 @@ const CheckBoxFrgtPswd = styled.div`
 
 const RememberMeWrapper = styled.label`
   cursor: ${(props) => (props.disable ? "not-allowed" : "pointer")};
-  display: flex;
-  align-items: center;
 `;
 
 const RememberMeText = styled.span`
