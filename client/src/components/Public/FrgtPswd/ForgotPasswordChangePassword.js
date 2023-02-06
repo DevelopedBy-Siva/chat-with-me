@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "../../../api/axios";
@@ -7,8 +7,6 @@ import {
   AllowedInputFields,
   inputChanges,
   confirmPasswordValidation as validateConfirmPswd,
-  validationColor,
-  errorVisibility,
   passwordValidation as validatePassword,
 } from "../../../utils/InputHandler";
 import ButtonContainer from "../common/ButtonContainer";
@@ -29,49 +27,19 @@ export default function ForgotPasswordChangePassword({
   const newPasswordErrorRef = useRef(null);
   const confirmPasswordErrorRef = useRef(null);
 
-  const [btnActive, setBtnActive] = useState(true);
-
   useEffect(() => {
     newPasswordRef.current.focus();
   }, []);
 
   useEffect(() => {
-    const { password, confirmPassword } = info;
+    newPasswordErrorRef.current.innerText = "";
+    newPasswordErrorRef.current.classList.remove("input-error");
+  }, [info.password]);
 
-    const passwordValid = validatePassword(password);
-    const confirmPasswordValid = validateConfirmPswd(password, confirmPassword);
-
-    const { error } = validationColor;
-    // Remove/ Add input error messages from the DOM
-    if (password) {
-      if (passwordValid.isValid)
-        errorVisibility(newPasswordRef, newPasswordErrorRef);
-      else
-        errorVisibility(
-          newPasswordRef,
-          newPasswordErrorRef,
-          error,
-          error,
-          passwordValid.message
-        );
-    }
-    if (password && password.length > 0 && confirmPassword) {
-      if (confirmPasswordValid.isValid)
-        errorVisibility(confirmPasswordRef, confirmPasswordErrorRef);
-      else
-        errorVisibility(
-          confirmPasswordRef,
-          confirmPasswordErrorRef,
-          error,
-          error,
-          confirmPasswordValid.message
-        );
-    }
-    // If Input is Valid, enable the login button
-    if (passwordValid.isValid && confirmPasswordValid.isValid)
-      setBtnActive(false);
-    else setBtnActive(true);
-  }, [info]);
+  useEffect(() => {
+    confirmPasswordErrorRef.current.innerText = "";
+    confirmPasswordErrorRef.current.classList.remove("input-error");
+  }, [info.confirmPassword]);
 
   const handleInputChange = (e, type) => {
     const allowedFields = [
@@ -85,6 +53,25 @@ export default function ForgotPasswordChangePassword({
 
   const handleChangePswd = (e) => {
     e.preventDefault();
+
+    const { password, confirmPassword } = info;
+
+    const passwordValid = validatePassword(password);
+    const confirmPasswordValid = validateConfirmPswd(password, confirmPassword);
+
+    const validInput = passwordValid.isValid && confirmPasswordValid.isValid;
+    if (!validInput) {
+      if (!passwordValid.isValid) {
+        newPasswordErrorRef.current.innerText = passwordValid.message;
+        newPasswordErrorRef.current.classList.add("input-error");
+      }
+      if (!confirmPasswordValid.isValid) {
+        confirmPasswordErrorRef.current.innerText =
+          confirmPasswordValid.message;
+        confirmPasswordErrorRef.current.classList.add("input-error");
+      }
+      return;
+    }
 
     setServerResponse({
       loading: true,
@@ -103,10 +90,6 @@ export default function ForgotPasswordChangePassword({
           error: "ERROR MESSAGE",
         });
       });
-  };
-
-  const handleBtnSubmit = () => {
-    return serverResponse.loading ? true : btnActive;
   };
 
   return (
@@ -134,10 +117,11 @@ export default function ForgotPasswordChangePassword({
         <ButtonContainer
           type="submit"
           label="Submit"
+          onClick={handleChangePswd}
           marginTop="5px"
           marginBottom="10px"
           loading={serverResponse.loading}
-          disabled={handleBtnSubmit()}
+          disabled={serverResponse.loading}
         />
       </Form>
     </Container>

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { MdAlternateEmail } from "react-icons/md";
 
@@ -11,8 +11,6 @@ import {
   AllowedInputFields,
   emailValidation,
   inputChanges,
-  validationColor,
-  errorVisibility,
 } from "../../../utils/InputHandler";
 
 export default function ForgotPasswordHome({
@@ -25,23 +23,13 @@ export default function ForgotPasswordHome({
   const emailInputRef = useRef(null);
   const emailErrorRef = useRef(null);
 
-  const [btnActive, setBtnActive] = useState(true);
-
   useEffect(() => {
     emailInputRef.current.focus();
   }, []);
 
   useEffect(() => {
-    const { email } = info;
-    const { isValid, message } = emailValidation(email);
-
-    if (email) {
-      const { error } = validationColor;
-
-      if (isValid) errorVisibility(emailInputRef, emailErrorRef);
-      else errorVisibility(emailInputRef, emailErrorRef, error, error, message);
-    }
-    isValid ? setBtnActive(false) : setBtnActive(true);
+    emailErrorRef.current.innerText = "";
+    emailErrorRef.current.classList.remove("input-error");
   }, [info.email]);
 
   const handleInputChange = (e, type) => {
@@ -56,6 +44,14 @@ export default function ForgotPasswordHome({
 
   const verifyEmail = (e) => {
     e.preventDefault();
+    const mail = info.email;
+    const { isValid, message } = emailValidation(mail);
+
+    if (!isValid) {
+      emailErrorRef.current.innerText = message;
+      emailErrorRef.current.classList.add("input-error");
+      return;
+    }
 
     setServerResponse({
       loading: true,
@@ -75,10 +71,6 @@ export default function ForgotPasswordHome({
       });
   };
 
-  const handleBtnSubmit = () => {
-    return serverResponse.loading ? true : btnActive;
-  };
-
   return (
     <Container>
       <Form onSubmit={verifyEmail}>
@@ -87,7 +79,7 @@ export default function ForgotPasswordHome({
           inputRef={emailInputRef}
           errorRef={emailErrorRef}
           name="email"
-          type="email"
+          type="text"
           spellCheck="false"
           autoComplete="off"
           disabled={serverResponse.loading}
@@ -98,10 +90,9 @@ export default function ForgotPasswordHome({
         <ButtonContainer
           type="submit"
           label="Verify"
-          marginTop="5px"
-          marginBottom="10px"
+          onClick={verifyEmail}
           loading={serverResponse.loading}
-          disabled={handleBtnSubmit()}
+          disabled={serverResponse.loading}
         />
       </Form>
     </Container>

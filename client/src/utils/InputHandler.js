@@ -105,20 +105,3 @@ export const confirmPasswordValidation = (pswd, confirmPswd) => {
     message,
   };
 };
-
-export const validationColor = {
-  success: "#21222B",
-  error: "red",
-};
-
-export const errorVisibility = (
-  inputRef,
-  errorRef,
-  txtColor = validationColor.success,
-  borderColor = validationColor.success,
-  errorMsg = null
-) => {
-  // inputRef.current.style.color = txtColor;
-  // inputRef.current.style.borderBottom = `1px solid ${borderColor}`;
-  errorRef.current.innerText = errorMsg;
-};
