@@ -22,7 +22,8 @@ const Button = styled.button`
   cursor: ${({ disabled, isLoading }) =>
     isLoading ? "progress" : disabled ? "not-allowed" : "pointer"};
   background: ${(props) => props.theme.btn.inactive};
-  color: ${(props) => props.theme.txt.highlight};
+  color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: 1px;
 `;

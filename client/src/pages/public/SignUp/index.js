@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Outlet, useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
+import { TiTick } from "react-icons/ti";
 import { FaRegUser } from "react-icons/fa";
 import { AiOutlinePhone } from "react-icons/ai";
 
@@ -212,7 +213,7 @@ export default function SignUp() {
             maxLength={32}
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "confirmPassword")}
-            icon={<FiKey />}
+            icon={<TiTick />}
           />
 
           <UserButtonContainer
@@ -259,7 +260,9 @@ const PageNavigationBtn = styled.button`
   border: none;
   font-size: 0.7rem;
   letter-spacing: 1px;
+  font-weight: 400;
   cursor: pointer;
+
   &:hover:enabled {
     text-decoration: underline;
   }

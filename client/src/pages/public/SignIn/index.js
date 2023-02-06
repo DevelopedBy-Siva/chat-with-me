@@ -190,7 +190,7 @@ const CheckBoxFrgtPswd = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 12px 0;
+  margin: 14px 0;
 `;
 
 const RememberMeWrapper = styled.label`
@@ -217,6 +217,8 @@ const PageNavigationBtn = styled.button`
   font-size: 0.7rem;
   letter-spacing: 1px;
   cursor: pointer;
+  font-weight: 400;
+
   &:hover:enabled {
     text-decoration: underline;
   }

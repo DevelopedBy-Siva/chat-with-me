@@ -1,21 +1,21 @@
 const DarkTheme = {
   bg: {
-    app: "#02020E",
+    app: "#151515",
   },
   txt: {
     main: "#fff",
     mainDark: "#02020E",
-    sub: "#888992",
+    sub: "#DDDDDD",
     input: "#F7F6FA",
-    error: "#E24339",
-    highlight: "#F3C994",
+    error: "#878787",
+    highlight: "#C578C1",
   },
   border: {
     inputbox: "#21222B",
     error: "#E24339",
   },
   btn: {
-    inactive: "#1A1B26",
+    inactive: "#212325",
   },
   background: {
     app: "#282834",

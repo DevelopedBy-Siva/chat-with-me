@@ -16,7 +16,7 @@ const LogoContainer = styled.div`
   align-items: center;
   justify-content: center;
   background: ${(props) => (props.bg ? props.theme.txt.highlight : "none")};
-  color: ${(props) => props.theme.txt.main};
+  color: ${(props) => props.theme.txt.sub};
   height: 60px;
   width: 55px;
 `;
