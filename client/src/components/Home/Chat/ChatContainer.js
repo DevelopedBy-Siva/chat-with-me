@@ -74,7 +74,6 @@ export default function ChatContainer() {
 const Container = styled.div`
   flex: 1;
   min-width: 0;
-  background: ${(props) => props.theme.background.container};
   display: flex;
   flex-direction: column;
 `;
@@ -83,7 +82,6 @@ const Wrapper = styled.section`
   flex: 1;
   min-height: 0;
   display: flex;
-  background-color: ${(props) => props.theme.background.container};
 `;
 
 const SubContainer = styled.div`
@@ -96,7 +94,6 @@ const SubContainer = styled.div`
 const ChatBox = styled.div`
   flex: 1;
   min-height: 0;
-  border-top: 1px solid ${(props) => props.theme.background.app};
   display: flex;
   flex-direction: column;
 `;

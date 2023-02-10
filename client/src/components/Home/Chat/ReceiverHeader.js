@@ -26,12 +26,12 @@ export default function ReceiverHeader({ infoVisible, setInfoVisible }) {
 
 const Container = styled.div`
   height: 70px;
-  border-bottom: 1px solid ${(props) => props.theme.background.app};
   flex-shrink: 0;
   padding: 0.5rem 1.4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
 `;
 
 const Receiver = styled.div`
@@ -49,24 +49,23 @@ const ReceiverAvatar = styled.img`
 `;
 
 const ReceiverInfo = styled.div`
-  height: 44px;
   margin-left: 1rem;
   min-width: 0;
   width: 90%;
 `;
 
 const ReceiverName = styled.span`
-  font-size: 50%;
   display: block;
   color: ${(props) => props.theme.text.main};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: capitalize;
+  font-size: 0.9rem;
 `;
 
 const ReceiverStatus = styled.span`
-  font-size: 30%;
+  font-size: 0.7rem;
   display: block;
   color: ${(props) => props.theme.text.sub};
   text-transform: capitalize;
@@ -83,10 +82,10 @@ const ReceiverInfoBtn = styled.button`
   align-items: center;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 70%;
   transform: scale(1);
   color: ${(props) => props.theme.text.main};
   transition: transform 0.4s ease-in-out;
+  font-size: 1.4rem;
 
   :hover {
     transform: scale(1.1);

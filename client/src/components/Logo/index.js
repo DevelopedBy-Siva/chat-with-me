@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { RiChatSmile3Fill } from "react-icons/ri";
 
-export default function Logo({ background = false }) {
+export default function Logo({ background = false, center = false }) {
   return (
-    <LogoContainer bg={background ? 1 : 0}>
+    <LogoContainer bg={background ? 1 : 0} className={center ? "logo-ctr" : ""}>
       <Icon />
     </LogoContainer>
   );
@@ -19,6 +19,10 @@ const LogoContainer = styled.div`
   color: ${(props) => props.theme.txt.sub};
   height: 60px;
   width: 55px;
+
+  &.logo-ctr {
+    margin: auto;
+  }
 `;
 
 const Icon = styled(RiChatSmile3Fill)`

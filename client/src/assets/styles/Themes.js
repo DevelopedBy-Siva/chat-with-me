@@ -1,6 +1,7 @@
 const DarkTheme = {
   bg: {
     app: "#151515",
+    container: "#191B1C",
   },
   txt: {
     main: "#fff",
@@ -15,7 +16,7 @@ const DarkTheme = {
     error: "#E24339",
   },
   btn: {
-    inactive: "#212325",
+    inactive: "#292D33",
   },
   background: {
     app: "#282834",
