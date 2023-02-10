@@ -32,9 +32,9 @@ export default function App() {
         <Route element={<Private />}>
           <Route path="/" element={<Home />}>
             <Route path="/" element={<Chat />} />
-            <Route path="/friends" element={<Friends />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/group" element={<Modal />}>
+            <Route element={<Modal />}>
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/group" element={<Group />} />
             </Route>
           </Route>

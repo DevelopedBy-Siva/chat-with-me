@@ -2,6 +2,7 @@ const DarkTheme = {
   bg: {
     app: "#151515",
     container: "#191B1C",
+    overlay: "rgba(13, 17, 23, 0.9)",
   },
   txt: {
     main: "#fff",
