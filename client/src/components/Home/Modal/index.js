@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import FocusTrap from "focus-trap-react";
+import FocusLock from "react-focus-lock";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
@@ -13,7 +13,7 @@ export default function Modal() {
   }
 
   return (
-    <FocusTrap>
+    <FocusLock>
       <Container>
         <Overlay onClick={handleClose} />
         <Wrapper>
@@ -23,7 +23,7 @@ export default function Modal() {
           </CloseBtn>
         </Wrapper>
       </Container>
-    </FocusTrap>
+    </FocusLock>
   );
 }
 
