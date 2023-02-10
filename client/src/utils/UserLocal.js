@@ -17,7 +17,7 @@ export function getTheme() {
     val = localStorage.getItem(THEME_KEY);
   } catch (ex) {}
   if (allowed.includes(val)) return val;
-  return allowed[0];
+  return allowed[1];
 }
 
 export function getStyles(theme) {
