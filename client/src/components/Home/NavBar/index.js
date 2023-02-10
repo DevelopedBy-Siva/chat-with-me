@@ -160,8 +160,8 @@ const ProfileImg = styled.img`
 `;
 
 const Switch = styled.button`
-  width: 35px;
-  height: 55px;
+  width: 28px;
+  height: 48px;
   margin-bottom: 14px;
   border-radius: 15px;
   border: none;
@@ -173,8 +173,8 @@ const Switch = styled.button`
 
 const SwitchLabel = styled.span`
   display: block;
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   position: absolute;
   top: 50%;
@@ -187,12 +187,12 @@ const SwitchLabel = styled.span`
   transition: transform 0.3s ease-in-out;
 
   &.dark {
-    transform: translate(-50%, -88%);
-    font-size: 0.7rem;
+    transform: translate(-50%, -90%);
+    font-size: 0.6rem;
   }
 
   &.light {
-    transform: translate(-50%, -12%);
+    transform: translate(-50%, -10%);
     font-size: 0.9rem;
   }
 `;
