@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -11,7 +12,7 @@ import { IoMdSunny } from "react-icons/io";
 import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
 import profileImg from "../../../assets/svgs/avatars/6.svg";
-import { useState } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
 
 const navBtns = [
   {
@@ -47,11 +48,7 @@ export default function NavBarContainer() {
       <Navs>
         {navBtns.map((nav, index) => (
           <React.Fragment key={index}>
-            <NavBtn
-              className={nav.isGrp ? "create-grp" : ""}
-              to={nav.navTo}
-              id={nav.id}
-            >
+            <NavBtn to={nav.navTo} id={nav.id}>
               <NavBorder />
               {nav.icon}
             </NavBtn>
@@ -70,12 +67,21 @@ export default function NavBarContainer() {
 }
 
 function ThemeSwitch() {
-  const [on, setOn] = useState(false);
+  const { appTheme, handleTheme } = useContext(ThemeContext);
+
+  const currentTheme = () => {
+    if (appTheme === "light") return "dark";
+    return "light";
+  };
 
   return (
-    <Switch onClick={() => setOn(!on)}>
-      <SwitchLabel className={on ? "light" : "dark"}>
-        {on ? <IoMdSunny className="sunny" /> : <BsFillMoonStarsFill />}
+    <Switch onClick={() => handleTheme(currentTheme())}>
+      <SwitchLabel className={appTheme}>
+        {appTheme === "dark" ? (
+          <BsFillMoonStarsFill />
+        ) : (
+          <IoMdSunny className="sunny" />
+        )}
       </SwitchLabel>
     </Switch>
   );
@@ -167,8 +173,8 @@ const Switch = styled.button`
 
 const SwitchLabel = styled.span`
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   position: absolute;
   top: 50%;
@@ -181,12 +187,12 @@ const SwitchLabel = styled.span`
   transition: transform 0.3s ease-in-out;
 
   &.dark {
-    transform: translate(-50%, -85%);
+    transform: translate(-50%, -88%);
     font-size: 0.7rem;
   }
 
   &.light {
-    transform: translate(-50%, -15%);
+    transform: translate(-50%, -12%);
     font-size: 0.9rem;
   }
 `;

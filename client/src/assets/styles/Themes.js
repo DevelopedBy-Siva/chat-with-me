@@ -50,12 +50,29 @@ const DarkTheme = {
 
 const LightTheme = {
   bg: {
-    app: "#02020E",
+    app: "#fff",
+    container: "#191B1C",
+    overlay: "rgba(13, 17, 23, 0.9)",
+  },
+  txt: {
+    main: "#fff",
+    mainDark: "#02020E",
+    sub: "#DDDDDD",
+    input: "#F7F6FA",
+    error: "#878787",
+    highlight: "#C578C1",
+  },
+  border: {
+    inputbox: "#21222B",
+    error: "#E24339",
+  },
+  btn: {
+    inactive: "#292D33",
   },
   background: {
-    app: "#f2f1f6",
-    container: "#FFFFFF",
-    containerLight: "#f5f5f5",
+    app: "#282834",
+    container: "#131517",
+    containerLight: "#1d1f24",
     highlight: {
       hex: "#284ff2",
       rgba: "rgba(49,78,233,0.2)",
@@ -63,21 +80,21 @@ const LightTheme = {
     blue: "#284ff2",
   },
   text: {
-    main: "#00000",
+    main: "#FFFFFF",
     sub: "#7a7a85",
   },
   emoji: {
-    background: "245, 245, 245",
+    background: "29, 31, 36",
     title: "122, 122, 133",
     navIcon: "40, 79, 242",
   },
   msgBox: {
     sender: "#284ff2",
-    receiver: "#f5f5f5",
+    receiver: "#1d1f24",
   },
   tooltip: {
-    background: "#7a7a85",
-    text: "#FFFFFF",
+    background: "#1d1f24",
+    text: "#7a7a85",
   },
 };
 
