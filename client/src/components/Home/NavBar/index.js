@@ -52,6 +52,7 @@ export default function NavBarContainer() {
               to={nav.navTo}
               id={nav.id}
             >
+              <NavBorder />
               {nav.icon}
             </NavBtn>
             <Tooltip id={nav.id} msg={nav.placeholder} />
@@ -87,24 +88,34 @@ const Container = styled.nav`
   flex-direction: column;
 `;
 
+const NavBorder = styled.span`
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 6px;
+  background: none;
+  border-radius: 0 5px 5px 0;
+`;
+
 const NavBtn = styled(NavLink)`
   width: 100%;
   flex-shrink: 0;
   height: 40px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 15px;
   cursor: pointer;
   outline: none;
-  color: ${(props) => props.theme.txt.main};
+  color: ${(props) => props.theme.txt.sub};
   border: none;
-  border-left: ${(props) => `4px solid ${props.theme.bg.app}`};
   font-size: 1.4rem;
 
-  &.active {
-    border: none;
-    border-left: ${(props) => `4px solid ${props.theme.txt.highlight}`};
+  &.active ${NavBorder} {
+    background: ${(props) => props.theme.txt.sub};
   }
 `;
 
