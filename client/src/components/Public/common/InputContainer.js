@@ -37,6 +37,7 @@ const InputHeading = styled.span`
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
+  font-weight: 400;
 `;
 
 const InputBox = styled.input`
@@ -49,6 +50,7 @@ const InputBox = styled.input`
   color: ${(props) => props.theme.txt.input};
   font-size: 0.8rem;
   letter-spacing: 1px;
+  font-weight: 400;
 
   &:disabled
     ~ ${InputHeading},

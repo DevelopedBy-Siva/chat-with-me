@@ -203,12 +203,14 @@ const RememberMeWrapper = styled.label`
   display: block;
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.7rem;
+  font-weight: 400;
 `;
 
 const DontHaveAccount = styled.span`
   display: block;
   font-size: 0.7rem;
   color: ${(props) => props.theme.txt.sub};
+  font-weight: 400;
 `;
 
 const PageNavigationBtn = styled.button`

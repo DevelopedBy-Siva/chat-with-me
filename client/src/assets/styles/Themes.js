@@ -6,15 +6,14 @@ const DarkTheme = {
   },
   txt: {
     main: "#FFFFFF",
-    sub: "#DDDDDD",
-    input: "#F7F6FA",
+    sub: "#D2D2D2",
+    input: "#FFFF",
     error: "#878787",
     highlight: "#44D785",
     dark: "#111111",
   },
   border: {
     inputbox: "#21222B",
-    error: "#E24339",
   },
   btn: {
     inactive: "#363636",
@@ -51,23 +50,24 @@ const DarkTheme = {
 
 const LightTheme = {
   bg: {
-    app: "#fff",
+    app: "#FFF",
     container: "#191B1C",
     overlay: "rgba(13, 17, 23, 0.9)",
   },
   txt: {
-    main: "#fff",
-    sub: "#DDDDDD",
-    input: "#F7F6FA",
-    error: "#878787",
-    highlight: "#C578C1",
+    main: "#111111",
+    sub: "#202020",
+    input: "#696969",
+    error: "#949494",
+    highlight: "#44D785",
+    dark: "#111111",
   },
   border: {
-    inputbox: "#21222B",
-    error: "#E24339",
+    inputbox: "#EFEFEF",
   },
   btn: {
-    inactive: "#292D33",
+    inactive: "#EFEFEF",
+    active: "#F5F5F5",
   },
   background: {
     app: "#282834",
