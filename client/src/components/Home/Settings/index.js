@@ -104,13 +104,16 @@ export default function Settings() {
 }
 
 const Container = styled.div`
-  height: 50% !important;
+  margin-top: 20px;
+  max-height: 80vh;
+  overflow-y: scroll;
 `;
 
-const Heading = styled.h2``;
-
-const Content = styled.div`
-  width: 100%;
-  height: 80%;
-  overflow: auto;
+const Heading = styled.h2`
+  margin-bottom: 10px;
+  font-size: 1.6rem;
+  font-weight: 400;
+  user-select: none;
 `;
+
+const Content = styled.div``;

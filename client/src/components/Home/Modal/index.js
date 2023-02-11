@@ -59,9 +59,8 @@ const Wrapper = styled.div`
   width: 95%;
   max-width: 760px;
   min-height: 120px;
-  max-height: 80vh;
   background-color: #fff;
-  padding: 32px 18px 24px 18px;
+  padding: 15px;
   border-radius: 10px;
   overflow: hidden;
 `;
@@ -74,4 +73,6 @@ const CloseBtn = styled.button`
   background: none;
   border: none;
   font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
 `;
