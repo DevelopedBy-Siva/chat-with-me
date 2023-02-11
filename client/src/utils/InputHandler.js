@@ -42,6 +42,7 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
     case PHONE:
       let parsedVal = parseInt(value).toString();
       if (isNaN(parsedVal)) parsedVal = "";
+      if (parsedVal.length > 10) break;
       data.phone = parsedVal;
       break;
     case REMEMBER_ME:

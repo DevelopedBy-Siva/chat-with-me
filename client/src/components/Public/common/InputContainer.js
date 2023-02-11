@@ -31,7 +31,7 @@ const InputHeading = styled.span`
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
   position: absolute;
-  bottom: 3px;
+  bottom: 4px;
   pointer-events: none;
   transition: all 0.3s ease-in-out;
   backface-visibility: hidden;
@@ -48,6 +48,7 @@ const InputBox = styled.input`
   padding: 6px 0;
   color: ${(props) => props.theme.txt.input};
   font-size: 0.8rem;
+  letter-spacing: 1px;
 
   &:disabled
     ~ ${InputHeading},
@@ -62,10 +63,13 @@ const InputBox = styled.input`
 const Icon = styled.span`
   position: absolute;
   right: 0;
+  width: 24px;
+  height: 18px;
+  text-align: right;
   bottom: 3px;
-  pointer-events: none;
   font-size: 1rem;
   color: ${(props) => props.theme.txt.sub};
+  cursor: text;
 `;
 
 const InputErrorMessage = styled.span`

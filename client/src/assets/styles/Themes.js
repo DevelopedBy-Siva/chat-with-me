@@ -1,23 +1,24 @@
 const DarkTheme = {
   bg: {
-    app: "#151515",
-    container: "#191B1C",
+    app: "#111111",
+    container: "#181818",
     overlay: "#151515",
   },
   txt: {
-    main: "#fff",
-    mainDark: "#02020E",
+    main: "#FFFFFF",
     sub: "#DDDDDD",
     input: "#F7F6FA",
     error: "#878787",
-    highlight: "#C578C1",
+    highlight: "#44D785",
+    dark: "#111111",
   },
   border: {
     inputbox: "#21222B",
     error: "#E24339",
   },
   btn: {
-    inactive: "#292D33",
+    inactive: "#363636",
+    active: "#1E1E1E",
   },
   background: {
     app: "#282834",
@@ -56,7 +57,6 @@ const LightTheme = {
   },
   txt: {
     main: "#fff",
-    mainDark: "#02020E",
     sub: "#DDDDDD",
     input: "#F7F6FA",
     error: "#878787",

@@ -1,14 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { TiTick } from "react-icons/ti";
 
 export default function Checkbox({ isChecked, ...rest }) {
   return (
     <CheckboxContainer>
       <HiddenCheckbox checked={isChecked} {...rest} />
       <StyledCheckbox checked={isChecked ? 1 : 0}>
-        <Icon viewBox="0 0 24 24">
-          <polyline points="20 6 9 17 4 12" />
-        </Icon>
+        <Icon />
       </StyledCheckbox>
     </CheckboxContainer>
   );
@@ -16,18 +15,17 @@ export default function Checkbox({ isChecked, ...rest }) {
 
 const CheckboxContainer = styled.div`
   display: inline-block;
-  position: absolute;
-  top: 2px;
+  vertical-align: middle;
+  position: relative;
+  bottom: 1px;
+  padding-right: 8px;
 `;
 
-const Icon = styled.svg`
-  fill: none;
-  stroke: ${(props) => props.theme.txt.mainDark};
-  stroke-width: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const Icon = styled(TiTick)`
+  font-size: 1rem;
+  color: ${(props) => props.theme.txt.dark};
 `;
+
 const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   border: 0;
   clip: rect(0 0 0 0);
@@ -48,6 +46,9 @@ const StyledCheckbox = styled.div`
     props.checked ? props.theme.txt.highlight : props.theme.btn.inactive};
   border-radius: 2px;
   transition: all 150ms;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   ${Icon} {
     visibility: ${(props) => (props.checked ? "visible" : "hidden")};

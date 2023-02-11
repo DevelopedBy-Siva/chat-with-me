@@ -21,9 +21,14 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: ${({ disabled, isLoading }) =>
     isLoading ? "progress" : disabled ? "not-allowed" : "pointer"};
-  background: ${(props) => props.theme.btn.inactive};
+  background: ${(props) => props.theme.btn.active};
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 1px;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: ${(props) => props.theme.btn.inactive};
+  }
 `;

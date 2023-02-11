@@ -147,7 +147,7 @@ export default function SignIn() {
                 isChecked={loginInfo.rememberme}
                 onChange={(e) => handleInputChange(e, "rememberme")}
               />
-              <RememberMeText>Remember me</RememberMeText>
+              Remember me
             </RememberMeWrapper>
             <ForgetPassword>
               <PageNavigationBtn
@@ -195,17 +195,14 @@ const CheckBoxFrgtPswd = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 14px 0;
+  padding: 10px 0;
 `;
 
 const RememberMeWrapper = styled.label`
   cursor: ${(props) => (props.disable ? "not-allowed" : "pointer")};
-`;
-
-const RememberMeText = styled.span`
-  font-size: 0.7rem;
-  padding-left: 22px;
+  display: block;
   color: ${(props) => props.theme.txt.sub};
+  font-size: 0.7rem;
 `;
 
 const DontHaveAccount = styled.span`

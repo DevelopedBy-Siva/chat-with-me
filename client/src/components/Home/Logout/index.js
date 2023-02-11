@@ -64,8 +64,4 @@ const Btn = styled.button`
   background: ${(props) => props.theme.btn.inactive};
   color: ${(props) => props.theme.txt.main};
   cursor: pointer;
-
-  &:first {
-    margin: 100px;
-  }
 `;
