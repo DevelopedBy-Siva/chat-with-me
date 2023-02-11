@@ -1,18 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdSupervisorAccount } from "react-icons/md";
 import { TbMessages } from "react-icons/tb";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import { IoMdSunny } from "react-icons/io";
+import { BiLogOut } from "react-icons/bi";
 
 import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
 import profileImg from "../../../assets/svgs/avatars/6.svg";
 import { ThemeContext } from "../../../context/ThemeContext";
+import { logout } from "../../../utils/Auth";
 
 const navBtns = [
   {
@@ -36,19 +38,39 @@ const navBtns = [
   {
     id: "nav_group",
     placeholder: "Create group",
-    icon: <AiOutlinePlus className="iconStyle" />,
+    icon: <AiOutlinePlus />,
     navTo: "/group",
+  },
+  {
+    id: "nav_logout",
+    placeholder: "Logout",
+    icon: <BiLogOut />,
+    navTo: "#",
+    isBtn: true,
   },
 ];
 
 export default function NavBarContainer() {
+  const navigate = useNavigate();
+
+  const handleLogout = (proceed) => {
+    if (!proceed) return;
+    logout();
+    return navigate("/sign-in");
+  };
+
   return (
     <Container>
       <Logo center />
       <Navs>
         {navBtns.map((nav, index) => (
           <React.Fragment key={index}>
-            <NavBtn to={nav.navTo} id={nav.id}>
+            <NavBtn
+              onClick={() => handleLogout(nav.isBtn)}
+              as={nav.isBtn && "button"}
+              to={nav.navTo}
+              id={nav.id}
+            >
               <NavBorder />
               {nav.icon}
             </NavBtn>
@@ -116,6 +138,7 @@ const NavBtn = styled(NavLink)`
   margin-bottom: 15px;
   cursor: pointer;
   outline: none;
+  background: none;
   color: ${(props) => props.theme.txt.sub};
   border: none;
   font-size: 1.4rem;
