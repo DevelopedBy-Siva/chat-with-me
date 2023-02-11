@@ -15,7 +15,10 @@ export default function Logout() {
     noRef.current.focus();
   }, []);
 
-  const handleNo = () => navigate("/", { replace: true });
+  const handleNo = (e) => {
+    e.preventDefault();
+    return navigate("/", { replace: true });
+  };
 
   const handleLogout = () => {
     logout();

@@ -130,7 +130,7 @@ export default function ForgotPasswordVerify({
       </InputTitle>
       <Form onSubmit={verifyEmail}>
         <InputContainer>
-          {inputBoxes().map((val, index) => {
+          {inputBoxes().map((_, index) => {
             const elementRef = (element) => inputRef.current.push(element);
             return (
               <InputBox
@@ -195,6 +195,7 @@ const InputBox = styled.input`
   border-radius: 5px;
   margin-left: 5px;
   font-size: 1.4rem;
+  font-weight: 500;
   outline-color: #05a4fa;
   background: none;
   -moz-appearance: textfield;

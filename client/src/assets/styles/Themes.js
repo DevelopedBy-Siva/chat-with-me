@@ -57,8 +57,8 @@ const LightTheme = {
   txt: {
     main: "#111111",
     sub: "#202020",
-    input: "#696969",
-    error: "#949494",
+    input: "#646464",
+    error: "#848484",
     highlight: "#44D785",
     dark: "#111111",
   },
