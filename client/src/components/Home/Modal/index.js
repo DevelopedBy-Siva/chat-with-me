@@ -10,7 +10,7 @@ export default function Modal() {
   const navigate = useNavigate();
 
   function handleClose() {
-    return navigate(-1);
+    return navigate("/", { replace: true });
   }
 
   return (
@@ -48,6 +48,7 @@ const Overlay = styled(motion.div)`
   right: 0;
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
+  opacity: 0.6;
 `;
 
 const Wrapper = styled.div`
@@ -55,17 +56,22 @@ const Wrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: auto;
-  max-width: 95%;
-  background-color: green;
+  width: 95%;
+  max-width: 760px;
+  min-height: 120px;
+  max-height: 80vh;
+  background-color: #fff;
+  padding: 32px 18px 24px 18px;
+  border-radius: 10px;
+  overflow: hidden;
 `;
 
 const CloseBtn = styled.button`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 8px;
+  right: 8px;
   cursor: pointer;
-  outline: none;
   background: none;
   border: none;
+  font-size: 1.2rem;
 `;

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdSupervisorAccount } from "react-icons/md";
@@ -14,7 +14,6 @@ import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
 import profileImg from "../../../assets/svgs/avatars/6.svg";
 import { ThemeContext } from "../../../context/ThemeContext";
-import { logout } from "../../../utils/Auth";
 
 const navBtns = [
   {
@@ -45,36 +44,24 @@ const navBtns = [
     id: "nav_logout",
     placeholder: "Logout",
     icon: <BiLogOut />,
-    navTo: "#",
-    isBtn: true,
+    navTo: "/logout",
   },
 ];
 
 export default function NavBarContainer() {
-  const navigate = useNavigate();
-
-  const handleLogout = (proceed) => {
-    if (!proceed) return;
-    logout();
-    return navigate("/sign-in");
-  };
-
   return (
     <Container>
       <Logo center />
       <Navs>
         {navBtns.map((nav, index) => (
           <React.Fragment key={index}>
-            <NavBtn
-              onClick={() => handleLogout(nav.isBtn)}
-              as={nav.isBtn && "button"}
-              to={nav.navTo}
-              id={nav.id}
-            >
-              <NavBorder />
-              {nav.icon}
-            </NavBtn>
-            <Tooltip id={nav.id} msg={nav.placeholder} />
+            <NavBtnContainer>
+              <NavBtn to={nav.navTo} id={nav.id}>
+                <NavBorder />
+                {nav.icon}
+              </NavBtn>
+              <Tooltip id={nav.id} msg={nav.placeholder} />
+            </NavBtnContainer>
           </React.Fragment>
         ))}
       </Navs>
@@ -116,6 +103,17 @@ const Container = styled.nav`
   flex-direction: column;
 `;
 
+const NavBtnContainer = styled.div`
+  width: 100%;
+  height: 40px;
+  flex-shrink: 0;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
 const NavBorder = styled.span`
   display: block;
   position: absolute;
@@ -128,14 +126,11 @@ const NavBorder = styled.span`
 `;
 
 const NavBtn = styled(NavLink)`
-  width: 100%;
-  flex-shrink: 0;
-  height: 40px;
-  position: relative;
+  width: auto;
+  display: block;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
   cursor: pointer;
   outline: none;
   background: none;
@@ -154,7 +149,8 @@ const Navs = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   margin: 10px 0;
 `;
 
