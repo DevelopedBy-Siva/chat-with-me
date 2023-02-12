@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import networkStatus from "./components/Toastify/NetworkStatus";
@@ -28,27 +28,25 @@ export default function App() {
   });
 
   return (
-    <Suspense>
-      <Routes>
-        <Route element={<Private />}>
-          <Route path="/" element={<Home />}>
-            <Route path="/" element={<Chat />}>
-              <Route element={<Modal />}>
-                <Route path="/friends" element={<Friends />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/group" element={<Group />} />
-                <Route path="/logout" element={<Logout />} />
-              </Route>
+    <Routes>
+      <Route element={<Private />}>
+        <Route path="/" element={<Home />}>
+          <Route path="/" element={<Chat />}>
+            <Route element={<Modal />}>
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/group" element={<Group />} />
+              <Route path="/logout" element={<Logout />} />
             </Route>
           </Route>
         </Route>
-        <Route element={<Public />}>
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="/sign-up" element={<SignUp />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Suspense>
+      </Route>
+      <Route element={<Public />}>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="/sign-up" element={<SignUp />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }

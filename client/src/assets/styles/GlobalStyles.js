@@ -17,6 +17,12 @@ export const GlobalStyles = createGlobalStyle`
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+    #nprogress .bar {
+        background: red;
+    }
+    #nprogress .peg {
+        box-shadow: 0 0 10px red, 0 0 5px red;
+    }
 `;
 
 export default GlobalStyles;

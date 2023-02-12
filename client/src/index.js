@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import "react-tooltip/dist/react-tooltip.css";
+import "nprogress/nprogress.css";
 
 import App from "./App";
 import Toaster from "./components/Toastify";

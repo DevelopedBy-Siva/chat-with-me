@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 import { validateToken } from "../../utils/Auth";
@@ -14,7 +14,9 @@ export default function Private() {
   return proceed === null ? (
     <h5>Loading...</h5>
   ) : proceed === true ? (
-    <Outlet />
+    <Suspense>
+      <Outlet />
+    </Suspense>
   ) : (
     <Navigate to="/sign-in" replace />
   );

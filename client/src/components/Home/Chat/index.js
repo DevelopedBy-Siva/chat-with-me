@@ -1,14 +1,17 @@
-import React from "react";
+import React, { Suspense } from "react";
 import styled from "styled-components";
+import { Outlet } from "react-router-dom";
 
 import SideBar from "../Chat/SideBarContainer";
 import ChatContainer from "../Chat/ChatContainer";
-import { Outlet } from "react-router-dom";
+import LoadingBar from "../../Loader/LoadingBar";
 
 export default function Chat() {
   return (
     <Container>
-      <Outlet />
+      <Suspense fallback={<LoadingBar />}>
+        <Outlet />
+      </Suspense>
       <SideBar />
       <ChatContainer />
     </Container>
