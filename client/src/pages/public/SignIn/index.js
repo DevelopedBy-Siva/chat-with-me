@@ -170,7 +170,7 @@ export default function SignIn() {
         </Form>
 
         <DontHaveAccount>
-          Dont't have an account?{" "}
+          Don't have an account?{" "}
           <PageNavigationBtn
             onClick={() => handlePageNavigation("/sign-up", true)}
             disabled={serverData.loading}
@@ -221,7 +221,7 @@ const PageNavigationBtn = styled.button`
   font-size: 0.7rem;
   letter-spacing: 1px;
   cursor: pointer;
-  font-weight: 400;
+  font-weight: 500;
 
   &:hover:enabled {
     text-decoration: underline;

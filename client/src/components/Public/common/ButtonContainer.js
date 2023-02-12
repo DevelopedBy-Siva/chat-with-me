@@ -22,7 +22,7 @@ const Button = styled.button`
   cursor: ${({ disabled, isLoading }) =>
     isLoading ? "progress" : disabled ? "not-allowed" : "pointer"};
   background: ${(props) => props.theme.btn.active};
-  color: ${(props) => props.theme.txt.sub};
+  color: ${(props) => props.theme.txt.default};
   font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 1px;

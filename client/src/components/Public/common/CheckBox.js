@@ -43,7 +43,7 @@ const StyledCheckbox = styled.div`
   width: 13px;
   height: 13px;
   background: ${(props) =>
-    props.checked ? props.theme.txt.highlight : props.theme.btn.inactive};
+    props.checked ? props.theme.txt.highlight : props.theme.txt.sub};
   border-radius: 2px;
   transition: all 150ms;
   display: flex;

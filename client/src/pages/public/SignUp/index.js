@@ -261,7 +261,7 @@ const PageNavigationBtn = styled.button`
   border: none;
   font-size: 0.7rem;
   letter-spacing: 1px;
-  font-weight: 400;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover:enabled {

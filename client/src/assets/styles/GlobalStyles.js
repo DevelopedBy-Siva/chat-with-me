@@ -18,10 +18,11 @@ export const GlobalStyles = createGlobalStyle`
         -moz-osx-font-smoothing: grayscale;
     }
     #nprogress .bar {
-        background: red;
+        background: ${(props) => props.theme.txt.highlight};
     }
     #nprogress .peg {
-        box-shadow: 0 0 10px red, 0 0 5px red;
+        box-shadow: ${(props) =>
+          `0 0 10px ${props.theme.txt.highlight}, 0 0 5px ${props.theme.txt.highlight}`};
     }
 `;
 

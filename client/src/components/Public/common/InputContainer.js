@@ -47,7 +47,7 @@ const InputBox = styled.input`
   outline: none;
   border: none;
   padding: 6px 0;
-  color: ${(props) => props.theme.txt.input};
+  color: ${(props) => props.theme.txt.main};
   font-size: 0.8rem;
   letter-spacing: 1px;
   font-weight: 400;
@@ -79,7 +79,7 @@ const InputErrorMessage = styled.span`
   position: absolute;
   bottom: -20px;
   font-size: 0.7rem;
-  color: ${(props) => props.theme.txt.error};
+  color: ${(props) => props.theme.txt.sub};
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
