@@ -14,7 +14,7 @@ const DarkTheme = {
     inputbox: "#21222B",
   },
   btn: {
-    inactive: "#363636",
+    inactive: "#242424",
     active: "#1E1E1E",
   },
   background: {
