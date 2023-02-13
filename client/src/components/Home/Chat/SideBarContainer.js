@@ -13,7 +13,7 @@ const Container = styled.div`
   padding: 1rem;
   width: 300px;
   overflow-y: auto;
-  border-right: 1px solid ${(props) => props.theme.border.inputbox};
+  background: ${(props) => props.theme.bg.container};
 `;
 
 const Heading = styled.h3`

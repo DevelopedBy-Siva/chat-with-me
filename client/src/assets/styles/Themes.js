@@ -49,7 +49,7 @@ const DarkTheme = {
 const LightTheme = {
   bg: {
     app: "#FFF",
-    container: "#191B1C",
+    container: "#F3F2F2",
     overlay: "rgba(13, 17, 23, 0.9)",
   },
   txt: {
@@ -85,8 +85,8 @@ const LightTheme = {
     navIcon: "40, 79, 242",
   },
   msgBox: {
-    sender: "#284ff2",
-    receiver: "#1d1f24",
+    sender: "#111111",
+    receiver: "#F3F2F2",
   },
   tooltip: {
     background: "#1d1f24",

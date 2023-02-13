@@ -78,11 +78,9 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
 
 const UserInfoContainer = styled.div`
   width: ${CONTAINER_WIDTH};
-  border: 1px solid ${(props) => props.theme.background.app};
-  border-right: 0;
-  border-bottom: 0;
   flex-shrink: 0;
   position: relative;
+  background-color: ${(props) => props.theme.bg.container};
 `;
 
 const UserInfoCloseBtn = styled.button`

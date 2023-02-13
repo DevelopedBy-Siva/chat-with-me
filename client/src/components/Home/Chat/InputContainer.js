@@ -61,7 +61,6 @@ const Container = styled.form`
   display: flex;
   position: relative;
   padding: 0.7rem 1.2rem;
-  border-top: 1px solid ${(props) => props.theme.background.app};
 `;
 
 const TextContainer = styled.div`
@@ -70,7 +69,7 @@ const TextContainer = styled.div`
   margin-right: 1rem;
   padding: 0.8rem;
   border-radius: 5px;
-  background: ${(props) => props.theme.background.containerLight};
+  background: ${(props) => props.theme.bg.container};
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -88,7 +87,7 @@ const TextContainer = styled.div`
 
 const MessageInput = styled.div`
   color: ${(props) => props.theme.text.sub};
-  font-size: 38%;
+  font-size: 0.8rem;
   word-break: break-all;
   cursor: text;
   outline: none;

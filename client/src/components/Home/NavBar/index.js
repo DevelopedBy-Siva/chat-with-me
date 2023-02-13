@@ -7,7 +7,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { MdSupervisorAccount } from "react-icons/md";
 import { TbMessages } from "react-icons/tb";
 import { BsFillMoonStarsFill } from "react-icons/bs";
-import { IoMdSunny } from "react-icons/io";
+import { HiOutlineSun } from "react-icons/hi";
 import { BiLogOut } from "react-icons/bi";
 
 import Tooltip from "../Tooltip";
@@ -89,7 +89,7 @@ function ThemeSwitch() {
         {appTheme === "dark" ? (
           <BsFillMoonStarsFill />
         ) : (
-          <IoMdSunny className="sunny" />
+          <HiOutlineSun className="sunny" />
         )}
       </SwitchLabel>
     </Switch>
@@ -187,7 +187,7 @@ const Switch = styled.button`
   outline: none;
   position: relative;
   cursor: pointer;
-  background: ${(props) => `${props.theme.btn.inactive}`};
+  background: ${(props) => `${props.theme.bg.container}`};
 `;
 
 const SwitchLabel = styled.span`
@@ -201,7 +201,7 @@ const SwitchLabel = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${(props) => `${props.theme.txt.main}`};
+  color: ${(props) => `${props.theme.txt.sub}`};
   background: ${(props) => `${props.theme.bg.app}`};
   transition: transform 0.3s ease-in-out;
 
@@ -212,6 +212,6 @@ const SwitchLabel = styled.span`
 
   &.light {
     transform: translate(-50%, -10%);
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 `;

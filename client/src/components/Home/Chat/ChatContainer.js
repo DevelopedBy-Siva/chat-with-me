@@ -133,12 +133,11 @@ const MessageBreak = styled.div`
   align-items: center;
   justify-content: center;
   height: 30px;
-  margin: 14px 0 6px 0;
+  margin: 16px 0 8px 0;
 `;
 
 const BreakTimestamp = styled.span`
-  padding: 2px 8px;
-  background-color: ${(props) => props.theme.background.app};
   color: ${(props) => props.theme.text.sub};
   border-radius: 4px;
+  font-size: 0.6rem;
 `;

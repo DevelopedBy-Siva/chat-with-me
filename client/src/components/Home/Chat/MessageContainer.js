@@ -45,13 +45,14 @@ const Container = styled.ul`
   display: flex;
   list-style: none;
   margin-top: 8px;
+  font-size: 0.7rem;
 `;
 
 const MessageSender = styled.ul`
   justify-content: flex-end;
   li {
     background-color: ${(props) => props.theme.msgBox.sender};
-    color: ${(props) => props.theme.text.main};
+    color: ${(props) => props.theme.txt.default};
   }
 `;
 
@@ -59,7 +60,7 @@ const MessageReceiver = styled.ul`
   justify-content: flex-start;
   li {
     background-color: ${(props) => props.theme.msgBox.receiver};
-    color: ${(props) => props.theme.text.sub};
+    color: ${(props) => props.theme.txt.main};
   }
 `;
 
@@ -98,16 +99,16 @@ const MsgStatus = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${(props) => props.theme.text.main};
+  color: ${(props) => props.theme.txt.sub};
   opacity: 0.5;
 `;
 
 const MsgTimestamp = styled.span`
-  font-size: 65%;
+  font-size: 0.6rem;
 `;
 
 const MsgStatusIcon = styled.span`
-  font-size: 85%;
+  font-size: 0.6rem;
   display: block;
   margin-right: 3px;
   margin-top: -1px;
