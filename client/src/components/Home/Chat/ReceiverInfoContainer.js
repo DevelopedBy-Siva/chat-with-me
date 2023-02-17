@@ -52,10 +52,10 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
             <NicknameContainer>
               <NicknameTitle>#nick</NicknameTitle>
               <Nickname>duke nukem</Nickname>
-              <ChangeNicknameBtn id="change-nickname">
-                <BiPencil />
+              <ChangeNicknameBtn>
+                <BiPencil id="change-nickname" />
+                <Tooltip id="change-nickname" msg="Change nickname" />
               </ChangeNicknameBtn>
-              <Tooltip id="change-nickname" msg="Change nickname" />
             </NicknameContainer>
             <UserDescription>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -90,12 +90,12 @@ const UserInfoCloseBtn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.theme.background.container};
-  color: ${(props) => props.theme.text.sub};
+  background: none;
+  color: ${(props) => props.theme.txt.main};
   border: none;
   outline: none;
   border-radius: 50%;
-  font-size: 60%;
+  font-size: 1.2rem;
   cursor: pointer;
   transform: scale(1);
   z-index: 1;
@@ -126,7 +126,7 @@ const UserInfoWrapper = styled.div`
     background: none;
   }
   ::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.background.app};
+    background: ${(props) => props.theme.bg.app};
     border-radius: 4px;
   }
 `;
@@ -141,10 +141,10 @@ const UserAvatar = styled.img`
 
 const UserInfoName = styled.span`
   margin-top: 1.4rem;
-  font-size: 60%;
+  font-size: 1.2rem;
   width: 100%;
   display: block;
-  color: ${(props) => props.theme.text.main};
+  color: ${(props) => props.theme.txt.main};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -156,43 +156,45 @@ const NicknameContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: baseline;
   width: 100%;
-  color: ${(props) => props.theme.text.sub};
+  color: ${(props) => props.theme.txt.sub};
   opacity: 1;
+  margin-top: 5px;
 `;
 
 const Nickname = styled.span`
   display: block;
-  font-size: 30%;
+  font-size: 0.7rem;
   text-transform: capitalize;
   margin: 0 4px;
-  color: white;
+  color: ${(props) => props.theme.txt.main};
 `;
 
 const NicknameTitle = styled.span`
   display: block;
   text-transform: lowercase;
-  font-size: 30%;
+  font-size: 0.6rem;
   font-style: italic;
 `;
 
 const ChangeNicknameBtn = styled.button`
-  font-size: 30%;
+  font-size: 0.6rem;
   display: block;
   border: none;
   outline: none;
   background: none;
-  color: ${(props) => props.theme.text.main};
+  color: ${(props) => props.theme.txt.sub};
   cursor: pointer;
 `;
 
 const UserDescription = styled.span`
   display: block;
-  font-size: 30%;
-  color: ${(props) => props.theme.text.sub};
+  font-size: 0.65rem;
+  color: ${(props) => props.theme.txt.main};
   text-align: center;
   margin-top: 0.8rem;
+  line-height: 15px;
 `;
 
 const UserOperations = styled.div`
@@ -207,18 +209,18 @@ const UserOperationBtn = styled.button`
   align-items: center;
   cursor: pointer;
   margin-left: 8px;
-  font-size: 80%;
+  font-size: 1.3rem;
   border-radius: 5px;
   padding: 8px;
   outline: none;
   border: none;
-  color: ${(props) => props.theme.text.main};
-  background-color: ${(props) => props.theme.background.containerLight};
+  color: ${(props) => props.theme.txt.main};
+  background-color: ${(props) => props.theme.btn.active};
   width: 60px;
   height: 60px;
-  transition: all 0.4s ease-in-out;
+  transition: all 0.25s ease-in-out;
   :hover {
-    font-size: 72%;
-    background-color: ${(props) => props.theme.background.highlight.hex};
+    font-size: 1.1rem;
+    background-color: ${(props) => props.theme.btn.inactive};
   }
 `;
