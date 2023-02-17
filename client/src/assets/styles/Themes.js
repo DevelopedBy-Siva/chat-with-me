@@ -12,6 +12,7 @@ const DarkTheme = {
   },
   border: {
     inputbox: "#21222B",
+    default: "#EFEFEF",
   },
   btn: {
     inactive: "#242424",
@@ -60,6 +61,7 @@ const LightTheme = {
   },
   border: {
     inputbox: "#EFEFEF",
+    default: "#EFEFEF",
   },
   btn: {
     inactive: "#3D3D3D",

@@ -52,6 +52,7 @@ export default function ChatContainer() {
                         />
                       ))}
                       <MessageBreak>
+                        <BreakLine />
                         <BreakTimestamp>{itemK.date}</BreakTimestamp>
                       </MessageBreak>
                     </React.Fragment>
@@ -129,15 +130,32 @@ const MessageWrapper = styled.div`
 `;
 
 const MessageBreak = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px;
-  margin: 16px 0 8px 0;
+  width: 100%;
+  margin: 20px 0 10px 0;
+  position: relative;
+  opacity: 0.8;
 `;
 
 const BreakTimestamp = styled.span`
-  color: ${(props) => props.theme.text.sub};
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: ${(props) => props.theme.txt.sub};
   border-radius: 4px;
   font-size: 0.6rem;
+  background: ${(props) => props.theme.bg.app};
+  z-index: 2;
+  padding: 0 8px;
+`;
+
+const BreakLine = styled.span`
+  height: 1px;
+  background: ${(props) => props.theme.border.inputbox};
+  left: 0;
+  right: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
 `;

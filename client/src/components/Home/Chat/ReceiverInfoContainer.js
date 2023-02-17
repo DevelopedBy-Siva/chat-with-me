@@ -144,7 +144,7 @@ const UserInfoName = styled.span`
   font-size: 1.2rem;
   width: 100%;
   display: block;
-  color: ${(props) => props.theme.txt.main};
+  color: ${(props) => props.theme.txt.default};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
