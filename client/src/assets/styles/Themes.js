@@ -1,11 +1,11 @@
 const DarkTheme = {
   bg: {
-    app: "#1F1F1F",
-    container: "#1C1A1B",
+    app: "#1B1B1B",
+    container: "#242424",
     overlay: "#151515",
   },
   txt: {
-    main: "#D2D2D2",
+    main: "#FFFF",
     sub: "#989898",
     highlight: "#FFA700",
     default: "#D2D2D2",
@@ -24,8 +24,10 @@ const DarkTheme = {
     navIcon: "40, 79, 242",
   },
   msgBox: {
-    sender: "#284ff2",
-    receiver: "#1d1f24",
+    sender: "#0A6CFF",
+    senderColor: "#FFFF",
+    receiver: "#333333",
+    receiverColor: "#FFFF",
     bgCover: "0",
   },
   tooltip: {

@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { RiErrorWarningLine } from "react-icons/ri";
-import { TiTick } from "react-icons/ti";
+import { BiCheckDouble } from "react-icons/bi";
+
+import SenderAvatar from "../../../assets/svgs/avatars/6.svg";
+import ReceiverAvatar from "../../../assets/svgs/avatars/3.svg";
 
 export default function MessageContainer({
   index,
@@ -26,17 +29,28 @@ export default function MessageContainer({
     return dateTime;
   }
 
+  const avatarPosition = isSender() ? "sender-avatar" : "receiver-avatar";
+
   return (
     <Container key={index} as={isSender() ? MessageSender : MessageReceiver}>
-      <MsgWrapper>
-        <Message>{message}</Message>
-        <MsgStatus>
-          <MsgStatusIcon>
-            {isSent ? <TiTick /> : <RiErrorWarningLine />}
-          </MsgStatusIcon>
+      <ContentWrapper className={avatarPosition}>
+        <UserAvatar
+          className={avatarPosition}
+          src={isSender() ? SenderAvatar : ReceiverAvatar}
+          alt="user avatar"
+        />
+        <Wrapper>
           <MsgTimestamp>{getTime()}</MsgTimestamp>
-        </MsgStatus>
-      </MsgWrapper>
+          <MsgWrapper>
+            <Message>{message}</Message>
+            <MsgStatus>
+              <MsgStatusIcon>
+                {isSent ? <BiCheckDouble /> : <RiErrorWarningLine />}
+              </MsgStatusIcon>
+            </MsgStatus>
+          </MsgWrapper>
+        </Wrapper>
+      </ContentWrapper>
     </Container>
   );
 }
@@ -44,15 +58,52 @@ export default function MessageContainer({
 const Container = styled.ul`
   display: flex;
   list-style: none;
-  margin-top: 8px;
+  margin: 15px 0;
   font-size: 0.7rem;
+  font-weight: 400;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const UserAvatar = styled.img`
+  width: 30px;
+  height: 30px;
+  margin-top: 8px;
+  z-index: 1;
+
+  &.sender-avatar {
+    margin-left: 8px;
+  }
+  &.receiver-avatar {
+    margin-right: 8px;
+  }
+`;
+
+const MsgWrapper = styled.li`
+  padding: 0.8rem 0.3rem 1.5rem 0.3rem;
+  position: relative;
+  border-radius: 4px;
+`;
+
+const ContentWrapper = styled.div`
+  max-width: 55%;
+  min-width: 60px;
+  display: flex;
+
+  &.sender-avatar {
+    flex-direction: row-reverse;
+  }
 `;
 
 const MessageSender = styled.ul`
   justify-content: flex-end;
   li {
     background-color: ${(props) => props.theme.msgBox.sender};
-    color: ${(props) => props.theme.txt.default};
+    color: ${(props) => props.theme.msgBox.senderColor};
   }
 `;
 
@@ -60,16 +111,8 @@ const MessageReceiver = styled.ul`
   justify-content: flex-start;
   li {
     background-color: ${(props) => props.theme.msgBox.receiver};
-    color: ${(props) => props.theme.txt.main};
+    color: ${(props) => props.theme.msgBox.receiverColor};
   }
-`;
-
-const MsgWrapper = styled.li`
-  max-width: 60%;
-  min-width: 60px;
-  padding: 0.8rem 0.3rem 1.3rem 0.3rem;
-  border-radius: 4px;
-  position: relative;
 `;
 
 const Message = styled.span`
@@ -99,18 +142,20 @@ const MsgStatus = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${(props) => props.theme.txt.sub};
-  opacity: 0.5;
+  color: ${(props) => props.theme.txt.main};
+  opacity: 0.8;
 `;
 
 const MsgTimestamp = styled.span`
   font-size: 0.6rem;
+  color: ${(props) => props.theme.txt.main};
+  padding: 4px 0;
 `;
 
 const MsgStatusIcon = styled.span`
-  font-size: 0.6rem;
+  font-size: 0.9rem;
   display: block;
-  margin-right: 3px;
+  margin-right: 0px;
   margin-top: -1px;
   display: flex;
   justify-content: center;

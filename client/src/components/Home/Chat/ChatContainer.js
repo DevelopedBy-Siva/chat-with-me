@@ -121,6 +121,7 @@ const MessageBoxCover = styled.div`
   opacity: 0.4;
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
   filter: invert(${(props) => props.theme.msgBox.bgCover});
+  pointer-events: none;
 `;
 
 const MessageWrapper = styled.div`
@@ -156,9 +157,9 @@ const BreakTimestamp = styled.span`
   left: 50%;
   transform: translate(-50%, -50%);
   color: ${(props) => props.theme.txt.sub};
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.6rem;
-  background: ${(props) => props.theme.bg.app};
+  background: ${(props) => props.theme.bg.container};
   z-index: 2;
-  padding: 6px;
+  padding: 6px 8px;
 `;
