@@ -9,6 +9,7 @@ import { TbMessages } from "react-icons/tb";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import { HiOutlineSun } from "react-icons/hi";
 import { BiLogOut } from "react-icons/bi";
+import { HiQrCode } from "react-icons/hi2";
 
 import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
@@ -39,6 +40,12 @@ const navBtns = [
     placeholder: "Create group",
     icon: <AiOutlinePlus />,
     navTo: "/group",
+  },
+  {
+    id: "nav_qrcode",
+    placeholder: "Qr Code",
+    icon: <HiQrCode />,
+    navTo: "/qrcode",
   },
   {
     id: "nav_logout",
