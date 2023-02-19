@@ -16,8 +16,8 @@ export default function Modal() {
   return (
     <FocusLock>
       <Container>
-        <Overlay onClick={handleClose} />
-        <Wrapper>
+        <Overlay {...OverlayAnimation} onClick={handleClose} />
+        <Wrapper {...ContentAnimation}>
           <Outlet />
           <CloseBtn onClick={handleClose}>
             <AiOutlineClose />
@@ -30,10 +30,10 @@ export default function Modal() {
 
 const Container = styled.div`
   position: fixed;
-  height: 100vh;
-  width: 100vw;
   top: 0;
   left: 0;
+  bottom: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -48,18 +48,13 @@ const Overlay = styled(motion.div)`
   right: 0;
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
-  opacity: 0.6;
 `;
 
-const Wrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 95%;
+const Wrapper = styled(motion.div)`
+  width: 100%;
   max-width: 760px;
   min-height: 120px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.bg.container};
   padding: 15px;
   border-radius: 10px;
   overflow: hidden;
@@ -76,3 +71,19 @@ const CloseBtn = styled.button`
   display: flex;
   justify-content: center;
 `;
+
+const OverlayAnimation = {
+  initial: { opacity: 0 },
+  animate: { opacity: 0.7 },
+  exit: { opacity: 0 },
+  transition: {
+    duration: 0.25,
+  },
+};
+
+const ContentAnimation = {
+  initial: { opacity: 0, y: "100%" },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "100%" },
+  transition: { duration: 0.15 },
+};
