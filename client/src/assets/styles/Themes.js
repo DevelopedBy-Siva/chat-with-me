@@ -19,9 +19,9 @@ const DarkTheme = {
     active: "#1E1E1E",
   },
   emoji: {
-    background: "29, 31, 36",
-    title: "122, 122, 133",
-    navIcon: "40, 79, 242",
+    background: "36, 36, 36",
+    title: "152, 152, 152",
+    navIcon: "10, 108, 255",
   },
   msgBox: {
     sender: "#0A6CFF",

@@ -68,7 +68,8 @@ const ReceiverStatus = styled.span`
   font-size: 0.7rem;
   display: block;
   color: ${(props) => props.theme.txt.sub};
-  text-transform: capitalize;
+  text-transform: lowercase;
+  margin-top: 2px;
 `;
 
 const ReceiverInfoBtn = styled.button`
@@ -82,12 +83,6 @@ const ReceiverInfoBtn = styled.button`
   align-items: center;
   border-radius: 50%;
   cursor: pointer;
-  transform: scale(1);
   color: ${(props) => props.theme.txt.main};
-  transition: transform 0.4s ease-in-out;
   font-size: 1.4rem;
-
-  :hover {
-    transform: scale(1.1);
-  }
 `;

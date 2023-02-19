@@ -122,6 +122,8 @@ const Message = styled.span`
   padding: 0 0.5rem;
   overflow-y: auto;
   overflow-x: hidden;
+  line-height: 16px;
+  font-size: 0.65rem;
 
   ::-webkit-scrollbar {
     width: 4px;

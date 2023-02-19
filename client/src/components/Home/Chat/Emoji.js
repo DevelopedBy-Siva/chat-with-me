@@ -77,7 +77,7 @@ const EmojiBtn = styled.button`
   color: ${(props) =>
     props.visible ? props.theme.txt.highlight : props.theme.txt.sub};
   height: auto;
-  font-size: 68%;
+  font-size: 1.2rem;
   :hover {
   }
 `;
@@ -88,7 +88,7 @@ const EmojiWrapper = styled.div`
   right: 0;
   em-emoji-picker {
     --category-icon-size: 16px;
-    --font-size: 60%;
+    --font-size: 0.6rem;
     --rgb-accent: ${(props) => props.theme.emoji.navIcon};
     --rgb-background: ${(props) => props.theme.emoji.background};
     --rgb-color: ${(props) => props.theme.emoji.title};

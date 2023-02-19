@@ -133,14 +133,14 @@ const MessageWrapper = styled.div`
   padding: 1.4rem;
 
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 2px;
   }
   ::-webkit-scrollbar-track {
     background: none;
   }
   ::-webkit-scrollbar-thumb {
     background: ${(props) => props.theme.bg.app};
-    border-radius: 6px;
+    border-radius: 2px;
   }
 `;
 
@@ -156,10 +156,12 @@ const BreakTimestamp = styled.span`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: ${(props) => props.theme.txt.sub};
+  color: ${(props) => props.theme.txt.main};
   border-radius: 6px;
   font-size: 0.6rem;
   background: ${(props) => props.theme.bg.container};
   z-index: 2;
   padding: 6px 8px;
+  opacity: 0.7;
+  letter-spacing: 1px;
 `;

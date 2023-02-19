@@ -17,8 +17,8 @@ const Container = styled.div`
 `;
 
 const Heading = styled.h3`
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   text-align: left;
   color: ${(props) => props.theme.txt.main};
-  font-weight: 500;
+  font-weight: 400;
 `;

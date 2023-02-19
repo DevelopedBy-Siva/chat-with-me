@@ -87,16 +87,17 @@ const TextContainer = styled.div`
 
 const MessageInput = styled.div`
   color: ${(props) => props.theme.txt.sub};
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   word-break: break-all;
   cursor: text;
   outline: none;
   border: none;
-  caret-color: ${(props) => props.theme.txt.sub};
+  color: ${(props) => props.theme.txt.main};
 
-  :empty:focus::before,
-  :empty::before {
+  &:empty:focus::before,
+  &:empty::before {
     content: "Write a message...";
+    color: ${(props) => props.theme.txt.sub};
   }
 `;
 
@@ -117,5 +118,6 @@ const SendBtn = styled.button`
   justify-content: center;
   align-items: center;
   margin-left: 1rem;
-  font-size: 80%;
+  font-size: 1.2rem;
+  color: ${(props) => props.theme.txt.sub};
 `;
