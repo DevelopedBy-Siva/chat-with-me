@@ -7,6 +7,7 @@ import ReceiverInfoContainer from "./ReceiverInfoContainer";
 import ReceiverHeader from "./ReceiverHeader";
 import MessageContainer from "./MessageContainer";
 import { groupByTimestamp, sortByTimestamp } from "../../../utils/DateTime";
+import CHAT_COVER from "../../../assets/images/chat-cover.webp";
 
 const current_user = "siva";
 
@@ -35,6 +36,7 @@ export default function ChatContainer() {
               setInfoVisible={setInfoVisible}
             />
             <MessageBox>
+              <MessageBoxCover />
               <MessageWrapper>
                 {chats.loading ? (
                   <span>loading</span>
@@ -52,7 +54,6 @@ export default function ChatContainer() {
                         />
                       ))}
                       <MessageBreak>
-                        <BreakLine />
                         <BreakTimestamp>{itemK.date}</BreakTimestamp>
                       </MessageBreak>
                     </React.Fragment>
@@ -107,6 +108,19 @@ const MessageBox = styled.div`
   font-size: 32%;
   display: flex;
   flex-direction: column;
+  background-size: contain;
+`;
+
+const MessageBoxCover = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url(${CHAT_COVER});
+  opacity: 0.4;
+  -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
+  filter: invert(${(props) => props.theme.msgBox.bgCover});
 `;
 
 const MessageWrapper = styled.div`
@@ -146,16 +160,5 @@ const BreakTimestamp = styled.span`
   font-size: 0.6rem;
   background: ${(props) => props.theme.bg.app};
   z-index: 2;
-  padding: 0 8px;
-`;
-
-const BreakLine = styled.span`
-  height: 1px;
-  background: ${(props) => props.theme.border.inputbox};
-  left: 0;
-  right: 0;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
+  padding: 6px;
 `;

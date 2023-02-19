@@ -1,7 +1,7 @@
 const DarkTheme = {
   bg: {
-    app: "#111111",
-    container: "#181818",
+    app: "#1F1F1F",
+    container: "#1C1A1B",
     overlay: "#151515",
   },
   txt: {
@@ -26,6 +26,7 @@ const DarkTheme = {
   msgBox: {
     sender: "#284ff2",
     receiver: "#1d1f24",
+    bgCover: "0",
   },
   tooltip: {
     background: "#1d1f24",
@@ -35,7 +36,7 @@ const DarkTheme = {
 
 const LightTheme = {
   bg: {
-    app: "#FFF",
+    app: "#FFFDFC",
     container: "#F3F2F2",
     overlay: "rgba(13, 17, 23, 0.9)",
   },
@@ -61,6 +62,7 @@ const LightTheme = {
   msgBox: {
     sender: "#111111",
     receiver: "#F3F2F2",
+    bgCover: "100%",
   },
   tooltip: {
     background: "#1d1f24",

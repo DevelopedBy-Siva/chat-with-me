@@ -75,7 +75,7 @@ const EmojiBtn = styled.button`
   cursor: pointer;
 
   color: ${(props) =>
-    props.visible ? props.theme.background.highlight.hex : props.theme.txt.sub};
+    props.visible ? props.theme.txt.highlight : props.theme.txt.sub};
   height: auto;
   font-size: 68%;
   :hover {
