@@ -80,19 +80,18 @@ const TextContainer = styled.div`
     background: none;
   }
   ::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.background.app};
     border-radius: inherit;
   }
 `;
 
 const MessageInput = styled.div`
-  color: ${(props) => props.theme.text.sub};
+  color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
   word-break: break-all;
   cursor: text;
   outline: none;
   border: none;
-  caret-color: ${(props) => props.theme.text.sub};
+  caret-color: ${(props) => props.theme.txt.sub};
 
   :empty:focus::before,
   :empty::before {
@@ -117,6 +116,5 @@ const SendBtn = styled.button`
   justify-content: center;
   align-items: center;
   margin-left: 1rem;
-  color: ${(props) => props.theme.background.highlight.hex};
   font-size: 80%;
 `;

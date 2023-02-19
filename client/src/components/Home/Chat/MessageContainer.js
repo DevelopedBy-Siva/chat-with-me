@@ -87,7 +87,7 @@ const Message = styled.span`
     background: none;
   }
   ::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.background.app};
+    background: ${(props) => props.theme.bg.app};
     border-radius: 4px;
   }
 `;

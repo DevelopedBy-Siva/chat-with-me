@@ -18,20 +18,6 @@ const DarkTheme = {
     inactive: "#242424",
     active: "#1E1E1E",
   },
-  background: {
-    app: "#282834",
-    container: "#131517",
-    containerLight: "#1d1f24",
-    highlight: {
-      hex: "#284ff2",
-      rgba: "rgba(49,78,233,0.2)",
-    },
-    blue: "#284ff2",
-  },
-  text: {
-    main: "#FFFFFF",
-    sub: "#7a7a85",
-  },
   emoji: {
     background: "29, 31, 36",
     title: "122, 122, 133",
@@ -66,20 +52,6 @@ const LightTheme = {
   btn: {
     inactive: "#3D3D3D",
     active: "#2B2B2B",
-  },
-  background: {
-    app: "#282834",
-    container: "#131517",
-    containerLight: "#1d1f24",
-    highlight: {
-      hex: "#284ff2",
-      rgba: "rgba(49,78,233,0.2)",
-    },
-    blue: "#284ff2",
-  },
-  text: {
-    main: "#FFFFFF",
-    sub: "#7a7a85",
   },
   emoji: {
     background: "29, 31, 36",

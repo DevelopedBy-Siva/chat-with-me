@@ -56,7 +56,7 @@ const ReceiverInfo = styled.div`
 
 const ReceiverName = styled.span`
   display: block;
-  color: ${(props) => props.theme.text.main};
+  color: ${(props) => props.theme.txt.main};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,7 +67,7 @@ const ReceiverName = styled.span`
 const ReceiverStatus = styled.span`
   font-size: 0.7rem;
   display: block;
-  color: ${(props) => props.theme.text.sub};
+  color: ${(props) => props.theme.txt.sub};
   text-transform: capitalize;
 `;
 
@@ -83,7 +83,7 @@ const ReceiverInfoBtn = styled.button`
   border-radius: 50%;
   cursor: pointer;
   transform: scale(1);
-  color: ${(props) => props.theme.text.main};
+  color: ${(props) => props.theme.txt.main};
   transition: transform 0.4s ease-in-out;
   font-size: 1.4rem;
 
