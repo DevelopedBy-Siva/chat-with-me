@@ -16,6 +16,7 @@ const Group = lazy(() => import("./components/Home/Group"));
 const Settings = lazy(() => import("./components/Home/Settings"));
 const Logout = lazy(() => import("./components/Home/Logout"));
 const QrCode = lazy(() => import("./components/Home/QrCode"));
+const MySelf = lazy(() => import("./components/Home/MySelf"));
 const Modal = lazy(() => import("./components/Home/Modal"));
 
 export default function App() {
@@ -43,6 +44,7 @@ export default function App() {
                 <Route path="/group" element={<Group />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/qrcode" element={<QrCode />} />
+                <Route path="/myself" element={<MySelf />} />
               </Route>
             </Route>
           </Route>

@@ -74,7 +74,7 @@ export default function NavBarContainer() {
       </Navs>
       <Wrapper>
         <ThemeSwitch />
-        <Profile>
+        <Profile to="/myself">
           <ProfileImg src={profileImg} alt="User profile image" />
         </Profile>
       </Wrapper>
@@ -169,7 +169,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Profile = styled.button`
+const Profile = styled(NavLink)`
   width: 38px;
   height: 38px;
   display: block;
