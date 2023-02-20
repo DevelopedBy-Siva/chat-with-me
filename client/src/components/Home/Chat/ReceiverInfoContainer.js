@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { useTransition, animated } from "react-spring";
 import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
-import { BiPencil, BiRightArrowAlt } from "react-icons/bi";
+import { BiRightArrowAlt } from "react-icons/bi";
+import { BsFillPencilFill } from "react-icons/bs";
 
 import Tooltip from "../Tooltip";
 import Avatar from "../../../assets/svgs/avatars/6.svg";
@@ -50,10 +51,10 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
             <UserAvatar src={Avatar} />
             <UserInfoName>Hrithik roshan</UserInfoName>
             <NicknameContainer>
-              <NicknameTitle>#nick</NicknameTitle>
+              <NicknameTitle>#nick&#32;</NicknameTitle>
               <Nickname>duke nukem</Nickname>
               <ChangeNicknameBtn>
-                <BiPencil id="change-nickname" />
+                <BsFillPencilFill id="change-nickname" />
                 <Tooltip id="change-nickname" msg="Change nickname" />
               </ChangeNicknameBtn>
             </NicknameContainer>
@@ -97,12 +98,12 @@ const UserInfoCloseBtn = styled.button`
   border-radius: 50%;
   font-size: 1.2rem;
   cursor: pointer;
-  transform: scale(1);
+  transform: scale(1.2);
   z-index: 1;
   transition: transform 0.4s ease-in-out;
 
   :hover {
-    transform: scale(1.1);
+    transform: scale(1.3);
   }
 `;
 
@@ -144,12 +145,13 @@ const UserInfoName = styled.span`
   font-size: 1.2rem;
   width: 100%;
   display: block;
-  color: ${(props) => props.theme.txt.default};
+  color: ${(props) => props.theme.txt.main};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: capitalize;
   text-align: center;
+  font-weight: 400;
 `;
 
 const NicknameContainer = styled.div`
@@ -169,6 +171,7 @@ const Nickname = styled.span`
   text-transform: capitalize;
   margin: 0 4px;
   color: ${(props) => props.theme.txt.main};
+  font-weight: 400;
 `;
 
 const NicknameTitle = styled.span`
@@ -176,6 +179,7 @@ const NicknameTitle = styled.span`
   text-transform: lowercase;
   font-size: 0.6rem;
   font-style: italic;
+  font-weight: 400;
 `;
 
 const ChangeNicknameBtn = styled.button`
@@ -184,7 +188,7 @@ const ChangeNicknameBtn = styled.button`
   border: none;
   outline: none;
   background: none;
-  color: ${(props) => props.theme.txt.sub};
+  color: ${(props) => props.theme.txt.main};
   cursor: pointer;
 `;
 
@@ -193,14 +197,13 @@ const UserDescription = styled.span`
   font-size: 0.65rem;
   color: ${(props) => props.theme.txt.main};
   text-align: center;
-  margin-top: 0.8rem;
+  margin: 1.2rem 0;
   line-height: 15px;
 `;
 
 const UserOperations = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 1rem;
 `;
 
 const UserOperationBtn = styled.button`
@@ -209,18 +212,17 @@ const UserOperationBtn = styled.button`
   align-items: center;
   cursor: pointer;
   margin-left: 8px;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   border-radius: 5px;
   padding: 8px;
   outline: none;
   border: none;
   color: ${(props) => props.theme.txt.main};
   background-color: ${(props) => props.theme.btn.active};
-  width: 60px;
-  height: 60px;
-  transition: all 0.25s ease-in-out;
+  width: 56px;
+  height: 56px;
+  transition: font-size 0.3s ease-in-out;
   :hover {
-    font-size: 1.1rem;
-    background-color: ${(props) => props.theme.btn.inactive};
+    font-size: 1.2rem;
   }
 `;

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { BsEmojiSmile } from "react-icons/bs";
+import { BsFillEmojiSmileFill } from "react-icons/bs";
 
 export default function EmojiContainer() {
   const [visible, setVisible] = useState(false);
@@ -16,7 +16,7 @@ export default function EmojiContainer() {
         onClick={() => setVisible((val) => !val)}
         visible={visible}
       >
-        <BsEmojiSmile />
+        <BsFillEmojiSmileFill />
       </EmojiBtn>
       {visible && (
         <EmojiPicker visibility={setVisible} pickerBtnRef={pickerBtnRef} />
@@ -75,17 +75,20 @@ const EmojiBtn = styled.button`
   cursor: pointer;
 
   color: ${(props) =>
-    props.visible ? props.theme.txt.highlight : props.theme.txt.sub};
+    props.visible ? props.theme.txt.main : props.theme.txt.sub};
   height: auto;
   font-size: 1.2rem;
-  :hover {
+
+  &:hover {
+    color: ${(props) => props.theme.txt.main};
   }
 `;
 
 const EmojiWrapper = styled.div`
   position: absolute;
+  z-index: 2;
   bottom: 40px;
-  right: 0;
+  right: -5px;
   em-emoji-picker {
     --category-icon-size: 16px;
     --font-size: 0.6rem;

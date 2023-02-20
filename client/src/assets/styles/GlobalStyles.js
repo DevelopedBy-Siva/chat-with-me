@@ -5,9 +5,11 @@ export const GlobalStyles = createGlobalStyle`
         margin: 0;
         padding: 0;
         box-sizing: border-box;		
-        font-family: 'Rubik', sans-serif;
+        font-family: 'Roboto', sans-serif;
         font-weight: 300;
+
     }
+
     html, body {
         letter-spacing: 1px;
         font-size: 16px;
@@ -18,11 +20,10 @@ export const GlobalStyles = createGlobalStyle`
         -moz-osx-font-smoothing: grayscale;
     }
     #nprogress .bar {
-        background: ${(props) => props.theme.txt.highlight};
+        background: red;
     }
     #nprogress .peg {
-        box-shadow: ${(props) =>
-          `0 0 10px ${props.theme.txt.highlight}, 0 0 5px ${props.theme.txt.highlight}`};
+        box-shadow: 0 0 10px red, 0 0 5px red;
     }
 `;
 

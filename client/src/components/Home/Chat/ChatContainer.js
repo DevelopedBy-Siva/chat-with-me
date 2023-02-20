@@ -164,4 +164,5 @@ const BreakTimestamp = styled.span`
   padding: 6px 8px;
   opacity: 0.7;
   letter-spacing: 1px;
+  font-weight: 400;
 `;

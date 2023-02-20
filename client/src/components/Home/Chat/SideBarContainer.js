@@ -10,15 +10,18 @@ export default function SideBar() {
 }
 
 const Container = styled.div`
-  padding: 1rem;
   width: 300px;
   overflow-y: auto;
   background: ${(props) => props.theme.bg.container};
 `;
 
 const Heading = styled.h3`
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   text-align: left;
   color: ${(props) => props.theme.txt.main};
-  font-weight: 400;
+  font-weight: 500;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
 `;

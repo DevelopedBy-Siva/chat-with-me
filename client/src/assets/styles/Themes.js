@@ -11,7 +11,7 @@ const DarkTheme = {
     default: "#D2D2D2",
   },
   border: {
-    inputbox: "#21222B",
+    inputbox: "#2e2e2e",
     default: "#EFEFEF",
   },
   btn: {
@@ -21,10 +21,10 @@ const DarkTheme = {
   emoji: {
     background: "36, 36, 36",
     title: "152, 152, 152",
-    navIcon: "10, 108, 255",
+    navIcon: "255, 255, 255",
   },
   msgBox: {
-    sender: "#0A6CFF",
+    sender: "#678CAD",
     senderColor: "#FFFF",
     receiver: "#333333",
     receiverColor: "#FFFF",
@@ -33,6 +33,9 @@ const DarkTheme = {
   tooltip: {
     background: "#1d1f24",
     text: "#7a7a85",
+  },
+  checkbox: {
+    bg: "#2e2e2e",
   },
 };
 
@@ -43,32 +46,37 @@ const LightTheme = {
     overlay: "rgba(13, 17, 23, 0.9)",
   },
   txt: {
-    main: "#2B2B2B",
+    main: "#1B1B1B",
     sub: "#646464",
     highlight: "#FFA700",
     default: "#FFFF",
   },
   border: {
-    inputbox: "#EFEFEF",
+    inputbox: "#e7e5e5",
     default: "#EFEFEF",
   },
   btn: {
-    inactive: "#3D3D3D",
-    active: "#2B2B2B",
+    inactive: "#dbd8d8",
+    active: "#e7e5e5",
   },
   emoji: {
-    background: "29, 31, 36",
-    title: "122, 122, 133",
-    navIcon: "40, 79, 242",
+    background: "243, 243, 242",
+    title: "100, 100, 100",
+    navIcon: "27, 27, 27",
   },
   msgBox: {
-    sender: "#111111",
+    sender: "#6ca290",
+    senderColor: "#1B1B1B",
     receiver: "#F3F2F2",
+    receiverColor: "#1B1B1B",
     bgCover: "100%",
   },
   tooltip: {
     background: "#1d1f24",
     text: "#7a7a85",
+  },
+  checkbox: {
+    bg: "#e7e5e5",
   },
 };
 

@@ -214,7 +214,7 @@ const DontHaveAccount = styled.span`
 `;
 
 const PageNavigationBtn = styled.button`
-  color: ${(props) => props.theme.txt.highlight};
+  color: ${(props) => props.theme.txt.main};
   background: none;
   outline: none;
   border: none;

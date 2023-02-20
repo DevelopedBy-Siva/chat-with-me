@@ -23,7 +23,7 @@ const CheckboxContainer = styled.div`
 
 const Icon = styled(TiTick)`
   font-size: 1rem;
-  color: ${(props) => props.theme.txt.dark};
+  color: ${(props) => props.theme.txt.main};
 `;
 
 const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
@@ -43,7 +43,7 @@ const StyledCheckbox = styled.div`
   width: 13px;
   height: 13px;
   background: ${(props) =>
-    props.checked ? props.theme.txt.highlight : props.theme.txt.sub};
+    props.checked ? props.theme.txt.highlight : props.theme.checkbox.bg};
   border-radius: 2px;
   transition: all 150ms;
   display: flex;

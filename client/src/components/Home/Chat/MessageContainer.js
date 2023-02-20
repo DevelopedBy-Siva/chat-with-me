@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { BiCheckDouble } from "react-icons/bi";
 
-import SenderAvatar from "../../../assets/svgs/avatars/6.svg";
-import ReceiverAvatar from "../../../assets/svgs/avatars/3.svg";
+import ReceiverAvatar from "../../../assets/svgs/avatars/6.svg";
+import SenderAvatar from "../../../assets/svgs/avatars/2.svg";
 
 export default function MessageContainer({
   index,
@@ -118,12 +118,15 @@ const MessageReceiver = styled.ul`
 const Message = styled.span`
   display: block;
   width: 100%;
+  min-width: 50px;
   max-height: 150px;
   padding: 0 0.5rem;
   overflow-y: auto;
   overflow-x: hidden;
-  line-height: 16px;
-  font-size: 0.65rem;
+  line-height: 18px;
+  font-size: 0.7rem;
+  letter-spacing: 1.4px;
+  font-weight: 400;
 
   ::-webkit-scrollbar {
     width: 4px;
@@ -150,6 +153,7 @@ const MsgStatus = styled.div`
 
 const MsgTimestamp = styled.span`
   font-size: 0.6rem;
+  font-weight: 400;
   color: ${(props) => props.theme.txt.main};
   padding: 4px 0;
 `;

@@ -5,22 +5,22 @@ import { NavLink } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { MdSupervisorAccount } from "react-icons/md";
-import { TbMessages } from "react-icons/tb";
-import { BsFillMoonStarsFill } from "react-icons/bs";
+import { BsMoonFill } from "react-icons/bs";
 import { HiOutlineSun } from "react-icons/hi";
+import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { BiLogOut } from "react-icons/bi";
 import { HiQrCode } from "react-icons/hi2";
 
 import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
-import profileImg from "../../../assets/svgs/avatars/6.svg";
+import profileImg from "../../../assets/svgs/avatars/2.svg";
 import { ThemeContext } from "../../../context/ThemeContext";
 
 const navBtns = [
   {
     id: "nav_msg",
     placeholder: "Chat",
-    icon: <TbMessages />,
+    icon: <HiChatBubbleLeftRight />,
     navTo: "/",
   },
   {
@@ -92,13 +92,9 @@ function ThemeSwitch() {
 
   return (
     <Switch onClick={() => handleTheme(currentTheme())}>
-      <SwitchLabel className={appTheme}>
-        {appTheme === "dark" ? (
-          <BsFillMoonStarsFill />
-        ) : (
-          <HiOutlineSun className="sunny" />
-        )}
-      </SwitchLabel>
+      <SwitchLabel className={appTheme} />
+      <BsFillMoonFillCustom className={appTheme === "dark" ? "show" : "hide"} />
+      <HiOutlineSunCustom className={appTheme === "dark" ? "hide" : "show"} />
     </Switch>
   );
 }
@@ -127,7 +123,7 @@ const NavBorder = styled.span`
   top: 0;
   bottom: 0;
   left: 0;
-  width: 6px;
+  width: 5px;
   background: none;
   border-radius: 0 5px 5px 0;
 `;
@@ -146,7 +142,15 @@ const NavBtn = styled(NavLink)`
   font-size: 1.4rem;
 
   &.active ${NavBorder} {
-    background: ${(props) => props.theme.txt.sub};
+    background: ${(props) => props.theme.txt.main};
+  }
+
+  &.active {
+    color: ${(props) => props.theme.txt.main};
+  }
+
+  &:hover {
+    color: ${(props) => props.theme.txt.main};
   }
 `;
 
@@ -170,8 +174,8 @@ const Wrapper = styled.div`
 `;
 
 const Profile = styled(NavLink)`
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   display: block;
   border-radius: 50%;
   border: none;
@@ -187,7 +191,7 @@ const ProfileImg = styled.img`
 
 const Switch = styled.button`
   width: 28px;
-  height: 48px;
+  height: 52px;
   margin-bottom: 14px;
   border-radius: 15px;
   border: none;
@@ -199,26 +203,57 @@ const Switch = styled.button`
 
 const SwitchLabel = styled.span`
   display: block;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
   position: absolute;
-  top: 50%;
+  width: 15px;
+  height: 15px;
+  background-color: ${(props) => props.theme.txt.main};
+  border-radius: 50%;
   left: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${(props) => `${props.theme.txt.sub}`};
-  background: ${(props) => `${props.theme.bg.app}`};
   transition: transform 0.3s ease-in-out;
 
   &.dark {
-    transform: translate(-50%, -90%);
-    font-size: 0.6rem;
+    top: 40%;
+    transform: translate(-50%, -100%);
   }
 
   &.light {
-    transform: translate(-50%, -10%);
-    font-size: 1rem;
+    top: 60%;
+    transform: translate(-50%, 0);
+  }
+`;
+
+const BsFillMoonFillCustom = styled(BsMoonFill)`
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  color: ${(props) => props.theme.txt.main};
+  transition: opacity 0.5s ease-in;
+
+  &.show {
+    opacity: 1;
+  }
+
+  &.hide {
+    opacity: 0;
+  }
+`;
+
+const HiOutlineSunCustom = styled(HiOutlineSun)`
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  color: ${(props) => props.theme.txt.main};
+  transition: opacity 0.5s ease-in;
+
+  &.show {
+    opacity: 1;
+  }
+
+  &.hide {
+    opacity: 0;
   }
 `;

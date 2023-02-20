@@ -31,7 +31,6 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
 `;
 
 const Receiver = styled.div`
@@ -62,6 +61,7 @@ const ReceiverName = styled.span`
   text-overflow: ellipsis;
   text-transform: capitalize;
   font-size: 0.9rem;
+  font-weight: 400;
 `;
 
 const ReceiverStatus = styled.span`

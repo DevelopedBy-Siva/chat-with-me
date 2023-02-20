@@ -37,7 +37,7 @@ export default function InputContainer() {
 
   return (
     <Container onSubmit={sendMessage}>
-      <TextContainer>
+      <TextContainer onClick={() => msgInputRef.current.focus()}>
         <MessageInput
           ref={msgInputRef}
           contentEditable
@@ -73,6 +73,7 @@ const TextContainer = styled.div`
   background: ${(props) => props.theme.bg.container};
   overflow-x: hidden;
   overflow-y: auto;
+  cursor: text;
 
   ::-webkit-scrollbar {
     width: 4px;
@@ -120,4 +121,8 @@ const SendBtn = styled.button`
   margin-left: 1rem;
   font-size: 1.2rem;
   color: ${(props) => props.theme.txt.sub};
+
+  &:hover {
+    color: ${(props) => props.theme.txt.main};
+  }
 `;

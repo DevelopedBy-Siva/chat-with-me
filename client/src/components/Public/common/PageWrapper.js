@@ -43,7 +43,7 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
 `;
@@ -58,10 +58,11 @@ const Heading = styled.div`
 
 const HeadingSplit = styled.h1`
   font-weight: 600;
-  font-size: 2.4rem;
+  font-size: 2.5rem;
+  font-family: "Shantell Sans", cursive;
 
   &:nth-child(1) {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 500;
     color: ${(props) => props.theme.txt.main};
   }
@@ -82,6 +83,7 @@ const SubHeading = styled.h2`
   color: ${(props) => props.theme.txt.main};
   font-weight: 500;
   margin: 18px 0 32px 0;
+  font-family: "Shantell Sans", cursive;
 
   &::before {
     content: "\u003C ";
