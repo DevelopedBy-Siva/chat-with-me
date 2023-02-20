@@ -46,15 +46,17 @@ const Container = styled.div`
 `;
 
 const Description = styled.h2`
-  font-size: 1.1rem;
+  padding: 1rem;
+  font-size: 0.9rem;
   text-align: center;
+  color: ${(props) => props.theme.txt.main};
+  font-weight: 400;
 `;
 
 const BtnContainer = styled.form`
   display: flex;
   justify-content: center;
-  padding-top: 24px;
-  padding-bottom: 10px;
+  padding: 0.5rem;
 `;
 
 const Btn = styled.button`
@@ -64,7 +66,9 @@ const Btn = styled.button`
   padding: 8px 0;
   border-radius: 4px;
   border: none;
-  background: ${(props) => props.theme.btn.inactive};
+  font-size: 0.64rem;
+  background: ${(props) => props.theme.btn.active};
   color: ${(props) => props.theme.txt.main};
   cursor: pointer;
+  font-weight: 400;
 `;

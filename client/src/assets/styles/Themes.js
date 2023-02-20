@@ -2,7 +2,8 @@ const DarkTheme = {
   bg: {
     app: "#1B1B1B",
     container: "#242424",
-    overlay: "#151515",
+    overlay: "#111111",
+    modal: "#242424",
   },
   txt: {
     main: "#FFFF",
@@ -31,7 +32,7 @@ const DarkTheme = {
     bgCover: "0",
   },
   tooltip: {
-    background: "#1d1f24",
+    background: "#242424",
     text: "#7a7a85",
   },
   checkbox: {
@@ -43,7 +44,8 @@ const LightTheme = {
   bg: {
     app: "#FFFDFC",
     container: "#F3F2F2",
-    overlay: "rgba(13, 17, 23, 0.9)",
+    overlay: "#111111",
+    modal: "#FFFDFC",
   },
   txt: {
     main: "#1B1B1B",

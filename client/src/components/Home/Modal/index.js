@@ -53,8 +53,8 @@ const Overlay = styled(motion.div)`
 const Wrapper = styled(motion.div)`
   width: 100%;
   max-width: 760px;
-  min-height: 120px;
-  background-color: ${(props) => props.theme.bg.container};
+  min-height: 90px;
+  background-color: ${(props) => props.theme.bg.modal};
   padding: 15px;
   border-radius: 10px;
   overflow: hidden;
@@ -62,19 +62,20 @@ const Wrapper = styled(motion.div)`
 
 const CloseBtn = styled.button`
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   display: flex;
   justify-content: center;
+  color: ${(props) => props.theme.txt.sub};
 `;
 
 const OverlayAnimation = {
   initial: { opacity: 0 },
-  animate: { opacity: 0.7 },
+  animate: { opacity: 0.8 },
   exit: { opacity: 0 },
   transition: {
     duration: 0.25,

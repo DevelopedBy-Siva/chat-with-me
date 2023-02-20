@@ -9,7 +9,7 @@ export default function Tooltip({ id, msg, position = "bottom", rest }) {
 }
 
 const CustomToolTip = styled(ReactTooltip)`
-  font-size: 28%;
+  font-size: 0.56rem;
   background-color: ${(props) => props.theme.tooltip.background};
   color: ${(props) => props.theme.tooltip.text};
   opacity: 1 !important;

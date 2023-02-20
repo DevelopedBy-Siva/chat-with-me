@@ -111,9 +111,10 @@ const Container = styled.div`
 
 const Heading = styled.h2`
   margin-bottom: 10px;
-  font-size: 1.6rem;
-  font-weight: 400;
+  font-size: 1.4rem;
+  font-weight: 500;
   user-select: none;
+  color: ${(props) => props.theme.txt.main};
 `;
 
 const Content = styled.div``;
