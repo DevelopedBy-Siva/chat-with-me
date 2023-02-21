@@ -35,7 +35,7 @@ export const initializeContacts = () => {
     dispatch(contactsLoading());
     axios
       .get("https://apigenerator.dronahq.com/api/VFz9-K82/contacts")
-      .then(async ({ data }) => {
+      .then(({ data }) => {
         dispatch(getContacts(data));
       })
       .catch((err) => {
