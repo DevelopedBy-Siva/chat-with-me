@@ -1,6 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import {
+  getContactsTimestamp,
+  orderContactsDesc,
+} from "../../../utils/DateTime";
 
 import Loader from "../../Loader";
 const avatars = require.context("../../../assets/svgs/avatars/", true);
@@ -24,11 +28,9 @@ export default function SideBar() {
       <ContactsContainer>
         {loading ? (
           <Loader style={{ top: "60px", opacity: "0.6" }} />
-        ) : error ? (
-          <span>Error</span>
-        ) : (
-          contacts.map((data, index) => {
-            const { name, lastMsg, isOnline, avatarId } = data;
+        ) : !error ? (
+          orderContactsDesc(contacts).map((data, index) => {
+            const { name, lastMsg, isOnline, avatarId, lastMsgTstmp } = data;
             return (
               <Contact key={index}>
                 <AvatarContainer>
@@ -36,12 +38,19 @@ export default function SideBar() {
                   <Avatar src={getAvatar(avatarId)} />
                 </AvatarContainer>
                 <Details>
-                  <Name>{name}</Name>
+                  <Wrapper>
+                    <Name>{name}</Name>
+                    <LastMsgTmstp>
+                      {getContactsTimestamp(lastMsgTstmp)}
+                    </LastMsgTmstp>
+                  </Wrapper>
                   <LastMessage>{lastMsg}</LastMessage>
                 </Details>
               </Contact>
             );
           })
+        ) : (
+          ""
         )}
       </ContactsContainer>
     </Container>
@@ -80,6 +89,7 @@ const Contact = styled.div`
   align-items: center;
   padding: 0.4rem 1rem;
   cursor: pointer;
+  position: relative;
 
   &:hover {
     background: ${(props) => props.theme.contact.active};
@@ -113,6 +123,14 @@ const Avatar = styled.img`
 const Details = styled.div`
   margin-left: 8px;
   overflow: hidden;
+  width: 100%;
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Name = styled.span`
@@ -134,4 +152,12 @@ const LastMessage = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 4px;
+`;
+
+const LastMsgTmstp = styled.span`
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.6rem;
+  flex-shrink: 0;
+  margin-left: 12px;
+  display: block;
 `;

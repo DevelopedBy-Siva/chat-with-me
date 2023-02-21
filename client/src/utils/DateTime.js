@@ -1,3 +1,6 @@
+import _ from "lodash";
+import moment from "moment";
+
 const months = [
   "Jan",
   "Feb",
@@ -31,14 +34,14 @@ function getDate(timestamp = new Date()) {
   return date;
 }
 
-function sortByTimestamp(data) {
+export function sortByTimestamp(data) {
   data.sort(
     (objA, objB) =>
       Number(new Date(objB.timestamp)) - Number(new Date(objA.timestamp))
   );
 }
 
-function groupByTimestamp(data) {
+export function groupByTimestamp(data) {
   const response = new Map();
   for (let obj of data) {
     const formattedDate = getDate(obj.timestamp);
@@ -74,4 +77,25 @@ function groupByTimestamp(data) {
   return [...response].map(([date, messages]) => ({ date, messages }));
 }
 
-export { groupByTimestamp, sortByTimestamp };
+export function getContactsTimestamp(utc) {
+  if (!utc || utc.trim().length === 0) return "";
+
+  const localDate = new Date(utc);
+  const tmstp = moment(localDate);
+  const diffInDays = moment().diff(tmstp, "days");
+  let toDisplay;
+  if (diffInDays === 0) toDisplay = tmstp.format("LT");
+  else if (diffInDays < 4) toDisplay = tmstp.fromNow();
+  else toDisplay = tmstp.format("L");
+  return toDisplay;
+}
+
+export function orderContactsDesc(data) {
+  return _.orderBy(
+    data,
+    function (o) {
+      return o.lastMsgTstmp;
+    },
+    ["desc"]
+  );
+}
