@@ -51,7 +51,8 @@ const Overlay = styled(motion.div)`
 `;
 
 const Wrapper = styled(motion.div)`
-  width: 100%;
+  width: 98%;
+  margin: auto;
   max-width: 760px;
   min-height: 90px;
   background-color: ${(props) => props.theme.bg.modal};
