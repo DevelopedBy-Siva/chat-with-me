@@ -1,10 +1,10 @@
 import React, { lazy, useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
 import networkStatus from "./components/Toastify/NetworkStatus";
 import Public from "./pages/public";
 import Private from "./pages/private";
-import { AnimatePresence } from "framer-motion";
 
 const SignIn = lazy(() => import("./pages/public/SignIn"));
 const SignUp = lazy(() => import("./pages/public/SignUp"));
@@ -20,8 +20,6 @@ const MySelf = lazy(() => import("./components/Home/MySelf"));
 const Modal = lazy(() => import("./components/Home/Modal"));
 
 export default function App() {
-  const location = useLocation();
-
   useEffect(() => {
     window.addEventListener("online", networkStatus);
     window.addEventListener("offline", networkStatus);
@@ -34,7 +32,7 @@ export default function App() {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <Routes>
         <Route element={<Private />}>
           <Route path="/" element={<Home />}>
             <Route path="/" element={<Chat />}>
