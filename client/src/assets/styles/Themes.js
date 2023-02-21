@@ -13,7 +13,10 @@ const DarkTheme = {
   },
   border: {
     inputbox: "#2e2e2e",
-    default: "#EFEFEF",
+    default: "#2d2a2a",
+  },
+  contact: {
+    active: "#373434",
   },
   btn: {
     inactive: "#242424",
@@ -55,11 +58,14 @@ const LightTheme = {
   },
   border: {
     inputbox: "#e7e5e5",
-    default: "#EFEFEF",
+    default: "#e8e6e6",
+  },
+  contact: {
+    active: "#dfdcdc",
   },
   btn: {
     inactive: "#dbd8d8",
-    active: "#e7e5e5",
+    active: "#e8e5e5",
   },
   emoji: {
     background: "243, 243, 242",

@@ -23,7 +23,7 @@ const options = [
   {
     id: "unfriend-user",
     icon: <MdPersonOff />,
-    placeholder: "Unfriend",
+    placeholder: "Remove contact",
   },
 ];
 
