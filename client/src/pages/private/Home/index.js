@@ -1,11 +1,19 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 
 import Navbar from "../../../components/Home/NavBar";
 import store from "../../../store";
+import { initializeContacts } from "../../../store/reducers/Contacts";
 
 export default function UserHome() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializeContacts());
+  }, [dispatch]);
+
   return (
     <Provider store={store}>
       <Container>

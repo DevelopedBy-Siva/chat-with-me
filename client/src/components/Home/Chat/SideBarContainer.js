@@ -1,25 +1,48 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import dummy_contacts from "../../../assets/dummy_contacts";
+import Loader from "../../Loader";
+const avatars = require.context("../../../assets/svgs/avatars/", true);
 
 export default function SideBar() {
+  const { contacts, loading, error } = useSelector((state) => state.contacts);
+
+  function getAvatar(id) {
+    let src;
+    try {
+      src = avatars(`./${id}.svg`);
+    } catch (ex) {
+      src = avatars("./default.svg");
+    }
+    return src;
+  }
+
   return (
     <Container>
       <Heading>Messages</Heading>
       <ContactsContainer>
-        {dummy_contacts.map((i) => (
-          <Contact>
-            <AvatarContainer>
-              {i.status === true && <ContactStatus />}
-              <Avatar src={i.avatar} alt="contact avatar" />
-            </AvatarContainer>
-            <Details>
-              <Name>{i.contact}</Name>
-              <LastMessage>{i.lastMsg}</LastMessage>
-            </Details>
-          </Contact>
-        ))}
+        {loading ? (
+          <Loader style={{ top: "60px", opacity: "0.6" }} />
+        ) : error ? (
+          <span>Error</span>
+        ) : (
+          contacts.map((data, index) => {
+            const { name, lastMsg, isOnline, avatarId } = data;
+            return (
+              <Contact key={index}>
+                <AvatarContainer>
+                  {isOnline === true && <ContactStatus />}
+                  <Avatar src={getAvatar(avatarId)} />
+                </AvatarContainer>
+                <Details>
+                  <Name>{name}</Name>
+                  <LastMessage>{lastMsg}</LastMessage>
+                </Details>
+              </Contact>
+            );
+          })
+        )}
       </ContactsContainer>
     </Container>
   );
@@ -46,6 +69,7 @@ const Heading = styled.h3`
 const ContactsContainer = styled.div`
   height: calc(100% - 70px);
   overflow: auto;
+  position: relative;
 `;
 
 const Contact = styled.div`
@@ -99,6 +123,7 @@ const Name = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: capitalize;
 `;
 
 const LastMessage = styled.span`

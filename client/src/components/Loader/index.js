@@ -1,8 +1,8 @@
 import styled, { keyframes } from "styled-components";
 
-export default function LoadingSpinner() {
+export default function LoadingSpinner({ style = {} }) {
   return (
-    <Container>
+    <Container style={style}>
       <Spinner />
     </Container>
   );
