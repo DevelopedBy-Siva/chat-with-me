@@ -5,10 +5,10 @@ import { BiCheckDouble } from "react-icons/bi";
 
 import ReceiverAvatar from "../../../assets/svgs/avatars/6.svg";
 import SenderAvatar from "../../../assets/svgs/avatars/2.svg";
+import { getMessageTime } from "../../../utils/DateTime";
 
 export default function MessageContainer({
   index,
-  timestamp,
   currentUser,
   sender,
   message,
@@ -16,17 +16,6 @@ export default function MessageContainer({
 }) {
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
-  }
-
-  function getTime() {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const dateTime = timestamp.toLocaleString("en-US", {
-      timeZone,
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-    return dateTime;
   }
 
   const avatarPosition = isSender() ? "sender-avatar" : "receiver-avatar";
@@ -40,7 +29,9 @@ export default function MessageContainer({
           alt="user avatar"
         />
         <Wrapper>
-          <MsgTimestamp>{getTime()}</MsgTimestamp>
+          <MsgTimestamp>
+            {getMessageTime(new Date().toUTCString())}
+          </MsgTimestamp>
           <MsgWrapper>
             <Message>{message}</Message>
             <MsgStatus>

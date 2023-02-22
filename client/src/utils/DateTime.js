@@ -99,3 +99,9 @@ export function orderContactsDesc(data) {
     ["desc"]
   );
 }
+
+export function getMessageTime(utc) {
+  const localDate = new Date(utc);
+  const tmstp = moment(localDate).format("LT");
+  return tmstp;
+}
