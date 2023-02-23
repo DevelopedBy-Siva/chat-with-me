@@ -1,25 +1,22 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+
+import { setActive } from "../../../store/actions/ChatActions";
 import {
   getContactsTimestamp,
   orderContactsDesc,
 } from "../../../utils/DateTime";
-
 import Loader from "../../Loader";
-const avatars = require.context("../../../assets/svgs/avatars/", true);
+import { getAvatar } from "../../../assets/avatars";
 
 export default function SideBar() {
+  const dispatch = useDispatch();
   const { contacts, loading, error } = useSelector((state) => state.contacts);
+  const { active } = useSelector((state) => state.chats);
 
-  function getAvatar(id) {
-    let src;
-    try {
-      src = avatars(`./${id}.svg`);
-    } catch (ex) {
-      src = avatars("./default.svg");
-    }
-    return src;
+  function handleContact(id) {
+    dispatch(setActive(id));
   }
 
   return (
@@ -30,9 +27,14 @@ export default function SideBar() {
           <Loader style={{ top: "60px", opacity: "0.6" }} />
         ) : !error ? (
           orderContactsDesc(contacts).map((data, index) => {
-            const { name, lastMsg, isOnline, avatarId, lastMsgTstmp } = data;
+            const { name, lastMsg, isOnline, avatarId, lastMsgTstmp, id } =
+              data;
             return (
-              <Contact key={index}>
+              <Contact
+                className={active === id ? "active-contact" : ""}
+                onClick={() => handleContact(id)}
+                key={index}
+              >
                 <AvatarContainer>
                   {isOnline === true && <ContactStatus />}
                   <Avatar src={getAvatar(avatarId)} />
@@ -90,6 +92,10 @@ const Contact = styled.div`
   padding: 0.4rem 1rem;
   cursor: pointer;
   position: relative;
+
+  &.active-contact {
+    background: ${(props) => props.theme.contact.active};
+  }
 
   &:hover {
     background: ${(props) => props.theme.contact.active};

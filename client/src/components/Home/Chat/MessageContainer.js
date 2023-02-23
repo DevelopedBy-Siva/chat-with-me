@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { BiCheckDouble } from "react-icons/bi";
 
-import ReceiverAvatar from "../../../assets/svgs/avatars/6.svg";
-import SenderAvatar from "../../../assets/svgs/avatars/2.svg";
+import ReceiverAvatar from "../../../assets/avatars/6.svg";
+import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
 
 export default function MessageContainer({

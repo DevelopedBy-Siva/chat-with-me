@@ -62,6 +62,7 @@ const Container = styled.form`
   position: relative;
   padding: 0.7rem 1.2rem;
   background: ${(props) => props.theme.bg.app};
+  z-index: 9;
 `;
 
 const TextContainer = styled.div`

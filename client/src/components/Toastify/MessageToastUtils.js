@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 
 import ChatToastComponent from "./ChatToastComponent";
-import DEFAULT_AVATAR from "../../assets/svgs/avatars/2.svg";
+import DEFAULT_AVATAR from "../../assets/avatars/2.svg";
 
 export const MESSAGE_TOAST_LIMIT = 3;
 export const MESSAGE_TOAST_PREFIX = "MSG_";

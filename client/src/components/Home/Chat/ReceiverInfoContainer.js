@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { useTransition, animated } from "react-spring";
+import { useSelector } from "react-redux";
+import { AnimatePresence, motion } from "framer-motion";
 import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import Tooltip from "../Tooltip";
-import Avatar from "../../../assets/svgs/avatars/6.svg";
+import { getAvatar } from "../../../assets/avatars";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -28,59 +29,64 @@ const options = [
 ];
 
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
-  const transition = useTransition(infoVisible, {
-    from: {
-      marginRight: `-${CONTAINER_WIDTH}`,
-    },
-    enter: {
-      marginRight: "0px",
-    },
-    leave: {
-      marginRight: `-${CONTAINER_WIDTH}`,
-    },
-  });
-
-  return transition(
-    (style, item) =>
-      item && (
-        <UserInfoContainer as={animated.div} style={style}>
-          <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
-            <BiRightArrowAlt />
-          </UserInfoCloseBtn>
-          <UserInfoWrapper>
-            <UserAvatar src={Avatar} />
-            <UserInfoName>Hrithik roshan</UserInfoName>
-            <NicknameContainer>
-              <NicknameTitle>#nick&#32;</NicknameTitle>
-              <Nickname>duke nukem</Nickname>
-              <ChangeNicknameBtn>
-                <BsFillPencilFill id="change-nickname" />
-                <Tooltip id="change-nickname" msg="Change nickname" />
-              </ChangeNicknameBtn>
-            </NicknameContainer>
-            <UserDescription>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s
-            </UserDescription>
-            <UserOperations>
-              {options.map((op, index) => (
-                <React.Fragment key={index}>
-                  <UserOperationBtn id={op.id}>{op.icon}</UserOperationBtn>
-                  <Tooltip id={op.id} msg={op.placeholder} />
-                </React.Fragment>
-              ))}
-            </UserOperations>
-          </UserInfoWrapper>
-        </UserInfoContainer>
-      )
+  return (
+    <AnimatePresence>
+      {infoVisible && <InfoContainer setInfoVisible={setInfoVisible} />}
+    </AnimatePresence>
   );
 }
 
-const UserInfoContainer = styled.div`
+function InfoContainer({ setInfoVisible }) {
+  const { active } = useSelector((state) => state.chats);
+  const { contacts } = useSelector((state) => state.contacts);
+
+  function findContactInfo() {
+    const index = contacts.findIndex((i) => i.id === active);
+    return contacts[index];
+  }
+  const { name, avatarId, description, nickname } = findContactInfo();
+
+  return (
+    <UserInfoContainer
+      initial={{ marginRight: `-${CONTAINER_WIDTH}` }}
+      animate={{ marginRight: 0 }}
+      exit={{ marginRight: `-${CONTAINER_WIDTH}` }}
+    >
+      <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
+        <BiRightArrowAlt />
+      </UserInfoCloseBtn>
+      <UserInfoWrapper>
+        <UserAvatar src={getAvatar(avatarId)} />
+        <UserInfoName>{name}</UserInfoName>
+        <NicknameContainer>
+          <NicknameTitle>#nick&#32;</NicknameTitle>
+          <Nickname>
+            {!nickname || nickname.trim().length === 0 ? "###" : ""}
+          </Nickname>
+          <ChangeNicknameBtn>
+            <BsFillPencilFill id="change-nickname" />
+            <Tooltip id="change-nickname" msg="Change nickname" />
+          </ChangeNicknameBtn>
+        </NicknameContainer>
+        <UserDescription>{description}</UserDescription>
+        <UserOperations>
+          {options.map((op, index) => (
+            <React.Fragment key={index}>
+              <UserOperationBtn id={op.id}>{op.icon}</UserOperationBtn>
+              <Tooltip id={op.id} msg={op.placeholder} />
+            </React.Fragment>
+          ))}
+        </UserOperations>
+      </UserInfoWrapper>
+    </UserInfoContainer>
+  );
+}
+
+const UserInfoContainer = styled(motion.div)`
   width: ${CONTAINER_WIDTH};
   flex-shrink: 0;
   position: relative;
+  z-index: 9;
   background-color: ${(props) => props.theme.bg.container};
 `;
 

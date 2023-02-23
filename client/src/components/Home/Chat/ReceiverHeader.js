@@ -1,26 +1,43 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { CgDetailsMore } from "react-icons/cg";
 
-import Avatar from "../../../assets/svgs/avatars/6.svg";
+import { getAvatar } from "../../../assets/avatars";
 
-export default function ReceiverHeader({ infoVisible, setInfoVisible }) {
+export default function ReceiverHeader({
+  contactId,
+  infoVisible,
+  setInfoVisible,
+}) {
   return (
     <Container>
-      <Receiver>
-        <ReceiverAvatar src={Avatar} />
-        <ReceiverInfo>
-          <ReceiverName>Duke nukem</ReceiverName>
-          <ReceiverStatus>Online</ReceiverStatus>
-        </ReceiverInfo>
-      </Receiver>
-
+      <ReceiverContainer contactId={contactId} />
       {!infoVisible && (
         <ReceiverInfoBtn onClick={() => setInfoVisible(true)}>
           <CgDetailsMore />
         </ReceiverInfoBtn>
       )}
     </Container>
+  );
+}
+
+function ReceiverContainer({ contactId }) {
+  const { contacts } = useSelector((state) => state.contacts);
+
+  function findContactInfo() {
+    const index = contacts.findIndex((i) => i.id === contactId);
+    return contacts[index];
+  }
+  const { isOnline, name, avatarId } = findContactInfo();
+  return (
+    <Receiver>
+      <ReceiverAvatar src={getAvatar(avatarId)} />
+      <ReceiverInfo>
+        <ReceiverName>{name}</ReceiverName>
+        <ReceiverStatus>{isOnline ? "online" : "offline"}</ReceiverStatus>
+      </ReceiverInfo>
+    </Receiver>
   );
 }
 
@@ -31,6 +48,8 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: ${(props) => props.theme.bg.app};
+  z-index: 1;
 `;
 
 const Receiver = styled.div`

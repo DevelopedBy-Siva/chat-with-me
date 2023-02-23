@@ -4,12 +4,15 @@ import {
   chatsLoading,
   CHATS_ERROR,
   CHATS_LOADING,
+  getChats,
+  GET_CHATS,
+  SET_ACTIVE,
 } from "../actions/ChatActions";
 
 const initialState = {
   loading: true,
   active: null,
-  chats: new Map(),
+  chats: null,
   error: null,
 };
 
@@ -28,6 +31,22 @@ const reducer = (state = initialState, action) => {
         error: payload,
         loading: false,
       };
+    case GET_CHATS:
+      const { data, id } = payload;
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        active: id,
+        chats: data,
+      };
+    case SET_ACTIVE:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        active: payload,
+      };
     default:
       return state;
   }
@@ -39,8 +58,10 @@ export const fetchChats = (id) => {
   return (dispatch) => {
     dispatch(chatsLoading());
     axios
-      .get("")
-      .then(() => {})
+      .get(`https://apigenerator.dronahq.com/api/ahoJbBde/chat/${id}`)
+      .then(({ data }) => {
+        dispatch(getChats(id, data));
+      })
       .catch((err) => {
         dispatch(chatsError(err));
       });

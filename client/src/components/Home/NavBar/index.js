@@ -13,7 +13,7 @@ import { HiQrCode } from "react-icons/hi2";
 
 import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
-import profileImg from "../../../assets/svgs/avatars/2.svg";
+import profileImg from "../../../assets/avatars/2.svg";
 import { ThemeContext } from "../../../context/ThemeContext";
 
 const navBtns = [
@@ -24,10 +24,10 @@ const navBtns = [
     navTo: "/",
   },
   {
-    id: "nav_friends",
-    placeholder: "Friends",
+    id: "nav_contacts",
+    placeholder: "Contacts",
     icon: <MdSupervisorAccount />,
-    navTo: "/friends",
+    navTo: "/contacts",
   },
   {
     id: "nav_settings",

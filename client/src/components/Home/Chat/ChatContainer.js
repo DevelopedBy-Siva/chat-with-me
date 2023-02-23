@@ -1,46 +1,41 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { messages as dummyMessages } from "../../../assets/dummy_values";
 import InputContainer from "./InputContainer";
 import ReceiverInfoContainer from "./ReceiverInfoContainer";
 import ReceiverHeader from "./ReceiverHeader";
 import MessageContainer from "./MessageContainer";
-import { groupByTimestamp, sortByTimestamp } from "../../../utils/DateTime";
 import CHAT_COVER from "../../../assets/images/chat-cover.webp";
-
-const current_user = "siva";
+import ChatLandingScreen from "./ChatLandingScreen";
+import { useSelector } from "react-redux";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
-  const [chats, setChats] = useState({
-    loading: true,
-    isPrivate: true,
-    messages: [],
-  });
+
+  const { active } = useSelector((state) => state.chats);
 
   useEffect(() => {
-    const response = dummyMessages("duke nukem");
-    sortByTimestamp(response);
-    const groupedMessages = groupByTimestamp(response);
-    setChats({ loading: false, isPrivate: true, messages: groupedMessages });
-  }, []);
+    if (!active) return;
+  }, [active]);
 
   return (
     <Container>
-      <Wrapper>
-        <SubContainer>
-          <ChatBox>
-            <ReceiverHeader
-              infoVisible={infoVisible}
-              setInfoVisible={setInfoVisible}
-            />
-            <MessageBox>
-              <MessageBoxCover />
-              <MessageWrapper>
-                {chats.loading ? (
-                  <span>loading</span>
-                ) : (
+      <MessageBoxCover />
+      {!active ? (
+        <ChatLandingScreen />
+      ) : (
+        <Wrapper>
+          <SubContainer>
+            <ChatBox>
+              <React.Fragment>
+                <ReceiverHeader
+                  contactId={active}
+                  infoVisible={infoVisible}
+                  setInfoVisible={setInfoVisible}
+                />
+                <MessageBox>
+                  <MessageWrapper>
+                    {/* ) : (
                   chats.messages.map((itemK, indexK) => (
                     <React.Fragment key={`K-${indexK}`}>
                       {itemK.messages.map((itemM, indexM) => (
@@ -58,17 +53,19 @@ export default function ChatContainer() {
                       </MessageBreak>
                     </React.Fragment>
                   ))
-                )}
-              </MessageWrapper>
-            </MessageBox>
-          </ChatBox>
-          <InputContainer />
-        </SubContainer>
-        <ReceiverInfoContainer
-          infoVisible={infoVisible}
-          setInfoVisible={setInfoVisible}
-        />
-      </Wrapper>
+                )} */}
+                  </MessageWrapper>
+                </MessageBox>
+              </React.Fragment>
+            </ChatBox>
+            <InputContainer />
+          </SubContainer>
+          <ReceiverInfoContainer
+            infoVisible={infoVisible}
+            setInfoVisible={setInfoVisible}
+          />
+        </Wrapper>
+      )}
     </Container>
   );
 }
@@ -78,6 +75,7 @@ const Container = styled.div`
   min-width: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const Wrapper = styled.section`
@@ -98,6 +96,7 @@ const ChatBox = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const MessageBox = styled.div`
@@ -122,6 +121,7 @@ const MessageBoxCover = styled.div`
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
   filter: invert(${(props) => props.theme.msgBox.bgCover});
   pointer-events: none;
+  z-index: 1;
 `;
 
 const MessageWrapper = styled.div`
