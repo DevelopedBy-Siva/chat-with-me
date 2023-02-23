@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
 import InputContainer from "./InputContainer";
 import ReceiverInfoContainer from "./ReceiverInfoContainer";
@@ -7,15 +8,17 @@ import ReceiverHeader from "./ReceiverHeader";
 import MessageContainer from "./MessageContainer";
 import CHAT_COVER from "../../../assets/images/chat-cover.webp";
 import ChatLandingScreen from "./ChatLandingScreen";
-import { useSelector } from "react-redux";
+import LoadingSpinner from "../../Loader";
+import { fetchChats } from "../../../store/reducers/Chats";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
-
-  const { active } = useSelector((state) => state.chats);
+  const dispatch = useDispatch();
+  const { active, loading, error, chats } = useSelector((state) => state.chats);
 
   useEffect(() => {
     if (!active) return;
+    dispatch(fetchChats(active));
   }, [active]);
 
   return (
@@ -35,6 +38,22 @@ export default function ChatContainer() {
                 />
                 <MessageBox>
                   <MessageWrapper>
+                    {loading ? (
+                      <LoadingSpinner style={{ top: "40px", opacity: 0.8 }} />
+                    ) : (
+                      !error &&
+                      chats &&
+                      chats.messages.map((msg, index) => (
+                        <MessageContainer
+                          key={index}
+                          timestamp={msg.createdAt}
+                          currentUser={"siva"}
+                          message={msg.message}
+                          sender={msg.sendBy}
+                          isSent={true}
+                        />
+                      ))
+                    )}
                     {/* ) : (
                   chats.messages.map((itemK, indexK) => (
                     <React.Fragment key={`K-${indexK}`}>
@@ -131,6 +150,8 @@ const MessageWrapper = styled.div`
   display: flex;
   flex-direction: column-reverse;
   padding: 1.4rem;
+  position: relative;
+  z-index: 9;
 
   ::-webkit-scrollbar {
     width: 2px;

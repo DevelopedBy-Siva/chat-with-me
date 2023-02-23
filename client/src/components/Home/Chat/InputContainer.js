@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { RiSendPlaneFill } from "react-icons/ri";
 
 import EmojiContainer from "./Emoji";
@@ -7,9 +8,14 @@ import EmojiContainer from "./Emoji";
 export default function InputContainer() {
   const msgInputRef = useRef(null);
 
+  const { active } = useSelector((state) => state.chats);
+
   useEffect(() => {
-    msgInputRef.current.focus();
-  }, []);
+    if (msgInputRef) {
+      msgInputRef.current.innerText = "";
+      msgInputRef.current.focus();
+    }
+  }, [active]);
 
   function sendMessage(e) {
     e.preventDefault();

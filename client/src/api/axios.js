@@ -26,6 +26,7 @@ axios.interceptors.response.use(
   },
   (error) => {
     const promise = Promise.reject(error);
+    if (error.response.status !== 500) return promise;
     promise.catch(({ code }) => {
       const { message, addToast } = retrieveError(code);
       addToast &&

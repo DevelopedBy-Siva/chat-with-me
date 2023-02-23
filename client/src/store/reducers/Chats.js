@@ -43,7 +43,6 @@ const reducer = (state = initialState, action) => {
     case SET_ACTIVE:
       return {
         ...state,
-        loading: false,
         error: null,
         active: payload,
       };

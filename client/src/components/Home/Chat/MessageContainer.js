@@ -8,7 +8,6 @@ import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
 
 export default function MessageContainer({
-  index,
   currentUser,
   sender,
   message,
@@ -21,7 +20,7 @@ export default function MessageContainer({
   const avatarPosition = isSender() ? "sender-avatar" : "receiver-avatar";
 
   return (
-    <Container key={index} as={isSender() ? MessageSender : MessageReceiver}>
+    <Container as={isSender() ? MessageSender : MessageReceiver}>
       <ContentWrapper className={avatarPosition}>
         <UserAvatar
           className={avatarPosition}
@@ -36,7 +35,11 @@ export default function MessageContainer({
             <Message>{message}</Message>
             <MsgStatus>
               <MsgStatusIcon>
-                {isSent ? <BiCheckDouble /> : <RiErrorWarningLine />}
+                {isSent ? (
+                  <BiCheckDouble />
+                ) : (
+                  <RiErrorWarningLine style={{ fontSize: "0.8rem" }} />
+                )}
               </MsgStatusIcon>
             </MsgStatus>
           </MsgWrapper>
