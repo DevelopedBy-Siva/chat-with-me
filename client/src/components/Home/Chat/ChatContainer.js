@@ -19,7 +19,15 @@ export default function ChatContainer() {
   useEffect(() => {
     if (!active) return;
     dispatch(fetchChats(active));
-  }, [active]);
+  }, [active, dispatch]);
+
+  function getChats() {
+    const userChats = chats[active];
+    if (!userChats || !userChats.messages) return { keys: [], messages: {} };
+    const messages = userChats.messages;
+    const keys = Object.keys(messages);
+    return { keys, messages };
+  }
 
   return (
     <Container>
@@ -42,37 +50,28 @@ export default function ChatContainer() {
                       <LoadingSpinner style={{ top: "40px", opacity: 0.8 }} />
                     ) : (
                       !error &&
-                      chats &&
-                      chats.messages.map((msg, index) => (
-                        <MessageContainer
-                          key={index}
-                          timestamp={msg.createdAt}
-                          currentUser={"siva"}
-                          message={msg.message}
-                          sender={msg.sendBy}
-                          isSent={true}
-                        />
-                      ))
+                      getChats().keys.map((tmstp, c_index) => {
+                        const msgs = getChats().messages[tmstp];
+                        if (!msgs || msgs.length === 0) return "";
+                        return (
+                          <React.Fragment key={c_index}>
+                            {msgs.map((msg, index) => (
+                              <MessageContainer
+                                key={index}
+                                timestamp={msg.createdAt}
+                                currentUser={"siva"}
+                                message={msg.message}
+                                sender={msg.sendBy}
+                                isSent={true}
+                              />
+                            ))}
+                            <MessageBreak>
+                              <BreakTimestamp>{tmstp}</BreakTimestamp>
+                            </MessageBreak>
+                          </React.Fragment>
+                        );
+                      })
                     )}
-                    {/* ) : (
-                  chats.messages.map((itemK, indexK) => (
-                    <React.Fragment key={`K-${indexK}`}>
-                      {itemK.messages.map((itemM, indexM) => (
-                        <MessageContainer
-                          index={`${itemK.date}**${indexM}`}
-                          timestamp={itemM.timestamp}
-                          currentUser={current_user}
-                          message={itemM.message}
-                          sender={itemM.sender}
-                          isSent={true}
-                        />
-                      ))}
-                      <MessageBreak>
-                        <BreakTimestamp>{itemK.date}</BreakTimestamp>
-                      </MessageBreak>
-                    </React.Fragment>
-                  ))
-                )} */}
                   </MessageWrapper>
                 </MessageBox>
               </React.Fragment>

@@ -34,7 +34,7 @@ export const initializeContacts = () => {
   return (dispatch) => {
     dispatch(contactsLoading());
     axios
-      .get("https://apigenerator.dronahq.com/api/-kAEU_1_/contacts")
+      .get("https://apigenerator.dronahq.com/api/YPW3U9Wu/contacts")
       .then(({ data }) => {
         dispatch(getContacts(data));
       })

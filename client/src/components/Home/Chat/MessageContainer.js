@@ -8,10 +8,10 @@ import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
 
 export default function MessageContainer({
-  currentUser,
-  sender,
-  message,
-  isSent,
+  currentUser = "",
+  sender = "",
+  message = "",
+  isSent = false,
 }) {
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
