@@ -101,6 +101,7 @@ const MessageInput = styled.div`
   outline: none;
   border: none;
   color: ${(props) => props.theme.txt.main};
+  font-weight: 400;
 
   &:empty:focus::before,
   &:empty::before {
