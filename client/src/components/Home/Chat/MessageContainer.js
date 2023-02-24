@@ -1,18 +1,27 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { BiCheckDouble } from "react-icons/bi";
 
-import ReceiverAvatar from "../../../assets/avatars/6.svg";
 import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
+import { getAvatar } from "../../../assets/avatars";
 
 export default function MessageContainer({
   currentUser = "",
   sender = "",
   message = "",
   isSent = false,
+  receiverId,
 }) {
+  const { contacts } = useSelector((state) => state.contacts);
+
+  function getRecceiverAvatar() {
+    const index = contacts.findIndex((i) => i.id === receiverId);
+    return getAvatar(contacts[index].avatarId);
+  }
+
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
   }
@@ -24,7 +33,7 @@ export default function MessageContainer({
       <ContentWrapper className={avatarPosition}>
         <UserAvatar
           className={avatarPosition}
-          src={isSender() ? SenderAvatar : ReceiverAvatar}
+          src={isSender() ? SenderAvatar : getRecceiverAvatar()}
           alt="user avatar"
         />
         <Wrapper>

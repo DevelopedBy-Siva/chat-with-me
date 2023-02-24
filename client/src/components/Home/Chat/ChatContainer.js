@@ -64,6 +64,7 @@ export default function ChatContainer() {
                                 message={msg.message}
                                 sender={msg.sendBy}
                                 isSent={true}
+                                receiverId={active}
                               />
                             ))}
                             <MessageBreak>
