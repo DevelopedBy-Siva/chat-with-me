@@ -52,7 +52,9 @@ const reducer = (state = initialState, action) => {
 export default reducer;
 
 export const fetchChats = (id) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    if (dontFetchChats(getState, id)) return;
+
     dispatch(chatsLoading());
     axios
       .get(`https://apigenerator.dronahq.com/api/lZkfxOpO/chat/${id}`)
@@ -64,3 +66,13 @@ export const fetchChats = (id) => {
       });
   };
 };
+
+function dontFetchChats(state, id) {
+  const chatState = state().chats;
+  if (!chatState) return false;
+
+  const chats = chatState.chats;
+  if (!chats || !chats[id]) return false;
+
+  return true;
+}
