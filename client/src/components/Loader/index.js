@@ -32,8 +32,8 @@ const Spinner = styled.span`
   width: 100%;
   height: 100%;
   display: block;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #909090;
+  border: 2px solid ${(props) => props.theme.loader.inner};
+  border-top: 2px solid ${(props) => props.theme.loader.outer};
   border-radius: 50%;
   animation: ${spinner} 1.5s linear infinite;
 `;

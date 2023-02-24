@@ -41,6 +41,10 @@ const DarkTheme = {
   checkbox: {
     bg: "#2e2e2e",
   },
+  loader: {
+    outer: "#909090",
+    inner: "#f3f3f3",
+  },
 };
 
 const LightTheme = {
@@ -85,6 +89,10 @@ const LightTheme = {
   },
   checkbox: {
     bg: "#e7e5e5",
+  },
+  loader: {
+    outer: "#797979",
+    inner: "#c2c2c2",
   },
 };
 
