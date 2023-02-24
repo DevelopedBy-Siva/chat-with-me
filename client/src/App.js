@@ -11,7 +11,7 @@ const SignUp = lazy(() => import("./pages/public/SignUp"));
 const ForgotPassword = lazy(() => import("./pages/public/FrgtPwsd"));
 const Home = lazy(() => import("./pages/private/Home"));
 const Chat = lazy(() => import("./components/Home/Chat"));
-const Friends = lazy(() => import("./components/Home/Friends"));
+const Contacts = lazy(() => import("./components/Home/Contacts"));
 const Group = lazy(() => import("./components/Home/Group"));
 const Settings = lazy(() => import("./components/Home/Settings"));
 const Logout = lazy(() => import("./components/Home/Logout"));
@@ -37,7 +37,7 @@ export default function App() {
           <Route path="/" element={<Home />}>
             <Route path="/" element={<Chat />}>
               <Route element={<Modal />}>
-                <Route path="/friends" element={<Friends />} />
+                <Route path="/contacts" element={<Contacts />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/group" element={<Group />} />
                 <Route path="/logout" element={<Logout />} />
