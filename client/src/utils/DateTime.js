@@ -44,3 +44,13 @@ export function sortAndGroupMsgs(messages) {
   );
   return grouped;
 }
+
+export function isTodayOrYesterday(date) {
+  if (date === moment().format("LL")) return "Today";
+
+  const localDate = new Date();
+  localDate.setDate(localDate.getDate() - 1);
+  if (date === moment(localDate).format("LL")) return "Yesterday";
+
+  return date;
+}

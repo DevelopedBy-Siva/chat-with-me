@@ -10,6 +10,7 @@ import CHAT_COVER from "../../../assets/images/chat-cover.webp";
 import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
+import { isTodayOrYesterday } from "../../../utils/DateTime";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -66,7 +67,9 @@ export default function ChatContainer() {
                               />
                             ))}
                             <MessageBreak>
-                              <BreakTimestamp>{tmstp}</BreakTimestamp>
+                              <BreakTimestamp>
+                                {isTodayOrYesterday(tmstp)}
+                              </BreakTimestamp>
                             </MessageBreak>
                           </React.Fragment>
                         );
@@ -182,7 +185,9 @@ const BreakTimestamp = styled.span`
   background: ${(props) => props.theme.bg.container};
   z-index: 2;
   padding: 6px 8px;
-  opacity: 0.7;
+  opacity: 0.8;
   letter-spacing: 1px;
   font-weight: 400;
+  min-width: 70px;
+  text-align: center;
 `;
