@@ -35,8 +35,8 @@ const DarkTheme = {
     bgCover: "0",
   },
   tooltip: {
-    background: "#242424",
-    text: "#7a7a85",
+    background: "#515151",
+    text: "#e5e5e5",
   },
   checkbox: {
     bg: "#2e2e2e",
@@ -84,8 +84,8 @@ const LightTheme = {
     bgCover: "100%",
   },
   tooltip: {
-    background: "#1d1f24",
-    text: "#7a7a85",
+    background: "#CACACA",
+    text: "#202020",
   },
   checkbox: {
     bg: "#e7e5e5",
