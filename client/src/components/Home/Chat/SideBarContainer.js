@@ -21,7 +21,7 @@ export default function SideBar() {
 
   return (
     <Container>
-      <Heading>Messages</Heading>
+      <Heading>Message</Heading>
       <ContactsContainer>
         {loading ? (
           <Loader style={{ top: "60px", opacity: "0.6" }} />

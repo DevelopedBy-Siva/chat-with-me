@@ -45,6 +45,9 @@ const DarkTheme = {
     outer: "#909090",
     inner: "#f3f3f3",
   },
+  doodle: {
+    main: "#FFFDFC",
+  },
 };
 
 const LightTheme = {
@@ -93,6 +96,9 @@ const LightTheme = {
   loader: {
     outer: "#797979",
     inner: "#c2c2c2",
+  },
+  doodle: {
+    main: "#1B1B1B",
   },
 };
 
