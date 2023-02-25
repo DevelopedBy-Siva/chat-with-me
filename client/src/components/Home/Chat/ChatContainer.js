@@ -46,11 +46,16 @@ export default function ChatContainer() {
                   setInfoVisible={setInfoVisible}
                 />
                 <MessageBox>
+                  {loading && (
+                    <LoadingSpinner
+                      style={{
+                        top: "40px",
+                        opacity: 0.8,
+                      }}
+                    />
+                  )}
                   <MessageWrapper>
-                    {loading ? (
-                      <LoadingSpinner style={{ top: "40px", opacity: 0.8 }} />
-                    ) : (
-                      !error &&
+                    {!error &&
                       getChats().keys.map((tmstp, c_index) => {
                         const msgs = getChats().messages[tmstp];
                         if (!msgs || msgs.length === 0) return "";
@@ -74,8 +79,7 @@ export default function ChatContainer() {
                             </MessageBreak>
                           </React.Fragment>
                         );
-                      })
-                    )}
+                      })}
                   </MessageWrapper>
                 </MessageBox>
               </React.Fragment>
