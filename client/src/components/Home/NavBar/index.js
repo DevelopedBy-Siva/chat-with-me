@@ -61,15 +61,13 @@ export default function NavBarContainer() {
       <Logo center />
       <Navs>
         {navBtns.map((nav, index) => (
-          <React.Fragment key={index}>
-            <NavBtnContainer>
-              <NavBtn to={nav.navTo} id={nav.id}>
-                <NavBorder />
-                {nav.icon}
-              </NavBtn>
-              <Tooltip id={nav.id} msg={nav.placeholder} />
-            </NavBtnContainer>
-          </React.Fragment>
+          <NavBtnContainer key={index}>
+            <NavBtn to={nav.navTo} id={nav.id}>
+              <NavBorder />
+              {nav.icon}
+            </NavBtn>
+            <Tooltip id={nav.id} msg={nav.placeholder} />
+          </NavBtnContainer>
         ))}
       </Navs>
       <Wrapper>
@@ -161,7 +159,6 @@ const Navs = styled.div`
   flex-direction: column;
   justify-content: center;
   overflow-y: auto;
-  overflow-x: hidden;
   margin: 10px 0;
 `;
 

@@ -69,14 +69,14 @@ function InfoContainer({ setInfoVisible }) {
           </ChangeNicknameBtn>
         </NicknameContainer>
         <UserDescription>{description}</UserDescription>
-        <UserOperations>
+        <UserOptionsWrapper>
           {options.map((op, index) => (
-            <React.Fragment key={index}>
-              <UserOperationBtn id={op.id}>{op.icon}</UserOperationBtn>
+            <UserOperationBtn id={op.id} key={index}>
+              {op.icon}
               <Tooltip id={op.id} msg={op.placeholder} />
-            </React.Fragment>
+            </UserOperationBtn>
           ))}
-        </UserOperations>
+        </UserOptionsWrapper>
       </UserInfoWrapper>
     </UserInfoContainer>
   );
@@ -207,7 +207,7 @@ const UserDescription = styled.span`
   line-height: 15px;
 `;
 
-const UserOperations = styled.div`
+const UserOptionsWrapper = styled.div`
   display: flex;
   flex-direction: row;
 `;

@@ -103,8 +103,8 @@ const Contact = styled.div`
 `;
 
 const ContactStatus = styled.span`
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: #00bb27;
   position: absolute;
   top: 70%;
