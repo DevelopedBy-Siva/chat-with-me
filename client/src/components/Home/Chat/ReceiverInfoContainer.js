@@ -144,6 +144,7 @@ const UserAvatar = styled.img`
   background: none;
   border-radius: 50%;
   display: block;
+  pointer-events: none;
 `;
 
 const UserInfoName = styled.span`

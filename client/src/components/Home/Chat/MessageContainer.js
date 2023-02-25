@@ -77,6 +77,7 @@ const UserAvatar = styled.img`
   height: 30px;
   margin-top: 8px;
   z-index: 1;
+  pointer-events: none;
 
   &.sender-avatar {
     margin-left: 8px;
