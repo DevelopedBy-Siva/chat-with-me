@@ -39,7 +39,7 @@ const Descriptions = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 400;
   color: ${(props) => props.theme.txt.main};
   text-align: center;
@@ -49,7 +49,7 @@ const Title = styled.h2`
 
 const SubHeading = styled.h3`
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: ${(props) => props.theme.txt.sub};
-  line-height: 24px;
+  line-height: 22px;
 `;

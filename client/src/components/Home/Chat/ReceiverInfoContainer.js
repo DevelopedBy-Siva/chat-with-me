@@ -58,16 +58,16 @@ function InfoContainer({ setInfoVisible }) {
       <UserInfoWrapper>
         <UserAvatar src={getAvatar(avatarId)} />
         <UserInfoName>{name}</UserInfoName>
-        <NicknameContainer>
-          <NicknameTitle>#nick&#32;</NicknameTitle>
-          <Nickname>
-            {!nickname || nickname.trim().length === 0 ? "###" : ""}
-          </Nickname>
-          <ChangeNicknameBtn>
-            <BsFillPencilFill id="change-nickname" />
-            <Tooltip id="change-nickname" msg="Change nickname" />
-          </ChangeNicknameBtn>
-        </NicknameContainer>
+        {nickname && nickname.length > 0 && (
+          <NicknameContainer>
+            <NicknameTitle>#nick&#32;</NicknameTitle>
+            <Nickname>{nickname}</Nickname>
+            <ChangeNicknameBtn>
+              <BsFillPencilFill id="change-nickname" />
+              <Tooltip id="change-nickname" msg="Change nickname" />
+            </ChangeNicknameBtn>
+          </NicknameContainer>
+        )}
         <UserDescription>{description}</UserDescription>
         <UserOptionsWrapper>
           {options.map((op, index) => (

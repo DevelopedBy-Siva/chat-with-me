@@ -1,6 +1,8 @@
 import _ from "lodash";
 import moment from "moment";
 
+import { filterBy_Name_Nickname } from "./InputHandler";
+
 export function getContactsTimestamp(utc) {
   if (!utc || utc.trim().length === 0) return "";
 
@@ -14,9 +16,10 @@ export function getContactsTimestamp(utc) {
   return toDisplay;
 }
 
-export function orderContactsDesc(data) {
+export function orderContactsDesc(searchInput, data) {
+  const filteredData = filterBy_Name_Nickname(searchInput, data);
   return _.orderBy(
-    data,
+    filteredData,
     function (o) {
       return o.lastMsgTstmp;
     },

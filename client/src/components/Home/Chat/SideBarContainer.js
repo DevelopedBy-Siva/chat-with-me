@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { BiSearch } from "react-icons/bi";
+import { IoMdClose } from "react-icons/io";
 
 import { setActive } from "../../../store/actions/ChatActions";
 import {
@@ -15,8 +17,15 @@ export default function SideBar() {
   const { contacts, loading, error } = useSelector((state) => state.contacts);
   const { active } = useSelector((state) => state.chats);
 
+  const [search, setSearch] = useState("");
+
   function handleContact(id) {
     dispatch(setActive(id));
+  }
+
+  function handleSearchInput(e) {
+    const val = e.target.value;
+    setSearch(val);
   }
 
   return (
@@ -26,31 +35,57 @@ export default function SideBar() {
         {loading ? (
           <Loader style={{ top: "60px", opacity: "0.6" }} />
         ) : !error ? (
-          orderContactsDesc(contacts).map((data, index) => {
-            const { name, lastMsg, isOnline, avatarId, lastMsgTstmp, id } =
-              data;
-            return (
-              <Contact
-                className={active === id ? "active-contact" : ""}
-                onClick={() => handleContact(id)}
-                key={index}
-              >
-                <AvatarContainer>
-                  {isOnline === true && <ContactStatus />}
-                  <Avatar src={getAvatar(avatarId)} />
-                </AvatarContainer>
-                <Details>
-                  <Wrapper>
-                    <Name>{name}</Name>
-                    <LastMsgTmstp>
-                      {getContactsTimestamp(lastMsgTstmp)}
-                    </LastMsgTmstp>
-                  </Wrapper>
-                  <LastMessage>{lastMsg}</LastMessage>
-                </Details>
-              </Contact>
-            );
-          })
+          <React.Fragment>
+            {contacts && contacts.length > 1 && (
+              <SearchContainer>
+                <SearchInput
+                  value={search}
+                  placeholder="Search"
+                  name="email"
+                  type="text"
+                  spellCheck="false"
+                  autoComplete="off"
+                  title="Search"
+                  onChange={handleSearchInput}
+                />
+                <SearchInputIcon search={search} setSearch={setSearch} />
+              </SearchContainer>
+            )}
+            {orderContactsDesc(search, contacts).map((data, index) => {
+              const {
+                name,
+                lastMsg,
+                isOnline,
+                avatarId,
+                lastMsgTstmp,
+                id,
+                nickname,
+              } = data;
+              return (
+                <Contact
+                  className={active === id ? "active-contact" : ""}
+                  onClick={() => handleContact(id)}
+                  key={index}
+                >
+                  <AvatarContainer>
+                    {isOnline === true && <ContactStatus />}
+                    <Avatar src={getAvatar(avatarId)} />
+                  </AvatarContainer>
+                  <Details>
+                    <Wrapper>
+                      <Name>
+                        {nickname && nickname.length > 0 ? nickname : name}
+                      </Name>
+                      <LastMsgTmstp>
+                        {getContactsTimestamp(lastMsgTstmp)}
+                      </LastMsgTmstp>
+                    </Wrapper>
+                    <LastMessage>{lastMsg}</LastMessage>
+                  </Details>
+                </Contact>
+              );
+            })}
+          </React.Fragment>
         ) : (
           ""
         )}
@@ -59,10 +94,19 @@ export default function SideBar() {
   );
 }
 
+function SearchInputIcon({ search, setSearch }) {
+  return search.length > 0 ? (
+    <IoMdClose style={{ cursor: "pointer" }} onClick={() => setSearch("")} />
+  ) : (
+    <BiSearch />
+  );
+}
+
 const Container = styled.div`
   width: 300px;
   overflow: hidden;
   background: ${(props) => props.theme.bg.container};
+  z-index: 99;
 `;
 
 const Heading = styled.h3`
@@ -75,6 +119,46 @@ const Heading = styled.h3`
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid ${(props) => props.theme.border.default};
+`;
+
+const SearchContainer = styled.label`
+  height: auto;
+  margin: 1.5rem 1rem 1rem 1rem;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: ${(props) => props.theme.bg.app};
+  color: ${(props) => props.theme.txt.sub};
+  cursor: text;
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  outline: none;
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 400;
+  height: 20px;
+  background: none;
+  color: ${(props) => props.theme.txt.main};
+  letter-spacing: 1px;
+
+  &::placeholder {
+    color: ${(props) => props.theme.txt.sub};
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: ${(props) => props.theme.txt.sub};
+  }
+
+  &::-ms-input-placeholder {
+    color: ${(props) => props.theme.txt.sub};
+  }
 `;
 
 const ContactsContainer = styled.div`

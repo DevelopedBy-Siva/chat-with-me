@@ -106,3 +106,13 @@ export const confirmPasswordValidation = (pswd, confirmPswd) => {
     message,
   };
 };
+
+export function filterBy_Name_Nickname(searchInput = "", data = []) {
+  searchInput = searchInput.trim().toLowerCase();
+  const filteredData = data.filter((val) => {
+    const nickname = val.nickname ? val.nickname.toLowerCase() : "";
+    const name = val.name.toLowerCase();
+    return nickname.indexOf(searchInput) > -1 || name.indexOf(searchInput) > -1;
+  });
+  return filteredData;
+}
