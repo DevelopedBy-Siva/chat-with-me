@@ -15,5 +15,5 @@ const CustomToolTip = styled(ReactTooltip)`
   background-color: ${(props) => props.theme.tooltip.background};
   color: ${(props) => props.theme.tooltip.text};
   opacity: 1 !important;
-  z-index: 9;
+  z-index: 999;
 `;
