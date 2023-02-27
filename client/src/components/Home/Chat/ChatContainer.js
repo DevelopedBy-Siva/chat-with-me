@@ -146,6 +146,7 @@ const MessageBoxCover = styled.div`
   opacity: 0.4;
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
   filter: invert(${(props) => props.theme.msgBox.bgCover});
+  transform: translateZ(0);
   pointer-events: none;
   z-index: 1;
 `;
