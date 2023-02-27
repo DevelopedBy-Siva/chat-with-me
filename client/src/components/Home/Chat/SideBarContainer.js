@@ -189,7 +189,8 @@ const Contact = styled.div`
 const ContactStatus = styled.span`
   width: 10px;
   height: 10px;
-  background-color: #00bb27;
+  background-image: linear-gradient(#40bf32, #10a300);
+  background-clip: padding-box;
   position: absolute;
   top: 70%;
   border-radius: 50%;
