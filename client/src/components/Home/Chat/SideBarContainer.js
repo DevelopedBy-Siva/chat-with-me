@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { BiSearch } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
@@ -13,15 +14,9 @@ import Loader from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
 
 export default function SideBar() {
-  const dispatch = useDispatch();
   const { contacts, loading, error } = useSelector((state) => state.contacts);
-  const { active } = useSelector((state) => state.chats);
 
   const [search, setSearch] = useState("");
-
-  function handleContact(id) {
-    dispatch(setActive(id));
-  }
 
   function handleSearchInput(e) {
     const val = e.target.value;
@@ -51,40 +46,7 @@ export default function SideBar() {
                 <SearchInputIcon search={search} setSearch={setSearch} />
               </SearchContainer>
             )}
-            {orderContactsDesc(search, contacts).map((data, index) => {
-              const {
-                name,
-                lastMsg,
-                isOnline,
-                avatarId,
-                lastMsgTstmp,
-                id,
-                nickname,
-              } = data;
-              return (
-                <Contact
-                  className={active === id ? "active-contact" : ""}
-                  onClick={() => handleContact(id)}
-                  key={index}
-                >
-                  <AvatarContainer>
-                    {isOnline === true && <ContactStatus />}
-                    <Avatar src={getAvatar(avatarId)} />
-                  </AvatarContainer>
-                  <Details>
-                    <Wrapper>
-                      <Name>
-                        {nickname && nickname.length > 0 ? nickname : name}
-                      </Name>
-                      <LastMsgTmstp>
-                        {getContactsTimestamp(lastMsgTstmp)}
-                      </LastMsgTmstp>
-                    </Wrapper>
-                    <LastMessage>{lastMsg}</LastMessage>
-                  </Details>
-                </Contact>
-              );
-            })}
+            <ContactsWrapper search={search} contacts={contacts} />
           </React.Fragment>
         ) : (
           ""
@@ -92,6 +54,52 @@ export default function SideBar() {
       </ContactsContainer>
     </Container>
   );
+}
+
+function ContactsWrapper({ search, contacts }) {
+  const dispatch = useDispatch();
+
+  const { active } = useSelector((state) => state.chats);
+
+  function handleContact(id) {
+    dispatch(setActive(id));
+  }
+
+  const orderedContacts = orderContactsDesc(search, contacts);
+
+  if (contacts && contacts.length === 0)
+    return (
+      <EmptyContacts>
+        No contacts found. <AddContact to="/contacts">Add contact</AddContact>
+      </EmptyContacts>
+    );
+
+  if (orderedContacts.length === 0)
+    return <EmptyContacts>No contacts found</EmptyContacts>;
+
+  return orderedContacts.map((data, index) => {
+    const { name, lastMsg, isOnline, avatarId, lastMsgTstmp, id, nickname } =
+      data;
+    return (
+      <Contact
+        className={active === id ? "active-contact" : ""}
+        onClick={() => handleContact(id)}
+        key={index}
+      >
+        <AvatarContainer>
+          {isOnline === true && <ContactStatus />}
+          <Avatar src={getAvatar(avatarId)} />
+        </AvatarContainer>
+        <Details>
+          <Wrapper>
+            <Name>{nickname && nickname.length > 0 ? nickname : name}</Name>
+            <LastMsgTmstp>{getContactsTimestamp(lastMsgTstmp)}</LastMsgTmstp>
+          </Wrapper>
+          <LastMessage>{lastMsg}</LastMessage>
+        </Details>
+      </Contact>
+    );
+  });
 }
 
 function SearchInputIcon({ search, setSearch }) {
@@ -252,4 +260,19 @@ const LastMsgTmstp = styled.span`
   flex-shrink: 0;
   margin-left: 12px;
   display: block;
+`;
+
+const EmptyContacts = styled.span`
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.7rem;
+  margin-top: 10px;
+  padding: 0.4rem;
+  text-align: center;
+  display: block;
+  line-height: 20px;
+`;
+
+const AddContact = styled(Link)`
+  color: ${(props) => props.theme.txt.sub};
+  text-decoration: underline;
 `;
