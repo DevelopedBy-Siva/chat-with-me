@@ -12,45 +12,32 @@ export default function InputContainer() {
 
   useEffect(() => {
     if (msgInputRef) {
-      msgInputRef.current.innerText = "";
+      msgInputRef.current.value = "";
       msgInputRef.current.focus();
     }
   }, [active]);
 
   function sendMessage(e) {
     e.preventDefault();
-    const msg = msgInputRef.current.innerText.trim();
-    if (!msg.length) return;
-
-    /**
-     * TODO:
-     * Send msg to server
-     */
-    console.log(msg);
-    msgInputRef.current.innerText = "";
+    const msg = msgInputRef.current.value;
+    if (msg && msg.trim().length === 0) return;
   }
 
-  function convertToPlainText(event) {
-    event.preventDefault();
-
-    console.log(document.getSelection().anchorOffset);
-
-    msgInputRef.current.innerText = event.clipboardData.getData("text/plain");
-
-    // document.execCommand("selectAll", false, null);
-    // document.getSelection().collapseToEnd();
+  function handleResize(e) {
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
   }
 
   return (
     <Container onSubmit={sendMessage}>
-      <TextContainer onClick={() => msgInputRef.current.focus()}>
-        <MessageInput
+      <InputWrapper>
+        <MsgInput
           ref={msgInputRef}
-          contentEditable
-          onPaste={convertToPlainText}
-          role="textbox"
+          rows={1}
+          onInput={handleResize}
+          placeholder="Type something"
         />
-      </TextContainer>
+      </InputWrapper>
       <MessageOprs>
         <EmojiContainer />
         <SendBtn type="submit">
@@ -66,46 +53,47 @@ const Container = styled.form`
   min-height: 60px;
   display: flex;
   position: relative;
+  align-items: center;
   padding: 0.7rem 1.2rem;
   background: ${(props) => props.theme.bg.app};
   z-index: 9;
 `;
 
-const TextContainer = styled.div`
+const InputWrapper = styled.label`
+  display: block;
   width: calc(100% - 80px);
-  max-height: 90px;
-  margin-right: 1rem;
-  padding: 0.8rem;
   border-radius: 5px;
+  padding: 0.7rem;
   background: ${(props) => props.theme.bg.container};
-  overflow-x: hidden;
-  overflow-y: auto;
-  cursor: text;
-
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: none;
-  }
-  ::-webkit-scrollbar-thumb {
-    border-radius: inherit;
-  }
+  max-height: 120px;
+  display: flex;
+  align-items: center;
 `;
 
-const MessageInput = styled.div`
-  color: ${(props) => props.theme.txt.sub};
-  font-size: 0.7rem;
-  word-break: break-all;
-  cursor: text;
-  outline: none;
+const MsgInput = styled.textarea`
+  width: 100%;
+  resize: none;
   border: none;
+  outline: none;
+  background: none;
+  margin: 0;
+  padding: 0;
   color: ${(props) => props.theme.txt.main};
-  font-weight: 400;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  height: 100%;
+  max-height: 80px;
 
-  &:empty:focus::before,
-  &:empty::before {
-    content: "Write a message...";
+  &::placeholder {
+    color: ${(props) => props.theme.txt.sub};
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: ${(props) => props.theme.txt.sub};
+  }
+
+  &::-ms-input-placeholder {
     color: ${(props) => props.theme.txt.sub};
   }
 `;
