@@ -4,7 +4,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { BsFillEmojiSmileFill } from "react-icons/bs";
 
-export default function EmojiContainer() {
+export default function EmojiContainer({ msgRef }) {
   const [visible, setVisible] = useState(false);
   const pickerBtnRef = useRef(null);
 
@@ -19,13 +19,17 @@ export default function EmojiContainer() {
         <BsFillEmojiSmileFill />
       </EmojiBtn>
       {visible && (
-        <EmojiPicker visibility={setVisible} pickerBtnRef={pickerBtnRef} />
+        <EmojiPicker
+          msgRef={msgRef}
+          visibility={setVisible}
+          pickerBtnRef={pickerBtnRef}
+        />
       )}
     </Container>
   );
 }
 
-function EmojiPicker({ visibility, pickerBtnRef }) {
+function EmojiPicker({ visibility, pickerBtnRef, msgRef }) {
   const emojiRef = useRef(null);
 
   useEffect(() => {
@@ -43,6 +47,11 @@ function EmojiPicker({ visibility, pickerBtnRef }) {
     };
   });
 
+  function handleOnSelect(e) {
+    const emojiUnicode = e.unified;
+    msgRef.current.value += String.fromCodePoint(parseInt(emojiUnicode, 16));
+  }
+
   return (
     <EmojiWrapper ref={emojiRef}>
       <Picker
@@ -53,6 +62,7 @@ function EmojiPicker({ visibility, pickerBtnRef }) {
         maxFrequentRows={1}
         searchPosition="none"
         navPosition="bottom"
+        onEmojiSelect={handleOnSelect}
       />
     </EmojiWrapper>
   );

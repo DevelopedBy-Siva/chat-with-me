@@ -1,14 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { v4 as uuidv4 } from "uuid";
 
 import EmojiContainer from "./Emoji";
+import { sendMessage } from "../../../store/reducers/Chats";
 
 export default function InputContainer() {
   const msgInputRef = useRef(null);
 
-  const { active } = useSelector((state) => state.chats);
+  const dispatch = useDispatch();
+
+  const { active, loading } = useSelector((state) => state.chats);
 
   useEffect(() => {
     if (msgInputRef) {
@@ -17,10 +21,20 @@ export default function InputContainer() {
     }
   }, [active]);
 
-  function sendMessage(e) {
+  function submitMessage(e) {
     e.preventDefault();
     const msg = msgInputRef.current.value;
     if (msg && msg.trim().length === 0) return;
+    const msgId = uuidv4();
+    const toSend = {
+      sendBy: "siva",
+      message: msg,
+      createdAt: new Date().toUTCString(),
+      msgId,
+    };
+    dispatch(sendMessage(toSend, active));
+    msgInputRef.current.value = "";
+    msgInputRef.current.style.height = "auto";
   }
 
   function handleResize(e) {
@@ -29,17 +43,18 @@ export default function InputContainer() {
   }
 
   return (
-    <Container onSubmit={sendMessage}>
-      <InputWrapper>
+    <Container onSubmit={submitMessage}>
+      <InputWrapper isLoading={loading}>
         <MsgInput
           ref={msgInputRef}
           rows={1}
           onInput={handleResize}
-          placeholder="Type something"
+          placeholder="Type something here..."
+          disabled={loading}
         />
       </InputWrapper>
       <MessageOprs>
-        <EmojiContainer />
+        <EmojiContainer msgRef={msgInputRef} />
         <SendBtn type="submit">
           <RiSendPlaneFill />
         </SendBtn>
@@ -68,6 +83,7 @@ const InputWrapper = styled.label`
   max-height: 120px;
   display: flex;
   align-items: center;
+  cursor: ${(props) => (props.isLoading ? "wait" : "text")};
 `;
 
 const MsgInput = styled.textarea`
@@ -95,6 +111,10 @@ const MsgInput = styled.textarea`
 
   &::-ms-input-placeholder {
     color: ${(props) => props.theme.txt.sub};
+  }
+
+  &:disabled {
+    cursor: wait;
   }
 `;
 

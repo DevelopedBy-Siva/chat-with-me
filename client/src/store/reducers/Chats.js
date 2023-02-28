@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import axios from "../../api/axios";
 import {
   chatsError,
@@ -6,7 +8,11 @@ import {
   CHATS_LOADING,
   getChats,
   GET_CHATS,
+  MSG_SEND_STATUS,
+  readyToSendMsg,
+  READY_TO_SEND_MSG,
   SET_ACTIVE,
+  updateMessageSendStatus,
 } from "../actions/ChatActions";
 import { sortAndGroupMsgs } from "../../utils/DateTime";
 
@@ -44,6 +50,38 @@ const reducer = (state = initialState, action) => {
         error: null,
         active: payload,
       };
+    case READY_TO_SEND_MSG:
+      const { data: details, chatId, currentDate: today } = payload;
+      const conversations = { ...state.chats };
+      const chat = conversations[chatId];
+
+      if (chat && chat.messages) {
+        const key = chat.messages[today];
+        if (key) chat.messages[today].push({ ...details, isSent: false });
+        else chat.messages[today] = [{ ...details, isSent: false }];
+      }
+      console.log(conversations);
+      return {
+        ...state,
+        chats: { ...conversations },
+      };
+    case MSG_SEND_STATUS:
+      const { msgId, status, chatId: chat_id, dateGroup } = payload;
+      const convs = { ...state.chats };
+      const con = convs[chat_id];
+
+      if (con && con.messages && con.messages[dateGroup]) {
+        con.messages[dateGroup].forEach((msg) => {
+          if (msg.msgId === msgId) {
+            msg.isSent = status;
+            return;
+          }
+        });
+      }
+      return {
+        ...state,
+        chats: convs,
+      };
     default:
       return state;
   }
@@ -73,6 +111,26 @@ function dontFetchChats(state, id) {
 
   const chats = chatState.chats;
   if (!chats || !chats[id]) return false;
-
   return true;
+}
+
+export function sendMessage(data, chatId) {
+  const currentDate = moment().format("LL");
+  const { msgId } = data;
+
+  return (dispatch) => {
+    dispatch(readyToSendMsg(data, chatId, currentDate));
+    wait(() =>
+      dispatch(updateMessageSendStatus(chatId, msgId, true, currentDate))
+    );
+  };
+}
+
+function wait(callback) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      callback();
+      resolve();
+    }, 5000);
+  });
 }
