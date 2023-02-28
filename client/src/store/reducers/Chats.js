@@ -57,10 +57,9 @@ const reducer = (state = initialState, action) => {
 
       if (chat && chat.messages) {
         const key = chat.messages[today];
-        if (key) chat.messages[today].push({ ...details, isSent: false });
+        if (key) chat.messages[today].unshift({ ...details, isSent: false });
         else chat.messages[today] = [{ ...details, isSent: false }];
       }
-      console.log(conversations);
       return {
         ...state,
         chats: { ...conversations },

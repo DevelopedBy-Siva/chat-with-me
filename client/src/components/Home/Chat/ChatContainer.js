@@ -10,7 +10,7 @@ import CHAT_COVER from "../../../assets/images/chat-cover.webp";
 import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
-import { isTodayOrYesterday } from "../../../utils/DateTime";
+import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
 
 export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
@@ -26,7 +26,7 @@ export default function ChatContainer() {
     const userChats = chats[active];
     if (!userChats || !userChats.messages) return { keys: [], messages: {} };
     const messages = userChats.messages;
-    const keys = Object.keys(messages);
+    const keys = sortDatesDesc(Object.keys(messages));
     return { keys, messages };
   }
 
