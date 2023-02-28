@@ -135,6 +135,7 @@ const Message = styled.span`
   font-size: 0.7rem;
   letter-spacing: 1.4px;
   font-weight: 400;
+  white-space: pre-wrap;
 
   ::-webkit-scrollbar {
     width: 4px;
