@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { RiErrorWarningLine } from "react-icons/ri";
 import { BiCheckDouble } from "react-icons/bi";
+import { MdReportGmailerrorred } from "react-icons/md";
+import { GiSandsOfTime } from "react-icons/gi";
 
 import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
@@ -12,7 +13,7 @@ export default function MessageContainer({
   currentUser = "",
   sender = "",
   message = "",
-  isSent = false,
+  isSent,
   receiverId,
 }) {
   const { contacts } = useSelector((state) => state.contacts);
@@ -27,6 +28,15 @@ export default function MessageContainer({
   }
 
   const avatarPosition = isSender() ? "sender-avatar" : "receiver-avatar";
+
+  const sentStatus =
+    isSent === undefined || isSent === true ? (
+      <BiCheckDouble />
+    ) : isSent === false ? (
+      <GiSandsOfTime style={{ fontSize: "0.8rem" }} />
+    ) : (
+      <MdReportGmailerrorred />
+    );
 
   return (
     <Container as={isSender() ? MessageSender : MessageReceiver}>
@@ -43,13 +53,7 @@ export default function MessageContainer({
           <MsgWrapper>
             <Message>{message}</Message>
             <MsgStatus>
-              <MsgStatusIcon>
-                {isSent ? (
-                  <BiCheckDouble />
-                ) : (
-                  <RiErrorWarningLine style={{ fontSize: "0.8rem" }} />
-                )}
-              </MsgStatusIcon>
+              <MsgStatusIcon>{sentStatus}</MsgStatusIcon>
             </MsgStatus>
           </MsgWrapper>
         </Wrapper>

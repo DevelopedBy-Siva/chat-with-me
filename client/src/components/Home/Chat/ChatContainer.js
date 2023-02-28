@@ -68,7 +68,7 @@ export default function ChatContainer() {
                                 currentUser={"siva"}
                                 message={msg.message}
                                 sender={msg.sendBy}
-                                isSent={true}
+                                isSent={msg.isSent}
                                 receiverId={active}
                               />
                             ))}
