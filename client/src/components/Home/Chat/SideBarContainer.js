@@ -76,8 +76,12 @@ function ContactsWrapper({ search, contacts }) {
     });
     grouped.directMessage = orderContactsDesc(search, grouped.directMessage);
     grouped.group = orderContactsDesc(search, grouped.group);
-    const keys = Object.keys(grouped);
-    return { keys, values: grouped };
+
+    let refactoredKeys = [];
+    Object.keys(grouped).forEach((k) => {
+      if (grouped[k].length > 0) refactoredKeys.push(k);
+    });
+    return { keys: refactoredKeys, values: grouped };
   }
 
   const contactsToRender = groupContacts(contacts);
@@ -88,6 +92,9 @@ function ContactsWrapper({ search, contacts }) {
         No contacts found. <AddContact to="/contacts">Add contact</AddContact>
       </EmptyContacts>
     );
+
+  if (contactsToRender.keys.length === 0)
+    return <EmptyContacts>No contacts/ groups found</EmptyContacts>;
 
   return (
     <React.Fragment>
@@ -110,11 +117,18 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
   const groupName = group === "group" ? "Groups" : "Direct Messages";
 
   return (
-    <GroupContainer>
-      <GroupDropBtn onClick={() => setDropdown(!dropdown)}>
-        <IoMdArrowDropdown style={{ fontSize: "1rem" }} />
-        <GroupName> {groupName}</GroupName>
-      </GroupDropBtn>
+    <GroupContainer stretch={contactsToRender.keys.length === 1 ? 1 : 0}>
+      {contactsToRender.keys && contactsToRender.keys.length > 1 && (
+        <GroupDropBtn onClick={() => setDropdown(!dropdown)}>
+          <IoMdArrowDropdown
+            style={{
+              fontSize: "1rem",
+              transform: `${dropdown ? "rotate(180deg)" : ""}`,
+            }}
+          />
+          <GroupName> {groupName}</GroupName>
+        </GroupDropBtn>
+      )}
       {dropdown ? (
         <GroupContacts>
           {contactsToRender.values[group].map((data, index) => {
@@ -172,6 +186,8 @@ const Container = styled.div`
   overflow: hidden;
   background: ${(props) => props.theme.bg.container};
   z-index: 99;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Heading = styled.h3`
@@ -180,6 +196,7 @@ const Heading = styled.h3`
   color: ${(props) => props.theme.txt.main};
   font-weight: 500;
   height: 70px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   padding: 1rem;
@@ -187,9 +204,9 @@ const Heading = styled.h3`
 `;
 
 const SearchContainer = styled.label`
-  height: auto;
   margin: 1.5rem 1rem 1rem 1rem;
   padding: 6px 10px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -227,13 +244,27 @@ const SearchInput = styled.input`
 `;
 
 const ContactsContainer = styled.div`
-  height: calc(100% - 70px);
-  overflow: auto;
+  flex: 1;
+  min-height: 0;
   position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 const GroupContainer = styled.div`
-  margin-top: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &:first-of-type {
+    max-height: ${(props) => (props.stretch ? "100%" : "50%")};
+    flex-shrink: 0;
+  }
+
+  &:last-of-type {
+    flex: 1;
+  }
 `;
 
 const GroupName = styled.span`
@@ -250,11 +281,15 @@ const GroupDropBtn = styled.button`
   align-items: center;
   font-size: 0.8rem;
   letter-spacing: 1px;
-  margin: 0.2rem 0.6rem 0.6rem 0.6rem;
+  margin: 1.3rem 0.6rem 0.6rem 0.6rem;
   cursor: pointer;
 `;
 
-const GroupContacts = styled.ul``;
+const GroupContacts = styled.ul`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+`;
 
 const Contact = styled.li`
   width: 100%;
@@ -347,7 +382,6 @@ const LastMsgTmstp = styled.span`
 const EmptyContacts = styled.span`
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.7rem;
-  margin-top: 10px;
   padding: 0.4rem;
   text-align: center;
   display: block;
