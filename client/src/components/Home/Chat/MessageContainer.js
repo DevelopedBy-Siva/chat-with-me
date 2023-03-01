@@ -33,7 +33,7 @@ export default function MessageContainer({
     isSent === undefined || isSent === true ? (
       <BiCheckDouble />
     ) : isSent === false ? (
-      <GiSandsOfTime style={{ fontSize: "0.8rem" }} />
+      <GiSandsOfTime style={{ fontSize: "0.6rem" }} />
     ) : (
       <MdReportGmailerrorred />
     );

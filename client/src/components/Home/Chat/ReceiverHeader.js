@@ -29,7 +29,8 @@ function ReceiverContainer({ contactId }) {
     const index = contacts.findIndex((i) => i.id === contactId);
     return contacts[index];
   }
-  const { isOnline, name, nickname, avatarId } = findContactInfo();
+  const { isOnline, name, nickname, avatarId, isPrivate } = findContactInfo();
+
   return (
     <Receiver>
       <ReceiverAvatar src={getAvatar(avatarId)} />
@@ -37,7 +38,11 @@ function ReceiverContainer({ contactId }) {
         <ReceiverName>
           {nickname && nickname.length > 0 ? nickname : name}
         </ReceiverName>
-        <ReceiverStatus>{isOnline ? "online" : "offline"}</ReceiverStatus>
+        {isPrivate ? (
+          <ReceiverStatus>{isOnline ? "online" : "offline"}</ReceiverStatus>
+        ) : (
+          ""
+        )}
       </ReceiverInfo>
     </Receiver>
   );

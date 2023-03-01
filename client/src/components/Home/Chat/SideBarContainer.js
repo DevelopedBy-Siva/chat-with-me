@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { BiSearch } from "react-icons/bi";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoMdArrowDropdown } from "react-icons/io";
 
 import { setActive } from "../../../store/actions/ChatActions";
 import {
@@ -65,7 +65,22 @@ function ContactsWrapper({ search, contacts }) {
     dispatch(setActive(id));
   }
 
-  const orderedContacts = orderContactsDesc(search, contacts);
+  function groupContacts(data = []) {
+    let grouped = {
+      directMessage: [],
+      group: [],
+    };
+    data.forEach((i) => {
+      if (i.isPrivate) grouped.directMessage.push(i);
+      else grouped.group.push(i);
+    });
+    grouped.directMessage = orderContactsDesc(search, grouped.directMessage);
+    grouped.group = orderContactsDesc(search, grouped.group);
+    const keys = Object.keys(grouped);
+    return { keys, values: grouped };
+  }
+
+  const contactsToRender = groupContacts(contacts);
 
   if (contacts && contacts.length === 0)
     return (
@@ -74,32 +89,74 @@ function ContactsWrapper({ search, contacts }) {
       </EmptyContacts>
     );
 
-  if (orderedContacts.length === 0)
-    return <EmptyContacts>No contacts found</EmptyContacts>;
+  return (
+    <React.Fragment>
+      {contactsToRender.keys.map((val, index) => (
+        <GroupedContacts
+          key={`G${index}`}
+          group={val}
+          handleContact={handleContact}
+          contactsToRender={contactsToRender}
+          active={active}
+        />
+      ))}
+    </React.Fragment>
+  );
+}
 
-  return orderedContacts.map((data, index) => {
-    const { name, lastMsg, isOnline, avatarId, lastMsgTstmp, id, nickname } =
-      data;
-    return (
-      <Contact
-        className={active === id ? "active-contact" : ""}
-        onClick={() => handleContact(id)}
-        key={index}
-      >
-        <AvatarContainer>
-          {isOnline === true && <ContactStatus />}
-          <Avatar src={getAvatar(avatarId)} />
-        </AvatarContainer>
-        <Details>
-          <Wrapper>
-            <Name>{nickname && nickname.length > 0 ? nickname : name}</Name>
-            <LastMsgTmstp>{getContactsTimestamp(lastMsgTstmp)}</LastMsgTmstp>
-          </Wrapper>
-          <LastMessage>{lastMsg}</LastMessage>
-        </Details>
-      </Contact>
-    );
-  });
+function GroupedContacts({ contactsToRender, handleContact, group, active }) {
+  const [dropdown, setDropdown] = useState(true);
+
+  const groupName = group === "group" ? "Groups" : "Direct Messages";
+
+  return (
+    <GroupContainer>
+      <GroupDropBtn onClick={() => setDropdown(!dropdown)}>
+        <IoMdArrowDropdown style={{ fontSize: "1rem" }} />
+        <GroupName> {groupName}</GroupName>
+      </GroupDropBtn>
+      {dropdown ? (
+        <GroupContacts>
+          {contactsToRender.values[group].map((data, index) => {
+            const {
+              name,
+              lastMsg,
+              isOnline,
+              avatarId,
+              lastMsgTstmp,
+              id,
+              nickname,
+            } = data;
+            return (
+              <Contact
+                className={active === id ? "active-contact" : ""}
+                onClick={() => handleContact(id)}
+                key={`V${index}`}
+              >
+                <AvatarContainer>
+                  {isOnline === true && <ContactStatus />}
+                  <Avatar src={getAvatar(avatarId)} />
+                </AvatarContainer>
+                <Details>
+                  <Wrapper>
+                    <Name>
+                      {nickname && nickname.length > 0 ? nickname : name}
+                    </Name>
+                    <LastMsgTmstp>
+                      {getContactsTimestamp(lastMsgTstmp)}
+                    </LastMsgTmstp>
+                  </Wrapper>
+                  <LastMessage>{lastMsg}</LastMessage>
+                </Details>
+              </Contact>
+            );
+          })}
+        </GroupContacts>
+      ) : (
+        ""
+      )}
+    </GroupContainer>
+  );
 }
 
 function SearchInputIcon({ search, setSearch }) {
@@ -175,7 +232,31 @@ const ContactsContainer = styled.div`
   position: relative;
 `;
 
-const Contact = styled.div`
+const GroupContainer = styled.div`
+  margin-top: 20px;
+`;
+
+const GroupName = styled.span`
+  margin-left: 5px;
+  font-weight: 400;
+  text-transform: capitalize;
+`;
+
+const GroupDropBtn = styled.button`
+  background: none;
+  border: none;
+  color: ${(props) => props.theme.txt.sub};
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin: 0.2rem 0.6rem 0.6rem 0.6rem;
+  cursor: pointer;
+`;
+
+const GroupContacts = styled.ul``;
+
+const Contact = styled.li`
   width: 100%;
   height: 80px;
   border-bottom: 1px solid ${(props) => props.theme.border.default};
@@ -184,6 +265,7 @@ const Contact = styled.div`
   padding: 0.4rem 1rem;
   cursor: pointer;
   position: relative;
+  list-style: none;
 
   &.active-contact {
     background: ${(props) => props.theme.contact.active};

@@ -59,5 +59,7 @@ export function isTodayOrYesterday(date) {
 }
 
 export function sortDatesDesc(data = []) {
-  return data.sort((a, b) => moment(b).valueOf() - moment(a).valueOf());
+  return data.sort(
+    (a, b) => moment(new Date(b)).valueOf() - moment(new Date(a)).valueOf()
+  );
 }
