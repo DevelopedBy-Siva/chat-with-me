@@ -18,10 +18,13 @@ export const chatsLoading = () => {
   };
 };
 
-export const chatsError = (payload) => {
+export const chatsError = (errorId, isPrivate) => {
   return {
     type: CHATS_ERROR,
-    payload,
+    payload: {
+      errorId,
+      isPrivate,
+    },
   };
 };
 

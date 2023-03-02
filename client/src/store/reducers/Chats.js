@@ -1,6 +1,7 @@
 import moment from "moment";
 
 import axios from "../../api/axios";
+import * as toast from "../../components/Toastify/UserToastUtils";
 import {
   chatsError,
   chatsLoading,
@@ -33,10 +34,19 @@ const reducer = (state = initialState, action) => {
         loading: true,
       };
     case CHATS_ERROR:
+      const { errorId, isPrivate } = payload;
+      const newChats = { ...state.chats };
+      newChats[errorId] = {
+        id: errorId,
+        isPrivate,
+        messages: {},
+      };
+
       return {
         ...state,
-        error: payload,
+        error: null,
         loading: false,
+        chats: { ...newChats },
       };
     case GET_CHATS:
       const { data = {}, id } = payload;
@@ -98,8 +108,17 @@ export const fetchChats = (id) => {
       .then(({ data }) => {
         dispatch(getChats(id, data));
       })
-      .catch((err) => {
-        dispatch(chatsError(err));
+      .catch(() => {
+        const { contacts } = getState();
+        let isPrivate = false;
+        contacts.contacts.forEach((val) => {
+          if (val.id === id) {
+            isPrivate = val.isPrivate;
+            return;
+          }
+        });
+        toast.error("Something went wrong. Failed to retrieve chats");
+        dispatch(chatsError(id, isPrivate));
       });
   };
 };
