@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import EmojiContainer from "./Emoji";
 import { sendMessage } from "../../../store/reducers/Chats";
 
-export default function InputContainer() {
+export default function InputContainer({ chatContainerRef }) {
   const msgInputRef = useRef(null);
   const formRef = useRef(null);
 
@@ -36,6 +36,8 @@ export default function InputContainer() {
     dispatch(sendMessage(toSend, active));
     msgInputRef.current.value = "";
     msgInputRef.current.style.height = "auto";
+    if (chatContainerRef)
+      chatContainerRef.current.scrollTop = chatContainerRef.scrollHeight;
   }
 
   function handleResize(e) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,12 +13,18 @@ import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
 
 export default function ChatContainer() {
+  const chatContainerRef = useRef(null);
+
   const [infoVisible, setInfoVisible] = useState(false);
   const dispatch = useDispatch();
   const { active, loading, error, chats } = useSelector((state) => state.chats);
 
   useEffect(() => {
     if (!active) return;
+
+    if (chatContainerRef)
+      chatContainerRef.current.scrollTop = chatContainerRef.scrollHeight;
+
     dispatch(fetchChats(active));
   }, [active, dispatch]);
 
@@ -54,7 +60,7 @@ export default function ChatContainer() {
                       }}
                     />
                   )}
-                  <MessageWrapper>
+                  <MessageWrapper ref={chatContainerRef}>
                     {!error &&
                       getChats().keys.map((tmstp, c_index) => {
                         const msgs = getChats().messages[tmstp];
@@ -84,7 +90,7 @@ export default function ChatContainer() {
                 </MessageBox>
               </React.Fragment>
             </ChatBox>
-            <InputContainer />
+            <InputContainer chatContainerRef={chatContainerRef} />
           </SubContainer>
           <ReceiverInfoContainer
             infoVisible={infoVisible}
