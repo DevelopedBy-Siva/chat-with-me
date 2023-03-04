@@ -9,6 +9,7 @@ import { sendMessage } from "../../../store/reducers/Chats";
 
 export default function InputContainer() {
   const msgInputRef = useRef(null);
+  const formRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -42,13 +43,22 @@ export default function InputContainer() {
     e.target.style.height = `${e.target.scrollHeight}px`;
   }
 
+  function handleKeyDown(e) {
+    const keyCode = e.which || e.keyCode;
+    if (keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      submitMessage(e);
+    }
+  }
+
   return (
-    <Container onSubmit={submitMessage}>
+    <Container ref={formRef} onSubmit={submitMessage}>
       <InputWrapper isLoading={loading}>
         <MsgInput
           ref={msgInputRef}
           rows={1}
           onInput={handleResize}
+          onKeyDown={handleKeyDown}
           placeholder="Type something here..."
           disabled={loading}
         />
