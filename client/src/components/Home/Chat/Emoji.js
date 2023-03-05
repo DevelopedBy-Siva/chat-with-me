@@ -48,8 +48,11 @@ function EmojiPicker({ visibility, pickerBtnRef, msgRef }) {
   });
 
   function handleOnSelect(e) {
-    const emojiUnicode = e.unified;
-    msgRef.current.value += String.fromCodePoint(parseInt(emojiUnicode, 16));
+    const emojiUnified = e.unified;
+    const result = String.fromCodePoint(
+      ...emojiUnified.split("-").map((code) => `0x${code}`)
+    );
+    msgRef.current.value += result;
   }
 
   return (
