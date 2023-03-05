@@ -25,11 +25,11 @@ export default function InputContainer({ chatContainerRef }) {
   function submitMessage(e) {
     e.preventDefault();
     const msg = msgInputRef.current.value;
-    if (msg && msg.trim().length === 0) return;
+    if (!msg || msg.trim().length === 0) return;
     const msgId = uuidv4();
     const toSend = {
       sendBy: "siva",
-      message: msg,
+      message: msg.trim(),
       createdAt: new Date().toUTCString(),
       msgId,
     };
