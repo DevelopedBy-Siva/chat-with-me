@@ -1,120 +1,85 @@
 import React from "react";
 import styled from "styled-components";
 
+import SubInfo from "../Info/SubInfo";
+import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
+
+const settings = [
+  {
+    description: "Maximum contacts that the user is allowed to add",
+    max: 3,
+  },
+  {
+    description: "Maximum groups that the user is allowed to create",
+    max: 2,
+  },
+];
+
 export default function Settings() {
   return (
     <Container>
-      <Heading>Settings</Heading>
-      <Content>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-        semper erat eu tempus tempus. Ut sed tellus condimentum massa
-        ullamcorper facilisis vitae eu urna. Cras tempor iaculis lacinia.
-        Vivamus commodo eget massa sollicitudin molestie. Nam non posuere risus.
-        Nullam elit ex, sollicitudin dictum sagittis in, varius id eros. Morbi
-        commodo fringilla erat eu hendrerit. Vivamus mauris tortor, luctus ac
-        porttitor ullamcorper, interdum sed nulla. Class aptent taciti sociosqu
-        ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam
-        erat volutpat. Nunc maximus massa nibh, ut porta mauris laoreet eget. Ut
-        feugiat id risus vitae finibus. Duis id diam ultricies, volutpat neque
-        quis, dictum metus. Donec et velit libero. Morbi id neque commodo ligula
-        dictum efficitur. Nullam ullamcorper erat lectus, sed consectetur ex
-        facilisis ac. Duis consectetur faucibus metus nec consectetur. Proin
-        tempus massa lectus, id tincidunt nisi bibendum eget. Nam aliquam lectus
-        a auctor dictum. Vivamus a imperdiet leo. Vivamus commodo id lectus in
-        cursus. Praesent a ipsum ut ligula commodo faucibus at et odio. Integer
-        a placerat mauris, in egestas libero. Nunc condimentum volutpat neque a
-        accumsan. Etiam ornare quam sed ligula accumsan, egestas ultricies ipsum
-        congue. Ut ornare velit nec ullamcorper mattis. Aenean sollicitudin
-        laoreet leo, eu molestie risus dictum eu. Ut eu vulputate metus. Quisque
-        varius tortor magna, ullamcorper porta enim tristique in. Curabitur
-        iaculis nibh non quam tempus varius. Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit. Proin ac malesuada nisi, eget feugiat arcu.
-        Pellentesque tempus leo pellentesque enim pellentesque luctus. Etiam a
-        lacus in elit vulputate pulvinar. Nulla in purus malesuada augue
-        malesuada efficitur. Nunc a ligula turpis. Fusce quis rutrum metus, id
-        posuere urna. Class aptent taciti sociosqu ad litora torquent per
-        conubia nostra, per inceptos himenaeos. Nam ut lorem vel ligula
-        efficitur fringilla a non ipsum. Aliquam suscipit mi quis ligula varius
-        condimentum. Duis sollicitudin massa odio, sit amet vestibulum tortor
-        iaculis ut. Etiam malesuada arcu fringilla, venenatis eros sed,
-        scelerisque leo. Nulla tempor, leo ut ornare fermentum, sem nulla
-        rhoncus eros, id elementum nibh nisl ac eros. In efficitur eleifend
-        arcu, eu efficitur lorem interdum vel. Orci varius natoque penatibus et
-        magnis dis parturient montes, nascetur ridiculus mus. Suspendisse
-        potenti. Quisque non ex mattis, pulvinar enim sit amet, facilisis
-        sapien. Class aptent taciti sociosqu ad litora torquent per conubia
-        nostra, per inceptos himenaeos. Aenean neque metus, congue non purus
-        sed, porta iaculis neque. Etiam elit leo, vulputate nec malesuada sit
-        amet, rutrum a eros. Curabitur imperdiet dictum mi, fermentum pulvinar
-        eros euismod at. Pellentesque pharetra consequat lacus, non luctus ipsum
-        lacinia et. Aliquam faucibus, felis vitae ullamcorper tempus, odio augue
-        lobortis nibh, sed suscipit arcu arcu at libero. Nunc efficitur congue
-        erat nec pellentesque. Duis vel dolor vehicula, auctor leo sed, cursus
-        arcu. Curabitur eget auctor purus, quis volutpat ex. Praesent blandit,
-        lorem non finibus tincidunt, erat lectus gravida dui, ac feugiat orci
-        nunc nec diam. Morbi vel interdum arcu. Ut eu libero id magna suscipit
-        lacinia. Mauris vitae ultricies mauris. Nunc auctor, ex ut pharetra
-        mollis, quam dolor efficitur neque, eu convallis turpis nibh et risus.
-        Cras justo dolor, luctus nec auctor eu, auctor non purus. Proin eleifend
-        dictum tortor. vitae finibus. Duis id diam ultricies, volutpat neque
-        quis, dictum metus. Donec et velit libero. Morbi id neque commodo ligula
-        dictum efficitur. Nullam ullamcorper erat lectus, sed consectetur ex
-        facilisis ac. Duis consectetur faucibus metus nec consectetur. Proin
-        tempus massa lectus, id tincidunt nisi bibendum eget. Nam aliquam lectus
-        a auctor dictum. Vivamus a imperdiet leo. Vivamus commodo id lectus in
-        cursus. Praesent a ipsum ut ligula commodo faucibus at et odio. Integer
-        a placerat mauris, in egestas libero. Nunc condimentum volutpat neque a
-        accumsan. Etiam ornare quam sed ligula accumsan, egestas ultricies ipsum
-        congue. Ut ornare velit nec ullamcorper mattis. Aenean sollicitudin
-        laoreet leo, eu molestie risus dictum eu. Ut eu vulputate metus. Quisque
-        varius tortor magna, ullamcorper porta enim tristique in. Curabitur
-        iaculis nibh non quam tempus varius. Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit. Proin ac malesuada nisi, eget feugiat arcu.
-        Pellentesque tempus leo pellentesque enim pellentesque luctus. Etiam a
-        lacus in elit vulputate pulvinar. Nulla in purus malesuada augue
-        malesuada efficitur. Nunc a ligula turpis. Fusce quis rutrum metus, id
-        posuere urna. Class aptent taciti sociosqu ad litora torquent per
-        conubia nostra, per inceptos himenaeos. Nam ut lorem vel ligula
-        efficitur fringilla a non ipsum. Aliquam suscipit mi quis ligula varius
-        condimentum. Duis sollicitudin massa odio, sit amet vestibulum tortor
-        iaculis ut. Etiam malesuada arcu fringilla, venenatis eros sed,
-        scelerisque leo. Nulla tempor, leo ut ornare fermentum, sem nulla
-        rhoncus eros, id elementum nibh nisl ac eros. In efficitur eleifend
-        arcu, eu efficitur lorem interdum vel. Orci varius natoque penatibus et
-        magnis dis parturient montes, nascetur ridiculus mus. Suspendisse
-        potenti. Quisque non ex mattis, pulvinar enim sit amet, facilisis
-        sapien. Class aptent taciti sociosqu ad litora torquent per conubia
-        nostra, per inceptos himenaeos. Aenean neque metus, congue non purus
-        sed, porta iaculis neque. Etiam elit leo, vulputate nec malesuada sit
-        amet, rutrum a eros. Curabitur imperdiet dictum mi, fermentum pulvinar
-        eros euismod at. Pellentesque pharetra consequat lacus, non luctus ipsum
-        lacinia et. Aliquam faucibus, felis vitae ullamcorper tempus, odio augue
-        lobortis nibh, sed suscipit arcu arcu at libero. Nunc efficitur congue
-        erat nec pellentesque. Duis vel dolor vehicula, auctor leo sed, cursus
-        arcu. Curabitur eget auctor purus, quis volutpat ex. Praesent blandit,
-        lorem non finibus tincidunt, erat lectus gravida dui, ac feugiat orci
-        nunc nec diam. Morbi vel interdum arcu. Ut eu libero id magna suscipit
-        lacinia. Mauris vitae ultricies mauris. Nunc auctor, ex ut pharetra
-        mollis, quam dolor efficitur neque, eu convallis turpis nibh et risus.
-        Cras justo dolor, luctus nec auctor eu, auctor non purus. Proin eleifend
-        dictum tortor.
-      </Content>
+      <ModalHeaderWrapper>Settings</ModalHeaderWrapper>
+      <SubInfo>
+        This application was made as part of a personal project, therefore, many
+        functionalities are limited to the user and cannot be modified
+      </SubInfo>
+      <SettingTable>
+        <SettingBody>
+          {settings.map((i, index) => (
+            <SettingRow key={index}>
+              <SettingDescription>{i.description}</SettingDescription>
+              <SettingInputContainer>
+                <SettingInput type="text" disabled value={i.max} />
+              </SettingInputContainer>
+            </SettingRow>
+          ))}
+        </SettingBody>
+      </SettingTable>
     </Container>
   );
 }
 
 const Container = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   max-height: 80vh;
   overflow-y: scroll;
 `;
 
-const Heading = styled.h2`
-  margin-bottom: 10px;
-  font-size: 1.4rem;
-  font-weight: 500;
-  user-select: none;
-  color: ${(props) => props.theme.txt.main};
+const SettingTable = styled.table`
+  border-collapse: separate;
+  border-spacing: 0 20px;
 `;
 
-const Content = styled.div``;
+const SettingBody = styled.tbody``;
+
+const SettingRow = styled.tr`
+  margin: 10px;
+`;
+
+const SettingDescription = styled.td`
+  font-size: 0.8rem;
+  color: ${(props) => props.theme.txt.sub};
+  line-height: 18px;
+`;
+
+const SettingInputContainer = styled.td`
+  padding-left: 1.2rem;
+`;
+
+const SettingInput = styled.input`
+  border: none;
+  outline: none;
+  display: block;
+  font-size: 0.8rem;
+  width: 50px;
+  background: ${(props) => props.theme.btn.active};
+  border-radius: 5px;
+  padding: 5px 0;
+  text-align: center;
+  font-weight: 400;
+  color: ${(props) => props.theme.txt.sub};
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+`;

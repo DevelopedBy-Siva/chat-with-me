@@ -56,19 +56,19 @@ const Wrapper = styled(motion.div)`
   max-width: 760px;
   min-height: 90px;
   background-color: ${(props) => props.theme.bg.modal};
-  padding: 15px;
+  padding: 2rem;
   border-radius: 10px;
   overflow: hidden;
 `;
 
 const CloseBtn = styled.button`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 18px;
+  right: 18px;
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 1.2rem;
   display: flex;
   justify-content: center;
   color: ${(props) => props.theme.txt.sub};
