@@ -10,10 +10,12 @@ const DarkTheme = {
     sub: "#989898",
     highlight: "#FFA700",
     default: "#D2D2D2",
+    danger: "#f85149",
   },
   border: {
     inputbox: "#2e2e2e",
     default: "#2d2a2a",
+    outline: "#388bfd",
   },
   contact: {
     active: "#373434",
@@ -62,10 +64,12 @@ const LightTheme = {
     sub: "#646464",
     highlight: "#FFA700",
     default: "#FFFF",
+    danger: "#f85149",
   },
   border: {
     inputbox: "#e7e5e5",
     default: "#e8e6e6",
+    outline: "#388bfd",
   },
   contact: {
     active: "#dfdcdc",

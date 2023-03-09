@@ -13,6 +13,10 @@ const settings = [
     description: "Maximum groups that the user is allowed to create",
     max: 2,
   },
+  {
+    description: "Cleanup messages that are older than (in days)",
+    max: 1,
+  },
 ];
 
 export default function Settings() {
@@ -20,8 +24,8 @@ export default function Settings() {
     <Container>
       <ModalHeaderWrapper>Settings</ModalHeaderWrapper>
       <SubInfo>
-        This application was made as part of a personal project, therefore, many
-        functionalities are limited to the user and cannot be modified
+        This application was made as part of a personal project, therefore, some
+        functionalities are limited to the user and cannot be modified.
       </SubInfo>
       <SettingTable>
         <SettingBody>
@@ -35,6 +39,20 @@ export default function Settings() {
           ))}
         </SettingBody>
       </SettingTable>
+      <ChangePassword>
+        <ChangePasswordHeading>
+          Change your account password
+        </ChangePasswordHeading>
+        <ChangePasswordBtn>Change password</ChangePasswordBtn>
+      </ChangePassword>
+      <DeleteAccount>
+        <DeleteHeading>Delete account</DeleteHeading>
+        <DeleteAccountDescription>
+          Once you delete your account, there is no going back. Please be
+          certain.
+        </DeleteAccountDescription>
+        <DeleteAccountBtn>Delete your account</DeleteAccountBtn>
+      </DeleteAccount>
     </Container>
   );
 }
@@ -81,5 +99,73 @@ const SettingInput = styled.input`
 
   &:disabled {
     cursor: not-allowed;
+  }
+`;
+
+const ChangePassword = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ChangePasswordHeading = styled.span`
+  display: block;
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.8rem;
+`;
+
+const ChangePasswordBtn = styled.button`
+  color: ${(props) => props.theme.txt.sub};
+  outline-color: ${(props) => props.theme.border.outline};
+  border: 1px solid ${(props) => props.theme.border.default};
+  background: ${(props) => props.theme.btn.active};
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  margin-left: 10px;
+
+  &:hover {
+    border: 1px solid ${(props) => props.theme.txt.sub};
+  }
+`;
+
+const DeleteAccount = styled.div`
+  padding: 1.6rem 0 1rem 0;
+`;
+
+const DeleteHeading = styled.span`
+  display: block;
+  color: ${(props) => props.theme.txt.danger};
+  font-weight: 500;
+  font-size: 1rem;
+  padding-bottom: 4px;
+  border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
+`;
+
+const DeleteAccountDescription = styled.span`
+  display: block;
+  padding: 10px 0;
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.8rem;
+`;
+
+const DeleteAccountBtn = styled.button`
+  color: ${(props) => props.theme.txt.danger};
+  outline-color: ${(props) => props.theme.border.outline};
+  border: 1px solid ${(props) => props.theme.border.default};
+  background: ${(props) => props.theme.btn.active};
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  margin-left: 1px;
+
+  &:hover {
+    background: ${(props) => props.theme.txt.danger};
+    color: ${(props) => props.theme.txt.default};
   }
 `;

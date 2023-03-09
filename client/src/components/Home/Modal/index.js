@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import FocusLock from "react-focus-lock";
 import { Outlet } from "react-router-dom";
@@ -8,6 +8,13 @@ import { motion } from "framer-motion";
 
 export default function Modal() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  });
 
   function handleClose() {
     return navigate("/", { replace: true });
@@ -72,6 +79,7 @@ const CloseBtn = styled.button`
   display: flex;
   justify-content: center;
   color: ${(props) => props.theme.txt.sub};
+  outline-color: ${(props) => props.theme.border.outline};
 `;
 
 const OverlayAnimation = {
