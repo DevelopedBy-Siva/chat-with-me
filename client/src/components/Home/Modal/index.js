@@ -4,7 +4,6 @@ import FocusLock from "react-focus-lock";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
-import { motion } from "framer-motion";
 
 export default function Modal() {
   const navigate = useNavigate();
@@ -23,13 +22,13 @@ export default function Modal() {
   return (
     <FocusLock>
       <Container>
-        <Overlay {...OverlayAnimation} onClick={handleClose} />
-        <Wrapper {...ContentAnimation}>
+        <Wrapper>
           <Outlet />
           <CloseBtn onClick={handleClose}>
             <AiOutlineClose />
           </CloseBtn>
         </Wrapper>
+        <Overlay onClick={handleClose} />
       </Container>
     </FocusLock>
   );
@@ -48,16 +47,18 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const Overlay = styled(motion.div)`
+const Overlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
+  opacity: 0.8;
+  z-index: 9999;
 `;
 
-const Wrapper = styled(motion.div)`
+const Wrapper = styled.div`
   width: 98%;
   margin: auto;
   max-width: 760px;
@@ -66,6 +67,8 @@ const Wrapper = styled(motion.div)`
   padding: 2rem;
   border-radius: 10px;
   overflow: hidden;
+  opacity: 1;
+  z-index: 999999;
 `;
 
 const CloseBtn = styled.button`
@@ -81,19 +84,3 @@ const CloseBtn = styled.button`
   color: ${(props) => props.theme.txt.sub};
   outline-color: ${(props) => props.theme.border.outline};
 `;
-
-const OverlayAnimation = {
-  initial: { opacity: 0 },
-  animate: { opacity: 0.8 },
-  exit: { opacity: 0 },
-  transition: {
-    duration: 0.25,
-  },
-};
-
-const ContentAnimation = {
-  initial: { opacity: 0, y: "100%" },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: "100%" },
-  transition: { duration: 0.15 },
-};

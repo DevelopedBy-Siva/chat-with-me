@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { AnimatePresence, motion } from "framer-motion";
 import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
@@ -29,11 +28,7 @@ const options = [
 ];
 
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
-  return (
-    <AnimatePresence>
-      {infoVisible && <InfoContainer setInfoVisible={setInfoVisible} />}
-    </AnimatePresence>
-  );
+  return infoVisible && <InfoContainer setInfoVisible={setInfoVisible} />;
 }
 
 function InfoContainer({ setInfoVisible }) {
@@ -82,7 +77,7 @@ function InfoContainer({ setInfoVisible }) {
   );
 }
 
-const UserInfoContainer = styled(motion.div)`
+const UserInfoContainer = styled.div`
   width: ${CONTAINER_WIDTH};
   flex-shrink: 0;
   position: relative;

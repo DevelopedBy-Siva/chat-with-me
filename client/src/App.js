@@ -1,6 +1,5 @@
 import React, { lazy, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 
 import networkStatus from "./components/Toastify/NetworkStatus";
 import Public from "./pages/public";
@@ -30,28 +29,26 @@ export default function App() {
   });
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes>
-        <Route element={<Private />}>
-          <Route path="/" element={<Home />}>
-            <Route path="/" element={<Chat />}>
-              <Route element={<Modal />}>
-                <Route path="/contacts" element={<Contacts />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/group" element={<Group />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/myself" element={<MySelf />} />
-              </Route>
+    <Routes>
+      <Route element={<Private />}>
+        <Route path="/" element={<Home />}>
+          <Route path="/" element={<Chat />}>
+            <Route element={<Modal />}>
+              <Route path="/contacts" element={<Contacts />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/group" element={<Group />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/myself" element={<MySelf />} />
             </Route>
           </Route>
         </Route>
-        <Route element={<Public />}>
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="/sign-up" element={<SignUp />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </AnimatePresence>
+      </Route>
+      <Route element={<Public />}>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="/sign-up" element={<SignUp />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
