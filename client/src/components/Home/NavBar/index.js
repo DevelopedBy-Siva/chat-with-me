@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
-import { AiOutlinePlus } from "react-icons/ai";
-import { MdSupervisorAccount } from "react-icons/md";
+import { MdPermContactCalendar, MdGroupAdd } from "react-icons/md";
 import { BsMoonFill } from "react-icons/bs";
 import { HiOutlineSun } from "react-icons/hi";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
@@ -25,20 +24,20 @@ const navBtns = [
   {
     id: "nav_contacts",
     placeholder: "Contacts",
-    icon: <MdSupervisorAccount />,
+    icon: <MdPermContactCalendar />,
     navTo: "/contacts",
+  },
+  {
+    id: "nav_group",
+    placeholder: "Groups",
+    icon: <MdGroupAdd />,
+    navTo: "/group",
   },
   {
     id: "nav_settings",
     placeholder: "Settings",
     icon: <IoIosSettings />,
     navTo: "/settings",
-  },
-  {
-    id: "nav_group",
-    placeholder: "Create group",
-    icon: <AiOutlinePlus />,
-    navTo: "/group",
   },
   {
     id: "nav_logout",
