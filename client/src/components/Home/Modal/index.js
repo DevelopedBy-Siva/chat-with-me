@@ -61,10 +61,15 @@ const Wrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: ${(props) => props.theme.bg.modal};
-  padding: 2rem 1.2rem 1.2rem 1.2rem;
+  padding: 2rem 1.2rem 1.8rem 1.2rem;
   border-radius: 10px;
-  width: 98%;
+  width: 95%;
   height: 95%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  @media (max-width: 484px) {
+    padding: 1.8rem 1rem 1.6rem 1rem;
+  }
 `;
 
 const CloseBtn = styled.button`

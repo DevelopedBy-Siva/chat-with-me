@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { MdPersonOff, MdBlock } from "react-icons/md";
+
 import { getAvatar } from "../../../assets/avatars";
 
 export default function MyContacts() {
@@ -17,10 +18,8 @@ export default function MyContacts() {
     return <NoContactsMsg>No contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { name, nickname, avatarId, isPrivate } = item;
-    return !isPrivate ? (
-      ""
-    ) : (
+    const { name, nickname, avatarId } = item;
+    return (
       <ContactContainer key={index}>
         <ContactDetails>
           <ContactAvatar src={getAvatar(avatarId)} />
@@ -147,10 +146,6 @@ const OptionBtn = styled.button`
 
   :first-of-type {
     margin-right: 15px;
-  }
-
-  @media (max-width: 484px) {
-    font-size: 1rem;
   }
 `;
 
