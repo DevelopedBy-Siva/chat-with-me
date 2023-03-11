@@ -116,3 +116,7 @@ export function filterBy_Name_Nickname(searchInput = "", data = []) {
   });
   return filteredData;
 }
+
+export function sortContactsByAsc(data = []) {
+  return _.orderBy(data, ["name"], "asc");
+}

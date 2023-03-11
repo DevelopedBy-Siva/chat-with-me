@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { CgUnblock } from "react-icons/cg";
 
 import { getAvatar } from "../../../assets/avatars";
+import { sortContactsByAsc } from "../../../utils/InputHandler";
 
 export default function BlockedContacts() {
   const { contacts = [] } = useSelector((state) => state.contacts);
@@ -11,7 +12,7 @@ export default function BlockedContacts() {
   function filterContacts() {
     if (!contacts || contacts.length === 0) return [];
     const data = contacts.filter((val) => val.isBlocked);
-    return data;
+    return sortContactsByAsc(data);
   }
 
   if (filterContacts().length === 0)

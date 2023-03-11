@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { MdPersonOff, MdBlock } from "react-icons/md";
 
 import { getAvatar } from "../../../assets/avatars";
+import { sortContactsByAsc } from "../../../utils/InputHandler";
 
 export default function MyContacts() {
   const { contacts = [] } = useSelector((state) => state.contacts);
@@ -11,7 +12,7 @@ export default function MyContacts() {
   function filterContacts() {
     if (!contacts || contacts.length === 0) return [];
     const data = contacts.filter((val) => val.isPrivate);
-    return data;
+    return sortContactsByAsc(data);
   }
 
   if (filterContacts().length === 0)

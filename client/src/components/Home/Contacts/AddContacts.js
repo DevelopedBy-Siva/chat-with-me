@@ -33,7 +33,7 @@ export default function AddContacts() {
       <SearchContainer onSubmit={searchContact}>
         <SearchInput
           value={search}
-          placeholder="Search contact"
+          placeholder="Search contacts here"
           name="contact"
           type="text"
           spellCheck="false"
