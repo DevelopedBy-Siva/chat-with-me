@@ -36,7 +36,7 @@ export default function SideBar() {
                 <SearchInput
                   value={search}
                   placeholder="Search"
-                  name="email"
+                  name="contact"
                   type="text"
                   spellCheck="false"
                   autoComplete="off"

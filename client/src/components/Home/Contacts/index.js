@@ -86,7 +86,7 @@ const Nav = styled.ul`
   border-radius: 8px;
   background: ${(props) => props.theme.border.inputbox};
   flex-shrink: 0;
-  margin: 8px 0;
+  margin: 0.6rem;
 `;
 
 const ContentSwitchBtn = styled.li`

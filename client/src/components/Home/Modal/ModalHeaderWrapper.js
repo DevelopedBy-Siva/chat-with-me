@@ -11,6 +11,7 @@ const Heading = styled.h2`
   font-weight: 500;
   user-select: none;
   color: ${(props) => props.theme.txt.main};
+  margin: 0.6rem;
   padding-bottom: 6px;
   border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
   flex-shrink: 0;

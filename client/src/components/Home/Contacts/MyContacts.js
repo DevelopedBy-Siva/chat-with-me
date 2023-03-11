@@ -18,11 +18,14 @@ export default function MyContacts() {
     return <NoContactsMsg>No contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { name, nickname, avatarId } = item;
+    const { name, nickname, avatarId, isOnline } = item;
     return (
       <ContactContainer key={index}>
         <ContactDetails>
-          <ContactAvatar src={getAvatar(avatarId)} />
+          <ContactAvatarContainer>
+            <ContactAvatar src={getAvatar(avatarId)} />
+            {isOnline && <ContactStatus />}
+          </ContactAvatarContainer>
           <ContactNameContainer>
             <ContactName>{name}</ContactName>
             <ContactNickname>{nickname}</ContactNickname>
@@ -65,18 +68,34 @@ const ContactDetails = styled.div`
   }
 `;
 
-const ContactAvatar = styled.img`
-  object-fit: cover;
+const ContactAvatarContainer = styled.div`
+  position: relative;
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  user-select: none;
-  flex-shrink: 0;
 
   @media (max-width: 484px) {
     width: 30px;
     height: 30px;
   }
+`;
+
+const ContactAvatar = styled.img`
+  object-fit: cover;
+  user-select: none;
+  flex-shrink: 0;
+`;
+
+const ContactStatus = styled.span`
+  width: 9px;
+  height: 9px;
+  background-image: linear-gradient(#40bf32, #10a300);
+  background-clip: padding-box;
+  position: absolute;
+  top: 70%;
+  border-radius: 50%;
+  right: 0;
+  border: 1px solid #fff;
 `;
 
 const ContactNameContainer = styled.div`
@@ -135,6 +154,7 @@ const OptionBtn = styled.button`
   outline: none;
   color: ${(props) => props.theme.txt.sub};
   cursor: pointer;
+  margin: 0 10px;
 
   :hover {
     color: ${(props) => props.theme.txt.main};
@@ -144,9 +164,8 @@ const OptionBtn = styled.button`
     cursor: progress;
   }
 
-  :first-of-type {
-    margin-right: 15px;
-  }
+  /* :first-of-type { */
+  /* } */
 `;
 
 const NoContactsMsg = styled.span`
