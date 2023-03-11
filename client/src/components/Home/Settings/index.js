@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import SubInfo from "../Info/SubInfo";
+import Modal from "../Modal";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 
 const settings = [
@@ -19,48 +20,63 @@ const settings = [
   },
 ];
 
+const modalStyle = {
+  maxWidth: "760px",
+  maxHeight: "560px",
+};
+
 export default function Settings() {
   return (
-    <Container>
-      <ModalHeaderWrapper>Settings</ModalHeaderWrapper>
-      <SubInfo>
-        This application was made as part of a personal project, therefore, some
-        functionalities are limited to the user and cannot be modified.
-      </SubInfo>
-      <SettingTable>
-        <SettingBody>
-          {settings.map((i, index) => (
-            <SettingRow key={index}>
-              <SettingDescription>{i.description}</SettingDescription>
-              <SettingInputContainer>
-                <SettingInput type="text" disabled value={i.max} />
-              </SettingInputContainer>
-            </SettingRow>
-          ))}
-        </SettingBody>
-      </SettingTable>
-      <ChangePassword>
-        <ChangePasswordHeading>
-          Change your account password
-        </ChangePasswordHeading>
-        <ChangePasswordBtn>Change password</ChangePasswordBtn>
-      </ChangePassword>
-      <DeleteAccount>
-        <DeleteHeading>Delete account</DeleteHeading>
-        <DeleteAccountDescription>
-          Once you delete your account, there is no going back. Please be
-          certain.
-        </DeleteAccountDescription>
-        <DeleteAccountBtn>Delete your account</DeleteAccountBtn>
-      </DeleteAccount>
-    </Container>
+    <Modal style={modalStyle}>
+      <Container>
+        <ModalHeaderWrapper>Settings</ModalHeaderWrapper>
+        <SubContainer>
+          <SubInfo>
+            This application was made as part of a personal project, therefore,
+            some functionalities are limited to the user and cannot be modified.
+          </SubInfo>
+          <SettingTable>
+            <SettingBody>
+              {settings.map((i, index) => (
+                <SettingRow key={index}>
+                  <SettingDescription>{i.description}</SettingDescription>
+                  <SettingInputContainer>
+                    <SettingInput type="text" disabled value={i.max} />
+                  </SettingInputContainer>
+                </SettingRow>
+              ))}
+            </SettingBody>
+          </SettingTable>
+          <ChangePassword>
+            <ChangePasswordHeading>
+              Change your account password
+            </ChangePasswordHeading>
+            <ChangePasswordBtn>Change password</ChangePasswordBtn>
+          </ChangePassword>
+          <DeleteAccount>
+            <DeleteHeading>Delete account</DeleteHeading>
+            <DeleteAccountDescription>
+              Once you delete your account, there is no going back. Please be
+              certain.
+            </DeleteAccountDescription>
+            <DeleteAccountBtn>Delete your account</DeleteAccountBtn>
+          </DeleteAccount>
+        </SubContainer>
+      </Container>
+    </Modal>
   );
 }
 
 const Container = styled.div`
-  margin-top: 10px;
-  max-height: 80vh;
-  overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const SubContainer = styled.div`
+  overflow-y: auto;
+  padding: 0.6rem;
 `;
 
 const SettingTable = styled.table`
@@ -78,6 +94,10 @@ const SettingDescription = styled.td`
   font-size: 0.8rem;
   color: ${(props) => props.theme.txt.sub};
   line-height: 18px;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const SettingInputContainer = styled.td`
@@ -111,6 +131,10 @@ const ChangePasswordHeading = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const ChangePasswordBtn = styled.button`
@@ -129,6 +153,10 @@ const ChangePasswordBtn = styled.button`
   &:hover {
     border: 1px solid ${(props) => props.theme.txt.sub};
   }
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const DeleteAccount = styled.div`
@@ -142,13 +170,21 @@ const DeleteHeading = styled.span`
   font-size: 1rem;
   padding-bottom: 4px;
   border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
+
+  @media (max-width: 484px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const DeleteAccountDescription = styled.span`
   display: block;
-  padding: 10px 0;
+  padding: 14px 0;
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const DeleteAccountBtn = styled.button`
@@ -157,7 +193,7 @@ const DeleteAccountBtn = styled.button`
   border: 1px solid ${(props) => props.theme.border.default};
   background: ${(props) => props.theme.btn.active};
   border-radius: 6px;
-  padding: 8px 14px;
+  padding: 10px 14px;
   font-size: 0.8rem;
   cursor: pointer;
   font-weight: 500;
@@ -167,5 +203,9 @@ const DeleteAccountBtn = styled.button`
   &:hover {
     background: ${(props) => props.theme.txt.danger};
     color: ${(props) => props.theme.txt.default};
+  }
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
   }
 `;

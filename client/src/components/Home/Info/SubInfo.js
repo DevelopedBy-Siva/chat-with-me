@@ -14,7 +14,7 @@ export default function SubInfo({ children }) {
 }
 
 const Container = styled.div`
-  margin: 20px 0 5px 0;
+  margin: 15px 0 5px 0;
   background-image: linear-gradient(
     rgba(56, 139, 253, 0.15),
     rgba(56, 139, 253, 0.15)
@@ -31,6 +31,10 @@ const Heading = styled.span`
   font-weight: 500;
   margin-bottom: 5px;
   color: rgb(56, 139, 253);
+
+  @media (max-width: 484px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Content = styled.span`
@@ -38,4 +42,8 @@ const Content = styled.span`
   font-size: 0.8rem;
   color: ${(props) => props.theme.txt.main};
   line-height: 1.2rem;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
 `;
