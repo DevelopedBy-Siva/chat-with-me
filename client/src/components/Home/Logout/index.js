@@ -5,6 +5,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { logout } from "../../../utils/Auth";
+import Modal from "../Modal";
+
+const modalStyle = {
+  maxWidth: "500px",
+  height: "auto",
+};
 
 export default function Logout() {
   const navigate = useNavigate();
@@ -26,17 +32,19 @@ export default function Logout() {
   };
 
   return (
-    <Container>
-      <Description>Are you sure you want to logout?</Description>
-      <BtnContainer onSubmit={handleNo}>
-        <Btn type="button" onClick={handleLogout}>
-          Yes
-        </Btn>
-        <Btn ref={noRef} type="submit" onClick={handleNo}>
-          No
-        </Btn>
-      </BtnContainer>
-    </Container>
+    <Modal style={modalStyle}>
+      <Container>
+        <Description>Are you sure you want to logout?</Description>
+        <BtnContainer onSubmit={handleNo}>
+          <Btn type="button" onClick={handleLogout}>
+            Yes
+          </Btn>
+          <Btn ref={noRef} type="submit" onClick={handleNo}>
+            No
+          </Btn>
+        </BtnContainer>
+      </Container>
+    </Modal>
   );
 }
 
@@ -46,11 +54,15 @@ const Container = styled.div`
 `;
 
 const Description = styled.h2`
-  padding: 1rem;
+  padding: 0.8rem;
   font-size: 0.9rem;
   text-align: center;
   color: ${(props) => props.theme.txt.main};
   font-weight: 400;
+
+  @media (max-width: 484px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const BtnContainer = styled.form`
@@ -68,7 +80,17 @@ const Btn = styled.button`
   border: none;
   font-size: 0.64rem;
   background: ${(props) => props.theme.btn.active};
+  border: 1px solid ${(props) => props.theme.btn.active};
   color: ${(props) => props.theme.txt.main};
   cursor: pointer;
   font-weight: 400;
+  outline-color: ${(props) => props.theme.border.outline};
+
+  @media (max-width: 484px) {
+    font-size: 0.6rem;
+  }
+
+  :hover {
+    border: 1px solid ${(props) => props.theme.txt.main};
+  }
 `;
