@@ -15,7 +15,6 @@ const Group = lazy(() => import("./components/Home/Group"));
 const Settings = lazy(() => import("./components/Home/Settings"));
 const Logout = lazy(() => import("./components/Home/Logout"));
 const MySelf = lazy(() => import("./components/Home/MySelf"));
-const Modal = lazy(() => import("./components/Home/Modal"));
 
 export default function App() {
   useEffect(() => {
@@ -33,13 +32,11 @@ export default function App() {
       <Route element={<Private />}>
         <Route path="/" element={<Home />}>
           <Route path="/" element={<Chat />}>
-            <Route element={<Modal />}>
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/group" element={<Group />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/myself" element={<MySelf />} />
-            </Route>
+            <Route path="/contacts" element={<Contacts />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/group" element={<Group />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/myself" element={<MySelf />} />
           </Route>
         </Route>
       </Route>

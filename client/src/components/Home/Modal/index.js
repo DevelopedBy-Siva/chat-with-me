@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import FocusLock from "react-focus-lock";
-import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
 
-export default function Modal() {
+export default function Modal({ style = {}, children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,13 +21,13 @@ export default function Modal() {
   return (
     <FocusLock>
       <Container>
-        <Wrapper>
-          <Outlet />
+        <Overlay onClick={handleClose} />
+        <Wrapper style={style}>
+          {children}
           <CloseBtn onClick={handleClose}>
             <AiOutlineClose />
           </CloseBtn>
         </Wrapper>
-        <Overlay onClick={handleClose} />
       </Container>
     </FocusLock>
   );
@@ -40,9 +39,8 @@ const Container = styled.div`
   left: 0;
   bottom: 0;
   right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: 100dvh;
   z-index: 999999;
   overflow: hidden;
 `;
@@ -55,20 +53,18 @@ const Overlay = styled.div`
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
   opacity: 0.8;
-  z-index: 9999;
 `;
 
 const Wrapper = styled.div`
-  width: 98%;
-  margin: auto;
-  max-width: 760px;
-  min-height: 90px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: ${(props) => props.theme.bg.modal};
-  padding: 2rem;
+  padding: 2rem 1.2rem 1.2rem 1.2rem;
   border-radius: 10px;
-  overflow: hidden;
-  opacity: 1;
-  z-index: 999999;
+  width: 98%;
+  height: 95%;
 `;
 
 const CloseBtn = styled.button`
@@ -78,7 +74,7 @@ const CloseBtn = styled.button`
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   display: flex;
   justify-content: center;
   color: ${(props) => props.theme.txt.sub};
