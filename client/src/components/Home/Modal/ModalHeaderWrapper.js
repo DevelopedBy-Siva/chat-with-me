@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function ModalHeaderWrapper({ children }) {
-  return <Heading>{children}</Heading>;
+export default function ModalHeaderWrapper({ style = {}, children }) {
+  return <Heading style={style}>{children}</Heading>;
 }
 
 const Heading = styled.h2`

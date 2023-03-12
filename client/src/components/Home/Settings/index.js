@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import SubInfo from "../Info/SubInfo";
 import Modal from "../Modal";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
+import ChangePasswordScreen from "./ChangePasswordScreen";
+import ConfirmDeleteAccount from "./DeleteAccountScreen";
 
 const settings = [
   {
@@ -26,44 +28,60 @@ const modalStyle = {
 };
 
 export default function Settings() {
+  const [showChangePswd, setShowChangePswd] = useState(false);
+  const [showDeletePswd, setshowDeletePswd] = useState(false);
+
   return (
-    <Modal style={modalStyle}>
-      <Container>
-        <ModalHeaderWrapper>Settings</ModalHeaderWrapper>
-        <SubContainer>
-          <SubInfo>
-            This application was made as part of a personal project, therefore,
-            some functionalities are limited to the user and cannot be modified.
-          </SubInfo>
-          <SettingTable>
-            <SettingBody>
-              {settings.map((i, index) => (
-                <SettingRow key={index}>
-                  <SettingDescription>{i.description}</SettingDescription>
-                  <SettingInputContainer>
-                    <SettingInput type="text" disabled value={i.max} />
-                  </SettingInputContainer>
-                </SettingRow>
-              ))}
-            </SettingBody>
-          </SettingTable>
-          <ChangePassword>
-            <ChangePasswordHeading>
-              Change your account password
-            </ChangePasswordHeading>
-            <ChangePasswordBtn>Change password</ChangePasswordBtn>
-          </ChangePassword>
-          <DeleteAccount>
-            <DeleteHeading>Delete account</DeleteHeading>
-            <DeleteAccountDescription>
-              Once you delete your account, there is no going back. Please be
-              certain.
-            </DeleteAccountDescription>
-            <DeleteAccountBtn>Delete your account</DeleteAccountBtn>
-          </DeleteAccount>
-        </SubContainer>
-      </Container>
-    </Modal>
+    <React.Fragment>
+      <Modal style={modalStyle}>
+        <Container>
+          <ModalHeaderWrapper>Settings</ModalHeaderWrapper>
+          <SubContainer>
+            <SubInfo>
+              This application was made as part of a personal project,
+              therefore, some functionalities are limited to the user and cannot
+              be modified.
+            </SubInfo>
+            <SettingTable>
+              <SettingBody>
+                {settings.map((i, index) => (
+                  <SettingRow key={index}>
+                    <SettingDescription>{i.description}</SettingDescription>
+                    <SettingInputContainer>
+                      <SettingInput type="text" disabled value={i.max} />
+                    </SettingInputContainer>
+                  </SettingRow>
+                ))}
+              </SettingBody>
+            </SettingTable>
+            <ChangePassword>
+              <ChangePasswordHeading>
+                Change your account password
+              </ChangePasswordHeading>
+              <ChangePasswordBtn onClick={() => setShowChangePswd(true)}>
+                Change password
+              </ChangePasswordBtn>
+            </ChangePassword>
+            <DeleteAccount>
+              <DeleteHeading>Delete account</DeleteHeading>
+              <DeleteAccountDescription>
+                Once you delete your account, there is no going back. Please be
+                certain.
+              </DeleteAccountDescription>
+              <DeleteAccountBtn onClick={() => setshowDeletePswd(true)}>
+                Delete your account
+              </DeleteAccountBtn>
+            </DeleteAccount>
+          </SubContainer>
+        </Container>
+      </Modal>
+      {showChangePswd && (
+        <ChangePasswordScreen close={() => setShowChangePswd(false)} />
+      )}
+      {showDeletePswd && (
+        <ConfirmDeleteAccount close={() => setshowDeletePswd(false)} />
+      )}
+    </React.Fragment>
   );
 }
 
