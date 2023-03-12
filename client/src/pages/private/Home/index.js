@@ -30,7 +30,7 @@ const Container = styled.div`
   overflow: hidden;
   display: flex;
 
-  @media (max-width: 860px) {
+  @media (max-width: 920px) {
     flex-direction: column-reverse;
   }
 `;

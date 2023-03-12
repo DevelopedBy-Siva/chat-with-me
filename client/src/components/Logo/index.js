@@ -24,7 +24,7 @@ const LogoContainer = styled.div`
     margin: auto;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 920px) {
     display: none;
   }
 `;
