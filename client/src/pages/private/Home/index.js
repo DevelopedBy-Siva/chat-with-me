@@ -26,11 +26,7 @@ export default function UserHome() {
 
 const Container = styled.div`
   width: 100%;
-  height: 100dvh;
+  height: 100vh;
   overflow: hidden;
   display: flex;
-
-  @media (max-width: 860px) {
-    flex-direction: column-reverse;
-  }
 `;

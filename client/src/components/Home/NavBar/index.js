@@ -94,12 +94,6 @@ const Container = styled.nav`
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 860px) {
-    width: 100%;
-    height: 64px;
-    flex-direction: row;
-  }
 `;
 
 const NavBtnContainer = styled.div`
@@ -111,12 +105,6 @@ const NavBtnContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-
-  @media (max-width: 860px) {
-    width: 20%;
-    flex-direction: row;
-    margin-bottom: 0;
-  }
 `;
 
 const NavBorder = styled.span`
@@ -128,16 +116,6 @@ const NavBorder = styled.span`
   width: 5px;
   background: none;
   border-radius: 0 5px 5px 0;
-
-  @media (max-width: 860px) {
-    width: auto;
-    height: 4px;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    top: auto;
-    border-radius: 5px 5px 0 0;
-  }
 `;
 
 const NavBtn = styled(NavLink)`
@@ -164,13 +142,6 @@ const NavBtn = styled(NavLink)`
   &:hover {
     color: ${(props) => props.theme.txt.main};
   }
-
-  @media (max-width: 860px) {
-    flex-direction: row;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
 `;
 
 const Navs = styled.div`
@@ -181,11 +152,6 @@ const Navs = styled.div`
   justify-content: center;
   overflow-y: auto;
   margin: 10px 0;
-
-  @media (max-width: 860px) {
-    flex-direction: row;
-    margin: 0;
-  }
 `;
 
 const Wrapper = styled.div`
@@ -194,12 +160,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 860px) {
-    flex-direction: row;
-    width: 60px;
-    height: 100%;
-  }
 `;
 
 const Profile = styled(NavLink)`
@@ -211,12 +171,6 @@ const Profile = styled(NavLink)`
   outline: none;
   background: none;
   cursor: pointer;
-  flex-shrink: 0;
-
-  @media (max-width: 860px) {
-    width: 28px;
-    height: 28px;
-  }
 `;
 
 const ProfileImg = styled.img`
@@ -235,10 +189,6 @@ const Switch = styled.button`
   position: relative;
   cursor: pointer;
   background: ${(props) => `${props.theme.bg.container}`};
-
-  @media (max-width: 860px) {
-    display: none;
-  }
 `;
 
 const SwitchLabel = styled.span`
