@@ -22,6 +22,7 @@ const Container = styled.div`
   padding: 14px;
   border-radius: 5px;
   border: 1px solid rgba(56, 139, 253, 0.4);
+  user-select: none;
 `;
 
 const Heading = styled.span`

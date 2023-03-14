@@ -24,7 +24,7 @@ const settings = [
 
 const modalStyle = {
   maxWidth: "760px",
-  maxHeight: "560px",
+  maxHeight: "572px",
 };
 
 export default function Settings() {

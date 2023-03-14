@@ -28,10 +28,10 @@ const navBtns = [
     navTo: "/contacts",
   },
   {
-    id: "nav_group",
+    id: "nav_groups",
     placeholder: "Groups",
     icon: <MdGroupAdd />,
-    navTo: "/group",
+    navTo: "/groups",
   },
   {
     id: "nav_settings",
@@ -64,7 +64,7 @@ export default function NavBarContainer() {
       </Navs>
       <Wrapper>
         <ThemeSwitch />
-        <Profile to="/myself">
+        <Profile to="/profile">
           <ProfileImg src={profileImg} alt="User profile image" />
         </Profile>
       </Wrapper>

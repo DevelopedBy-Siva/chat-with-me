@@ -34,9 +34,9 @@ export default function App() {
           <Route path="/" element={<Chat />}>
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/group" element={<Group />} />
+            <Route path="/groups" element={<Group />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/myself" element={<MySelf />} />
+            <Route path="/profile" element={<MySelf />} />
           </Route>
         </Route>
       </Route>

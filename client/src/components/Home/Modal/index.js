@@ -84,4 +84,9 @@ const CloseBtn = styled.button`
   justify-content: center;
   color: ${(props) => props.theme.txt.sub};
   outline-color: ${(props) => props.theme.border.outline};
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: ${(props) => props.theme.txt.main};
+  }
 `;
