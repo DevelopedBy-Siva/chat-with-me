@@ -12,7 +12,7 @@ import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
 
-export default function ChatContainer({ msgBoxRef }) {
+export default function ChatContainer() {
   const chatContainerRef = useRef(null);
 
   const [infoVisible, setInfoVisible] = useState(false);
@@ -47,7 +47,6 @@ export default function ChatContainer({ msgBoxRef }) {
             <ChatBox>
               <React.Fragment>
                 <ReceiverHeader
-                  msgBoxRef={msgBoxRef}
                   contactId={active}
                   infoVisible={infoVisible}
                   setInfoVisible={setInfoVisible}
@@ -109,11 +108,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-
-  @media (max-width: 920px) {
-    width: 100%;
-    height: calc(100dvh - 50px);
-  }
 `;
 
 const Wrapper = styled.section`

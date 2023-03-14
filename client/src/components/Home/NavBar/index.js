@@ -95,9 +95,9 @@ const Container = styled.nav`
   display: flex;
   flex-direction: column;
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     width: 100%;
-    height: 50px;
+    height: 64px;
     flex-direction: row;
   }
 `;
@@ -112,10 +112,9 @@ const NavBtnContainer = styled.div`
   align-items: center;
   position: relative;
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     width: 20%;
     flex-direction: row;
-    height: 100%;
     margin-bottom: 0;
   }
 `;
@@ -130,7 +129,7 @@ const NavBorder = styled.span`
   background: none;
   border-radius: 0 5px 5px 0;
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     width: auto;
     height: 4px;
     right: 0;
@@ -166,7 +165,7 @@ const NavBtn = styled(NavLink)`
     color: ${(props) => props.theme.txt.main};
   }
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     flex-direction: row;
     margin: 0;
     width: 100%;
@@ -183,7 +182,7 @@ const Navs = styled.div`
   overflow-y: auto;
   margin: 10px 0;
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     flex-direction: row;
     margin: 0;
   }
@@ -196,7 +195,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     flex-direction: row;
     width: 60px;
     height: 100%;
@@ -214,7 +213,7 @@ const Profile = styled(NavLink)`
   cursor: pointer;
   flex-shrink: 0;
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     width: 28px;
     height: 28px;
   }
@@ -237,7 +236,7 @@ const Switch = styled.button`
   cursor: pointer;
   background: ${(props) => `${props.theme.bg.container}`};
 
-  @media (max-width: 920px) {
+  @media (max-width: 860px) {
     display: none;
   }
 `;

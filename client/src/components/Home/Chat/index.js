@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from "react";
+import React, { Suspense } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 
@@ -7,15 +7,13 @@ import ChatContainer from "../Chat/ChatContainer";
 import LoadingBar from "../../Loader/LoadingBar";
 
 export default function Chat() {
-  const msgBoxRef = useRef(null);
-
   return (
     <Container>
       <Suspense fallback={<LoadingBar />}>
         <Outlet />
       </Suspense>
-      <SideBar msgBoxRef={msgBoxRef} />
-      <ChatContainer msgBoxRef={msgBoxRef} />
+      <SideBar />
+      <ChatContainer />
     </Container>
   );
 }

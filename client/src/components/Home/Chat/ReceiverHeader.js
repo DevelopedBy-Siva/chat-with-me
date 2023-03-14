@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { CgDetailsMore } from "react-icons/cg";
-import { BiRightArrowAlt } from "react-icons/bi";
 
 import { getAvatar } from "../../../assets/avatars";
 
@@ -10,16 +9,9 @@ export default function ReceiverHeader({
   contactId,
   infoVisible,
   setInfoVisible,
-  msgBoxRef,
 }) {
-  function handleGoBack() {
-    if (msgBoxRef && msgBoxRef.current)
-      msgBoxRef.current.classList.remove("hide-sidebar");
-  }
-
   return (
     <Container>
-      <BackBtn onClick={handleGoBack} />
       <ReceiverContainer contactId={contactId} />
       {!infoVisible && (
         <ReceiverInfoBtn onClick={() => setInfoVisible(true)}>
@@ -65,18 +57,6 @@ const Container = styled.div`
   align-items: center;
   background: ${(props) => props.theme.bg.app};
   z-index: 1;
-`;
-
-const BackBtn = styled(BiRightArrowAlt)`
-  transform: rotate(-180deg) translateX(12px);
-  margin-right: 5px;
-  font-size: 1.6rem;
-  color: ${(props) => props.theme.txt.main};
-  display: none;
-
-  @media (max-width: 920px) {
-    display: block;
-  }
 `;
 
 const Receiver = styled.div`

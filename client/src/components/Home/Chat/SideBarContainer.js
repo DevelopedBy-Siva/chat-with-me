@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -13,7 +13,7 @@ import {
 import Loader from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
 
-export default function SideBar({ msgBoxRef }) {
+export default function SideBar() {
   const { contacts, loading, error } = useSelector((state) => state.contacts);
 
   const [search, setSearch] = useState("");
@@ -24,7 +24,7 @@ export default function SideBar({ msgBoxRef }) {
   }
 
   return (
-    <Container ref={msgBoxRef}>
+    <Container>
       <Heading>Message</Heading>
       <ContactsContainer>
         {loading ? (
@@ -46,11 +46,7 @@ export default function SideBar({ msgBoxRef }) {
                 <SearchInputIcon search={search} setSearch={setSearch} />
               </SearchContainer>
             )}
-            <ContactsWrapper
-              msgBoxRef={msgBoxRef}
-              search={search}
-              contacts={contacts}
-            />
+            <ContactsWrapper search={search} contacts={contacts} />
           </React.Fragment>
         ) : (
           ""
@@ -60,16 +56,13 @@ export default function SideBar({ msgBoxRef }) {
   );
 }
 
-function ContactsWrapper({ msgBoxRef, search, contacts }) {
+function ContactsWrapper({ search, contacts }) {
   const dispatch = useDispatch();
 
   const { active } = useSelector((state) => state.chats);
 
   function handleContact(id) {
     dispatch(setActive(id));
-    if (msgBoxRef && msgBoxRef.current) {
-      msgBoxRef.current.classList.add("hide-sidebar");
-    }
   }
 
   function groupContacts(data = []) {
@@ -195,18 +188,6 @@ const Container = styled.div`
   z-index: 99;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 920px) {
-    width: 100%;
-    height: calc(100dvh - 50px);
-    position: fixed;
-    left: 0;
-    top: 0;
-
-    &.hide-sidebar {
-      transform: translateX(-100%);
-    }
-  }
 `;
 
 const Heading = styled.h3`
