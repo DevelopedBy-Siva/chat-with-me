@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import LoadingSpinner from "../../Loader";
+import { statusValidation } from "../../../utils/InputHandler";
+import axios from "../../../api/axios";
 
 export default function UserDescriptionChange({
   userDescriptionChange,
@@ -19,8 +21,46 @@ export default function UserDescriptionChange({
   }
 
   function handleInputChange(e) {
+    if (userDescriptionChange.disabled || userDescriptionChange.loading) return;
     const val = e.target.value;
-    setUserDescriptionChange({ ...userDescriptionChange, description: val });
+    const { isValid, message: errorMsg } = statusValidation(val.trim());
+    let error = null;
+    if (!isValid && errorMsg) error = errorMsg;
+    setUserDescriptionChange({
+      ...userDescriptionChange,
+      description: val,
+      error,
+    });
+  }
+
+  async function submitEdit() {
+    if (userDescriptionChange.error) return;
+    const new_username = userDescriptionChange.description.trim();
+    setUserDescriptionChange({
+      ...userDescriptionChange,
+      description: new_username,
+      loading: true,
+    });
+    await axios
+      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .then(() => {
+        setUserDescriptionChange({
+          ...userDescriptionChange,
+          description: new_username,
+          disabled: true,
+          loading: false,
+        });
+      })
+      .catch(() => {
+        setUserDescriptionChange({
+          ...userDescriptionChange,
+          loading: false,
+        });
+      });
+  }
+
+  function handlekey(e) {
+    if (e.key === "Enter") e.preventDefault();
   }
 
   return (
@@ -28,13 +68,17 @@ export default function UserDescriptionChange({
       <EditTitleWrapper>
         <EditTitle>Your current status</EditTitle>
         <EditSubmitBtn
-          className={!userDescriptionChange.disabled ? "editable" : ""}
+          className={
+            !userDescriptionChange.disabled && !userDescriptionChange.loading
+              ? "editable"
+              : ""
+          }
           disabled={userDescriptionChange.loading}
         >
           {userDescriptionChange.loading ? (
             <Loader />
           ) : !userDescriptionChange.disabled ? (
-            <EditDone>Done</EditDone>
+            <EditDone onClick={submitEdit}>Done</EditDone>
           ) : (
             <BsFillPencilFillCustom onClick={toggleEdit} />
           )}
@@ -50,8 +94,11 @@ export default function UserDescriptionChange({
           rows={3}
           ref={inputRef}
           onChange={handleInputChange}
+          className={userDescriptionChange.error ? "error" : ""}
+          onKeyDown={handlekey}
         />
       </EditLabel>
+      <ErrorMsg>{userDescriptionChange.error}</ErrorMsg>
     </ChangeUserDetails>
   );
 }
@@ -70,6 +117,7 @@ const ChangeUserDetails = styled.div`
   max-width: 380px;
   margin: auto;
   margin-top: 2.4rem;
+  position: relative;
 `;
 
 const EditLabel = styled.label`
@@ -90,18 +138,18 @@ const EditTitle = styled.h4`
 `;
 
 const EditSubmitBtn = styled.button`
-  width: 30px;
+  width: 34px;
   height: 20px;
   flex-shrink: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   cursor: pointer;
   border: none;
   outline: none;
   color: #fff;
-  border-radius: 5px;
-  margin-left: 2px;
+  border-radius: 3px;
+  margin-left: 6px;
   background: none;
   color: ${(props) => props.theme.txt.sub};
   position: relative;
@@ -117,6 +165,7 @@ const EditSubmitBtn = styled.button`
   &.editable {
     background-color: ${(props) => props.theme.border.outline};
     margin-left: 8px;
+    overflow: hidden;
   }
 `;
 
@@ -133,11 +182,29 @@ const EditDescriptionInput = styled.textarea`
   letter-spacing: 1px;
   font-size: 0.7rem;
   line-height: 18px;
+
+  &.error {
+    border: 1px solid ${(props) => props.theme.txt.danger};
+    color: ${(props) => props.theme.txt.danger};
+  }
 `;
 
 const EditDone = styled.span`
-  display: block;
+  display: inline-block;
   font-size: 0.6rem;
   color: ${(props) => props.theme.txt.main};
   font-weight: 400;
+  width: 100%;
+  height: 100%;
+  line-height: 20px;
+  margin: auto;
+`;
+
+const ErrorMsg = styled.span`
+  display: block;
+  color: ${(props) => props.theme.txt.danger};
+  font-size: 0.6rem;
+  margin-top: 4px;
+  position: absolute;
+  bottom: -15px;
 `;

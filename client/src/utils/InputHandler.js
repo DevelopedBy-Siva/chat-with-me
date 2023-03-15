@@ -107,6 +107,16 @@ export const confirmPasswordValidation = (pswd, confirmPswd) => {
   };
 };
 
+export const statusValidation = (status) => {
+  const isValid = status && status.length >= 1 && status.length <= 150;
+  let message = null;
+  if (!isValid) message = "Status length must be >=1 or <=150";
+  return {
+    isValid,
+    message,
+  };
+};
+
 export function filterBy_Name_Nickname(searchInput = "", data = []) {
   searchInput = searchInput.trim().toLowerCase();
   const filteredData = data.filter((val) => {

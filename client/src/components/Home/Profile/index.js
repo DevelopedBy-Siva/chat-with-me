@@ -18,12 +18,15 @@ export default function Profile() {
   const [userNameChange, setUserNameChange] = useState({
     loading: false,
     disabled: true,
+    error: null,
+    prev: "sivasanker",
     username: "sivasanker",
   });
 
   const [userDescriptionChange, setUserDescriptionChange] = useState({
     loading: false,
     disabled: true,
+    error: null,
     description:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
   });
