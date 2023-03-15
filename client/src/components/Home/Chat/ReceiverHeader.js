@@ -33,7 +33,9 @@ function ReceiverContainer({ contactId }) {
 
   return (
     <Receiver>
-      <ReceiverAvatar src={getAvatar(avatarId)} />
+      <ReceiverAvatarContainer>
+        <ReceiverAvatar src={getAvatar(avatarId)} />
+      </ReceiverAvatarContainer>
       <ReceiverInfo>
         <ReceiverName>
           {nickname && nickname.length > 0 ? nickname : name}
@@ -67,10 +69,18 @@ const Receiver = styled.div`
   align-items: center;
 `;
 
-const ReceiverAvatar = styled.img`
-  height: 44px;
-  background: none;
+const ReceiverAvatarContainer = styled.div`
   border-radius: 50%;
+  height: 44px;
+  width: 44px;
+  background-color: ${(props) => props.theme.btn.active};
+`;
+
+const ReceiverAvatar = styled.img`
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const ReceiverInfo = styled.div`

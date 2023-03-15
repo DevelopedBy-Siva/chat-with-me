@@ -23,7 +23,9 @@ export default function BlockedContacts() {
     return (
       <ContactContainer key={index}>
         <ContactDetails>
-          <ContactAvatar src={getAvatar(avatarId)} />
+          <ContactAvatarContainer>
+            <ContactAvatar src={getAvatar(avatarId)} />
+          </ContactAvatarContainer>
           <ContactNameContainer>
             <ContactName>{name}</ContactName>
             <ContactNickname>{nickname}</ContactNickname>
@@ -63,18 +65,25 @@ const ContactDetails = styled.div`
   }
 `;
 
-const ContactAvatar = styled.img`
-  object-fit: cover;
+const ContactAvatarContainer = styled.div`
   width: 38px;
   height: 38px;
-  border-radius: 50%;
-  user-select: none;
   flex-shrink: 0;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.btn.active};
 
   @media (max-width: 484px) {
     width: 30px;
     height: 30px;
   }
+`;
+
+const ContactAvatar = styled.img`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  user-select: none;
 `;
 
 const ContactNameContainer = styled.div`

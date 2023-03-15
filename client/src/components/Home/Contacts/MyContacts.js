@@ -74,6 +74,7 @@ const ContactAvatarContainer = styled.div`
   width: 38px;
   height: 38px;
   border-radius: 50%;
+  background-color: ${(props) => props.theme.btn.active};
 
   @media (max-width: 484px) {
     width: 30px;
@@ -82,9 +83,12 @@ const ContactAvatarContainer = styled.div`
 `;
 
 const ContactAvatar = styled.img`
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   user-select: none;
   flex-shrink: 0;
+  border-radius: 50%;
 `;
 
 const ContactStatus = styled.span`

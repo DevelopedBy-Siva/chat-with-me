@@ -106,7 +106,7 @@ const ContentSwitchBtn = styled.li`
   justify-content: center;
 
   &.active {
-    background: ${(props) => props.theme.btn.active};
+    background: ${(props) => props.theme.btn.selected};
     color: ${(props) => props.theme.txt.main};
   }
 `;

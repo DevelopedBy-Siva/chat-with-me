@@ -23,6 +23,8 @@ const DarkTheme = {
   btn: {
     inactive: "#242424",
     active: "#1E1E1E",
+    default: "#343434",
+    selected: "#484848",
   },
   emoji: {
     background: "36, 36, 36",
@@ -77,6 +79,8 @@ const LightTheme = {
   btn: {
     inactive: "#dbd8d8",
     active: "#e8e5e5",
+    default: "#BBB9B9",
+    selected: "#C8C7C7",
   },
   emoji: {
     background: "243, 243, 242",

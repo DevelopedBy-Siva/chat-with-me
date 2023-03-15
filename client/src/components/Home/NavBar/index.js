@@ -65,7 +65,7 @@ export default function NavBarContainer() {
       <Wrapper>
         <ThemeSwitch />
         <Profile to="/profile">
-          <ProfileImg src={profileImg} alt="User profile image" />
+          <ProfileImg src={profileImg} />
         </Profile>
       </Wrapper>
     </Container>
@@ -166,16 +166,17 @@ const Profile = styled(NavLink)`
   width: 34px;
   height: 34px;
   display: block;
-  border-radius: 50%;
   border: none;
   outline: none;
-  background: none;
   cursor: pointer;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.btn.active};
 `;
 
 const ProfileImg = styled.img`
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   pointer-events: none;
 `;
 
@@ -189,6 +190,7 @@ const Switch = styled.button`
   position: relative;
   cursor: pointer;
   background: ${(props) => `${props.theme.bg.container}`};
+  overflow: hidden;
 `;
 
 const SwitchLabel = styled.span`

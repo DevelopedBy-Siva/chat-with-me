@@ -41,11 +41,9 @@ export default function MessageContainer({
   return (
     <Container as={isSender() ? MessageSender : MessageReceiver}>
       <ContentWrapper className={avatarPosition}>
-        <UserAvatar
-          className={avatarPosition}
-          src={isSender() ? SenderAvatar : getRecceiverAvatar()}
-          alt="user avatar"
-        />
+        <UserAvatarContainer className={avatarPosition}>
+          <UserAvatar src={isSender() ? SenderAvatar : getRecceiverAvatar()} />
+        </UserAvatarContainer>
         <Wrapper>
           <MsgTimestamp>
             {getMessageTime(new Date().toUTCString())}
@@ -76,12 +74,15 @@ const Wrapper = styled.div`
   align-items: flex-end;
 `;
 
-const UserAvatar = styled.img`
+const UserAvatarContainer = styled.div`
+  background-color: ${(props) => props.theme.btn.active};
   width: 30px;
   height: 30px;
+  border-radius: 50%;
   margin-top: 8px;
   z-index: 1;
   pointer-events: none;
+  overflow: hidden;
 
   &.sender-avatar {
     margin-left: 8px;
@@ -89,6 +90,13 @@ const UserAvatar = styled.img`
   &.receiver-avatar {
     margin-right: 8px;
   }
+`;
+
+const UserAvatar = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const MsgWrapper = styled.li`

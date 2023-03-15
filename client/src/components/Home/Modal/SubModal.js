@@ -19,7 +19,7 @@ export default function SubModal({
         <Overlay inactive={inactive ? 1 : 0} onClick={handleClose} />
         <Wrapper style={style}>
           {children}
-          <CloseBtn inactive={inactive ? 1 : 0} onClick={handleClose}>
+          <CloseBtn disabled={inactive} onClick={handleClose}>
             <AiOutlineClose />
           </CloseBtn>
         </Wrapper>
@@ -72,7 +72,7 @@ const CloseBtn = styled.button`
   position: absolute;
   top: 18px;
   right: 18px;
-  cursor: ${(props) => (props.inactive ? "not-allowed" : "pointer")};
+  cursor: pointer;
   background: none;
   border: none;
   font-size: 1.1rem;
@@ -80,4 +80,12 @@ const CloseBtn = styled.button`
   justify-content: center;
   color: ${(props) => props.theme.txt.sub};
   outline-color: ${(props) => props.theme.border.outline};
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:hover:enabled {
+    color: ${(props) => props.theme.txt.main};
+  }
 `;

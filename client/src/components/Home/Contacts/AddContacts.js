@@ -98,7 +98,7 @@ const SearchContainer = styled.form`
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  background: ${(props) => props.theme.bg.app};
+  background-color: ${(props) => props.theme.btn.active};
   color: ${(props) => props.theme.txt.sub};
   cursor: text;
   height: 40px;
@@ -109,6 +109,7 @@ const SearchInput = styled.input`
   flex: 1;
   outline: none;
   border: none;
+  display: block;
   font-size: 0.8rem;
   font-weight: 400;
   background: none;
@@ -144,8 +145,8 @@ const SearchBtn = styled.button`
   justify-content: center;
   align-items: center;
   color: ${(props) => props.theme.txt.sub};
-  background-color: ${(props) => props.theme.btn.active};
-  padding: 0 10px;
+  background-color: ${(props) => props.theme.btn.default};
+  width: 40px;
   cursor: pointer;
 
   &:hover {

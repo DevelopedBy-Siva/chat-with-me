@@ -51,7 +51,9 @@ function InfoContainer({ setInfoVisible }) {
         <BiRightArrowAlt />
       </UserInfoCloseBtn>
       <UserInfoWrapper>
-        <UserAvatar src={getAvatar(avatarId)} />
+        <UserAvatarContainer>
+          <UserAvatar src={getAvatar(avatarId)} />
+        </UserAvatarContainer>
         <UserInfoName>{name}</UserInfoName>
         {nickname && nickname.length > 0 && (
           <NicknameContainer>
@@ -133,13 +135,22 @@ const UserInfoWrapper = styled.div`
   }
 `;
 
-const UserAvatar = styled.img`
+const UserAvatarContainer = styled.div`
   margin-top: 2rem;
-  width: 50%;
-  background: none;
+  width: 100%;
+  height: 100%;
+  width: 130px;
+  height: 130px;
+  background-color: ${(props) => props.theme.btn.active};
   border-radius: 50%;
-  display: block;
   pointer-events: none;
+`;
+
+const UserAvatar = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UserInfoName = styled.span`

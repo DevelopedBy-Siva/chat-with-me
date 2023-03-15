@@ -329,11 +329,14 @@ const AvatarContainer = styled.div`
   border-radius: 50%;
   flex-shrink: 0;
   position: relative;
+  background: ${(props) => props.theme.btn.active};
 `;
 
 const Avatar = styled.img`
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
   pointer-events: none;
 `;
 

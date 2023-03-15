@@ -14,7 +14,7 @@ const Contacts = lazy(() => import("./components/Home/Contacts"));
 const Group = lazy(() => import("./components/Home/Group"));
 const Settings = lazy(() => import("./components/Home/Settings"));
 const Logout = lazy(() => import("./components/Home/Logout"));
-const MySelf = lazy(() => import("./components/Home/MySelf"));
+const Profile = lazy(() => import("./components/Home/Profile"));
 
 export default function App() {
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/groups" element={<Group />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/profile" element={<MySelf />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
       </Route>
