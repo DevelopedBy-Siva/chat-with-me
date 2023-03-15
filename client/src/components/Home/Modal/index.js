@@ -4,7 +4,7 @@ import FocusLock from "react-focus-lock";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
 
-export default function Modal({ style = {}, children }) {
+export default function Modal({ style = {}, isLoading = false, children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,16 +15,20 @@ export default function Modal({ style = {}, children }) {
   });
 
   function handleClose() {
+    if (isLoading) return;
     return navigate("/", { replace: true });
   }
 
   return (
     <FocusLock>
       <Container>
-        <Overlay onClick={handleClose} />
+        <Overlay
+          className={isLoading ? "is-loading" : ""}
+          onClick={handleClose}
+        />
         <Wrapper style={style}>
           {children}
-          <CloseBtn onClick={handleClose}>
+          <CloseBtn disabled={isLoading} onClick={handleClose}>
             <AiOutlineClose />
           </CloseBtn>
         </Wrapper>
@@ -53,6 +57,10 @@ const Overlay = styled.div`
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
   opacity: 0.8;
+
+  &.is-loading {
+    cursor: wait;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -86,7 +94,11 @@ const CloseBtn = styled.button`
   outline-color: ${(props) => props.theme.border.outline};
   transition: all 0.2s ease-in-out;
 
-  &:hover {
+  &:hover:enabled {
     color: ${(props) => props.theme.txt.main};
+  }
+
+  &:disabled {
+    cursor: wait;
   }
 `;

@@ -6,6 +6,8 @@ import Modal from "../Modal";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import { getAvatar } from "../../../assets/avatars";
 import SelectProfileImg from "./SelectProfileImg";
+import UserNameChange from "./UserNameChange";
+import UserDescriptionChange from "./UserDescriptionChange";
 
 const modalStyle = {
   maxWidth: "760px",
@@ -13,52 +15,49 @@ const modalStyle = {
 };
 
 export default function Profile() {
-  const [apiResponse, setApiResponse] = useState({
+  const [userNameChange, setUserNameChange] = useState({
     loading: false,
-    error: false,
+    disabled: true,
+    username: "sivasanker",
+  });
+
+  const [userDescriptionChange, setUserDescriptionChange] = useState({
+    loading: false,
+    disabled: true,
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
   });
 
   const [showProfileImages, setShowProfileImages] = useState(false);
 
   function toggleModal(val = false) {
-    if (apiResponse.loading) return;
     setShowProfileImages(val);
   }
 
   return (
     <React.Fragment>
-      <Modal style={modalStyle}>
+      <Modal
+        isLoading={userNameChange.loading || userDescriptionChange.loading}
+        style={modalStyle}
+      >
         <Container>
           <ModalHeaderWrapper>Profile</ModalHeaderWrapper>
           <SubContainer>
             <ProfileImageContainer>
-              <ProfileImage src={getAvatar(2)} alt="profile" />
+              <ProfileImage src={getAvatar(2)} />
               <EditImgBtn onClick={() => toggleModal(true)}>
-                <BsFillPencilFillCustom style={{ fontSize: "0.6rem" }} /> Edit
+                <BsFillPencilFillCustom style={{ marginRight: "4px" }} />
+                Edit
               </EditImgBtn>
             </ProfileImageContainer>
-            <ChangeUserDetails>
-              <EditTitle>Username</EditTitle>
-              <InputWrapper>
-                <EditLabel>
-                  <EditNameInput />
-                </EditLabel>
-                <EditSubmitBtn>
-                  <BsFillPencilFillCustom />
-                </EditSubmitBtn>
-              </InputWrapper>
-            </ChangeUserDetails>
-            <ChangeUserDetails>
-              <EditTitle>Your current status</EditTitle>
-              <InputWrapper>
-                <EditLabel>
-                  <EditDescriptionInput rows={3} />
-                </EditLabel>
-                <EditSubmitBtn>
-                  <BsFillPencilFillCustom />
-                </EditSubmitBtn>
-              </InputWrapper>
-            </ChangeUserDetails>
+            <UserNameChange
+              userNameChange={userNameChange}
+              setUserNameChange={setUserNameChange}
+            />
+            <UserDescriptionChange
+              userDescriptionChange={userDescriptionChange}
+              setUserDescriptionChange={setUserDescriptionChange}
+            />
           </SubContainer>
         </Container>
       </Modal>
@@ -75,12 +74,12 @@ export default function Profile() {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  padding: 0.6rem;
   display: flex;
   flex-direction: column;
 `;
 
 const SubContainer = styled.div`
+  padding: 0.6rem;
   min-height: 0;
   flex: 1;
   overflow-y: auto;
@@ -124,70 +123,5 @@ const EditImgBtn = styled.button`
 `;
 
 const BsFillPencilFillCustom = styled(BsFillPencilFill)`
-  font-size: 0.8rem;
-  margin-right: 4px;
-`;
-
-const ChangeUserDetails = styled.div`
-  max-width: 340px;
-  margin: auto;
-  margin-top: 2.4rem;
-`;
-
-const EditLabel = styled.label`
-  display: inline-block;
-  width: 100%;
-`;
-
-const EditTitle = styled.h4`
-  font-size: 0.8rem;
-  font-weight: 400;
-  padding-bottom: 8px;
-  color: ${(props) => props.theme.txt.sub};
-`;
-
-const EditNameInput = styled.input`
-  width: 100%;
-  padding: 8px;
-  color: ${(props) => props.theme.txt.main};
-  background: none;
-  outline: none;
-  border: 1px solid ${(props) => props.theme.border.inputbox};
-  border-right: 0;
-  border-radius: 5px 0 0 5px;
-  letter-spacing: 1px;
-  font-size: 0.8rem;
-`;
-
-const EditSubmitBtn = styled.button`
-  width: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background: ${(props) => props.theme.border.outline};
-  border: none;
-  outline: none;
-  color: #fff;
-  border-radius: 0 5px 5px 0;
-`;
-
-const InputWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const EditDescriptionInput = styled.textarea`
-  display: block;
-  resize: none;
-  width: 100%;
-  padding: 8px;
-  color: ${(props) => props.theme.txt.main};
-  background: none;
-  outline: none;
-  border: 1px solid ${(props) => props.theme.border.inputbox};
-  border-right: 0;
-  border-radius: 5px 0 0 5px;
-  letter-spacing: 1px;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
 `;
