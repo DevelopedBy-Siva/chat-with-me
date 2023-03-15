@@ -1,0 +1,7 @@
+{
+  "logging": {
+    "level": "error",
+    "trace": false
+  },
+  "jwt_expiry": "2 days"
+}

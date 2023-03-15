@@ -1,0 +1,10 @@
+{
+  "logging": {
+    "level": "info",
+    "trace": true
+  },
+  "app_secret_key": "default",
+  "db": {
+    "url": "mongodb://localhost/ChatWithMe"
+  }
+}

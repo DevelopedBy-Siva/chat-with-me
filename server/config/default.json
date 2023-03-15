@@ -1,0 +1,15 @@
+{
+  "app_port": 3000,
+  "app_name": "ChatWithMe",
+  "logging": {
+    "level": "info",
+    "trace": true
+  },
+  "mail_service": {
+    "service": "gmail",
+    "user": "default@gmail.com",
+    "pass": "default_pass"
+  },
+  "verify_code_expiry_secs": 300,
+  "jwt_expiry": 120
+}

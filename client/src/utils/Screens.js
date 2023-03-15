@@ -1,0 +1,5 @@
+export const FORGOT_PSWD_SCREEN = {
+  HOME: "HOME",
+  VEIRFY_CODE: "VERIFY_CODE",
+  CNG_PSWD: "CNG_PSWD",
+};

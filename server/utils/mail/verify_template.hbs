@@ -1,0 +1,85 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verification Code</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        box-sizing: border-box;
+        color: rgb(247, 247, 247);
+        font-weight: 200;
+        font-size: 1rem;
+      }
+      section {
+        padding: 2rem;
+        width: 768px;
+        background: rgb(40, 40, 40);
+        margin: auto;
+        border-radius: 5px;
+      }
+      h1 {
+        font-weight: 500;
+        margin-bottom: 1.6rem;
+        font-size: 1.4rem;
+        color: rgb(196, 196, 196);
+        text-align: left;
+        margin-bottom: 1.6rem;
+      }
+      h1 span {
+        text-transform: capitalize;
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: rgb(196, 196, 196);
+      }
+      h2 {
+        margin-bottom: 1.4rem;
+        text-align: left;
+        font-size: 1rem;
+      }
+      #code {
+        padding: 1rem;
+        font-size: 3.6rem;
+        text-align: center;
+        letter-spacing: 8px;
+        color: #0084ff;
+        background: rgb(20, 20, 20);
+        border-radius: 0.5rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+      }
+      #expiry {
+        margin-bottom: 1.6rem;
+      }
+      #expiry span {
+        font-size: 12px;
+        text-align: center;
+        display: block;
+      }
+      #regards span {
+        display: block;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h1>Dear <span>{{name}}</span>,</h1>
+      <h2>
+        Here is the ChatWithMe app verification code to change the account
+        password:
+      </h2>
+      <div id="code">{{code}}</div>
+      <div id="expiry">
+        <span>This code will expire in {{expiry}} minutes</span>
+      </div>
+      <div id="regards">
+        <span>Regards,</span>
+        <span>DevelopedBy.Siva</span>
+      </div>
+    </section>
+  </body>
+</html>
