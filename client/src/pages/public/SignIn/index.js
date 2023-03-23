@@ -87,7 +87,7 @@ export default function SignIn() {
     });
 
     axios
-      .get("/posts/1")
+      .post("/login")
       .then(() => {
         // TODO: Handle Success
         const token = "token";

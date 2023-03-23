@@ -1,14 +1,26 @@
 const express = require("express");
 const compression = require("compression");
+const cors = require("cors");
+const config = require("config");
 const helmet = require("helmet");
 const chat = require("./private/chat");
 const user = require("./private/user");
 const public = require("./public");
-const { AppError } = require("../exceptions");
 const exceptionHandler = require("../exceptions/expressExceptions");
 const { authorizeJWT } = require("../auth");
+const { AppError } = require("../exceptions");
 
 module.exports = function (app) {
+  /**
+   * Allowed URL
+   */
+  const clientUrl = config.get("client_url");
+  app.use(
+    cors({
+      origin: clientUrl,
+    })
+  );
+
   /**
    *  Middleware to decreases API request response size
    */
