@@ -5,7 +5,6 @@ export const GlobalStyles = createGlobalStyle`
         margin: 0;
         padding: 0;
         box-sizing: border-box;		
-        font-family: 'Roboto', sans-serif;
         font-weight: 300;
 
     }
@@ -18,7 +17,14 @@ export const GlobalStyles = createGlobalStyle`
         background: ${(props) => props.theme.bg.app};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        -webkit-text-size-adjust: 100%;
+        font-family: 'Roboto', sans-serif;
     }
+
+    button, input, textarea {
+        font-family: inherit;
+    }
+
     #nprogress .bar {
         background: red;
     }

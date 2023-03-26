@@ -1,5 +1,5 @@
 import _ from "axios";
-import * as toast from "../components/Toastify/UserToastUtils";
+import { error as toast } from "../components/Toastify/UserToastUtils";
 import retrieveError from "./ExceptionHandler";
 
 const baseURL = process.env.REACT_APP_API_BASEURL;
@@ -29,10 +29,7 @@ axios.interceptors.response.use(
     if (error.response.status !== 500) return promise;
     promise.catch(({ code }) => {
       const { message, addToast } = retrieveError(code);
-      addToast &&
-        toast.error(message, {
-          toastId: toast.TOAST_DISMISS_ID,
-        });
+      addToast && toast(message);
     });
     return promise;
   }
