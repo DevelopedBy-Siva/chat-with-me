@@ -1,49 +1,88 @@
+import styled from "styled-components";
 import { toast } from "react-toastify";
 
-import DEFAULT_AVATAR from "../../assets/avatars/2.svg";
+import { getAvatar } from "../../assets/avatars";
 
 export const MESSAGE_TOAST_LIMIT = 3;
-export const MESSAGE_TOAST_PREFIX = "MSG_";
 export const MESSAGE_TOAST_CONTAINER_ID = "message-toast-container";
+export const MESSAGE_TOAST_ID = "message-toast-id";
 
-const DEFAULT_MESSAGE = "Hey...How do you do?";
-
-const MESSAGE_TOAST_DEFAULT_PROPS = {
-  position: "top-center",
-  autoClose: 5000,
-  hideProgressBar: true,
-  closeOnClick: true,
-  pauseOnHover: false,
-  pauseOnFocusLoss: false,
-  draggable: true,
-  progress: undefined,
-  closeButton: false,
-  style: {},
+const defaultProps = {
+  containerId: MESSAGE_TOAST_CONTAINER_ID,
 };
 
-const MESSAGE_TOAST_USER_DEFAULT_PROPS = {
-  id: "unknown_id",
-  name: "UNKNOWN",
-  avatar: DEFAULT_AVATAR,
-  message: DEFAULT_MESSAGE,
-};
+export const notify = (message, avatarId, sendBy, props = {}) =>
+  toast(
+    <MessageContainer message={message} sendBy={sendBy} avatarId={avatarId} />,
+    {
+      ...defaultProps,
+      ...props,
+    }
+  );
 
-export const notify = (user, userDefined_props) => {
-  let TOAST_ID;
-  if (user && user.id) TOAST_ID = MESSAGE_TOAST_PREFIX + user.id;
-  if (userDefined_props && userDefined_props.toastId)
-    TOAST_ID = MESSAGE_TOAST_PREFIX + userDefined_props.toastId;
+function MessageContainer({ message = "...", avatarId, sendBy = "unknown" }) {
+  return (
+    <Container>
+      <ImageContainer>
+        <Img src={getAvatar(avatarId)} />
+      </ImageContainer>
+      <Details>
+        <From>{sendBy}</From>
+        <Msg>{message}</Msg>
+      </Details>
+    </Container>
+  );
+}
 
-  userDefined_props = {
-    ...MESSAGE_TOAST_DEFAULT_PROPS,
-    ...userDefined_props,
-  };
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+`;
 
-  if (TOAST_ID) userDefined_props = { ...userDefined_props, toastId: TOAST_ID };
-  user = { ...MESSAGE_TOAST_USER_DEFAULT_PROPS, ...user };
+const ImageContainer = styled.span`
+  display: block;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+`;
 
-  // toast(
-  //   <ChatToastComponent user={user} toastId={TOAST_ID} />,
-  //   userDefined_props
-  // );
-};
+const Img = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const Details = styled.div`
+  margin-left: 15px;
+  overflow: hidden;
+  flex: 1;
+`;
+
+const From = styled.span`
+  display: block;
+  width: 100%;
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: ${(props) => props.theme.toast.txtBold};
+`;
+
+const Msg = styled.p`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  font-size: 0.7rem;
+  margin-top: 6px;
+  color: #989898;
+  line-height: 16px;
+  color: ${(props) => props.theme.toast.default};
+`;

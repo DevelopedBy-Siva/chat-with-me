@@ -61,6 +61,7 @@ export default function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const { email, password } = loginInfo;
 
     const emailValid = validateEmail(email);

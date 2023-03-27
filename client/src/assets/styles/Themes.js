@@ -52,6 +52,11 @@ const DarkTheme = {
   doodle: {
     main: "#FFFDFC",
   },
+  toast: {
+    bg: "#2e2e2e",
+    default: "#989898",
+    txtBold: "#fff",
+  },
 };
 
 const LightTheme = {
@@ -107,6 +112,11 @@ const LightTheme = {
   },
   doodle: {
     main: "#1B1B1B",
+  },
+  toast: {
+    bg: "#D9D9D9",
+    default: "#646464",
+    txtBold: "#1B1B1B",
   },
 };
 
