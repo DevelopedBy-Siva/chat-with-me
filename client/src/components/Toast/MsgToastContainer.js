@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
+import popupsound from "../../assets/sounds/popup.mp3";
 import { getAvatar } from "../../assets/avatars";
 
 export default function MsgToastContainer({
@@ -8,6 +9,9 @@ export default function MsgToastContainer({
   avatarId,
   sendBy = "unknown",
 }) {
+  useEffect(() => {
+    new Audio(popupsound).play();
+  }, []);
   return (
     <Container>
       <ImageContainer>
