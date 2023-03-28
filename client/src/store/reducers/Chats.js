@@ -1,7 +1,6 @@
 import moment from "moment";
 
 import axios from "../../api/axios";
-import * as toast from "../../components/Toastify/UserToastUtils";
 import {
   chatsError,
   chatsLoading,
@@ -117,7 +116,6 @@ export const fetchChats = (id) => {
             return;
           }
         });
-        toast.error("Something went wrong. Failed to retrieve chats");
         dispatch(chatsError(id, isPrivate));
       });
   };

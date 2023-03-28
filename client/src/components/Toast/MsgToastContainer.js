@@ -1,26 +1,13 @@
+import React from "react";
 import styled from "styled-components";
-import { toast } from "react-toastify";
 
 import { getAvatar } from "../../assets/avatars";
 
-export const MESSAGE_TOAST_LIMIT = 3;
-export const MESSAGE_TOAST_CONTAINER_ID = "message-toast-container";
-export const MESSAGE_TOAST_ID = "message-toast-id";
-
-const defaultProps = {
-  containerId: MESSAGE_TOAST_CONTAINER_ID,
-};
-
-export const notify = (message, avatarId, sendBy, props = {}) =>
-  toast(
-    <MessageContainer message={message} sendBy={sendBy} avatarId={avatarId} />,
-    {
-      ...defaultProps,
-      ...props,
-    }
-  );
-
-function MessageContainer({ message = "...", avatarId, sendBy = "unknown" }) {
+export default function MsgToastContainer({
+  message = "...",
+  avatarId,
+  sendBy = "unknown",
+}) {
   return (
     <Container>
       <ImageContainer>
@@ -37,8 +24,21 @@ function MessageContainer({ message = "...", avatarId, sendBy = "unknown" }) {
 const Container = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 90%;
+  max-width: 310px;
+  margin: auto;
   overflow: hidden;
+  background: ${(props) => props.theme.toast.bg};
+  padding: 15px 10px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  transition: transform 0.5s ease-in-out;
+  cursor: pointer;
+
+  :hover {
+    transform: scale(0.96);
+  }
 `;
 
 const ImageContainer = styled.span`
@@ -81,7 +81,7 @@ const Msg = styled.p`
   -webkit-box-orient: vertical;
   white-space: normal;
   font-size: 0.7rem;
-  margin-top: 6px;
+  margin-top: 4px;
   color: #989898;
   line-height: 16px;
   color: ${(props) => props.theme.toast.default};

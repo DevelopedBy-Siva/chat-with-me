@@ -1,7 +1,7 @@
 import React, { lazy, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import networkStatus from "./components/Toastify/NetworkStatus";
+import networkStatus from "./components/Toast/NetworkStatus";
 import Public from "./pages/public";
 import Private from "./pages/private";
 

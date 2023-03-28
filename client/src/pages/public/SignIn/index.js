@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
 
+import { v4 as uuid } from "uuid";
+import toast from "../../../components/Toast";
 import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
@@ -61,7 +63,8 @@ export default function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    toast.msg(uuid());
+    toast.info(uuid());
     const { email, password } = loginInfo;
 
     const emailValid = validateEmail(email);

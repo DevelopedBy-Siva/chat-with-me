@@ -7,7 +7,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import "nprogress/nprogress.css";
 
 import App from "./App";
-import Toaster from "./components/Toastify";
+import Toaster from "./components/Toast/AppToast";
 import GlobalStyles from "./assets/styles/GlobalStyles";
 import { ThemeContext } from "./context/ThemeContext";
 import { getStyles, getTheme, updateTheme } from "./utils/UserLocal";

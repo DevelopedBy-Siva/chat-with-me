@@ -1,6 +1,4 @@
 import _ from "axios";
-import { error as toast } from "../components/Toastify/UserToastUtils";
-import retrieveError from "./ExceptionHandler";
 
 const baseURL = process.env.REACT_APP_API_BASEURL;
 const apiTimeout = process.env.REACT_APP_API_TIMEOUT;
@@ -10,7 +8,6 @@ axios.defaults.timeout = apiTimeout;
 
 axios.interceptors.request.use(
   (request) => {
-    toast.dismiss();
     // TODO
     // add Headers
     return request;
@@ -27,10 +24,7 @@ axios.interceptors.response.use(
   (error) => {
     const promise = Promise.reject(error);
     if (error.response.status !== 500) return promise;
-    promise.catch(({ code }) => {
-      const { message, addToast } = retrieveError(code);
-      addToast && toast(message);
-    });
+    promise.catch(({ code }) => {});
     return promise;
   }
 );

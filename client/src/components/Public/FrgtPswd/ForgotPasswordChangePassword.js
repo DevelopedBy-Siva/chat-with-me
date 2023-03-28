@@ -11,7 +11,6 @@ import {
 } from "../../../utils/InputHandler";
 import ButtonContainer from "../common/ButtonContainer";
 import InputContainer from "../common/InputContainer";
-import * as toast from "../../Toastify/UserToastUtils";
 
 export default function ForgotPasswordChangePassword({
   info,
@@ -82,7 +81,6 @@ export default function ForgotPasswordChangePassword({
       .get("/posts/1")
       .then(() => {
         navigate("/sign-in", { replace: true });
-        toast.success("Password has changed successfully");
       })
       .catch(() => {
         setServerResponse({
