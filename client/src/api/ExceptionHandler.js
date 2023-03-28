@@ -1,20 +1,29 @@
-const ErrorCode = {
-  API_TIMEOUT_ERROR: "ECONNABORTED",
-};
-
-export default function retrieveError(code, errorResponse = {}) {
+export default function retrieveError(error = {}) {
   let message;
-  let addToast = false;
-  switch (code) {
-    case ErrorCode.API_TIMEOUT_ERROR:
-      message = "Server timed out. Try again.";
-      addToast = true;
-      break;
+  let toastId;
+  let status = 0;
+  try {
+    status = error.response.status;
+  } catch (_) {}
 
+  switch (status) {
+    case 400:
+      message =
+        "There was a problem with your submission. Please review your submission";
+      toastId = "INVALID_REQUEST";
+      break;
+    case 401:
+      message = "Incorrect email or password";
+      toastId = "AUTH_ERROR";
+      break;
+    case 403:
+      message = "Request is forbidden. Please login to continue";
+      toastId = "FORBIDDEN_ERROR";
+      break;
     default:
-      message = "Unexpected error occured. Try again.";
-      addToast = true;
+      message = "Oops, something went wrong. Failed to process your request";
+      toastId = "UNKNOW_ERROR";
       break;
   }
-  return { message, addToast };
+  return { message, toastId };
 }

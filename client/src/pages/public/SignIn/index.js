@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
 
-import { v4 as uuid } from "uuid";
-import toast from "../../../components/Toast";
+import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../../components/Toast";
 import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
@@ -18,6 +17,7 @@ import UserInputContainer from "../../../components/Public/common/InputContainer
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
 import Checkbox from "../../../components/Public/common/CheckBox";
 import { saveToken } from "../../../utils/Auth";
+import retrieveError from "../../../api/ExceptionHandler";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -63,8 +63,7 @@ export default function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    toast.msg(uuid());
-    toast.info(uuid());
+
     const { email, password } = loginInfo;
 
     const emailValid = validateEmail(email);
@@ -99,6 +98,8 @@ export default function SignIn() {
         return navigate("/");
       })
       .catch((error) => {
+        let { message, toastId } = retrieveError(error);
+        toast.error(message, { ...DEFAULT_PUBLIC_TOAST_PROPS, id: toastId });
         setServerData({
           ...serverData,
           loading: false,
