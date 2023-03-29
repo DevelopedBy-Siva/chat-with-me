@@ -6,7 +6,7 @@ import { getToken } from "../../utils/Auth";
 export default function Public() {
   const tokenFound = getToken();
   return !tokenFound ? (
-    <Suspense>
+    <Suspense fallback="loading...">
       <Outlet />
     </Suspense>
   ) : (

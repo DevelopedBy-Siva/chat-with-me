@@ -10,20 +10,31 @@ export default function InputContainer({
   ...rest
 }) {
   return (
-    <Container>
-      <InputBox required="required" ref={inputRef} {...rest} />
-      <InputHeading>{title}</InputHeading>
-      <Icon>{icon}</Icon>
+    <Wrapper>
+      <Container>
+        <InputBox required="required" ref={inputRef} {...rest} />
+        <InputHeading>{title}</InputHeading>
+        <Icon>{icon}</Icon>
+      </Container>
       <InputErrorMessage ref={errorRef} />
-    </Container>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  display: block;
+  position: relative;
+  min-height: 80px;
+
+  :last-of-type {
+    margin-bottom: 15px;
+  }
+`;
 
 const Container = styled.label`
   display: block;
   position: relative;
   padding-top: 24px;
-  margin-bottom: 24px;
   border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
 `;
 
@@ -76,13 +87,13 @@ const Icon = styled.span`
 
 const InputErrorMessage = styled.span`
   display: none;
-  position: absolute;
-  bottom: -20px;
   font-size: 0.7rem;
   color: ${(props) => props.theme.txt.sub};
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
+  margin-top: 5px;
+  line-height: 16px;
 
   &.input-error {
     display: block;

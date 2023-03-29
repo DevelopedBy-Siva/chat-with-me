@@ -88,9 +88,13 @@ export const nameValidation = (name) => {
 };
 
 export const passwordValidation = (password) => {
-  const isValid = password && password.length >= 8;
+  const PASSWORD_PATTERN =
+    /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%&]).{8,16}$/;
+  const isValid = PASSWORD_PATTERN.test(password);
   let message = null;
-  if (!isValid) message = "Minimum password length should be 8 characters";
+  if (!isValid)
+    message =
+      "Passwords must have atleast 8 characters, should contain upper, lower & numeric characters, and include symbols like !@#$%&";
   return {
     isValid,
     message,

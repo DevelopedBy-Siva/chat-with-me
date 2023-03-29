@@ -7,7 +7,7 @@ export const MSG_TOAST_ID_PREFIX = "msg_tst_pfx_";
 export const GNRL_TOAST_ID_PREFIX = "gnrl_tst_pfx_";
 export const DEFAULT_PUBLIC_TOAST_PROPS = {
   position: "top-center",
-  duration: 10000,
+  duration: 20000,
 };
 
 const notify = (key, message, props = {}) => {
@@ -29,11 +29,16 @@ const notifyMsg = (message, from, avatarId) => {
   );
 };
 
+const remove = () => {
+  toast.remove();
+};
+
 const toExpose = {
   success: (message, props) => notify("success", message, props),
   error: (message, props) => notify("error", message, props),
   info: (message, props) => notify("info", message, props),
   msg: (message, from, avatarId) => notifyMsg(message, from, avatarId),
+  remove: () => remove(),
 };
 
 export default toExpose;

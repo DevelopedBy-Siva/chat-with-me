@@ -89,17 +89,27 @@ export default function SignIn() {
     });
 
     axios
-      .post("/login")
+      .post("/login", null, {
+        headers: {
+          "x-auth-email": email,
+          "x-auth-password": password,
+        },
+      })
       .then(() => {
         // TODO: Handle Success
         const token = "token";
         const saved = saveToken(token);
         if (!saved) throw new Error("Something went wrong. Try again later...");
+        toast.remove();
         return navigate("/");
       })
       .catch((error) => {
         let { message, toastId } = retrieveError(error);
-        toast.error(message, { ...DEFAULT_PUBLIC_TOAST_PROPS, id: toastId });
+        console.log(error);
+        toast.error(message, {
+          ...DEFAULT_PUBLIC_TOAST_PROPS,
+          id: toastId,
+        });
         setServerData({
           ...serverData,
           loading: false,
@@ -187,13 +197,17 @@ export default function SignIn() {
   );
 }
 
-const FormContainer = styled.div``;
+const FormContainer = styled.div`
+  display: block;
+`;
 
 const Form = styled.form`
+  display: block;
   width: 100%;
 `;
 
 const CheckBoxFrgtPswd = styled.div`
+  margin-top: 10px;
   position: relative;
   width: 100%;
   display: flex;

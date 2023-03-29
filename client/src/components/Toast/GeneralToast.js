@@ -58,8 +58,9 @@ const Icon = styled.div`
 `;
 
 const Message = styled.p`
+  flex: 1;
   font-size: 0.7rem;
-  line-height: 16px;
+  line-height: 17px;
   color: ${(props) => props.theme.toast.txtBold};
-  font-weight: 400;
+  font-weight: 300;
 `;
