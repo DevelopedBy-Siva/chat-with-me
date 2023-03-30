@@ -105,7 +105,6 @@ export default function SignIn() {
       })
       .catch((error) => {
         let { message, toastId } = retrieveError(error);
-        console.log(error);
         toast.error(message, {
           ...DEFAULT_PUBLIC_TOAST_PROPS,
           id: toastId,

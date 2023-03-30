@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 import { Provider, useDispatch } from "react-redux";
@@ -6,6 +6,7 @@ import { Provider, useDispatch } from "react-redux";
 import Navbar from "../../../components/Home/NavBar";
 import store from "../../../store";
 import { initializeContacts } from "../../../store/reducers/Contacts";
+import FullPageLoading from "../../../components/Loader/FullPage";
 
 export default function UserHome() {
   const dispatch = useDispatch();
@@ -18,7 +19,9 @@ export default function UserHome() {
     <Provider store={store}>
       <Container>
         <Navbar />
-        <Outlet />
+        <Suspense fallback={<FullPageLoading />}>
+          <Outlet />
+        </Suspense>
       </Container>
     </Provider>
   );
@@ -29,4 +32,5 @@ const Container = styled.div`
   height: 100vh;
   overflow: hidden;
   display: flex;
+  position: relative;
 `;

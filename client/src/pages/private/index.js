@@ -4,20 +4,24 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import { validateToken } from "../../utils/Auth";
 import store from "../../store";
+import FullPageLoading from "../../components/Loader/FullPage";
 
 export default function Private() {
   const [proceed, setProceed] = useState(null);
 
   useEffect(() => {
-    const isValid = validateToken();
-    setProceed(isValid);
+    async function startupValidation() {
+      const isValid = await validateToken();
+      setProceed(isValid);
+    }
+    startupValidation();
   }, []);
 
   return proceed === null ? (
-    <h5>Loading...</h5>
+    <FullPageLoading />
   ) : proceed === true ? (
     <Provider store={store}>
-      <Suspense>
+      <Suspense fallback={<FullPageLoading />}>
         <Outlet />
       </Suspense>
     </Provider>

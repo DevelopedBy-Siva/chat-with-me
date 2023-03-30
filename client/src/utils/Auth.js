@@ -24,9 +24,14 @@ export const getToken = () => {
   return token;
 };
 
-export const validateToken = () => {
+export const validateToken = async () => {
   const token = getToken();
   // TODO
+  await new Promise((resolve) =>
+    setTimeout(() => {
+      resolve();
+    }, 10000)
+  );
   if (token) return true;
   return false;
 };
