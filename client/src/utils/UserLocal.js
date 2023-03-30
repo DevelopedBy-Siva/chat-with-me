@@ -1,11 +1,13 @@
-import { APP_NAME } from "../assets/constants";
+import Cookies from "universal-cookie";
+
 import { DarkTheme, LightTheme } from "../assets/styles/Themes";
 
-const THEME_KEY = `${APP_NAME}_THEME`;
+const THEME_KEY = `prefered_theme_mode`;
+const cookies = new Cookies();
 
 export function updateTheme(val = "light") {
   try {
-    localStorage.setItem(THEME_KEY, val);
+    cookies.set(THEME_KEY, val);
   } catch (ex) {}
   return val;
 }
@@ -14,7 +16,7 @@ export function getTheme() {
   const allowed = ["light", "dark"];
   let val;
   try {
-    val = localStorage.getItem(THEME_KEY);
+    val = cookies.get(THEME_KEY);
   } catch (ex) {}
   if (allowed.includes(val)) return val;
   return allowed[1];
