@@ -17,13 +17,13 @@ export default function GeneralToast({ type = "info", message = "..." }) {
           bg: "#ff0000",
         };
       default:
-        return { icon: <IoInformationSharp />, bg: "#4BB2D4" };
+        return { icon: <IoInformationSharp />, bg: "#3C90AB" };
     }
   }
   const { icon, bg } = getType();
 
   return (
-    <Container>
+    <Container bg={bg}>
       <Icon bg={bg}>{icon}</Icon>
       <Message>{message}</Message>
     </Container>
@@ -35,7 +35,7 @@ const Container = styled.div`
   align-items: center;
   width: 90%;
   max-width: 310px;
-  background: ${(props) => props.theme.toast.bg};
+  background: ${(props) => props.bg};
   padding: 10px 15px;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
@@ -52,8 +52,8 @@ const Icon = styled.div`
   align-items: center;
   font-size: 1.4rem;
   margin-right: 20px;
-  background-color: ${(props) => props.bg};
-  color: ${(props) => props.theme.toast.txtBold};
+  background-color: #fff;
+  color: ${(props) => props.bg};
   flex-shrink: 0;
 `;
 
