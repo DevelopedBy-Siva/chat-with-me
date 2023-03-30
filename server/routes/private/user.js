@@ -74,4 +74,11 @@ route.delete("/contacts/:contactId", (req, resp) => {
   resp.send("delete contacts");
 });
 
+/**
+ * Validate Token
+ */
+route.get("/validate-token", (_, resp) => {
+  resp.status(204).send();
+});
+
 module.exports = route;

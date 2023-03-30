@@ -24,8 +24,8 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minLength: 10,
-    maxLength: 11,
+    minLength: 9,
+    maxLength: 10,
     validate: {
       validator: function (value) {
         const pattern = /^\d+$/;

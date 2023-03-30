@@ -3,6 +3,7 @@ const compression = require("compression");
 const cors = require("cors");
 const config = require("config");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 const chat = require("./private/chat");
 const user = require("./private/user");
 const public = require("./public");
@@ -14,10 +15,10 @@ module.exports = function (app) {
   /**
    * Allowed URL
    */
-  const clientUrl = config.get("client_url");
   app.use(
     cors({
-      origin: clientUrl,
+      origin: config.get("client_url"),
+      credentials: true,
     })
   );
 
@@ -35,6 +36,11 @@ module.exports = function (app) {
    * Middleware to parse the RequestBody
    */
   app.use(express.json());
+
+  /**
+   * Middle to handle Req/Resp cookies
+   */
+  app.use(cookieParser());
 
   /**
    * Middleware to handle User API calls (PROTECTED ROUTE)

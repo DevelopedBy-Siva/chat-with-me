@@ -1,12 +1,22 @@
 const express = require("express");
-const { ErrorCodes, AppError } = require("../../exceptions");
+const config = require("config");
+
 const auth = require("../../auth");
+const { ErrorCodes, AppError } = require("../../exceptions");
 const { validateUser, schema } = require("../../utils/validation");
 const { sendMail, type } = require("../../utils/mail");
 const UserCollection = require("../../db/model/User");
 const VerificationCodeCollection = require("../../db/model/VerificationCode");
 
 const route = express.Router();
+
+const APP_NAME = config.get("app_name");
+
+const httpOnlyCookieProps = {
+  httpOnly: true,
+  path: "/",
+  sameSite: "strict",
+};
 
 /**
  * User Login
@@ -47,7 +57,13 @@ route.post("/login", async (req, resp) => {
 
   // Generate JWT token
   const token = auth.jwtToken(user.email);
-  resp.setHeader("x-auth-token", token).send();
+  resp
+    .cookie(APP_NAME, token, {
+      ...httpOnlyCookieProps,
+      expires: getCookieExpiryDate(),
+    })
+    .status(204)
+    .send();
 });
 
 /**
@@ -67,7 +83,7 @@ route.post("/register", async (req, resp) => {
   });
   if (user)
     return resp
-      .status(400)
+      .status(409)
       .send(
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "User already registered")
       );
@@ -82,8 +98,24 @@ route.post("/register", async (req, resp) => {
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
-  resp.setHeader("x-auth-token", token).send();
+  resp
+    .cookie(APP_NAME, token, {
+      ...httpOnlyCookieProps,
+      expires: getCookieExpiryDate(),
+    })
+    .status(204)
+    .send();
 });
+
+/**
+ * Generate expiry date for the HttpOnly Cookie
+ */
+const getCookieExpiryDate = () => {
+  let today = new Date();
+  let expiry = new Date();
+  expiry.setDate(today.getDate() + config.get("http_cookie_expiry"));
+  return expiry;
+};
 
 /**
  * User forget password
@@ -232,6 +264,13 @@ route.put("/change-pswd", async (req, resp) => {
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
   resp.send();
+});
+
+/**
+ * Remove HttpOnly Cookie
+ */
+route.post("/logout", (_, resp) => {
+  resp.clearCookie(APP_NAME).status(204).send();
 });
 
 module.exports = route;

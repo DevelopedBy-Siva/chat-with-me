@@ -42,12 +42,13 @@ function jwtToken(email, role = DEFAULT_ROLE) {
  */
 function authorizeJWT(req, res, next) {
   try {
-    const token = req.header("x-auth-token");
+    const token = req.cookies[config.get("app_name")];
     const payload = jwt.verify(token, SECRET_KEY);
     // Set payload to request
     req.payload = payload;
     next();
   } catch (ex) {
+    console.log(ex);
     res
       .status(403)
       .send(

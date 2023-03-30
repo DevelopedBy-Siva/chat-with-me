@@ -5,11 +5,10 @@ const apiTimeout = process.env.REACT_APP_API_TIMEOUT;
 
 const axios = _.create({ baseURL });
 axios.defaults.timeout = apiTimeout;
+axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(
   (request) => {
-    // TODO
-    // add Headers
     return request;
   },
   (error) => {

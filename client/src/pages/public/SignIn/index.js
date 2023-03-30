@@ -16,7 +16,6 @@ import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
 import Checkbox from "../../../components/Public/common/CheckBox";
-import { saveToken } from "../../../utils/Auth";
 import retrieveError from "../../../api/ExceptionHandler";
 
 export default function SignIn() {
@@ -63,6 +62,7 @@ export default function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    toast.remove();
 
     const { email, password } = loginInfo;
 
@@ -95,16 +95,9 @@ export default function SignIn() {
           "x-auth-password": password,
         },
       })
-      .then(() => {
-        // TODO: Handle Success
-        const token = "token";
-        const saved = saveToken(token);
-        if (!saved) throw new Error("Something went wrong. Try again later...");
-        toast.remove();
-        return navigate("/");
-      })
+      .then(() => navigate("/"))
       .catch((error) => {
-        let { message, toastId } = retrieveError(error);
+        let { message, toastId } = retrieveError(error, true);
         toast.error(message, {
           ...DEFAULT_PUBLIC_TOAST_PROPS,
           id: toastId,

@@ -7,6 +7,7 @@ import { TiTickOutline } from "react-icons/ti";
 import { FaRegUser } from "react-icons/fa";
 import { AiOutlinePhone } from "react-icons/ai";
 
+import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../../components/Toast";
 import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
@@ -20,6 +21,7 @@ import {
 import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
+import retrieveError from "../../../api/ExceptionHandler";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -87,6 +89,7 @@ export default function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    toast.remove();
 
     const { email, password, phone, name, confirmPassword } = signupInfo;
 
@@ -132,15 +135,26 @@ export default function SignUp() {
       loading: true,
       error: null,
     });
-
     axios
-      .get("/posts/1")
-      .then(({ data }) => {})
+      .post("/register", { ...signupInfo, confirmPassword: undefined })
+      .then(() => navigate("/"))
       .catch((err) => {
+        let { message, toastId, isInfo } = retrieveError(err, true);
+        if (isInfo)
+          toast.info(message, {
+            ...DEFAULT_PUBLIC_TOAST_PROPS,
+            id: toastId,
+          });
+        else
+          toast.error(message, {
+            ...DEFAULT_PUBLIC_TOAST_PROPS,
+            id: toastId,
+          });
+
         setServerData({
           ...serverData,
           loading: false,
-          error: "Error Message",
+          error: err,
         });
       });
   };
