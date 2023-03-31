@@ -76,16 +76,16 @@ const httpOnlyCookieProps = {
   httpOnly: true,
   path: "/",
   sameSite: "lax",
+  secure: true,
 };
 
 /**
  * Generate expiry date for the HttpOnly Cookie
  */
 const getCookieExpiryDate = () => {
-  let today = new Date();
-  let expiry = new Date();
-  expiry.setDate(today.getDate() + config.get("http_cookie_expiry"));
-  return expiry;
+  let date = new Date();
+  date.setDate(date.getDate() + parseInt(config.get("http_cookie_expiry")));
+  return date;
 };
 
 module.exports.jwtToken = jwtToken;

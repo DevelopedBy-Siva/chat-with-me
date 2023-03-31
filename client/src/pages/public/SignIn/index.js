@@ -64,7 +64,7 @@ export default function SignIn() {
     e.preventDefault();
     toast.remove();
 
-    const { email, password } = loginInfo;
+    const { email, password, rememberme } = loginInfo;
 
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
@@ -93,6 +93,7 @@ export default function SignIn() {
         headers: {
           "x-auth-email": email,
           "x-auth-password": password,
+          "x-remember-me": rememberme,
         },
       })
       .then(() => navigate("/"))
