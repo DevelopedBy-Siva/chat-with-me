@@ -113,8 +113,8 @@ const LightTheme = {
     main: "#1B1B1B",
   },
   toast: {
-    default: "#646464",
-    txtBold: "#1B1B1B",
+    default: "#989898",
+    txtBold: "#fff",
   },
 };
 

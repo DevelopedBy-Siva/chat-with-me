@@ -105,7 +105,15 @@ const Btn = styled.button`
     font-size: 0.6rem;
   }
 
-  :hover {
+  &:enabled:hover {
     border: 1px solid ${(props) => props.theme.txt.main};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:first-of-type:disabled {
+    cursor: wait;
   }
 `;

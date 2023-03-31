@@ -14,7 +14,7 @@ export default function GeneralToast({ type = "info", message = "..." }) {
       case "error":
         return {
           icon: <IoClose />,
-          bg: "#ff0000",
+          bg: "#FF2B20",
         };
       default:
         return { icon: <IoInformationSharp />, bg: "#3C90AB" };
