@@ -27,5 +27,12 @@ export default function AppToast() {
       .forEach((t) => toast.dismiss(t.id));
   }, [toasts]);
 
-  return <Toaster position="top-center" reverseOrder={false} gutter={10} />;
+  return (
+    <Toaster
+      containerStyle={{ zIndex: 999999999 }}
+      position="top-center"
+      reverseOrder={false}
+      gutter={10}
+    />
+  );
 }
