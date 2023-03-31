@@ -1,5 +1,4 @@
 const express = require("express");
-const config = require("config");
 
 const auth = require("../../auth");
 const { ErrorCodes, AppError } = require("../../exceptions");
@@ -9,14 +8,6 @@ const UserCollection = require("../../db/model/User");
 const VerificationCodeCollection = require("../../db/model/VerificationCode");
 
 const route = express.Router();
-
-const APP_NAME = config.get("app_name");
-
-const httpOnlyCookieProps = {
-  httpOnly: true,
-  path: "/",
-  sameSite: "strict",
-};
 
 /**
  * User Login
@@ -57,13 +48,15 @@ route.post("/login", async (req, resp) => {
 
   // Generate JWT token
   const token = auth.jwtToken(user.email);
-  resp
-    .cookie(APP_NAME, token, {
-      ...httpOnlyCookieProps,
-      expires: getCookieExpiryDate(),
-    })
-    .status(204)
-    .send();
+
+  const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
+  resp.cookie(cookieNames.jwtTokenKey, token, {
+    ...httpOnlyCookieProps,
+    expires: expiry(),
+  });
+  resp.cookie(cookieNames.isLoggedIn, "yes", { expires: 0 });
+
+  resp.status(204).send();
 });
 
 /**
@@ -98,24 +91,14 @@ route.post("/register", async (req, resp) => {
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
-  resp
-    .cookie(APP_NAME, token, {
-      ...httpOnlyCookieProps,
-      expires: getCookieExpiryDate(),
-    })
-    .status(204)
-    .send();
+  const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
+  resp.cookie(cookieNames.jwtTokenKey, token, {
+    ...httpOnlyCookieProps,
+    expires: expiry(),
+  });
+  resp.cookie(cookieNames.isLoggedIn, "yes", { expires: 0 });
+  resp.status(204).send();
 });
-
-/**
- * Generate expiry date for the HttpOnly Cookie
- */
-const getCookieExpiryDate = () => {
-  let today = new Date();
-  let expiry = new Date();
-  expiry.setDate(today.getDate() + config.get("http_cookie_expiry"));
-  return expiry;
-};
 
 /**
  * User forget password
@@ -270,7 +253,10 @@ route.put("/change-pswd", async (req, resp) => {
  * Remove HttpOnly Cookie
  */
 route.post("/logout", (_, resp) => {
-  resp.clearCookie(APP_NAME).status(204).send();
+  const { jwtTokenKey, isLoggedIn } = auth.cookies.cookieNames;
+  resp.clearCookie(isLoggedIn);
+  resp.clearCookie(jwtTokenKey);
+  resp.status(204).send();
 });
 
 module.exports = route;

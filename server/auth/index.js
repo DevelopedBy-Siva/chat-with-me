@@ -42,13 +42,17 @@ function jwtToken(email, role = DEFAULT_ROLE) {
  */
 function authorizeJWT(req, res, next) {
   try {
-    const token = req.cookies[config.get("app_name")];
+    // Retrieve JWT token from the Cookie
+    const token = req.cookies[cookieNames.jwtTokenKey];
+    // Verify the JWT token
     const payload = jwt.verify(token, SECRET_KEY);
     // Set payload to request
     req.payload = payload;
+
+    res.cookie(cookieNames.isLoggedIn, "yes", { expires: 0 });
     next();
   } catch (ex) {
-    console.log(ex);
+    res.clearCookie(cookieNames.isLoggedIn);
     res
       .status(403)
       .send(
@@ -57,7 +61,39 @@ function authorizeJWT(req, res, next) {
   }
 }
 
+/**
+ * Server cookie names
+ */
+const cookieNames = {
+  jwtTokenKey: "session_token",
+  isLoggedIn: "logged_in",
+};
+
+/**
+ * HttpOnly Cookie props
+ */
+const httpOnlyCookieProps = {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax",
+};
+
+/**
+ * Generate expiry date for the HttpOnly Cookie
+ */
+const getCookieExpiryDate = () => {
+  let today = new Date();
+  let expiry = new Date();
+  expiry.setDate(today.getDate() + config.get("http_cookie_expiry"));
+  return expiry;
+};
+
 module.exports.jwtToken = jwtToken;
 module.exports.login = login;
 module.exports.hash = hashPswd;
 module.exports.authorizeJWT = authorizeJWT;
+module.exports.cookies = {
+  httpOnlyCookieProps,
+  cookieNames,
+  expiry: getCookieExpiryDate,
+};
