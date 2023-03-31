@@ -57,11 +57,7 @@ route.post("/login", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  resp.cookie(cookieNames.isLoggedIn, "yes", {
-    expires: expiresAt,
-  });
-
-  resp.status(204).send();
+  resp.status(201).send();
 });
 
 /**
@@ -97,12 +93,12 @@ route.post("/register", async (req, resp) => {
   // Generate JWT token
   const token = auth.jwtToken(value.email);
   const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
+  const expiresAt = expiry();
   resp.cookie(cookieNames.jwtTokenKey, token, {
     ...httpOnlyCookieProps,
-    expires: expiry(),
+    expires: expiresAt,
   });
-  resp.cookie(cookieNames.isLoggedIn, "yes", { expires: 0 });
-  resp.status(204).send();
+  resp.status(201).send();
 });
 
 /**
@@ -142,7 +138,7 @@ route.post("/forgot-pswd", async (req, resp) => {
   const verificationDoc = new VerificationCodeCollection(data);
   await verificationDoc.save();
 
-  resp.send();
+  resp.status(201).send();
 });
 
 /**
@@ -189,7 +185,7 @@ route.post("/verify-account", async (req, resp) => {
           "Invalid verification code"
         )
       );
-  resp.send();
+  resp.status(201).send();
 });
 
 /**
@@ -222,17 +218,16 @@ route.put("/change-pswd", async (req, resp) => {
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
-  resp.send();
+  resp.status(201).send();
 });
 
 /**
  * Remove HttpOnly Cookie
  */
 route.post("/logout", (_, resp) => {
-  const { jwtTokenKey, isLoggedIn } = auth.cookies.cookieNames;
-  resp.clearCookie(isLoggedIn);
+  const { jwtTokenKey } = auth.cookies.cookieNames;
   resp.clearCookie(jwtTokenKey);
-  resp.status(204).send();
+  resp.status(201).send();
 });
 
 module.exports = route;

@@ -2,7 +2,7 @@ const express = require("express");
 const { validateUser, schema } = require("../../utils/validation");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
-const { hash, login } = require("../../auth");
+const { hash, login, cookies, jwtToken } = require("../../auth");
 
 const route = express.Router();
 
@@ -11,8 +11,8 @@ const route = express.Router();
  */
 route.put("/change-pswd", async (req, resp) => {
   const { email } = req.payload;
-  const currentPassword = req.headers("x-current-password");
-  const newPassword = req.headers("x-new-password");
+  const currentPassword = req.header("x-current-password");
+  const newPassword = req.header("x-new-password");
 
   // Validate the request
   const { value, error } = validateUser(
@@ -34,7 +34,7 @@ route.put("/change-pswd", async (req, resp) => {
 
   if (!isAuthenticated)
     return resp
-      .status(401)
+      .status(405)
       .send(
         new AppError(ErrorCodes.ERR_UNAUTHORIZED, "Invalid current password")
       );
@@ -43,7 +43,17 @@ route.put("/change-pswd", async (req, resp) => {
   const hashedPswd = await hash(value.newPassword);
   await UserCollection.updateOne({ email }, { $set: { password: hashedPswd } });
 
-  resp.send();
+  // Generate JWT token
+  const token = jwtToken(value.email);
+
+  const { cookieNames, httpOnlyCookieProps, expiry } = cookies;
+  const expiresAt = expiry();
+  resp.cookie(cookieNames.jwtTokenKey, token, {
+    ...httpOnlyCookieProps,
+    expires: expiresAt,
+  });
+
+  resp.status(201).send();
 });
 
 /**

@@ -6,6 +6,7 @@ export const AllowedInputFields = {
   PASSWORD: "password",
   CONFIRM_PASSWORD: "confirmPassword",
   PHONE: "phone",
+  CURRENT_PASSWORD: "currentPassword",
 };
 
 let inputData = {
@@ -14,7 +15,7 @@ let inputData = {
   password: null,
   phone: null,
   confirmPassword: null,
-  rememberme: false,
+  currentPassword: null,
 };
 
 export const inputChanges = (e, type, source, ...requiredFields) => {
@@ -22,7 +23,8 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
   let data = { ...inputData };
   data = Object.assign(data, source);
 
-  const { EMAIL, NAME, PASSWORD, CONFIRM_PASSWORD, PHONE } = AllowedInputFields;
+  const { EMAIL, NAME, PASSWORD, CONFIRM_PASSWORD, PHONE, CURRENT_PASSWORD } =
+    AllowedInputFields;
 
   switch (type) {
     case EMAIL:
@@ -42,6 +44,9 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
       if (isNaN(parsedVal)) parsedVal = "";
       if (parsedVal.length > 10) break;
       data.phone = parsedVal;
+      break;
+    case CURRENT_PASSWORD:
+      data.currentPassword = value;
       break;
     default:
       break;

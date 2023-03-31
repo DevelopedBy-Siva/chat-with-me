@@ -48,11 +48,9 @@ function authorizeJWT(req, res, next) {
     const payload = jwt.verify(token, SECRET_KEY);
     // Set payload to request
     req.payload = payload;
-
-    res.cookie(cookieNames.isLoggedIn, "yes", { expires: 0 });
     next();
   } catch (ex) {
-    res.clearCookie(cookieNames.isLoggedIn);
+    res.clearCookie(cookieNames.jwtTokenKey);
     res
       .status(403)
       .send(
@@ -66,7 +64,6 @@ function authorizeJWT(req, res, next) {
  */
 const cookieNames = {
   jwtTokenKey: "session_token",
-  isLoggedIn: "logged_in",
 };
 
 /**
