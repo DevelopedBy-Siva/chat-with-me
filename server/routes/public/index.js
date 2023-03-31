@@ -197,45 +197,16 @@ route.post("/verify-account", async (req, resp) => {
  */
 route.put("/change-pswd", async (req, resp) => {
   const password = req.header("x-password");
-  const verifyCode = req.header("x-verify-code");
   const email = req.query.email;
 
   const { error, value } = validateUser(
     { password, email },
     { password: schema.password, email: schema.email }
   );
-  if (!verifyCode || error)
+  if (error)
     return resp
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid Request"));
-
-  // Check whether the Verification Code is expired or not
-  const verify = await VerificationCodeCollection.find({
-    requestedBy: value.email,
-    expiresAt: { $gt: new Date() },
-  })
-    .sort({ createdAt: -1 })
-    .limit(1);
-
-  if (verify.length === 0)
-    return resp
-      .status(410)
-      .send(
-        new AppError(
-          ErrorCodes.ERR_VERIFY_CODE_EXPIRED,
-          "Verification code expired"
-        )
-      );
-
-  if (parseFloat(verifyCode) !== verify[0].verificationCode)
-    return resp
-      .status(400)
-      .send(
-        new AppError(
-          ErrorCodes.ERR_INVALID_VERIFY_CODE,
-          "Invalid verification code"
-        )
-      );
 
   // Hash Password
   const hashedPswd = await auth.hash(value.password);

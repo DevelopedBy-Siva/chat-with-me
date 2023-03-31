@@ -36,6 +36,7 @@ export default function SignIn() {
 
   useEffect(() => {
     emailInputRef.current.focus();
+    toast.remove();
   }, []);
 
   useEffect(() => {

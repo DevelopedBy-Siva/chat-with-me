@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "../../../api/axios";
 
+import axios from "../../../api/axios";
+import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../Toast";
 import {
   AllowedInputFields,
   inputChanges,
@@ -11,6 +12,7 @@ import {
 } from "../../../utils/InputHandler";
 import ButtonContainer from "../common/ButtonContainer";
 import InputContainer from "../common/InputContainer";
+import retrieveError from "../../../api/ExceptionHandler";
 
 export default function ForgotPasswordChangePassword({
   info,
@@ -52,6 +54,7 @@ export default function ForgotPasswordChangePassword({
 
   const handleChangePswd = (e) => {
     e.preventDefault();
+    toast.remove();
 
     const { password, confirmPassword } = info;
 
@@ -78,11 +81,20 @@ export default function ForgotPasswordChangePassword({
     });
 
     axios
-      .get("/posts/1")
-      .then(() => {
-        navigate("/sign-in", { replace: true });
+      .put(`/change-pswd?email=${info.email}`, null, {
+        headers: {
+          "x-password": info.password,
+        },
       })
-      .catch(() => {
+      .then(() => {
+        toast.success("Password changed successfully. Redirecting...", {
+          ...DEFAULT_PUBLIC_TOAST_PROPS,
+        });
+        setTimeout(() => navigate("/sign-in", { replace: true }), 3000);
+      })
+      .catch((error) => {
+        let { message, toastId } = retrieveError(error, true);
+        toast.error(message, { ...DEFAULT_PUBLIC_TOAST_PROPS, id: toastId });
         setServerResponse({
           loading: false,
           error: "ERROR MESSAGE",

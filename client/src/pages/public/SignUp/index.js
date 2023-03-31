@@ -48,6 +48,7 @@ export default function SignUp() {
 
   useEffect(() => {
     emailInputRef.current.focus();
+    toast.remove();
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 export default function retrieveError(error = {}, isPublicError = false) {
   let message;
   let toastId;
-  let isInfo = true;
+  let isInfo = false;
   let status = 0;
   try {
     status = error.response.status;
@@ -26,7 +26,12 @@ export default function retrieveError(error = {}, isPublicError = false) {
         case 409:
           message = "Email already registered. Please sign in";
           toastId = "ALREADY_REGISTERED";
-          isInfo = false;
+          isInfo = true;
+          break;
+        case 404:
+          message = "Email not registered. Please enter a valid email";
+          toastId = "ALREADY_REGISTERED";
+          isInfo = true;
           break;
         default:
           message =
