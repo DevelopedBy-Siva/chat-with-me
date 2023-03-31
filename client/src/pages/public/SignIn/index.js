@@ -15,7 +15,6 @@ import {
 import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
-import Checkbox from "../../../components/Public/common/CheckBox";
 import retrieveError from "../../../api/ExceptionHandler";
 
 export default function SignIn() {
@@ -29,7 +28,6 @@ export default function SignIn() {
   const [loginInfo, setLoginInfo] = useState({
     email: null,
     password: null,
-    rememberme: false,
   });
   const [serverData, setServerData] = useState({
     loading: false,
@@ -54,7 +52,6 @@ export default function SignIn() {
     const allowedFields = [
       AllowedInputFields.EMAIL,
       AllowedInputFields.PASSWORD,
-      AllowedInputFields.REMEMBER_ME,
     ];
     const data = inputChanges(e, type, loginInfo, allowedFields);
     setLoginInfo(data);
@@ -64,7 +61,7 @@ export default function SignIn() {
     e.preventDefault();
     toast.remove();
 
-    const { email, password, rememberme } = loginInfo;
+    const { email, password } = loginInfo;
 
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
@@ -93,7 +90,6 @@ export default function SignIn() {
         headers: {
           "x-auth-email": email,
           "x-auth-password": password,
-          "x-remember-me": rememberme,
         },
       })
       .then(() => navigate("/"))
@@ -145,17 +141,7 @@ export default function SignIn() {
             icon={<FiKey />}
           />
 
-          <CheckBoxFrgtPswd>
-            <RememberMeWrapper disable={serverData.loading}>
-              <Checkbox
-                name="rememberme"
-                type="checkbox"
-                disabled={serverData.loading}
-                isChecked={loginInfo.rememberme}
-                onChange={(e) => handleInputChange(e, "rememberme")}
-              />
-              Remember me
-            </RememberMeWrapper>
+          <ForgetPswdContainer>
             <ForgetPassword>
               <PageNavigationBtn
                 type="button"
@@ -165,7 +151,7 @@ export default function SignIn() {
                 Forgot Password?
               </PageNavigationBtn>
             </ForgetPassword>
-          </CheckBoxFrgtPswd>
+          </ForgetPswdContainer>
 
           <UserButtonContainer
             label="Log in"
@@ -199,22 +185,14 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const CheckBoxFrgtPswd = styled.div`
+const ForgetPswdContainer = styled.div`
   margin-top: 10px;
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 10px 0;
-`;
-
-const RememberMeWrapper = styled.label`
-  cursor: ${(props) => (props.disable ? "not-allowed" : "pointer")};
-  display: block;
-  color: ${(props) => props.theme.txt.sub};
-  font-size: 0.7rem;
-  font-weight: 400;
 `;
 
 const DontHaveAccount = styled.span`

@@ -9,7 +9,7 @@ const cookies = new Cookies();
 
 export function updateTheme(val = "light") {
   try {
-    cookies.set(THEME_KEY, val);
+    localStorage.setItem(THEME_KEY, val);
   } catch (ex) {}
   return val;
 }
@@ -18,7 +18,7 @@ export function getTheme() {
   const allowed = ["light", "dark"];
   let val;
   try {
-    val = cookies.get(THEME_KEY);
+    val = localStorage.getItem(THEME_KEY);
   } catch (ex) {}
   if (allowed.includes(val)) return val;
   return allowed[1];

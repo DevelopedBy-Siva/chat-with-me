@@ -15,7 +15,6 @@ const route = express.Router();
 route.post("/login", async (req, resp) => {
   const email = req.header("x-auth-email");
   const password = req.header("x-auth-password");
-  const rememberMe = req.header("x-remember-me");
 
   const { error, value } = validateUser(
     { email, password },
@@ -52,7 +51,7 @@ route.post("/login", async (req, resp) => {
   const token = auth.jwtToken(user.email);
 
   const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
-  const expiresAt = rememberMe === true ? expiry() : 0;
+  const expiresAt = expiry();
 
   resp.cookie(cookieNames.jwtTokenKey, token, {
     ...httpOnlyCookieProps,
