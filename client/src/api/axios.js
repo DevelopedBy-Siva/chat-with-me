@@ -22,6 +22,13 @@ axios.interceptors.response.use(
   },
   (error) => {
     const promise = Promise.reject(error);
+    try {
+      if (
+        (error.response.status === 401 || error.response.status === 403) &&
+        !window.location.pathname.includes("/sign-in")
+      )
+        window.location = "/sign-in";
+    } catch (_) {}
     return promise;
   }
 );
