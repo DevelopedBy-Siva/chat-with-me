@@ -57,7 +57,8 @@ route.post("/login", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  resp.status(201).send();
+  const { name, email: mail, isOnline, description } = user;
+  resp.status(200).send({ name, email: mail, isOnline, description });
 });
 
 /**
@@ -88,7 +89,7 @@ route.post("/register", async (req, resp) => {
   // Create User Document
   const document = new UserCollection({ ...value, password: hashedPswd });
   // Save Document to DB
-  await document.save();
+  const { email, name, description, isOnline } = await document.save();
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
@@ -98,7 +99,7 @@ route.post("/register", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  resp.status(201).send();
+  resp.status(200).send({ email, name, description, isOnline });
 });
 
 /**

@@ -39,8 +39,19 @@ const schema = new mongoose.Schema({
     default: [],
   },
   joinedOn: {
-    type: Date,
-    default: () => new Date(),
+    type: String,
+    default: () => new Date().toUTCString(),
+  },
+  description: {
+    type: String,
+    trim: true,
+    minLength: 1,
+    maxLength: 150,
+    default: "",
+  },
+  isOnline: {
+    type: Boolean,
+    default: true,
   },
 });
 
