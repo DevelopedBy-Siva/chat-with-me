@@ -141,7 +141,7 @@ export default function SignUp() {
     });
     axios
       .post("/register", { ...signupInfo, confirmPassword: undefined })
-      .then((data) => {
+      .then(({ data }) => {
         dispatch(setUser(data, true));
         return navigate("/");
       })

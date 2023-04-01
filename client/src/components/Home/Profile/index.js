@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import Modal from "../Modal";
@@ -35,13 +35,11 @@ export default function Profile() {
   });
 
   const [showProfileImages, setShowProfileImages] = useState(false);
-  const oneTimeInfo = useSelector((state) => state.user.oneTimeInfo);
 
   const dispatch = useDispatch();
-
   useEffect(() => {
-    if (oneTimeInfo) dispatch(updateOneTimeInfo(false));
-  }, []);
+    dispatch(updateOneTimeInfo(false));
+  }, [dispatch]);
 
   function toggleModal(val = false) {
     setShowProfileImages(val);
