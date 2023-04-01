@@ -16,7 +16,7 @@ export default function UserHome() {
     dispatch(initializeContacts());
   }, [dispatch]);
 
-  const showOneTimeInfo = useSelector((state) => state.contacts.oneTimeInfo);
+  const showOneTimeInfo = useSelector((state) => state.user.oneTimeInfo);
 
   return (
     <Provider store={store}>

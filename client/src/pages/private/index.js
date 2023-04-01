@@ -1,9 +1,7 @@
 import { Suspense, useEffect, useState } from "react";
-import { Provider } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 import { validateToken } from "../../utils/Auth";
-import store from "../../store";
 import FullPageLoading from "../../components/Loader/FullPage";
 
 export default function Private() {
@@ -20,11 +18,9 @@ export default function Private() {
   return proceed === null ? (
     <FullPageLoading />
   ) : proceed === true ? (
-    <Provider store={store}>
-      <Suspense fallback={<FullPageLoading />}>
-        <Outlet />
-      </Suspense>
-    </Provider>
+    <Suspense fallback={<FullPageLoading />}>
+      <Outlet />
+    </Suspense>
   ) : (
     <Navigate to="/sign-in" replace />
   );

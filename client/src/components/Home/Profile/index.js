@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import Modal from "../Modal";
@@ -8,6 +9,7 @@ import { getAvatar } from "../../../assets/avatars";
 import SelectProfileImg from "./SelectProfileImg";
 import UserNameChange from "./UserNameChange";
 import UserDescriptionChange from "./UserDescriptionChange";
+import { updateOneTimeInfo } from "../../../store/actions/UserActions";
 
 const modalStyle = {
   maxWidth: "760px",
@@ -33,6 +35,13 @@ export default function Profile() {
   });
 
   const [showProfileImages, setShowProfileImages] = useState(false);
+  const oneTimeInfo = useSelector((state) => state.user.oneTimeInfo);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (oneTimeInfo) dispatch(updateOneTimeInfo(false));
+  }, []);
 
   function toggleModal(val = false) {
     setShowProfileImages(val);

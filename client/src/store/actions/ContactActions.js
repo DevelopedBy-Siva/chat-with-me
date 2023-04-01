@@ -1,7 +1,6 @@
 export const GET_CONTACTS = "GET_CONTACTS";
 export const CONTACTS_LOADING = "CONTACTS_LOADING";
 export const CONTACTS_ERROR = "CONTACTS_ERROR";
-export const ONETIME_INFO = "ONETIME_INFO";
 
 export const getContacts = (payload) => {
   return {
@@ -19,13 +18,6 @@ export const contactsLoading = () => {
 export const contactsError = (payload) => {
   return {
     type: CONTACTS_ERROR,
-    payload,
-  };
-};
-
-export const updateOneTimeInfo = (payload) => {
-  return {
-    type: ONETIME_INFO,
     payload,
   };
 };

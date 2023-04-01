@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "styled-components";
 import { useState } from "react";
+import { Provider } from "react-redux";
 import { SnackbarProvider as Toast } from "notistack";
 import "react-tooltip/dist/react-tooltip.css";
 import "nprogress/nprogress.css";
@@ -10,6 +11,7 @@ import networkStatus from "./components/Toast/NetworkStatus";
 import Routes from "./Routes";
 import { ThemeContext } from "./context/ThemeContext";
 import { getStyles, getTheme, updateTheme } from "./utils/UserLocal";
+import store from "./store";
 
 export default function App() {
   useEffect(() => {
@@ -35,7 +37,9 @@ export default function App() {
       <ThemeProvider theme={getStyles(appTheme)}>
         <GlobalStyles />
         <Toast maxSnack={1} />
-        <Routes />
+        <Provider store={store}>
+          <Routes />
+        </Provider>
       </ThemeProvider>
     </ThemeContext.Provider>
   );

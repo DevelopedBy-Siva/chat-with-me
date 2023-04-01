@@ -6,13 +6,11 @@ import {
   CONTACTS_LOADING,
   getContacts,
   GET_CONTACTS,
-  ONETIME_INFO,
 } from "../actions/ContactActions";
 
 const initialState = {
   loading: true,
   contacts: [],
-  oneTimeInfo: false,
   error: null,
 };
 
@@ -25,8 +23,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, loading: false, error: payload };
     case GET_CONTACTS:
       return { ...state, contacts: [...payload], loading: false, error: null };
-    case ONETIME_INFO:
-      return { ...state, oneTimeInfo: payload };
     default:
       return state;
   }
