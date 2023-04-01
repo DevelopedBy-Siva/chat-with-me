@@ -33,28 +33,24 @@ export default function GeneralToast({ type = "info", message = "..." }) {
 const Container = styled.div`
   display: flex;
   align-items: center;
-  width: 90%;
-  max-width: 310px;
-  background: ${(props) => props.bg};
-  padding: 10px 15px;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  width: 100%;
   cursor: auto;
+  padding: 3px 12px;
 `;
 
 const Icon = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.4rem;
-  margin-right: 20px;
+  margin-right: 15px;
   background-color: #fff;
   color: ${(props) => props.bg};
   flex-shrink: 0;
+  pointer-events: none;
 `;
 
 const Message = styled.p`
@@ -63,4 +59,5 @@ const Message = styled.p`
   line-height: 17px;
   color: ${(props) => props.theme.toast.txtBold};
   font-weight: 300;
+  pointer-events: none;
 `;

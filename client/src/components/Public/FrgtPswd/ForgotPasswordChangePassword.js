@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import axios from "../../../api/axios";
-import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../Toast";
+import toast from "../../Toast";
 import {
   AllowedInputFields,
   inputChanges,
@@ -87,14 +87,12 @@ export default function ForgotPasswordChangePassword({
         },
       })
       .then(() => {
-        toast.success("Password changed successfully. Redirecting...", {
-          ...DEFAULT_PUBLIC_TOAST_PROPS,
-        });
+        toast.success("Password changed successfully. Redirecting...");
         setTimeout(() => navigate("/sign-in", { replace: true }), 3000);
       })
       .catch((error) => {
-        let { message, toastId } = retrieveError(error, true);
-        toast.error(message, { ...DEFAULT_PUBLIC_TOAST_PROPS, id: toastId });
+        let { message } = retrieveError(error, true);
+        toast.error(message, toast.props.user.persist);
         setServerResponse({
           loading: false,
           error: "ERROR MESSAGE",

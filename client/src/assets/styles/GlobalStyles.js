@@ -31,6 +31,14 @@ export const GlobalStyles = createGlobalStyle`
     #nprogress .peg {
         box-shadow: 0 0 10px red, 0 0 5px red;
     }
+
+    .notistack-Snackbar{
+        min-width: 0;
+    }
+    .notistack-MuiContent{
+        background: ${(props) => props.theme.toast.bg};
+        padding: 0;
+    }
 `;
 
 export default GlobalStyles;

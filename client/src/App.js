@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "styled-components";
 import { useState } from "react";
+import { SnackbarProvider as Toast } from "notistack";
 import "react-tooltip/dist/react-tooltip.css";
 import "nprogress/nprogress.css";
 
-import Toaster from "./components/Toast/AppToast";
 import GlobalStyles from "./assets/styles/GlobalStyles";
 import networkStatus from "./components/Toast/NetworkStatus";
 import Routes from "./Routes";
@@ -34,7 +34,7 @@ export default function App() {
     <ThemeContext.Provider value={{ appTheme, handleTheme }}>
       <ThemeProvider theme={getStyles(appTheme)}>
         <GlobalStyles />
-        <Toaster />
+        <Toast maxSnack={1} />
         <Routes />
       </ThemeProvider>
     </ThemeContext.Provider>

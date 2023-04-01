@@ -35,12 +35,12 @@ export default function Logout() {
     await axios
       .post("/logout")
       .then(() => {
-        toast.remove();
-        return navigate("/sign-in", { replace: true });
+        return (window.location = "/sign-in");
       })
       .catch(() => {
         toast.error(
-          "Something went wrong. Failed to Log out. Please try after sometime"
+          "Something went wrong and the log out failed. Please try again later",
+          toast.props.user.nonPersist
         );
         setLoading(false);
       });

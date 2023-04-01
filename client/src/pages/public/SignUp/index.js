@@ -7,7 +7,7 @@ import { TiTickOutline } from "react-icons/ti";
 import { FaRegUser } from "react-icons/fa";
 import { AiOutlinePhone } from "react-icons/ai";
 
-import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../../components/Toast";
+import toast from "../../../components/Toast";
 import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
@@ -140,17 +140,9 @@ export default function SignUp() {
       .post("/register", { ...signupInfo, confirmPassword: undefined })
       .then(() => navigate("/"))
       .catch((err) => {
-        let { message, toastId, isInfo } = retrieveError(err, true);
-        if (isInfo)
-          toast.info(message, {
-            ...DEFAULT_PUBLIC_TOAST_PROPS,
-            id: toastId,
-          });
-        else
-          toast.error(message, {
-            ...DEFAULT_PUBLIC_TOAST_PROPS,
-            id: toastId,
-          });
+        let { message, isInfo } = retrieveError(err, true);
+        if (isInfo) toast.info(message, toast.props.user.persist);
+        else toast.error(message, toast.props.user.persist);
 
         setServerData({
           ...serverData,

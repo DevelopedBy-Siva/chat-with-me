@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
 
-import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../../components/Toast";
+import toast from "../../../components/Toast";
 import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
@@ -95,11 +95,8 @@ export default function SignIn() {
       })
       .then(() => navigate("/"))
       .catch((error) => {
-        let { message, toastId } = retrieveError(error, true);
-        toast.error(message, {
-          ...DEFAULT_PUBLIC_TOAST_PROPS,
-          id: toastId,
-        });
+        let { message } = retrieveError(error, true);
+        toast.error(message, toast.props.user.persist);
         setServerData({
           ...serverData,
           loading: false,

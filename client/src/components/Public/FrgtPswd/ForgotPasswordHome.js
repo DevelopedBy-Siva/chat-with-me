@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MdAlternateEmail } from "react-icons/md";
 
 import axios from "../../../api/axios";
-import toast, { DEFAULT_PUBLIC_TOAST_PROPS } from "../../Toast";
+import toast from "../../Toast";
 import ButtonContainer from "../../Public/common/ButtonContainer";
 import InputContainer from "../../Public/common/InputContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
@@ -64,18 +64,16 @@ export default function ForgotPasswordHome({
     axios
       .post(`/forgot-pswd?email=${mail}`)
       .then(() => {
-        toast.success("Verification code sent to the registered mail", {
-          ...DEFAULT_PUBLIC_TOAST_PROPS,
-          duration: 4000,
-        });
+        toast.success(
+          "Verification code sent to the registered mail",
+          toast.props.user.nonPersist
+        );
         handleScreen(SCREEN.VEIRFY_CODE);
       })
       .catch((error) => {
-        let { message, toastId, isInfo } = retrieveError(error, true);
-        if (isInfo)
-          toast.info(message, { ...DEFAULT_PUBLIC_TOAST_PROPS, id: toastId });
-        else
-          toast.error(message, { ...DEFAULT_PUBLIC_TOAST_PROPS, id: toastId });
+        let { message, isInfo } = retrieveError(error, true);
+        if (isInfo) toast.info(message, toast.props.user.persist);
+        else toast.error(message, toast.props.user.persist);
 
         setServerResponse({
           loading: false,

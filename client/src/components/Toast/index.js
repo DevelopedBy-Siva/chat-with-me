@@ -1,36 +1,65 @@
-import { toast } from "react-hot-toast";
+import { enqueueSnackbar, closeSnackbar } from "notistack";
 
 import GeneralToast from "./GeneralToast";
 import MsgToastContainer from "./MsgToastContainer";
 
-export const MSG_TOAST_ID_PREFIX = "msg_tst_pfx_";
-export const GNRL_TOAST_ID_PREFIX = "gnrl_tst_pfx_";
-export const DEFAULT_PUBLIC_TOAST_PROPS = {
-  position: "top-center",
-  duration: 20000,
+const toastBg = {
+  error: "#FF2B20",
+  success: "#2d9d41",
+  info: "#3C90AB",
 };
 
 const notify = (key, message, props = {}) => {
-  let newProps = typeof props === "object" ? { ...props } : {};
-  if (newProps.id) newProps.id = GNRL_TOAST_ID_PREFIX + newProps.id;
-
-  toast.custom(<GeneralToast type={key} message={message} />, {
-    position: "bottom-center",
-    id: GNRL_TOAST_ID_PREFIX + Date.now(),
-    duration: 5000,
+  enqueueSnackbar(<GeneralToast type={key} message={message} />, {
+    autoHideDuration: 4000,
+    style: {
+      background: toastBg[key],
+      width: "100%",
+      maxWidth: "280px",
+      borderRadius: "8px",
+    },
+    anchorOrigin: {
+      vertical: "top",
+      horizontal: "right",
+    },
     ...props,
   });
 };
 
 const notifyMsg = (message, from, avatarId) => {
-  toast.custom(
-    <MsgToastContainer message={message} from={from} avatarId={avatarId} />,
-    { id: MSG_TOAST_ID_PREFIX + Date.now(), duration: 8000 }
+  enqueueSnackbar(
+    <MsgToastContainer message={message} from={from} avatarId={avatarId} />
   );
 };
 
 const remove = () => {
-  toast.remove();
+  closeSnackbar();
+};
+
+const toastProps = {
+  user: {
+    persist: {
+      anchorOrigin: {
+        vertical: "top",
+        horizontal: "center",
+      },
+      persist: true,
+    },
+    nonPersist: {
+      anchorOrigin: {
+        vertical: "top",
+        horizontal: "center",
+      },
+    },
+    network: {
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+      persist: true,
+    },
+  },
+  message: {},
 };
 
 const toExpose = {
@@ -39,6 +68,7 @@ const toExpose = {
   info: (message, props) => notify("info", message, props),
   msg: (message, from, avatarId) => notifyMsg(message, from, avatarId),
   remove: () => remove(),
+  props: toastProps,
 };
 
 export default toExpose;

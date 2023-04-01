@@ -32,7 +32,6 @@ const Container = styled.div`
   max-width: 310px;
   margin: auto;
   overflow: hidden;
-  background: ${(props) => props.theme.toast.bg};
   padding: 15px 10px;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
