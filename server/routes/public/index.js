@@ -225,8 +225,9 @@ route.put("/change-pswd", async (req, resp) => {
  * Remove HttpOnly Cookie
  */
 route.post("/logout", (_, resp) => {
-  const { jwtTokenKey } = auth.cookies.cookieNames;
+  const { jwtTokenKey, isLoggedInKey } = auth.cookies.cookieNames;
   resp.clearCookie(jwtTokenKey);
+  resp.clearCookie(isLoggedInKey);
   resp.status(201).send();
 });
 
