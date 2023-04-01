@@ -27,6 +27,7 @@ export default function Profile() {
     loading: false,
     disabled: true,
     error: null,
+    prev: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
     description:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
   });

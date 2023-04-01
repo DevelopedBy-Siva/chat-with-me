@@ -5,6 +5,7 @@ import { BsFillPencilFill } from "react-icons/bs";
 import LoadingSpinner from "../../Loader";
 import { nameValidation } from "../../../utils/InputHandler";
 import axios from "../../../api/axios";
+import toast from "../../Toast";
 
 export default function UserNameChange({ userNameChange, setUserNameChange }) {
   const inputRef = useRef(null);
@@ -46,14 +47,20 @@ export default function UserNameChange({ userNameChange, setUserNameChange }) {
     await axios
       .get("https://jsonplaceholder.typicode.com/todos/1")
       .then(() => {
+        toast.success("Username updated successfully");
         setUserNameChange({
           ...userNameChange,
           username: new_username,
+          prev: new_username,
           disabled: true,
           loading: false,
         });
       })
       .catch(() => {
+        toast.error(
+          "Something went wrong. Failed to change the username",
+          toast.props.user.nonPersist
+        );
         setUserNameChange({
           ...userNameChange,
           loading: false,

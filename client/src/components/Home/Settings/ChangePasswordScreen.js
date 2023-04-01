@@ -26,9 +26,9 @@ export default function ChangePasswordScreen({ close }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [info, setInfo] = useState({
-    currentPassword: null,
-    password: null,
-    confirmPassword: null,
+    currentPassword: "",
+    password: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -107,14 +107,12 @@ export default function ChangePasswordScreen({ close }) {
         close();
       })
       .catch((error) => {
-        let { message, toastId } = retrieveError(error);
+        let { message } = retrieveError(error);
         try {
-          if (error.response.status === 405) {
+          if (error.response.status === 405)
             message = "Please check your current password";
-            toastId = "INVALID_CURRENT_PSWD";
-          }
         } catch (_) {}
-        toast.error(message, { id: toastId });
+        toast.error(message, toast.props.user.nonPersist);
         setIsLoading(false);
       });
   }

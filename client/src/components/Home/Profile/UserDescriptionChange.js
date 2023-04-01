@@ -5,6 +5,7 @@ import { BsFillPencilFill } from "react-icons/bs";
 import LoadingSpinner from "../../Loader";
 import { statusValidation } from "../../../utils/InputHandler";
 import axios from "../../../api/axios";
+import toast from "../../Toast";
 
 export default function UserDescriptionChange({
   userDescriptionChange,
@@ -35,23 +36,37 @@ export default function UserDescriptionChange({
 
   async function submitEdit() {
     if (userDescriptionChange.error) return;
-    const new_username = userDescriptionChange.description.trim();
+    const new_user_status = userDescriptionChange.description.trim();
+    if (new_user_status === userDescriptionChange.prev) {
+      setUserDescriptionChange({
+        ...userDescriptionChange,
+        description: new_user_status,
+        disabled: true,
+      });
+      return;
+    }
     setUserDescriptionChange({
       ...userDescriptionChange,
-      description: new_username,
+      description: new_user_status,
       loading: true,
     });
     await axios
       .get("https://jsonplaceholder.typicode.com/todos/1")
       .then(() => {
+        toast.success("User status updated successfully");
         setUserDescriptionChange({
           ...userDescriptionChange,
-          description: new_username,
+          description: new_user_status,
+          prev: new_user_status,
           disabled: true,
           loading: false,
         });
       })
       .catch(() => {
+        toast.error(
+          "Something went wrong. Failed to change the user status",
+          toast.props.user.nonPersist
+        );
         setUserDescriptionChange({
           ...userDescriptionChange,
           loading: false,

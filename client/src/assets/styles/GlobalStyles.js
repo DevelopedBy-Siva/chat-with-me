@@ -31,7 +31,9 @@ export const GlobalStyles = createGlobalStyle`
     #nprogress .peg {
         box-shadow: 0 0 10px red, 0 0 5px red;
     }
-
+    .notistack-SnackbarContainer{
+        z-index: 999999999;
+    }
     .notistack-Snackbar{
         min-width: 0;
     }
