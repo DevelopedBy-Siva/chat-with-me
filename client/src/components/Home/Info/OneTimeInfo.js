@@ -75,7 +75,7 @@ const Overlay = styled.div`
   right: 0;
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
-  opacity: 0.9;
+  opacity: 0.94;
 `;
 
 const DetailsContainer = styled.div`
@@ -89,8 +89,8 @@ const DetailsContainer = styled.div`
     rgba(0, 165, 248, 1) 29%,
     rgba(0, 136, 248, 1) 100%
   );
-  padding: 1.2rem;
-  border-radius: 10px;
+  padding: 1.2rem 0;
+  border-radius: 12px;
   width: 95%;
   max-height: 90%;
   max-width: 480px;
@@ -104,9 +104,10 @@ const DetailsContainer = styled.div`
 `;
 
 const Content = styled.div`
+  margin: auto;
   overflow: auto;
   flex: 1;
-  padding: 4px;
+  padding: 8px 2rem;
   min-height: 0;
 `;
 
@@ -115,9 +116,10 @@ const Details = styled.p`
   font-size: 0.8rem;
   user-select: none;
   color: #fff;
+  font-weight: 300;
 
-  @media (max-width: 678px) {
-    font-size: 0.7rem;
+  @media (max-width: 869px) {
+    font-size: 0.75rem;
     line-height: 18px;
   }
 `;
@@ -125,19 +127,20 @@ const Details = styled.p`
 const RedirectBtn = styled.button`
   display: block;
   margin-left: auto;
-  font-size: 0.7rem;
-  padding: 6px 8px;
-  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  padding: 8px 1.2rem;
+  border-radius: 5px;
   cursor: pointer;
   letter-spacing: 1px;
   background: #fff;
   color: #1b1b1b;
   border: none;
   font-weight: 400;
-  outline-color: rgba(0, 136, 248, 1);
+  outline-color: rgba(0, 165, 248, 1);
 
-  @media (max-width: 678px) {
-    font-size: 0.65rem;
+  @media (max-width: 869px) {
+    font-size: 0.7rem;
   }
 `;
 
@@ -148,14 +151,14 @@ const Highlight = styled.span`
 
 const Welcome = styled.span`
   display: block;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 600;
   text-align: center;
   color: #fff;
   margin: 12px 0 18px 0;
 
-  @media (max-width: 678px) {
-    font-size: 0.9rem;
+  @media (max-width: 869px) {
+    font-size: 1.2rem;
   }
 `;
 
@@ -163,7 +166,7 @@ const Anim = styled.div`
   width: 120px;
   margin: auto;
 
-  @media (max-width: 678px) {
+  @media (max-width: 869px) {
     width: 80px;
   }
 `;
