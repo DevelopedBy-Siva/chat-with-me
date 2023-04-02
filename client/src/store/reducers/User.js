@@ -7,7 +7,12 @@ import {
 } from "../actions/UserActions";
 
 const initialState = {
-  details: {},
+  details: {
+    name: "",
+    email: "",
+    avatarId: "",
+    description: "",
+  },
   oneTimeInfo: false,
 };
 

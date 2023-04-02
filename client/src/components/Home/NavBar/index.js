@@ -49,7 +49,7 @@ const navBtns = [
 ];
 
 export default function NavBarContainer() {
-  const avatarId = useSelector((state) => state.user.avatarId);
+  const avatarId = useSelector((state) => state.user.details.avatarId);
 
   return (
     <Container>

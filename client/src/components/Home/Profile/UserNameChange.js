@@ -185,6 +185,7 @@ const EditNameInput = styled.input`
   letter-spacing: 1px;
   font-size: 0.7rem;
   text-transform: capitalize;
+
   ::-webkit-input-placeholder {
     color: ${(props) => props.theme.txt.danger};
     text-transform: none;
@@ -201,6 +202,7 @@ const EditNameInput = styled.input`
     color: ${(props) => props.theme.txt.danger};
     text-transform: none;
   }
+
   &.error {
     border: 1px solid ${(props) => props.theme.txt.danger};
     color: ${(props) => props.theme.txt.danger};

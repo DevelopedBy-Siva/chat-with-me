@@ -80,7 +80,7 @@ route.put("/profile", async (req, resp) => {
     );
     if (!error) {
       updateOpt.key = "description";
-      updateOpt.value = value;
+      updateOpt.value = value.description;
     }
   } else if (avatarId) {
     updateOpt.key = "avatarId";
@@ -94,7 +94,7 @@ route.put("/profile", async (req, resp) => {
     );
     if (!error) {
       updateOpt.key = "name";
-      updateOpt.value = value;
+      updateOpt.value = value.name;
     }
   }
 

@@ -17,14 +17,14 @@ const modalStyle = {
 };
 
 export default function Profile() {
-  const userDetails = useSelector((state) => state.user);
+  const userDetails = useSelector((state) => state.user.details);
 
   const [userNameChange, setUserNameChange] = useState({
     loading: false,
     disabled: true,
     error: null,
-    prev: "",
-    username: "",
+    prev: userDetails.name,
+    username: userDetails.name,
   });
 
   const [userDescriptionChange, setUserDescriptionChange] = useState({
@@ -63,12 +63,10 @@ export default function Profile() {
               </EditImgBtn>
             </ProfileImageContainer>
             <UserNameChange
-              current={userDetails.name}
               userNameChange={userNameChange}
               setUserNameChange={setUserNameChange}
             />
             <UserDescriptionChange
-              current={userDetails.description}
               userDescriptionChange={userDescriptionChange}
               setUserDescriptionChange={setUserDescriptionChange}
             />
