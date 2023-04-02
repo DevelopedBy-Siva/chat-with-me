@@ -1,19 +1,29 @@
 import { Suspense, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-import { validateToken } from "../../utils/Auth";
 import FullPageLoading from "../../components/Loader/FullPage";
+import axios from "../../api/axios";
+import { setUser } from "../../store/actions/UserActions";
 
 export default function Private() {
   const [proceed, setProceed] = useState(null);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     async function startupValidation() {
-      const isValid = await validateToken();
+      const isValid = await axios
+        .get("/user/")
+        .then(({ data }) => {
+          dispatch(setUser(data));
+          return true;
+        })
+        .catch(() => true);
       setProceed(isValid);
     }
     startupValidation();
-  }, []);
+  }, [dispatch]);
 
   return proceed === null ? (
     <FullPageLoading />

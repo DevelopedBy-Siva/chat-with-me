@@ -141,8 +141,11 @@ route.delete("/contacts/:contactId", (req, resp) => {
 /**
  * Validate Token
  */
-route.get("/validate-token", (_, resp) => {
-  resp.status(204).send();
+route.get("/", async (req, resp) => {
+  const { email } = req.payload;
+  const user = await UserCollection.findOne({ email });
+  const { name, email: mail, isOnline, description, avatarId } = user;
+  resp.status(200).send({ name, mail, isOnline, description, avatarId });
 });
 
 module.exports = route;

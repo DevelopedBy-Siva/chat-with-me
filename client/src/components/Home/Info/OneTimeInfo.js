@@ -3,6 +3,9 @@ import FocusLock from "react-focus-lock";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Lottie from "lottie-react";
+
+import chatAim from "../../../assets/anim/chat.json";
 
 export default function OneTimeInfo() {
   useEffect(() => {
@@ -14,9 +17,7 @@ export default function OneTimeInfo() {
 
   const navigate = useNavigate();
 
-  function navigateTo() {
-    return navigate("/profile");
-  }
+  const navigateTo = () => navigate("/profile");
 
   return (
     <FocusLock>
@@ -24,14 +25,21 @@ export default function OneTimeInfo() {
         <Overlay />
         <DetailsContainer>
           <Content>
+            <Anim>
+              <Lottie
+                style={{ width: "inherit" }}
+                animationData={chatAim}
+                loop={true}
+              />
+            </Anim>
+            <Welcome>Welcome to ChatWithMe</Welcome>
             <Details>
-              Hi <Highlight>Duke</Highlight>,
+              Hi <Highlight>{userDetails.name}</Highlight>,
               <br />
-              Welcome to <Highlight>ChatWithMe</Highlight>. This website was
-              made as part of a personal project, so many of the features are
-              limited to the users. By clicking <i>Continue</i>, you will now be
-              redirected to the profile page where you can update your profile
-              details. <br />
+              This website was made as part of a personal project, so many of
+              the features are limited to the users. By clicking <i>Continue</i>
+              , you will now be redirected to the profile page where you can
+              update your profile details. <br />
               <br />
               Regards,
               <br />
@@ -107,6 +115,11 @@ const Details = styled.p`
   font-size: 0.8rem;
   user-select: none;
   color: #fff;
+
+  @media (max-width: 678px) {
+    font-size: 0.7rem;
+    line-height: 18px;
+  }
 `;
 
 const RedirectBtn = styled.button`
@@ -121,9 +134,36 @@ const RedirectBtn = styled.button`
   color: #1b1b1b;
   border: none;
   font-weight: 400;
-  outline-color: #0084f8;
+  outline-color: rgba(0, 136, 248, 1);
+
+  @media (max-width: 678px) {
+    font-size: 0.65rem;
+  }
 `;
 
 const Highlight = styled.span`
   font-weight: 500;
+  text-transform: capitalize;
+`;
+
+const Welcome = styled.span`
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  color: #fff;
+  margin: 12px 0 18px 0;
+
+  @media (max-width: 678px) {
+    font-size: 0.9rem;
+  }
+`;
+
+const Anim = styled.div`
+  width: 120px;
+  margin: auto;
+
+  @media (max-width: 678px) {
+    width: 80px;
+  }
 `;

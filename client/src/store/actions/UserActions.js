@@ -1,7 +1,7 @@
 export const SET_USER = "SET_USER";
 export const ONETIME_INFO = "ONETIME_INFO";
 
-export const setUser = (data, oneTimeInfo = false) => {
+export const setUser = (data, oneTimeInfo) => {
   return {
     type: SET_USER,
     payload: {
