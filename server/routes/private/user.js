@@ -111,13 +111,6 @@ route.put("/profile", async (req, resp) => {
 });
 
 /**
- * Change User Profile Pic
- */
-route.put("/change-profile-pic", (req, resp) => {
-  resp.send("change profile pic");
-});
-
-/**
  * Add new contact
  */
 route.post("/add-contact", (req, resp) => {
@@ -128,7 +121,29 @@ route.post("/add-contact", (req, resp) => {
  * Get user contacts
  */
 route.get("/contacts", (req, resp) => {
-  resp.send("contacts");
+  resp.send([]);
+});
+
+/**
+ * Search Contacts
+ */
+route.get("/contacts/search", async (req, resp) => {
+  let searchQuery = req.query.searchQuery;
+  const { email } = req.payload;
+
+  if (!searchQuery || searchQuery.trim().length === 0)
+    return resp.status(200).send([]);
+
+  searchQuery = searchQuery.trim().toLowerCase();
+
+  const contacts = await UserCollection.find(
+    {
+      name: { $regex: searchQuery },
+      email: { $ne: email },
+    },
+    { email: 1, name: 1, avatarId: 1, _id: 0 }
+  ).sort({ name: 1 });
+  resp.status(200).send(contacts);
 });
 
 /**

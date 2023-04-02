@@ -11,6 +11,7 @@ import LoadingSpinner from "../../Loader";
 import MyContacts from "./MyContacts";
 import BlockedContacts from "./BlockedContacts";
 import AddContacts from "./AddContacts";
+import NewContact from "./NewContact";
 
 const navBtns = [
   {
@@ -40,37 +41,51 @@ export default function Contacts() {
 
   const { loading, error } = useSelector((state) => state.contacts);
 
+  const [addContactActive, setAddContactActive] = useState({
+    active: false,
+    item: null,
+  });
+
+  const closeSubModal = () =>
+    setAddContactActive({ item: null, active: false });
+
   return (
-    <Modal style={modalStyle}>
-      <Container>
-        <ModalHeaderWrapper>Contacts</ModalHeaderWrapper>
-        <Nav>
-          {navBtns.map((item, index) => (
-            <ContentSwitchBtn
-              title={item.name}
-              className={activeBtn === item.val ? "active" : ""}
-              key={index}
-              onClick={() => setActiveBtn(item.val)}
-            >
-              {item.icon}
-            </ContentSwitchBtn>
-          ))}
-        </Nav>
-        <Content>
-          {loading ? (
-            <LoadingSpinner />
-          ) : error ? (
-            <ErrorMsg>Something went wrong. Please try again later.</ErrorMsg>
-          ) : activeBtn === "contacts" ? (
-            <MyContacts />
-          ) : activeBtn === "blocked" ? (
-            <BlockedContacts />
-          ) : (
-            <AddContacts />
-          )}
-        </Content>
-      </Container>
-    </Modal>
+    <React.Fragment>
+      <Modal style={modalStyle}>
+        <Container>
+          <ModalHeaderWrapper>Contacts</ModalHeaderWrapper>
+          <Nav>
+            {navBtns.map((item, index) => (
+              <ContentSwitchBtn
+                title={item.name}
+                className={activeBtn === item.val ? "active" : ""}
+                key={index}
+                onClick={() => setActiveBtn(item.val)}
+              >
+                {item.icon}
+              </ContentSwitchBtn>
+            ))}
+          </Nav>
+          <Content>
+            {loading ? (
+              <LoadingSpinner />
+            ) : error ? (
+              <ErrorMsg>Something went wrong. Please try again later.</ErrorMsg>
+            ) : activeBtn === "contacts" ? (
+              <MyContacts />
+            ) : activeBtn === "blocked" ? (
+              <BlockedContacts />
+            ) : (
+              <AddContacts setAddContactActive={setAddContactActive} />
+            )}
+          </Content>
+        </Container>
+      </Modal>
+
+      {addContactActive.active && (
+        <NewContact item={addContactActive.item} close={closeSubModal} />
+      )}
+    </React.Fragment>
   );
 }
 

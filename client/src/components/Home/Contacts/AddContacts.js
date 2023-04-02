@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { BiSearch } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 import { getAvatar } from "../../../assets/avatars";
 import LoadingSpinner from "../../Loader";
+import axios from "../../../api/axios";
 
-export default function AddContacts() {
+export default function AddContacts({ setAddContactActive }) {
   const [data, setData] = useState({
     loading: false,
     error: null,
@@ -19,13 +21,33 @@ export default function AddContacts() {
     setSearch(val);
   }
 
-  function searchContact(e) {
+  const currentContacts = useSelector((state) => state.contacts);
+
+  async function searchContact(e) {
     e.preventDefault();
     if (data.loading) return;
     const value = search.toLocaleLowerCase().trim();
     if (value.length === 0) return;
-    setSearch("");
-    setData({ ...data, contacts: [] });
+
+    setData({ error: null, loading: true, contacts: [] });
+    await axios
+      .get(`/user/contacts/search?searchQuery=${value}`)
+      .then(({ data }) => {
+        let filteredContacts = [...data];
+        filteredContacts.forEach((item) => {
+          if (currentContacts.contacts.some((ele) => ele.email === item.email))
+            item.isPresent = true;
+        });
+        setSearch("");
+        setData({ loading: false, contacts: filteredContacts });
+      })
+      .catch((err) => {
+        setData({ error: err, loading: false });
+      });
+  }
+
+  function addContact(item) {
+    setAddContactActive({ item, active: true });
   }
 
   return (
@@ -57,7 +79,7 @@ export default function AddContacts() {
           <UserMsg>Sorry, no contacts found</UserMsg>
         ) : (
           data.contacts.map((item, index) => {
-            const { name, nickname, avatarId } = item;
+            const { name, email, avatarId, isPresent } = item;
             return (
               <ContactContainer key={index}>
                 <ContactDetails>
@@ -66,14 +88,16 @@ export default function AddContacts() {
                   </ContactAvatarContainer>
                   <ContactNameContainer>
                     <ContactName>{name}</ContactName>
-                    <ContactNickname>{nickname}</ContactNickname>
+                    <ContactNickname>{email}</ContactNickname>
                   </ContactNameContainer>
                 </ContactDetails>
-                <OptionBtnContainer>
-                  <OptionBtn>
-                    <IoMdAdd title="Add contact" />
-                  </OptionBtn>
-                </OptionBtnContainer>
+                {!isPresent && (
+                  <OptionBtnContainer>
+                    <OptionBtn onClick={() => addContact(item)}>
+                      <IoMdAdd title="Add contact" />
+                    </OptionBtn>
+                  </OptionBtnContainer>
+                )}
               </ContactContainer>
             );
           })
@@ -198,6 +222,8 @@ const ContactAvatarContainer = styled.div`
 `;
 
 const ContactAvatar = styled.img`
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   user-select: none;
   flex-shrink: 0;
@@ -232,7 +258,7 @@ const ContactName = styled.span`
 const ContactNickname = styled.span`
   display: block;
   font-size: 0.7rem;
-  text-transform: capitalize;
+  text-transform: lowercase;
   color: ${(props) => props.theme.txt.sub};
   white-space: nowrap;
   overflow: hidden;
