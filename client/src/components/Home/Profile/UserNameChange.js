@@ -99,6 +99,7 @@ export default function UserNameChange({ userNameChange, setUserNameChange }) {
           maxLength={16}
           ref={inputRef}
           onChange={handleInputChange}
+          placeholder="Enter your name"
           className={userNameChange.error ? "error" : ""}
         />
       </EditLabel>
@@ -184,7 +185,22 @@ const EditNameInput = styled.input`
   letter-spacing: 1px;
   font-size: 0.7rem;
   text-transform: capitalize;
-
+  ::-webkit-input-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+  ::-moz-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+  :-ms-input-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+  :-moz-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
   &.error {
     border: 1px solid ${(props) => props.theme.txt.danger};
     color: ${(props) => props.theme.txt.danger};
@@ -205,8 +221,9 @@ const EditDone = styled.span`
 const ErrorMsg = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.danger};
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   margin-top: 4px;
   position: absolute;
   bottom: -20px;
+  font-weight: 400;
 `;

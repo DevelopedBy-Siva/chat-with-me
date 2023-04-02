@@ -23,8 +23,8 @@ export default function Profile() {
     loading: false,
     disabled: true,
     error: null,
-    prev: userDetails.name,
-    username: userDetails.name,
+    prev: "",
+    username: "",
   });
 
   const [userDescriptionChange, setUserDescriptionChange] = useState({
@@ -56,17 +56,19 @@ export default function Profile() {
           <ModalHeaderWrapper>Profile</ModalHeaderWrapper>
           <SubContainer>
             <ProfileImageContainer>
-              <ProfileImage src={getAvatar(2)} />
+              <ProfileImage src={getAvatar(userDetails.avatarId)} />
               <EditImgBtn onClick={() => toggleModal(true)}>
                 <BsFillPencilFillCustom style={{ marginRight: "4px" }} />
                 Edit
               </EditImgBtn>
             </ProfileImageContainer>
             <UserNameChange
+              current={userDetails.name}
               userNameChange={userNameChange}
               setUserNameChange={setUserNameChange}
             />
             <UserDescriptionChange
+              current={userDetails.description}
               userDescriptionChange={userDescriptionChange}
               setUserDescriptionChange={setUserDescriptionChange}
             />

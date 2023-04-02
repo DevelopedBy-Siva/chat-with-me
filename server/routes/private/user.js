@@ -145,7 +145,7 @@ route.get("/", async (req, resp) => {
   const { email } = req.payload;
   const user = await UserCollection.findOne({ email });
   const { name, email: mail, isOnline, description, avatarId } = user;
-  resp.status(200).send({ name, mail, isOnline, description, avatarId });
+  resp.status(200).send({ name, email: mail, isOnline, description, avatarId });
 });
 
 module.exports = route;

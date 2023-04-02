@@ -114,6 +114,7 @@ export default function UserDescriptionChange({
           onChange={handleInputChange}
           className={userDescriptionChange.error ? "error" : ""}
           onKeyDown={handlekey}
+          placeholder="Enter what's in your mind..."
         />
       </EditLabel>
       <ErrorMsg>{userDescriptionChange.error}</ErrorMsg>
@@ -204,6 +205,19 @@ const EditDescriptionInput = styled.textarea`
   &.error {
     border: 1px solid ${(props) => props.theme.txt.danger};
     color: ${(props) => props.theme.txt.danger};
+
+    ::-webkit-input-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
+    ::-moz-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
+    :-ms-input-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
+    :-moz-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
   }
 `;
 
@@ -221,8 +235,9 @@ const EditDone = styled.span`
 const ErrorMsg = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.danger};
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   margin-top: 4px;
   position: absolute;
   bottom: -15px;
+  font-weight: 400;
 `;
