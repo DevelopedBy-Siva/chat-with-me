@@ -10,7 +10,6 @@ import { HiOutlineSun } from "react-icons/hi";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { BiLogOut } from "react-icons/bi";
 
-import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { getAvatar } from "../../../assets/avatars";
@@ -57,11 +56,10 @@ export default function NavBarContainer() {
       <Navs>
         {navBtns.map((nav, index) => (
           <NavBtnContainer key={index}>
-            <NavBtn to={nav.navTo} id={nav.id}>
+            <NavBtn title={nav.placeholder} to={nav.navTo} id={nav.id}>
               <NavBorder />
               {nav.icon}
             </NavBtn>
-            <Tooltip id={nav.id} msg={nav.placeholder} />
           </NavBtnContainer>
         ))}
       </Navs>

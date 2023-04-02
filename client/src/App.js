@@ -3,7 +3,6 @@ import { ThemeProvider } from "styled-components";
 import { useState } from "react";
 import { Provider } from "react-redux";
 import { SnackbarProvider as Toast } from "notistack";
-import "react-tooltip/dist/react-tooltip.css";
 import "nprogress/nprogress.css";
 
 import GlobalStyles from "./assets/styles/GlobalStyles";
