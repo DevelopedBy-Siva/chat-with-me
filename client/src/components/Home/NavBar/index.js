@@ -100,6 +100,7 @@ const Container = styled.nav`
     width: 100%;
     height: 64px;
     flex-direction: row;
+    flex-shrink: 0;
   }
 `;
 

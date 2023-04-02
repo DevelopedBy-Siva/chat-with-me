@@ -188,6 +188,13 @@ const Container = styled.div`
   z-index: 99;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 920px) {
+    min-width: 0;
+    width: auto;
+    flex: 1;
+    height: 100%;
+  }
 `;
 
 const Heading = styled.h3`
@@ -201,6 +208,11 @@ const Heading = styled.h3`
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid ${(props) => props.theme.border.default};
+
+  @media (max-width: 920px) {
+    height: 64px;
+    font-size: 1.3rem;
+  }
 `;
 
 const SearchContainer = styled.label`
