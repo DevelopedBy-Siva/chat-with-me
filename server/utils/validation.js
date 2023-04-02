@@ -16,6 +16,13 @@ const USER_SCHEMA = {
   email: Joi.string().email().required().lowercase(),
   password: Joi.string().regex(PASSWORD_PATTERN).required(),
   phone: Joi.string().trim().min(9).max(10).regex(/^\d+$/).required(),
+  description: Joi.string()
+    .allow("", null)
+    .not()
+    .empty()
+    .trim()
+    .min(1)
+    .max(150),
 };
 
 function validateUser(user, schema = USER_SCHEMA) {

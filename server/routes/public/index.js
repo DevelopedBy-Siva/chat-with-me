@@ -28,7 +28,7 @@ route.post("/login", async (req, resp) => {
   // Get User Details from DB
   const user = await UserCollection.findOne(
     { email: value.email },
-    { email: 1, password: 1 }
+    { email: 1, password: 1, name: 1, isOnline: 1, description: 1 }
   );
   if (!user)
     return resp
@@ -57,8 +57,8 @@ route.post("/login", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  const { name, email: mail, isOnline, description } = user;
-  resp.status(200).send({ name, email: mail, isOnline, description });
+  const { name, email: mail, isOnline, description, avatarId } = user;
+  resp.status(200).send({ name, email: mail, isOnline, description, avatarId });
 });
 
 /**
@@ -66,7 +66,12 @@ route.post("/login", async (req, resp) => {
  */
 route.post("/register", async (req, resp) => {
   const body = req.body;
-  const { value, error } = validateUser(body);
+  const { value, error } = validateUser(body, {
+    email: schema.email,
+    password: schema.password,
+    name: schema.name,
+    phone: schema.phone,
+  });
   if (error)
     return resp
       .status(400)
@@ -89,7 +94,8 @@ route.post("/register", async (req, resp) => {
   // Create User Document
   const document = new UserCollection({ ...value, password: hashedPswd });
   // Save Document to DB
-  const { email, name, description, isOnline } = await document.save();
+  const { email, name, description, isOnline, avatarId } =
+    await document.save();
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
@@ -99,7 +105,7 @@ route.post("/register", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  resp.status(200).send({ email, name, description, isOnline });
+  resp.status(200).send({ email, name, description, isOnline, avatarId });
 });
 
 /**

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
@@ -11,8 +12,8 @@ import { BiLogOut } from "react-icons/bi";
 
 import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
-import profileImg from "../../../assets/avatars/2.svg";
 import { ThemeContext } from "../../../context/ThemeContext";
+import { getAvatar } from "../../../assets/avatars";
 
 const navBtns = [
   {
@@ -48,6 +49,8 @@ const navBtns = [
 ];
 
 export default function NavBarContainer() {
+  const avatarId = useSelector((state) => state.user.avatarId);
+
   return (
     <Container>
       <Logo center />
@@ -65,7 +68,7 @@ export default function NavBarContainer() {
       <Wrapper>
         <ThemeSwitch />
         <Profile to="/profile">
-          <ProfileImg src={profileImg} />
+          <ProfileImg src={getAvatar(avatarId)} />
         </Profile>
       </Wrapper>
     </Container>

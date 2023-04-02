@@ -57,6 +57,60 @@ route.put("/change-pswd", async (req, resp) => {
 });
 
 /**
+ * Update User Profile Details
+ */
+route.put("/profile", async (req, resp) => {
+  const { email } = req.payload;
+
+  const description = req.query.description;
+  const avatarId = req.query.avatarId;
+  const name = req.query.name;
+
+  let updateOpt = {
+    key: null,
+    value: null,
+  };
+
+  if (description) {
+    const { value, error } = validateUser(
+      { description },
+      {
+        description: schema.description,
+      }
+    );
+    if (!error) {
+      updateOpt.key = "description";
+      updateOpt.value = value;
+    }
+  } else if (avatarId) {
+    updateOpt.key = "avatarId";
+    updateOpt.value = avatarId;
+  } else if (name) {
+    const { value, error } = validateUser(
+      { name },
+      {
+        name: schema.name,
+      }
+    );
+    if (!error) {
+      updateOpt.key = "name";
+      updateOpt.value = value;
+    }
+  }
+
+  if (!updateOpt.key)
+    return resp
+      .status(400)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, error.message));
+
+  await UserCollection.updateOne(
+    { email },
+    { $set: { [updateOpt.key]: updateOpt.value } }
+  );
+  resp.status(201).send();
+});
+
+/**
  * Change User Profile Pic
  */
 route.put("/change-profile-pic", (req, resp) => {

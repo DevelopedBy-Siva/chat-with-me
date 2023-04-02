@@ -44,14 +44,15 @@ const schema = new mongoose.Schema({
   },
   description: {
     type: String,
-    trim: true,
-    minLength: 1,
-    maxLength: 150,
     default: "",
   },
   isOnline: {
     type: Boolean,
     default: true,
+  },
+  avatarId: {
+    type: String,
+    default: "",
   },
 });
 
