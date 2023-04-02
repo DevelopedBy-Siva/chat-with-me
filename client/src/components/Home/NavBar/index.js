@@ -95,6 +95,12 @@ const Container = styled.nav`
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 920px) {
+    width: 100%;
+    height: 64px;
+    flex-direction: row;
+  }
 `;
 
 const NavBtnContainer = styled.div`
@@ -106,6 +112,12 @@ const NavBtnContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  @media (max-width: 920px) {
+    width: 16.7%;
+    height: 100%;
+    margin: 0;
+  }
 `;
 
 const NavBorder = styled.span`
@@ -117,6 +129,14 @@ const NavBorder = styled.span`
   width: 5px;
   background: none;
   border-radius: 0 5px 5px 0;
+
+  @media (max-width: 920px) {
+    width: 100%;
+    height: 5px;
+    top: auto;
+    right: 0;
+    border-radius: 5px 5px 0 0;
+  }
 `;
 
 const NavBtn = styled(NavLink)`
@@ -153,6 +173,14 @@ const Navs = styled.div`
   justify-content: center;
   overflow-y: auto;
   margin: 10px 0;
+
+  @media (max-width: 920px) {
+    height: 100%;
+    width: 83.5%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -161,6 +189,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 920px) {
+    width: 16.5%;
+    height: 100%;
+  }
 `;
 
 const Profile = styled(NavLink)`
@@ -192,6 +225,10 @@ const Switch = styled.button`
   cursor: pointer;
   background: ${(props) => `${props.theme.bg.container}`};
   overflow: hidden;
+
+  @media (max-width: 920px) {
+    display: none;
+  }
 `;
 
 const SwitchLabel = styled.span`

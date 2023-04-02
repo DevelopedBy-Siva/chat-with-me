@@ -23,6 +23,9 @@ const LogoContainer = styled.div`
   &.logo-ctr {
     margin: auto;
   }
+  @media (max-width: 920px) {
+    display: none;
+  }
 `;
 
 const Icon = styled(RiChatSmile3Fill)`

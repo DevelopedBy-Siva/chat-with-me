@@ -33,8 +33,12 @@ export default function UserHome() {
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   position: relative;
+
+  @media (max-width: 920px) {
+    flex-direction: column-reverse;
+  }
 `;
