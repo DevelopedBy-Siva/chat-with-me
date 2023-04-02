@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import Modal from "../Modal";
@@ -17,21 +17,22 @@ const modalStyle = {
 };
 
 export default function Profile() {
+  const userDetails = useSelector((state) => state.user);
+
   const [userNameChange, setUserNameChange] = useState({
     loading: false,
     disabled: true,
     error: null,
-    prev: "sivasanker",
-    username: "sivasanker",
+    prev: userDetails.name,
+    username: userDetails.name,
   });
 
   const [userDescriptionChange, setUserDescriptionChange] = useState({
     loading: false,
     disabled: true,
     error: null,
-    prev: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
+    prev: userDetails.description,
+    description: userDetails.description,
   });
 
   const [showProfileImages, setShowProfileImages] = useState(false);
@@ -74,7 +75,7 @@ export default function Profile() {
       </Modal>
       {showProfileImages && (
         <SelectProfileImg
-          current={2}
+          current={userDetails.avatarId}
           setShowProfileImages={setShowProfileImages}
         />
       )}

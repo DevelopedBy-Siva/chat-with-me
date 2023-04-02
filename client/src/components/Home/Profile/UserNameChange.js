@@ -1,14 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BsFillPencilFill } from "react-icons/bs";
+import { useDispatch } from "react-redux";
 
 import LoadingSpinner from "../../Loader";
-import { nameValidation } from "../../../utils/InputHandler";
 import axios from "../../../api/axios";
 import toast from "../../Toast";
+import { nameValidation } from "../../../utils/InputHandler";
+import { updateUserName } from "../../../store/actions/UserActions";
 
 export default function UserNameChange({ userNameChange, setUserNameChange }) {
   const inputRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userNameChange.disabled) inputRef.current.focus();
@@ -45,13 +49,12 @@ export default function UserNameChange({ userNameChange, setUserNameChange }) {
       loading: true,
     });
     await axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .put(`/user/profile?name=${new_username}`)
       .then(() => {
         toast.success("Username updated successfully");
+        dispatch(updateUserName(new_username));
         setUserNameChange({
           ...userNameChange,
-          username: new_username,
-          prev: new_username,
           disabled: true,
           loading: false,
         });

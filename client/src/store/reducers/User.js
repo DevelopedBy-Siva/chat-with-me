@@ -1,8 +1,14 @@
-import { ONETIME_INFO, SET_USER } from "../actions/UserActions";
+import {
+  CHANGE_AVATAR,
+  CHANGE_DESCRIPTION,
+  CHANGE_USER_NAME,
+  ONETIME_INFO,
+  SET_USER,
+} from "../actions/UserActions";
 
 const initialState = {
   details: {},
-  oneTimeInfo: true,
+  oneTimeInfo: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,8 +26,40 @@ const reducer = (state = initialState, action) => {
       return {
         ...data,
       };
+
     case ONETIME_INFO:
       return { ...state, oneTimeInfo: payload };
+
+    case CHANGE_USER_NAME:
+      const changeUsernameData = {
+        ...state.details,
+      };
+      changeUsernameData.name = payload;
+      return {
+        ...state,
+        details: { ...changeUsernameData },
+      };
+
+    case CHANGE_DESCRIPTION:
+      const changeDecriptionData = {
+        ...state.details,
+      };
+      changeDecriptionData.description = payload;
+      return {
+        ...state,
+        details: { ...changeDecriptionData },
+      };
+
+    case CHANGE_AVATAR:
+      const changeAvatarData = {
+        ...state.details,
+      };
+      changeAvatarData.avatarId = payload;
+      return {
+        ...state,
+        details: { ...changeAvatarData },
+      };
+
     default:
       return state;
   }

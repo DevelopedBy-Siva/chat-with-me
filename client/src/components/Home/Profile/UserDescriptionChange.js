@@ -1,17 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BsFillPencilFill } from "react-icons/bs";
+import { useDispatch } from "react-redux";
 
 import LoadingSpinner from "../../Loader";
-import { statusValidation } from "../../../utils/InputHandler";
 import axios from "../../../api/axios";
 import toast from "../../Toast";
+import { statusValidation } from "../../../utils/InputHandler";
+import { updateDescription } from "../../../store/actions/UserActions";
 
 export default function UserDescriptionChange({
   userDescriptionChange,
   setUserDescriptionChange,
 }) {
   const inputRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userDescriptionChange.disabled) inputRef.current.focus();
@@ -51,13 +55,12 @@ export default function UserDescriptionChange({
       loading: true,
     });
     await axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .put(`/user/profile?description=${new_user_status}`)
       .then(() => {
         toast.success("User status updated successfully");
+        dispatch(updateDescription(new_user_status));
         setUserDescriptionChange({
           ...userDescriptionChange,
-          description: new_user_status,
-          prev: new_user_status,
           disabled: true,
           loading: false,
         });

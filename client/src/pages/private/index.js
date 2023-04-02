@@ -19,7 +19,7 @@ export default function Private() {
           dispatch(setUser(data));
           return true;
         })
-        .catch(() => true);
+        .catch(() => false);
       setProceed(isValid);
     }
     startupValidation();
