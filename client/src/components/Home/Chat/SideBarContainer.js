@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { BiSearch } from "react-icons/bi";
 import { IoMdClose, IoMdArrowDropdown } from "react-icons/io";
+import { MdError } from "react-icons/md";
 
 import { setActive } from "../../../store/actions/ChatActions";
 import {
@@ -49,7 +50,12 @@ export default function SideBar() {
             <ContactsWrapper search={search} contacts={contacts} />
           </React.Fragment>
         ) : (
-          ""
+          <FetchError>
+            <MdError style={{ fontSize: "1.4rem", marginBottom: "6px" }} />
+            Oops, something went wrong.
+            <br />
+            Failed to get the contacts.
+          </FetchError>
         )}
       </ContactsContainer>
     </Container>
@@ -406,4 +412,17 @@ const EmptyContacts = styled.span`
 const AddContact = styled(Link)`
   color: ${(props) => props.theme.txt.sub};
   text-decoration: underline;
+`;
+
+const FetchError = styled.span`
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.7rem;
+  padding: 0.4rem;
+  text-align: center;
+  display: block;
+  line-height: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
 `;
