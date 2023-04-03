@@ -1,17 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router";
 
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import SubModal from "../Modal/SubModal";
 import { getAvatar } from "../../../assets/avatars";
-import { useNavigate } from "react-router";
+import { nicknameValidation } from "../../../utils/InputHandler";
+import axios from "../../../api/axios";
+import toast from "../../Toast";
+import retrieveError from "../../../api/ExceptionHandler";
+import LoadingSpinner from "../../Loader";
 
 const subModalStyle = {
-  maxHeight: "350px",
+  maxHeight: "365px",
   maxWidth: "480px",
 };
-function NewContact({ close, item }) {
+function NewContact({ close, item = {} }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [nickname, setNickname] = useState({
+    val: "",
+    error: null,
+  });
 
   const inputRef = useRef(null);
 
@@ -26,9 +35,29 @@ function NewContact({ close, item }) {
     close();
   }
 
-  function confirmAdd() {
-    if (isLoading) return;
-    navigate("/", { replace: true });
+  function handleInputChange(e) {
+    const value = e.target.value;
+    const { message } = nicknameValidation(value);
+    setNickname({ error: message, val: value });
+  }
+
+  const disableControl =
+    isLoading || nickname.error || nickname.val.length === 0;
+
+  async function confirmAdd() {
+    if (disableControl) return;
+    setIsLoading(true);
+    await axios
+      .post("/user/add-contact")
+      .then(() => {
+        toast.success("Contact added successfully");
+        navigate("/", { replace: true });
+      })
+      .catch((error) => {
+        const { message } = retrieveError(error);
+        toast.error(message, toast.props.user.nonPersist);
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -53,16 +82,29 @@ function NewContact({ close, item }) {
               viewed only by you.
             </InputLabel>
             <InputContainer
-              name="confirm"
+              name="nickname"
               type="text"
               spellCheck={false}
               autoComplete="off"
               disabled={isLoading}
               ref={inputRef}
+              value={nickname.val}
+              onChange={handleInputChange}
             />
+            <InputErrorMessage>{nickname.error}</InputErrorMessage>
           </InputBlock>
-          <ConfirmBtn disabled={isLoading} onClick={confirmAdd} type="submit">
-            Add contact
+          <ConfirmBtn
+            disabled={disableControl}
+            onClick={confirmAdd}
+            type="submit"
+          >
+            {isLoading ? (
+              <LoadingSpinner
+                style={{ width: "18px", height: "18px", opacity: 0.7 }}
+              />
+            ) : (
+              "Add contact"
+            )}
           </ConfirmBtn>
         </ModalSubContainer>
       </ModalContainer>
@@ -149,13 +191,14 @@ const Email = styled.span`
 
 const InputBlock = styled.div`
   padding-top: 20px;
+  min-height: 140px;
 `;
 
 const InputLabel = styled.label`
   display: block;
   color: ${(props) => props.theme.txt.sub};
   font-size: 0.8rem;
-  line-height: 20px;
+  line-height: 16px;
 
   @media (max-width: 484px) {
     font-size: 0.7rem;
@@ -194,7 +237,7 @@ const ConfirmBtn = styled.button`
   font-weight: 500;
   transition: all 0.2s ease-in-out;
   margin: auto;
-  margin-top: 0.8rem;
+  margin-top: 6px;
   display: block;
   width: 100%;
   position: relative;
@@ -213,16 +256,10 @@ const ConfirmBtn = styled.button`
 `;
 
 const InputErrorMessage = styled.span`
-  display: none;
+  display: block;
   font-size: 0.7rem;
   color: ${(props) => props.theme.txt.sub};
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
   margin-top: 5px;
   line-height: 16px;
-
-  &.input-error {
-    display: block;
-  }
+  color: ${(props) => props.theme.txt.danger};
 `;

@@ -121,6 +121,21 @@ export const statusValidation = (status) => {
   };
 };
 
+export const nicknameValidation = (nickname) => {
+  let isValid = true;
+  if (!nickname) isValid = false;
+  if (isValid) isValid = /^[a-zA-Z0-9_]{3,}$/.test(nickname);
+
+  let message = null;
+  if (!isValid)
+    message =
+      "Nicknames must contain more than 3 characters, and the only allowed characters are alphabets, numbers, and underscore (_)";
+  return {
+    isValid,
+    message,
+  };
+};
+
 export function filterBy_Name_Nickname(searchInput = "", data = []) {
   searchInput = searchInput.trim().toLowerCase();
   const filteredData = data.filter((val) => {
