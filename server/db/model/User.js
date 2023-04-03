@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 
+const ContactType = {
+  email: String,
+};
+
 const schema = new mongoose.Schema({
   name: {
     type: String,
@@ -35,7 +39,7 @@ const schema = new mongoose.Schema({
     },
   },
   contacts: {
-    type: [Object],
+    type: [ContactType],
     default: [],
   },
   joinedOn: {

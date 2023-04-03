@@ -1,5 +1,6 @@
 import axios from "../../api/axios";
 import {
+  ADD_NEW_CONTACT,
   contactsError,
   contactsLoading,
   CONTACTS_ERROR,
@@ -23,6 +24,13 @@ const reducer = (state = initialState, action) => {
       return { ...state, loading: false, error: payload };
     case GET_CONTACTS:
       return { ...state, contacts: [...payload], loading: false, error: null };
+    case ADD_NEW_CONTACT:
+      const newContacts = [...state.contacts];
+      newContacts.unshift(payload);
+      return {
+        ...state,
+        contacts: [...newContacts],
+      };
     default:
       return state;
   }

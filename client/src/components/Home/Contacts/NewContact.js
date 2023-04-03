@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import SubModal from "../Modal/SubModal";
@@ -10,6 +11,7 @@ import axios from "../../../api/axios";
 import toast from "../../Toast";
 import retrieveError from "../../../api/ExceptionHandler";
 import LoadingSpinner from "../../Loader";
+import { addNewContact } from "../../../store/actions/ContactActions";
 
 const subModalStyle = {
   maxHeight: "365px",
@@ -25,6 +27,7 @@ function NewContact({ close, item = {} }) {
   const inputRef = useRef(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     inputRef.current.focus();
@@ -48,8 +51,9 @@ function NewContact({ close, item = {} }) {
     if (disableControl) return;
     setIsLoading(true);
     await axios
-      .post("/user/add-contact")
-      .then(() => {
+      .post("/user/add-contact", { email: item.email })
+      .then(({ data }) => {
+        dispatch(addNewContact(data));
         toast.success("Contact added successfully");
         navigate("/", { replace: true });
       })
@@ -73,7 +77,7 @@ function NewContact({ close, item = {} }) {
             </AvatarContainer>
             <Details>
               <Name>{item.name}</Name>
-              <Email>#{item.email}</Email>
+              <Email>{item.email}</Email>
             </Details>
           </DetailsContainer>
           <InputBlock>
@@ -163,7 +167,7 @@ const Details = styled.div`
 const Name = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.main};
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   margin-bottom: 5px;
   white-space: nowrap;
   overflow: hidden;
@@ -178,14 +182,14 @@ const Name = styled.span`
 const Email = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.main};
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: lowercase;
 
   @media (max-width: 484px) {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
   }
 `;
 
@@ -197,8 +201,8 @@ const InputBlock = styled.div`
 const InputLabel = styled.label`
   display: block;
   color: ${(props) => props.theme.txt.sub};
-  font-size: 0.8rem;
-  line-height: 16px;
+  font-size: 0.75rem;
+  line-height: 18px;
 
   @media (max-width: 484px) {
     font-size: 0.7rem;

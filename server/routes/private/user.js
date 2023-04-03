@@ -113,15 +113,50 @@ route.put("/profile", async (req, resp) => {
 /**
  * Add new contact
  */
-route.post("/add-contact", (req, resp) => {
-  resp.send("add contact");
+route.post("/add-contact", async (req, resp) => {
+  const { email } = req.payload;
+  const body = req.body;
+
+  const newContactMail = body.email.trim().toLowerCase();
+
+  const data = await UserCollection.findOne({ email });
+  const myContacts = data.contacts;
+  const isAdded = myContacts.some((i) => i.email === newContactMail);
+  if (isAdded)
+    return resp
+      .status(409)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact already added")
+      );
+  data.contacts.push({
+    email: newContactMail,
+  });
+  data.save();
+
+  const toReturn = await UserCollection.findOne({ email: newContactMail });
+  if (!toReturn)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact not found"));
+
+  const { email: mail, name, avatarId, description, isOnline } = toReturn;
+  resp.status(200).send({ email: mail, name, avatarId, description, isOnline });
 });
 
 /**
  * Get user contacts
  */
-route.get("/contacts", (req, resp) => {
-  resp.send([]);
+route.get("/contacts", async (req, resp) => {
+  const { email } = req.payload;
+  const data = await UserCollection.findOne({ email });
+  const myContacts = data.contacts.map((ele) => ele.email);
+
+  const contacts = await UserCollection.find(
+    { email: { $in: myContacts } },
+    { email: 1, description: 1, name: 1, _id: 0, avatarId: 1, isOnline: 1 }
+  );
+
+  resp.status(200).send(contacts);
 });
 
 /**
