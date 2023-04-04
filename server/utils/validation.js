@@ -30,5 +30,11 @@ function validateUser(user, schema = USER_SCHEMA) {
   return joiObj.validate(user);
 }
 
+function validateNickname(nickname) {
+  if (!nickname) return false;
+  return /^[a-zA-Z0-9_]{3,}$/.test(nickname);
+}
+
 module.exports.validateUser = validateUser;
+module.exports.validateNickname = validateNickname;
 module.exports.schema = USER_SCHEMA;

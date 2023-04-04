@@ -1,5 +1,9 @@
 const express = require("express");
-const { validateUser, schema } = require("../../utils/validation");
+const {
+  validateUser,
+  validateNickname,
+  schema,
+} = require("../../utils/validation");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
 const { hash, login, cookies, jwtToken } = require("../../auth");
@@ -120,6 +124,12 @@ route.post("/add-contact", async (req, resp) => {
   const newContactMail = body.email.trim().toLowerCase();
   const nickname = body.nickname.trim().toLowerCase();
 
+  const isNicknameValid = validateNickname(nickname);
+  if (!isNicknameValid)
+    return resp
+      .status(400)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid nickname"));
+
   const data = await UserCollection.findOne({ email });
   const myContacts = data.contacts;
 
@@ -173,6 +183,46 @@ route.post("/add-contact", async (req, resp) => {
     isPrivate: true,
     nickname,
   });
+});
+
+/**
+ * Update Nickname
+ */
+route.put("/contact/nickname", async (req, resp) => {
+  const { email } = req.payload;
+
+  const toChange = req.query.email.trim().toLowerCase();
+  const nickname = req.query.nickname.trim().toLowerCase();
+
+  const isNicknameValid = validateNickname(nickname);
+  if (!isNicknameValid)
+    return resp
+      .status(400)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid nickname"));
+
+  const data = await UserCollection.findOne({ email });
+  const myContacts = data.contacts;
+
+  const nicknameExists = myContacts.some((i) => i.nickname === nickname);
+  if (nicknameExists)
+    return resp
+      .status(409)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Nickname already exists")
+      );
+
+  const index = myContacts.indexOf((i) => i.email === toChange);
+  if (index === -1)
+    return resp
+      .status(400)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact doesn't exist")
+      );
+
+  data.contacts[index].nickname = nickname;
+  data.save();
+
+  resp.status(201).send();
 });
 
 /**
