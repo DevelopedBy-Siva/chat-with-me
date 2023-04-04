@@ -44,6 +44,7 @@ export const GlobalStyles = createGlobalStyle`
     .notistack-MuiContent{
         background: ${(props) => props.theme.toast.bg};
         padding: 0;
+        margin: auto;
     }
 
     ::-webkit-scrollbar {
