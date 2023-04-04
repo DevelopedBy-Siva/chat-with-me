@@ -118,9 +118,11 @@ route.post("/add-contact", async (req, resp) => {
   const body = req.body;
 
   const newContactMail = body.email.trim().toLowerCase();
+  const nickname = body.nickname.trim().toLowerCase();
 
   const data = await UserCollection.findOne({ email });
   const myContacts = data.contacts;
+
   const isAdded = myContacts.some((i) => i.email === newContactMail);
   if (isAdded)
     return resp
@@ -128,8 +130,19 @@ route.post("/add-contact", async (req, resp) => {
       .send(
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact already added")
       );
+
+  const nicknameExists = myContacts.some((i) => i.nickname === nickname);
+  if (nicknameExists)
+    return resp
+      .status(409)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Nickname already exists")
+      );
+
   data.contacts.push({
     email: newContactMail,
+    nickname,
+    isPrivate: true,
   });
   data.save();
 
@@ -140,7 +153,15 @@ route.post("/add-contact", async (req, resp) => {
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact not found"));
 
   const { email: mail, name, avatarId, description, isOnline } = toReturn;
-  resp.status(200).send({ email: mail, name, avatarId, description, isOnline });
+  resp.status(200).send({
+    email: mail,
+    name,
+    avatarId,
+    description,
+    isOnline,
+    isPrivate: true,
+    nickname,
+  });
 });
 
 /**
@@ -156,7 +177,19 @@ route.get("/contacts", async (req, resp) => {
     { email: 1, description: 1, name: 1, _id: 0, avatarId: 1, isOnline: 1 }
   );
 
-  resp.status(200).send(contacts);
+  const toSend = contacts.map((item) => {
+    const found = data.contacts.find((ele) => ele.email === item.email);
+    return {
+      email: item.email,
+      description: item.description,
+      name: item.name,
+      avatarId: item.avatarId,
+      isOnline: item.isOnline,
+      isPrivate: found.isPrivate,
+      nickname: found.nickname,
+    };
+  });
+  resp.status(200).send(toSend);
 });
 
 /**

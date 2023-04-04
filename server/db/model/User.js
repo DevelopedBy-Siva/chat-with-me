@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const ContactType = {
   email: String,
+  nickname: String,
+  isPrivate: Boolean,
 };
 
 const schema = new mongoose.Schema({

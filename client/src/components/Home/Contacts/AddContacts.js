@@ -214,6 +214,7 @@ const ContactAvatarContainer = styled.div`
   width: 38px;
   height: 38px;
   border-radius: 50%;
+  background-color: ${(props) => props.theme.btn.active};
 
   @media (max-width: 484px) {
     width: 30px;

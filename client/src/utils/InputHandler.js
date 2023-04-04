@@ -121,7 +121,7 @@ export const statusValidation = (status) => {
   };
 };
 
-export const nicknameValidation = (nickname) => {
+export const nicknameValidation = (nickname, contacts = []) => {
   let isValid = true;
   if (!nickname) isValid = false;
   if (isValid) isValid = /^[a-zA-Z0-9_]{3,}$/.test(nickname);
@@ -130,6 +130,15 @@ export const nicknameValidation = (nickname) => {
   if (!isValid)
     message =
       "Nicknames must contain more than 3 characters, and the only allowed characters are alphabets, numbers, and underscore (_)";
+
+  const isDuplicate = contacts.some(
+    (item) => item.nickname === nickname.trim().toLowerCase()
+  );
+  if (isValid && isDuplicate) {
+    isValid = false;
+    message = "Nickname already exists";
+  }
+
   return {
     isValid,
     message,

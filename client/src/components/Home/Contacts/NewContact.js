@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import SubModal from "../Modal/SubModal";
@@ -14,7 +14,7 @@ import LoadingSpinner from "../../Loader";
 import { addNewContact } from "../../../store/actions/ContactActions";
 
 const subModalStyle = {
-  maxHeight: "365px",
+  maxHeight: "370px",
   maxWidth: "480px",
 };
 function NewContact({ close, item = {} }) {
@@ -28,6 +28,7 @@ function NewContact({ close, item = {} }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const myContacts = useSelector((state) => state.contacts);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -40,7 +41,7 @@ function NewContact({ close, item = {} }) {
 
   function handleInputChange(e) {
     const value = e.target.value;
-    const { message } = nicknameValidation(value);
+    const { message } = nicknameValidation(value, myContacts.contacts);
     setNickname({ error: message, val: value });
   }
 
@@ -51,7 +52,10 @@ function NewContact({ close, item = {} }) {
     if (disableControl) return;
     setIsLoading(true);
     await axios
-      .post("/user/add-contact", { email: item.email })
+      .post("/user/add-contact", {
+        email: item.email,
+        nickname: nickname.val,
+      })
       .then(({ data }) => {
         dispatch(addNewContact(data));
         toast.success("Contact added successfully");
@@ -195,7 +199,7 @@ const Email = styled.span`
 
 const InputBlock = styled.div`
   padding-top: 20px;
-  min-height: 140px;
+  min-height: 145px;
 `;
 
 const InputLabel = styled.label`
