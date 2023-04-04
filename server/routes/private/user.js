@@ -211,7 +211,7 @@ route.put("/contact/nickname", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Nickname already exists")
       );
 
-  const index = myContacts.indexOf((i) => i.email === toChange);
+  const index = myContacts.findIndex((i) => i.email === toChange);
   if (index === -1)
     return resp
       .status(400)
@@ -220,6 +220,31 @@ route.put("/contact/nickname", async (req, resp) => {
       );
 
   data.contacts[index].nickname = nickname;
+  data.save();
+
+  resp.status(201).send();
+});
+
+/**
+ * Remove Contact
+ */
+route.delete("/contact", async (req, resp) => {
+  const { email } = req.payload;
+
+  const toDelete = req.query.email.trim().toLowerCase();
+
+  const data = await UserCollection.findOne({ email });
+  const myContacts = data.contacts;
+
+  const index = myContacts.findIndex((i) => i.email === toDelete);
+  if (index === -1)
+    return resp
+      .status(400)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact doesn't exist")
+      );
+
+  data.contacts.splice(index, 1);
   data.save();
 
   resp.status(201).send();
