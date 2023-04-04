@@ -301,10 +301,18 @@ route.get("/contacts/search", async (req, resp) => {
 });
 
 /**
- * Remove user contact
+ * Remove a user
  */
-route.delete("/contacts/:contactId", (req, resp) => {
-  resp.send("delete contacts");
+route.delete("/remove", async (req, resp) => {
+  const { email } = req.payload;
+
+  await UserCollection.deleteOne({ email });
+
+  const { jwtTokenKey, isLoggedInKey } = cookies.cookieNames;
+  resp.clearCookie(jwtTokenKey);
+  resp.clearCookie(isLoggedInKey);
+
+  resp.status(201).send();
 });
 
 /**
