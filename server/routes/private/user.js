@@ -123,6 +123,17 @@ route.post("/add-contact", async (req, resp) => {
   const data = await UserCollection.findOne({ email });
   const myContacts = data.contacts;
 
+  const noOfPrivateContacts = myContacts.filter((item) => item.isPrivate);
+  if (noOfPrivateContacts.length >= 3)
+    return resp
+      .status(405)
+      .send(
+        new AppError(
+          ErrorCodes.ERR_INVALID_REQUEST,
+          "Maximum contacts limit reached"
+        )
+      );
+
   const isAdded = myContacts.some((i) => i.email === newContactMail);
   if (isAdded)
     return resp

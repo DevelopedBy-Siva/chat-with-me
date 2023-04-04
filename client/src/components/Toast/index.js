@@ -11,7 +11,7 @@ const toastBg = {
 
 const notify = (key, message, props = {}) => {
   enqueueSnackbar(<GeneralToast type={key} message={message} />, {
-    autoHideDuration: 4000,
+    autoHideDuration: 5000,
     style: {
       background: toastBg[key],
       width: "100%",
