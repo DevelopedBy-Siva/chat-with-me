@@ -216,8 +216,8 @@ const Heading = styled.h3`
   border-bottom: 1px solid ${(props) => props.theme.border.default};
 
   @media (max-width: 920px) {
-    height: 64px;
-    font-size: 1.3rem;
+    height: 52px;
+    font-size: 1.1rem;
   }
 `;
 
@@ -234,6 +234,10 @@ const SearchContainer = styled.label`
   background: ${(props) => props.theme.bg.app};
   color: ${(props) => props.theme.txt.sub};
   cursor: text;
+
+  @media (max-width: 920px) {
+    margin: 1.2rem 0.8rem 0.8rem 0.8rem;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -327,6 +331,10 @@ const Contact = styled.li`
   &:hover {
     background: ${(props) => props.theme.contact.active};
   }
+
+  @media (max-width: 920px) {
+    height: 64px;
+  }
 `;
 
 const ContactStatus = styled.span`
@@ -348,6 +356,11 @@ const AvatarContainer = styled.div`
   flex-shrink: 0;
   position: relative;
   background: ${(props) => props.theme.btn.active};
+
+  @media (max-width: 920px) {
+    width: 38px;
+    height: 38px;
+  }
 `;
 
 const Avatar = styled.img`
@@ -380,6 +393,10 @@ const Name = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: capitalize;
+
+  @media (max-width: 920px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const LastMessage = styled.span`
@@ -390,6 +407,10 @@ const LastMessage = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 4px;
+
+  @media (max-width: 920px) {
+    font-size: 0.65rem;
+  }
 `;
 
 const LastMsgTmstp = styled.span`

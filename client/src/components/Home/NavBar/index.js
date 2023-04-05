@@ -98,7 +98,7 @@ const Container = styled.nav`
 
   @media (max-width: 920px) {
     width: 100%;
-    height: 64px;
+    height: 52px;
     flex-direction: row;
     flex-shrink: 0;
   }
@@ -133,10 +133,10 @@ const NavBorder = styled.span`
 
   @media (max-width: 920px) {
     width: 100%;
-    height: 5px;
+    height: 4px;
     top: auto;
     right: 0;
-    border-radius: 5px 5px 0 0;
+    border-radius: 4px 4px 0 0;
   }
 `;
 
@@ -163,6 +163,10 @@ const NavBtn = styled(NavLink)`
 
   &:hover {
     color: ${(props) => props.theme.txt.main};
+  }
+
+  @media (max-width: 920px) {
+    font-size: 1.2rem;
   }
 `;
 
@@ -206,6 +210,11 @@ const Profile = styled(NavLink)`
   cursor: pointer;
   border-radius: 50%;
   background-color: ${(props) => props.theme.btn.active};
+
+  @media (max-width: 920px) {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 const ProfileImg = styled.img`
