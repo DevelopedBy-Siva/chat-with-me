@@ -45,22 +45,30 @@ export default function Contacts() {
     active: false,
     item: null,
   });
+  const [inProgress, setInProgress] = useState(false);
 
   const closeSubModal = () =>
     setAddContactActive({ item: null, active: false });
 
+  const handleTabs = (val) => {
+    if (inProgress) return;
+    setActiveBtn(val);
+  };
+
   return (
     <React.Fragment>
-      <Modal style={modalStyle}>
+      <Modal isLoading={inProgress} style={modalStyle}>
         <Container>
           <ModalHeaderWrapper>Contacts</ModalHeaderWrapper>
           <Nav>
             {navBtns.map((item, index) => (
               <ContentSwitchBtn
                 title={item.name}
-                className={activeBtn === item.val ? "active" : ""}
+                className={`${activeBtn === item.val ? "active" : ""} ${
+                  inProgress ? "inactive" : ""
+                }`}
                 key={index}
-                onClick={() => setActiveBtn(item.val)}
+                onClick={() => handleTabs(item.val)}
               >
                 {item.icon}
               </ContentSwitchBtn>
@@ -72,7 +80,10 @@ export default function Contacts() {
             ) : error ? (
               <ErrorMsg>Something went wrong. Please try again later.</ErrorMsg>
             ) : activeBtn === "contacts" ? (
-              <MyContacts />
+              <MyContacts
+                inProgress={inProgress}
+                setInProgress={setInProgress}
+              />
             ) : activeBtn === "blocked" ? (
               <BlockedContacts />
             ) : (
@@ -123,6 +134,10 @@ const ContentSwitchBtn = styled.li`
   &.active {
     background: ${(props) => props.theme.btn.selected};
     color: ${(props) => props.theme.txt.main};
+  }
+
+  &.inactive {
+    cursor: not-allowed;
   }
 `;
 

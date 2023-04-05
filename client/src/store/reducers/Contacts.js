@@ -1,10 +1,12 @@
 import axios from "../../api/axios";
 import {
   ADD_NEW_CONTACT,
+  BLOCK_CONTACT,
   contactsError,
   contactsLoading,
   CONTACTS_ERROR,
   CONTACTS_LOADING,
+  DELETE_CONTACT,
   getContacts,
   GET_CONTACTS,
 } from "../actions/ContactActions";
@@ -30,6 +32,19 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         contacts: [...newContacts],
+      };
+    case BLOCK_CONTACT:
+      return {
+        ...state,
+      };
+    case DELETE_CONTACT:
+      const index = state.contacts.findIndex((item) => item.email === payload);
+      if (index === -1) return { ...state };
+      const afterDelete = [...state.contacts];
+      afterDelete.splice(index, 1);
+      return {
+        ...state,
+        contacts: [...afterDelete],
       };
     default:
       return state;
