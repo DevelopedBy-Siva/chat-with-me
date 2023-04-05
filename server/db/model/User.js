@@ -4,6 +4,8 @@ const ContactType = {
   email: String,
   nickname: String,
   isPrivate: Boolean,
+  lastMsgTstmp: String,
+  lastMsg: String,
 };
 
 const schema = new mongoose.Schema({
@@ -59,6 +61,10 @@ const schema = new mongoose.Schema({
   avatarId: {
     type: String,
     default: "",
+  },
+  blocked: {
+    type: [ContactType],
+    default: [],
   },
 });
 

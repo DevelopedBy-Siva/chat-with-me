@@ -273,6 +273,8 @@ route.get("/contacts", async (req, resp) => {
       isOnline: item.isOnline,
       isPrivate: found.isPrivate,
       nickname: found.nickname,
+      lastMsg: found.lastMsg,
+      lastMsgTstmp: found.lastMsgTstmp,
     };
   });
   resp.status(200).send(toSend);

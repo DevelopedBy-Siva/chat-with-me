@@ -144,13 +144,13 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
               isOnline,
               avatarId,
               lastMsgTstmp,
-              id,
+              email,
               nickname,
             } = data;
             return (
               <Contact
-                className={active === id ? "active-contact" : ""}
-                onClick={() => handleContact(id)}
+                className={active === email ? "active-contact" : ""}
+                onClick={() => handleContact(email)}
                 key={`V${index}`}
               >
                 <AvatarContainer>
