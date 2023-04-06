@@ -367,7 +367,10 @@ route.get("/contacts/search", async (req, resp) => {
 route.delete("/remove", async (req, resp) => {
   const { email } = req.payload;
 
-  await UserCollection.deleteOne({ email });
+  const isDeleted = await UserCollection.deleteOne({ email });
+
+  if (isDeleted.deletedCount > 0)
+    await UserCollection.updateMany({}, { $pull: { contacts: { email } } });
 
   const { jwtTokenKey, isLoggedInKey } = cookies.cookieNames;
   resp.clearCookie(jwtTokenKey);
