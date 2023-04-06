@@ -281,6 +281,34 @@ route.put("/block", async (req, resp) => {
 });
 
 /**
+ * Unblock a contact
+ */
+route.put("/unblock", async (req, resp) => {
+  const { email } = req.payload;
+
+  const toUnblock = req.query.email.trim().toLowerCase();
+
+  const data = await UserCollection.findOne({ email });
+  const myContacts = data.contacts;
+
+  const index = myContacts.findIndex((i) => i.email === toUnblock);
+  if (index === -1)
+    return resp
+      .status(400)
+      .send(
+        new AppError(
+          ErrorCodes.ERR_INVALID_REQUEST,
+          "Contact doesn't exist or already unblocked"
+        )
+      );
+
+  data.contacts[index].isBlocked = false;
+  data.save();
+
+  resp.status(201).send();
+});
+
+/**
  * Get user contacts
  */
 route.get("/contacts", async (req, resp) => {

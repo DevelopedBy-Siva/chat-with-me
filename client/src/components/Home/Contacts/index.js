@@ -85,7 +85,10 @@ export default function Contacts() {
                 setInProgress={setInProgress}
               />
             ) : activeBtn === "blocked" ? (
-              <BlockedContacts />
+              <BlockedContacts
+                inProgress={inProgress}
+                setInProgress={setInProgress}
+              />
             ) : (
               <AddContacts setAddContactActive={setAddContactActive} />
             )}

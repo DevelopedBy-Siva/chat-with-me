@@ -3,6 +3,7 @@ export const CONTACTS_LOADING = "CONTACTS_LOADING";
 export const CONTACTS_ERROR = "CONTACTS_ERROR";
 export const ADD_NEW_CONTACT = "ADD_NEW_CONTACT";
 export const BLOCK_CONTACT = "BLOCK_CONTACT";
+export const UNBLOCK_CONTACT = "UNBLOCK_CONTACT";
 export const DELETE_CONTACT = "DELETE_CONTACT";
 
 export const getContacts = (payload) => {
@@ -42,6 +43,13 @@ export const deleteUserContact = (payload) => {
 export const blockUserContact = (payload) => {
   return {
     type: BLOCK_CONTACT,
+    payload,
+  };
+};
+
+export const unBlockUserContact = (payload) => {
+  return {
+    type: UNBLOCK_CONTACT,
     payload,
   };
 };

@@ -9,6 +9,7 @@ import {
   DELETE_CONTACT,
   getContacts,
   GET_CONTACTS,
+  UNBLOCK_CONTACT,
 } from "../actions/ContactActions";
 
 const initialState = {
@@ -43,6 +44,17 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         contacts: [...afterBlocked],
+      };
+    case UNBLOCK_CONTACT:
+      const unblockIndex = state.contacts.findIndex(
+        (item) => item.email === payload
+      );
+      if (unblockIndex === -1) return { ...state };
+      const afterUnBlocked = [...state.contacts];
+      afterUnBlocked[unblockIndex].isBlocked = false;
+      return {
+        ...state,
+        contacts: [...afterUnBlocked],
       };
     case DELETE_CONTACT:
       const deleteIndex = state.contacts.findIndex(

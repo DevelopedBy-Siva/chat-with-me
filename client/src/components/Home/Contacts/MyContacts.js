@@ -53,9 +53,9 @@ export default function MyContacts({ inProgress, setInProgress }) {
         await axios
           .delete(`/user/contact?email=${email}`)
           .then(() => {
+            dispatch(deleteUserContact(email));
             removeConfirmMessage();
             setInProgress(false);
-            dispatch(deleteUserContact(email));
             toast.success("Contact removed successfully");
           })
           .catch((error) => {
@@ -68,9 +68,9 @@ export default function MyContacts({ inProgress, setInProgress }) {
         await axios
           .put(`/user/block?email=${email}`)
           .then(() => {
+            dispatch(blockUserContact(email));
             removeConfirmMessage();
             setInProgress(false);
-            dispatch(blockUserContact(email));
             toast.success("Contact blocked successfully");
           })
           .catch((error) => {
