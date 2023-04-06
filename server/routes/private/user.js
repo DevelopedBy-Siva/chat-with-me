@@ -164,6 +164,7 @@ route.post("/add-contact", async (req, resp) => {
     email: newContactMail,
     nickname,
     isPrivate: true,
+    isBlocked: false,
   });
   data.save();
 
@@ -181,6 +182,7 @@ route.post("/add-contact", async (req, resp) => {
     description,
     isOnline,
     isPrivate: true,
+    isBlocked: false,
     nickname,
   });
 });
@@ -251,6 +253,34 @@ route.delete("/contact", async (req, resp) => {
 });
 
 /**
+ * Block a contact
+ */
+route.put("/block", async (req, resp) => {
+  const { email } = req.payload;
+
+  const toBlock = req.query.email.trim().toLowerCase();
+
+  const data = await UserCollection.findOne({ email });
+  const myContacts = data.contacts;
+
+  const index = myContacts.findIndex((i) => i.email === toBlock);
+  if (index === -1)
+    return resp
+      .status(400)
+      .send(
+        new AppError(
+          ErrorCodes.ERR_INVALID_REQUEST,
+          "Contact doesn't exist or already blocked"
+        )
+      );
+
+  data.contacts[index].isBlocked = true;
+  data.save();
+
+  resp.status(201).send();
+});
+
+/**
  * Get user contacts
  */
 route.get("/contacts", async (req, resp) => {
@@ -275,6 +305,7 @@ route.get("/contacts", async (req, resp) => {
       nickname: found.nickname,
       lastMsg: found.lastMsg,
       lastMsgTstmp: found.lastMsgTstmp,
+      isBlocked: found.isBlocked,
     };
   });
   resp.status(200).send(toSend);

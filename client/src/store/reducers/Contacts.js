@@ -34,14 +34,23 @@ const reducer = (state = initialState, action) => {
         contacts: [...newContacts],
       };
     case BLOCK_CONTACT:
+      const blockIndex = state.contacts.findIndex(
+        (item) => item.email === payload
+      );
+      if (blockIndex === -1) return { ...state };
+      const afterBlocked = [...state.contacts];
+      afterBlocked[blockIndex].isBlocked = true;
       return {
         ...state,
+        contacts: [...afterBlocked],
       };
     case DELETE_CONTACT:
-      const index = state.contacts.findIndex((item) => item.email === payload);
-      if (index === -1) return { ...state };
+      const deleteIndex = state.contacts.findIndex(
+        (item) => item.email === payload
+      );
+      if (deleteIndex === -1) return { ...state };
       const afterDelete = [...state.contacts];
-      afterDelete.splice(index, 1);
+      afterDelete.splice(deleteIndex, 1);
       return {
         ...state,
         contacts: [...afterDelete],

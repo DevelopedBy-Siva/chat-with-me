@@ -15,7 +15,11 @@ import Loader from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
 
 export default function SideBar() {
-  const { contacts, loading, error } = useSelector((state) => state.contacts);
+  const {
+    contacts: unfilteredContacts,
+    loading,
+    error,
+  } = useSelector((state) => state.contacts);
 
   const [search, setSearch] = useState("");
 
@@ -23,7 +27,7 @@ export default function SideBar() {
     const val = e.target.value;
     setSearch(val);
   }
-
+  const contacts = unfilteredContacts.filter((item) => !item.isBlocked);
   return (
     <Container>
       <Heading>Message</Heading>

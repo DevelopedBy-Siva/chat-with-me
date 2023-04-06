@@ -1,11 +1,31 @@
 const mongoose = require("mongoose");
 
 const ContactType = {
-  email: String,
-  nickname: String,
-  isPrivate: Boolean,
-  lastMsgTstmp: String,
-  lastMsg: String,
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+  },
+  nickname: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+  },
+  isPrivate: {
+    type: Boolean,
+    default: true,
+  },
+  lastMsgTstmp: {
+    type: String,
+    default: "",
+  },
+  lastMsg: {
+    type: String,
+    default: "",
+  },
+  isBlocked: { type: Boolean, default: false },
 };
 
 const schema = new mongoose.Schema({
@@ -61,10 +81,6 @@ const schema = new mongoose.Schema({
   avatarId: {
     type: String,
     default: "",
-  },
-  blocked: {
-    type: [ContactType],
-    default: [],
   },
 });
 
