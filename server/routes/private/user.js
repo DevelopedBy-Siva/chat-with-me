@@ -6,6 +6,7 @@ const {
 } = require("../../utils/validation");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
+const GroupsCollection = require("../../db/model/Groups");
 const { hash, login, cookies, jwtToken } = require("../../auth");
 
 const route = express.Router();
@@ -359,6 +360,71 @@ route.get("/contacts/search", async (req, resp) => {
     { email: 1, name: 1, avatarId: 1, _id: 0 }
   ).sort({ name: 1 });
   resp.status(200).send(contacts);
+});
+
+route.post("/create-group", async (req, resp) => {
+  const { email } = req.payload;
+  const { name, members } = req.body;
+
+  if (!Array.isArray(members) || members.length === 0)
+    return resp
+      .status(400)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Members required"));
+
+  members.push({ email });
+  const contacts = members.map((i) => i.email);
+
+  const userData = await UserCollection.find(
+    { email: { $in: contacts } },
+    { avatarId: 1, email: 1, name: 1, contacts: 1, _id: 0 }
+  );
+
+  const curentUserIndex = userData.findIndex((i) => i.email === email);
+  const currentUserContacts = userData[curentUserIndex].contacts;
+
+  const membersToStore = userData.map((i) => {
+    return {
+      email: i.email,
+    };
+  });
+
+  const document = new GroupsCollection({
+    name,
+    members: membersToStore,
+    admin: email,
+  });
+  const data = await document.save();
+
+  const groupRef = {
+    ref: data._id,
+  };
+
+  await UserCollection.updateMany(
+    { email: { $in: contacts } },
+    { $push: { groups: groupRef } }
+  );
+
+  let details = [];
+  userData.forEach((i) => {
+    if (i.email !== email) {
+      let data = {
+        nickname: null,
+        name: i.name,
+        email: i.email,
+        avatarId: i.avatarId,
+      };
+      const exists = currentUserContacts.findIndex(
+        (cur) => cur.email === i.email
+      );
+      if (exists !== -1) data.nickname = currentUserContacts[exists].nickname;
+      details.push(data);
+    }
+  });
+
+  resp.status(200).send({
+    data,
+    members: details,
+  });
 });
 
 /**

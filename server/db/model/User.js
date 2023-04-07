@@ -66,6 +66,16 @@ const schema = new mongoose.Schema({
     type: [ContactType],
     default: [],
   },
+  groups: {
+    type: [
+      {
+        ref: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+      },
+    ],
+    default: [],
+  },
   joinedOn: {
     type: String,
     default: () => new Date().toUTCString(),
