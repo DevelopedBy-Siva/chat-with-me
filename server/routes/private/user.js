@@ -382,6 +382,13 @@ route.post("/create-group", async (req, resp) => {
   const curentUserIndex = userData.findIndex((i) => i.email === email);
   const currentUserContacts = userData[curentUserIndex].contacts;
 
+  if (userData[curentUserIndex].groups.length >= 2)
+    return resp
+      .status(400)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Group limit reached")
+      );
+
   const membersToStore = userData.map((i) => {
     return {
       email: i.email,
@@ -436,7 +443,10 @@ route.delete("/remove", async (req, resp) => {
   const isDeleted = await UserCollection.deleteOne({ email });
 
   if (isDeleted.deletedCount > 0)
-    await UserCollection.updateMany({}, { $pull: { contacts: { email } } });
+    await Promise.all([
+      UserCollection.updateMany({}, { $pull: { contacts: { email } } }),
+      GroupsCollection.updateMany({}, { $pull: { members: { email } } }),
+    ]);
 
   const { jwtTokenKey, isLoggedInKey } = cookies.cookieNames;
   resp.clearCookie(jwtTokenKey);
