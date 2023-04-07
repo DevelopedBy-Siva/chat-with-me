@@ -13,10 +13,6 @@ const ContactType = {
     trim: true,
     lowercase: true,
   },
-  isPrivate: {
-    type: Boolean,
-    default: true,
-  },
   lastMsgTstmp: {
     type: String,
     default: "",

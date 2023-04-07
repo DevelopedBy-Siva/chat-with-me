@@ -134,8 +134,7 @@ route.post("/add-contact", async (req, resp) => {
   const data = await UserCollection.findOne({ email });
   const myContacts = data.contacts;
 
-  const noOfPrivateContacts = myContacts.filter((item) => item.isPrivate);
-  if (noOfPrivateContacts.length >= 3)
+  if (myContacts.length >= 3)
     return resp
       .status(405)
       .send(
@@ -164,7 +163,6 @@ route.post("/add-contact", async (req, resp) => {
   data.contacts.push({
     email: newContactMail,
     nickname,
-    isPrivate: true,
     isBlocked: false,
   });
   data.save();
@@ -182,7 +180,6 @@ route.post("/add-contact", async (req, resp) => {
     avatarId,
     description,
     isOnline,
-    isPrivate: true,
     isBlocked: false,
     nickname,
   });
@@ -315,29 +312,75 @@ route.put("/unblock", async (req, resp) => {
 route.get("/contacts", async (req, resp) => {
   const { email } = req.payload;
   const data = await UserCollection.findOne({ email });
+
+  const myGroups = data.groups.map((ele) => ele.ref);
+  const groups = await GroupsCollection.find({ _id: { $in: myGroups } });
+
+  let grpMembers = [];
+  groups.forEach((item) =>
+    item.members.forEach((m) => grpMembers.push(m.email))
+  );
+
   const myContacts = data.contacts.map((ele) => ele.email);
 
+  const toLookUp = new Set();
+  [...myContacts, ...grpMembers].forEach((item) => toLookUp.add(item));
+
   const contacts = await UserCollection.find(
-    { email: { $in: myContacts } },
+    { email: { $in: [...toLookUp] } },
     { email: 1, description: 1, name: 1, _id: 0, avatarId: 1, isOnline: 1 }
   );
 
-  const toSend = contacts.map((item) => {
-    const found = data.contacts.find((ele) => ele.email === item.email);
-    return {
-      email: item.email,
-      description: item.description,
-      name: item.name,
-      avatarId: item.avatarId,
-      isOnline: item.isOnline,
-      isPrivate: found.isPrivate,
-      nickname: found.nickname,
-      lastMsg: found.lastMsg,
-      lastMsgTstmp: found.lastMsgTstmp,
-      isBlocked: found.isBlocked,
-    };
+  let contactsToSend = [];
+  myContacts.forEach((con) => {
+    const index = contacts.findIndex((item) => item.email === con);
+    if (index !== -1) {
+      const details = contacts[index];
+      const found = data.contacts.find((ele) => ele.email === details.email);
+
+      contactsToSend.push({
+        email: details.email,
+        description: details.description,
+        name: details.name,
+        avatarId: details.avatarId,
+        isOnline: details.isOnline,
+        nickname: found.nickname,
+        lastMsg: found.lastMsg,
+        lastMsgTstmp: found.lastMsgTstmp,
+        isBlocked: found.isBlocked,
+      });
+    }
   });
-  resp.status(200).send(toSend);
+
+  let groupsToSend = [];
+  groups.forEach((grp) => {
+    let memberDetails = [];
+    grp.members.forEach((item) => {
+      const index = contacts.findIndex((i) => i.email === item.email);
+      if (index !== -1) {
+        const contactDetails = contacts[index];
+        const found = data.contacts.find(
+          (ele) => ele.email === contactDetails.email
+        );
+
+        memberDetails.push({
+          name: contactDetails.name,
+          email: contactDetails.email,
+          avatarId: contactDetails.avatarId,
+          nickname: found.nickname,
+        });
+      }
+    });
+    groupsToSend.push({
+      ...grp,
+      members: memberDetails,
+    });
+  });
+
+  resp.status(200).send({
+    contacts: contactsToSend,
+    groups: groupsToSend,
+  });
 });
 
 /**
@@ -429,7 +472,7 @@ route.post("/create-group", async (req, resp) => {
   });
 
   resp.status(200).send({
-    data,
+    ...data,
     members: details,
   });
 });

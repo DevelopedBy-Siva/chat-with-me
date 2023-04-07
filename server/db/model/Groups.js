@@ -35,10 +35,6 @@ const schema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  isPrivate: {
-    type: Boolean,
-    default: false,
-  },
   joinedOn: {
     type: String,
     default: () => new Date().toUTCString(),
