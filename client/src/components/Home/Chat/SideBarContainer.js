@@ -17,6 +17,7 @@ import { getAvatar } from "../../../assets/avatars";
 export default function SideBar() {
   const {
     contacts: unfilteredContacts,
+    groups,
     loading,
     error,
   } = useSelector((state) => state.contacts);
@@ -51,7 +52,11 @@ export default function SideBar() {
                 <SearchInputIcon search={search} setSearch={setSearch} />
               </SearchContainer>
             )}
-            <ContactsWrapper search={search} contacts={contacts} />
+            <ContactsWrapper
+              search={search}
+              contacts={contacts}
+              groups={groups}
+            />
           </React.Fragment>
         ) : (
           <FetchError>
@@ -66,7 +71,7 @@ export default function SideBar() {
   );
 }
 
-function ContactsWrapper({ search, contacts }) {
+function ContactsWrapper({ search, contacts, groups }) {
   const dispatch = useDispatch();
 
   const { active } = useSelector((state) => state.chats);
@@ -75,17 +80,13 @@ function ContactsWrapper({ search, contacts }) {
     dispatch(setActive(id));
   }
 
-  function groupContacts(data = []) {
+  function groupContacts(contacts = [], groups = []) {
     let grouped = {
       directMessage: [],
       group: [],
     };
-    data.forEach((i) => {
-      if (i.isPrivate) grouped.directMessage.push(i);
-      else grouped.group.push(i);
-    });
-    grouped.directMessage = orderContactsDesc(search, grouped.directMessage);
-    grouped.group = orderContactsDesc(search, grouped.group);
+    grouped.directMessage = orderContactsDesc(search, contacts);
+    grouped.group = orderContactsDesc(search, groups);
 
     let refactoredKeys = [];
     Object.keys(grouped).forEach((k) => {
@@ -94,9 +95,9 @@ function ContactsWrapper({ search, contacts }) {
     return { keys: refactoredKeys, values: grouped };
   }
 
-  const contactsToRender = groupContacts(contacts);
+  const contactsToRender = groupContacts(contacts, groups);
 
-  if (contacts && contacts.length === 0)
+  if (contacts && contacts.length === 0 && groups && groups.length === 0)
     return (
       <EmptyContacts>
         No contacts found. <AddContact to="/contacts">Add contact</AddContact>

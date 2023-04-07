@@ -6,6 +6,7 @@ import {
   contactsLoading,
   CONTACTS_ERROR,
   CONTACTS_LOADING,
+  CREATE_GROUP,
   DELETE_CONTACT,
   getContacts,
   GET_CONTACTS,
@@ -15,6 +16,7 @@ import {
 const initialState = {
   loading: true,
   contacts: [],
+  groups: [],
   error: null,
 };
 
@@ -26,7 +28,15 @@ const reducer = (state = initialState, action) => {
     case CONTACTS_ERROR:
       return { ...state, loading: false, error: payload };
     case GET_CONTACTS:
-      return { ...state, contacts: [...payload], loading: false, error: null };
+      const allContacts = [...payload.contacts];
+      const allGroups = [...payload.groups];
+      return {
+        ...state,
+        contacts: [...allContacts],
+        groups: [...allGroups],
+        loading: false,
+        error: null,
+      };
     case ADD_NEW_CONTACT:
       const newContacts = [...state.contacts];
       newContacts.unshift(payload);
@@ -66,6 +76,13 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         contacts: [...afterDelete],
+      };
+    case CREATE_GROUP:
+      const newGroups = [...state.groups];
+      newGroups.unshift(payload);
+      return {
+        ...state,
+        groups: newGroups,
       };
     default:
       return state;

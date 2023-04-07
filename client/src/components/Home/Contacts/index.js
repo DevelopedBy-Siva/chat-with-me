@@ -76,7 +76,7 @@ export default function Contacts() {
           </Nav>
           <Content>
             {loading ? (
-              <LoadingSpinner />
+              <LoadingSpinner style={{ opacity: "0.7" }} />
             ) : error ? (
               <ErrorMsg>Something went wrong. Please try again later.</ErrorMsg>
             ) : activeBtn === "contacts" ? (

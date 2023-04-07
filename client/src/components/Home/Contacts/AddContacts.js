@@ -125,7 +125,7 @@ const SearchContainer = styled.form`
   background-color: ${(props) => props.theme.btn.active};
   color: ${(props) => props.theme.txt.sub};
   cursor: text;
-  height: 40px;
+  height: 35px;
   width: 100%;
 `;
 
@@ -140,7 +140,7 @@ const SearchInput = styled.input`
   color: ${(props) => props.theme.txt.main};
   letter-spacing: 1px;
   padding: 0px 10px;
-  height: 40px;
+  height: 100%;
 
   &::placeholder {
     color: ${(props) => props.theme.txt.sub};
@@ -164,13 +164,13 @@ const SearchBtn = styled.button`
   border: none;
   outline: none;
   height: 100%;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   display: flex;
   justify-content: center;
   align-items: center;
   color: ${(props) => props.theme.txt.sub};
   background-color: ${(props) => props.theme.btn.default};
-  width: 40px;
+  width: 35px;
   cursor: pointer;
 
   &:hover {

@@ -326,10 +326,7 @@ route.get("/contacts", async (req, resp) => {
   const toLookUp = new Set();
   [...myContacts, ...grpMembers].forEach((item) => toLookUp.add(item));
 
-  const contacts = await UserCollection.find(
-    { email: { $in: [...toLookUp] } },
-    { email: 1, description: 1, name: 1, _id: 0, avatarId: 1, isOnline: 1 }
-  );
+  const contacts = await UserCollection.find({ email: { $in: [...toLookUp] } });
 
   let contactsToSend = [];
   myContacts.forEach((con) => {
@@ -356,23 +353,28 @@ route.get("/contacts", async (req, resp) => {
   groups.forEach((grp) => {
     let memberDetails = [];
     grp.members.forEach((item) => {
-      const index = contacts.findIndex((i) => i.email === item.email);
-      if (index !== -1) {
-        const contactDetails = contacts[index];
-        const found = data.contacts.find(
-          (ele) => ele.email === contactDetails.email
-        );
-
-        memberDetails.push({
-          name: contactDetails.name,
-          email: contactDetails.email,
-          avatarId: contactDetails.avatarId,
-          nickname: found.nickname,
-        });
+      if (item.email !== email) {
+        const index = contacts.findIndex((i) => i.email === item.email);
+        if (index !== -1) {
+          const contactDetails = contacts[index];
+          const found = data.contacts.find(
+            (ele) => ele.email === contactDetails.email
+          );
+          const nickname = found ? found.nickname : undefined;
+          memberDetails.push({
+            name: contactDetails.name,
+            email: contactDetails.email,
+            avatarId: contactDetails.avatarId,
+            nickname,
+          });
+        }
       }
     });
     groupsToSend.push({
-      ...grp,
+      name: grp.name,
+      admin: grp.admin,
+      lastMsg: grp.lastMsg,
+      lastMsgTstmp: grp.lastMsgTstmp,
       members: memberDetails,
     });
   });
@@ -409,25 +411,22 @@ route.post("/create-group", async (req, resp) => {
   const { email } = req.payload;
   const { name, members } = req.body;
 
-  if (!Array.isArray(members) || members.length === 0)
+  if (!Array.isArray(members) || members.length < 2)
     return resp
       .status(400)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Members required"));
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid Request"));
 
   members.push({ email });
   const contacts = members.map((i) => i.email);
 
-  const userData = await UserCollection.find(
-    { email: { $in: contacts } },
-    { avatarId: 1, email: 1, name: 1, contacts: 1, _id: 0 }
-  );
+  const userData = await UserCollection.find({ email: { $in: contacts } });
 
   const curentUserIndex = userData.findIndex((i) => i.email === email);
   const currentUserContacts = userData[curentUserIndex].contacts;
 
   if (userData[curentUserIndex].groups.length >= 2)
     return resp
-      .status(400)
+      .status(405)
       .send(
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Group limit reached")
       );
@@ -472,7 +471,10 @@ route.post("/create-group", async (req, resp) => {
   });
 
   resp.status(200).send({
-    ...data,
+    name: data.name,
+    admin: data.admin,
+    lastMsg: data.lastMsg,
+    lastMsgTstmp: data.lastMsgTstmp,
     members: details,
   });
 });

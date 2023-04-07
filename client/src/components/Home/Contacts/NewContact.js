@@ -65,7 +65,7 @@ function NewContact({ close, item = {} }) {
         let { message } = retrieveError(error);
         if (error.response.status === 405)
           message =
-            "Sorry, contact limit reached. You are not allowed to add more than 3 contacts";
+            "Sorry, contacts limit reached. You are not allowed to add more than 3 contacts";
         toast.error(message, toast.props.user.nonPersist);
         setIsLoading(false);
       });
