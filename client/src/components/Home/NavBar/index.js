@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { IoIosSettings } from "react-icons/io";
@@ -9,10 +10,9 @@ import { HiOutlineSun } from "react-icons/hi";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { BiLogOut } from "react-icons/bi";
 
-import Tooltip from "../Tooltip";
 import Logo from "../../Logo";
-import profileImg from "../../../assets/avatars/2.svg";
 import { ThemeContext } from "../../../context/ThemeContext";
+import { getAvatar } from "../../../assets/avatars";
 
 const navBtns = [
   {
@@ -48,24 +48,25 @@ const navBtns = [
 ];
 
 export default function NavBarContainer() {
+  const avatarId = useSelector((state) => state.user.details.avatarId);
+
   return (
     <Container>
       <Logo center />
       <Navs>
         {navBtns.map((nav, index) => (
           <NavBtnContainer key={index}>
-            <NavBtn to={nav.navTo} id={nav.id}>
+            <NavBtn title={nav.placeholder} to={nav.navTo} id={nav.id}>
               <NavBorder />
               {nav.icon}
             </NavBtn>
-            <Tooltip id={nav.id} msg={nav.placeholder} />
           </NavBtnContainer>
         ))}
       </Navs>
       <Wrapper>
         <ThemeSwitch />
         <Profile to="/profile">
-          <ProfileImg src={profileImg} />
+          <ProfileImg src={getAvatar(avatarId)} />
         </Profile>
       </Wrapper>
     </Container>
@@ -94,6 +95,13 @@ const Container = styled.nav`
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 920px) {
+    width: 100%;
+    height: 52px;
+    flex-direction: row;
+    flex-shrink: 0;
+  }
 `;
 
 const NavBtnContainer = styled.div`
@@ -105,6 +113,12 @@ const NavBtnContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  @media (max-width: 920px) {
+    width: 16.7%;
+    height: 100%;
+    margin: 0;
+  }
 `;
 
 const NavBorder = styled.span`
@@ -116,6 +130,14 @@ const NavBorder = styled.span`
   width: 5px;
   background: none;
   border-radius: 0 5px 5px 0;
+
+  @media (max-width: 920px) {
+    width: 100%;
+    height: 4px;
+    top: auto;
+    right: 0;
+    border-radius: 4px 4px 0 0;
+  }
 `;
 
 const NavBtn = styled(NavLink)`
@@ -142,6 +164,10 @@ const NavBtn = styled(NavLink)`
   &:hover {
     color: ${(props) => props.theme.txt.main};
   }
+
+  @media (max-width: 920px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Navs = styled.div`
@@ -152,6 +178,14 @@ const Navs = styled.div`
   justify-content: center;
   overflow-y: auto;
   margin: 10px 0;
+
+  @media (max-width: 920px) {
+    height: 100%;
+    width: 83.5%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -160,6 +194,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 920px) {
+    width: 16.5%;
+    height: 100%;
+  }
 `;
 
 const Profile = styled(NavLink)`
@@ -171,6 +210,11 @@ const Profile = styled(NavLink)`
   cursor: pointer;
   border-radius: 50%;
   background-color: ${(props) => props.theme.btn.active};
+
+  @media (max-width: 920px) {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 const ProfileImg = styled.img`
@@ -191,6 +235,10 @@ const Switch = styled.button`
   cursor: pointer;
   background: ${(props) => `${props.theme.bg.container}`};
   overflow: hidden;
+
+  @media (max-width: 920px) {
+    display: none;
+  }
 `;
 
 const SwitchLabel = styled.span`

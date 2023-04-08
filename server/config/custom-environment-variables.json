@@ -7,5 +7,6 @@
   },
   "db": {
     "url": "DB_URL"
-  }
+  },
+  "client_url": "CLIENT_URL"
 }

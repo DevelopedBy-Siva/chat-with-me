@@ -1,7 +1,11 @@
-import { APP_NAME } from "../assets/constants";
+import Cookies from "universal-cookie";
+
 import { DarkTheme, LightTheme } from "../assets/styles/Themes";
 
-const THEME_KEY = `${APP_NAME}_THEME`;
+const THEME_KEY = "prefered_theme_mode";
+const IS_LOGGED_IN_KEY = "logged_in";
+
+const cookies = new Cookies();
 
 export function updateTheme(val = "light") {
   try {
@@ -23,4 +27,10 @@ export function getTheme() {
 export function getStyles(theme) {
   if (theme === "dark") return DarkTheme;
   return LightTheme;
+}
+
+export function isLoggedIn() {
+  const isLogged = cookies.get(IS_LOGGED_IN_KEY);
+  if (isLogged === "yes") return true;
+  return false;
 }

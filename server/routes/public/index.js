@@ -1,6 +1,7 @@
 const express = require("express");
-const { ErrorCodes, AppError } = require("../../exceptions");
+
 const auth = require("../../auth");
+const { ErrorCodes, AppError } = require("../../exceptions");
 const { validateUser, schema } = require("../../utils/validation");
 const { sendMail, type } = require("../../utils/mail");
 const UserCollection = require("../../db/model/User");
@@ -14,6 +15,7 @@ const route = express.Router();
 route.post("/login", async (req, resp) => {
   const email = req.header("x-auth-email");
   const password = req.header("x-auth-password");
+
   const { error, value } = validateUser(
     { email, password },
     { email: schema.email, password: schema.password }
@@ -26,7 +28,7 @@ route.post("/login", async (req, resp) => {
   // Get User Details from DB
   const user = await UserCollection.findOne(
     { email: value.email },
-    { email: 1, password: 1 }
+    { email: 1, password: 1, name: 1, isOnline: 1, description: 1 }
   );
   if (!user)
     return resp
@@ -47,7 +49,16 @@ route.post("/login", async (req, resp) => {
 
   // Generate JWT token
   const token = auth.jwtToken(user.email);
-  resp.setHeader("x-auth-token", token).send();
+
+  const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
+  const expiresAt = expiry();
+
+  resp.cookie(cookieNames.jwtTokenKey, token, {
+    ...httpOnlyCookieProps,
+    expires: expiresAt,
+  });
+  const { name, email: mail, isOnline, description, avatarId } = user;
+  resp.status(200).send({ name, email: mail, isOnline, description, avatarId });
 });
 
 /**
@@ -55,7 +66,12 @@ route.post("/login", async (req, resp) => {
  */
 route.post("/register", async (req, resp) => {
   const body = req.body;
-  const { value, error } = validateUser(body);
+  const { value, error } = validateUser(body, {
+    email: schema.email,
+    password: schema.password,
+    name: schema.name,
+    phone: schema.phone,
+  });
   if (error)
     return resp
       .status(400)
@@ -67,7 +83,7 @@ route.post("/register", async (req, resp) => {
   });
   if (user)
     return resp
-      .status(400)
+      .status(409)
       .send(
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "User already registered")
       );
@@ -78,11 +94,18 @@ route.post("/register", async (req, resp) => {
   // Create User Document
   const document = new UserCollection({ ...value, password: hashedPswd });
   // Save Document to DB
-  await document.save();
+  const { email, name, description, isOnline, avatarId } =
+    await document.save();
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
-  resp.setHeader("x-auth-token", token).send();
+  const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
+  const expiresAt = expiry();
+  resp.cookie(cookieNames.jwtTokenKey, token, {
+    ...httpOnlyCookieProps,
+    expires: expiresAt,
+  });
+  resp.status(200).send({ email, name, description, isOnline, avatarId });
 });
 
 /**
@@ -122,7 +145,7 @@ route.post("/forgot-pswd", async (req, resp) => {
   const verificationDoc = new VerificationCodeCollection(data);
   await verificationDoc.save();
 
-  resp.send();
+  resp.status(201).send();
 });
 
 /**
@@ -169,7 +192,7 @@ route.post("/verify-account", async (req, resp) => {
           "Invalid verification code"
         )
       );
-  resp.send();
+  resp.status(201).send();
 });
 
 /**
@@ -177,45 +200,16 @@ route.post("/verify-account", async (req, resp) => {
  */
 route.put("/change-pswd", async (req, resp) => {
   const password = req.header("x-password");
-  const verifyCode = req.header("x-verify-code");
   const email = req.query.email;
 
   const { error, value } = validateUser(
     { password, email },
     { password: schema.password, email: schema.email }
   );
-  if (!verifyCode || error)
+  if (error)
     return resp
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid Request"));
-
-  // Check whether the Verification Code is expired or not
-  const verify = await VerificationCodeCollection.find({
-    requestedBy: value.email,
-    expiresAt: { $gt: new Date() },
-  })
-    .sort({ createdAt: -1 })
-    .limit(1);
-
-  if (verify.length === 0)
-    return resp
-      .status(410)
-      .send(
-        new AppError(
-          ErrorCodes.ERR_VERIFY_CODE_EXPIRED,
-          "Verification code expired"
-        )
-      );
-
-  if (parseFloat(verifyCode) !== verify[0].verificationCode)
-    return resp
-      .status(400)
-      .send(
-        new AppError(
-          ErrorCodes.ERR_INVALID_VERIFY_CODE,
-          "Invalid verification code"
-        )
-      );
 
   // Hash Password
   const hashedPswd = await auth.hash(value.password);
@@ -231,7 +225,17 @@ route.put("/change-pswd", async (req, resp) => {
       .status(404)
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
-  resp.send();
+  resp.status(201).send();
+});
+
+/**
+ * Remove HttpOnly Cookie
+ */
+route.post("/logout", (_, resp) => {
+  const { jwtTokenKey, isLoggedInKey } = auth.cookies.cookieNames;
+  resp.clearCookie(jwtTokenKey);
+  resp.clearCookie(isLoggedInKey);
+  resp.status(201).send();
 });
 
 module.exports = route;

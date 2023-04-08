@@ -1,18 +1,14 @@
 import _ from "axios";
-import * as toast from "../components/Toastify/UserToastUtils";
-import retrieveError from "./ExceptionHandler";
 
 const baseURL = process.env.REACT_APP_API_BASEURL;
 const apiTimeout = process.env.REACT_APP_API_TIMEOUT;
 
 const axios = _.create({ baseURL });
 axios.defaults.timeout = apiTimeout;
+axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(
   (request) => {
-    toast.dismiss();
-    // TODO
-    // add Headers
     return request;
   },
   (error) => {
@@ -26,14 +22,13 @@ axios.interceptors.response.use(
   },
   (error) => {
     const promise = Promise.reject(error);
-    if (error.response.status !== 500) return promise;
-    promise.catch(({ code }) => {
-      const { message, addToast } = retrieveError(code);
-      addToast &&
-        toast.error(message, {
-          toastId: toast.TOAST_DISMISS_ID,
-        });
-    });
+    try {
+      if (
+        (error.response.status === 401 || error.response.status === 403) &&
+        !window.location.pathname.includes("/sign-in")
+      )
+        window.location = "/sign-in";
+    } catch (_) {}
     return promise;
   }
 );

@@ -6,7 +6,7 @@ export const AllowedInputFields = {
   PASSWORD: "password",
   CONFIRM_PASSWORD: "confirmPassword",
   PHONE: "phone",
-  REMEMBER_ME: "rememberme",
+  CURRENT_PASSWORD: "currentPassword",
 };
 
 let inputData = {
@@ -15,7 +15,7 @@ let inputData = {
   password: null,
   phone: null,
   confirmPassword: null,
-  rememberme: false,
+  currentPassword: null,
 };
 
 export const inputChanges = (e, type, source, ...requiredFields) => {
@@ -23,7 +23,7 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
   let data = { ...inputData };
   data = Object.assign(data, source);
 
-  const { EMAIL, NAME, PASSWORD, CONFIRM_PASSWORD, PHONE, REMEMBER_ME } =
+  const { EMAIL, NAME, PASSWORD, CONFIRM_PASSWORD, PHONE, CURRENT_PASSWORD } =
     AllowedInputFields;
 
   switch (type) {
@@ -45,8 +45,8 @@ export const inputChanges = (e, type, source, ...requiredFields) => {
       if (parsedVal.length > 10) break;
       data.phone = parsedVal;
       break;
-    case REMEMBER_ME:
-      data.rememberme = e.target.checked;
+    case CURRENT_PASSWORD:
+      data.currentPassword = value;
       break;
     default:
       break;
@@ -88,9 +88,13 @@ export const nameValidation = (name) => {
 };
 
 export const passwordValidation = (password) => {
-  const isValid = password && password.length >= 8;
+  const PASSWORD_PATTERN =
+    /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%&]).{8,16}$/;
+  const isValid = PASSWORD_PATTERN.test(password);
   let message = null;
-  if (!isValid) message = "Minimum password length should be 8 characters";
+  if (!isValid)
+    message =
+      "Passwords must have atleast 8 characters, should contain upper, lower & numeric characters, and include symbols like !@#$%&";
   return {
     isValid,
     message,
@@ -111,6 +115,30 @@ export const statusValidation = (status) => {
   const isValid = status && status.length >= 1 && status.length <= 150;
   let message = null;
   if (!isValid) message = "Status length must be >=1 or <=150";
+  return {
+    isValid,
+    message,
+  };
+};
+
+export const nicknameValidation = (nickname, contacts = []) => {
+  let isValid = true;
+  if (!nickname) isValid = false;
+  if (isValid) isValid = /^[a-zA-Z0-9_]{3,}$/.test(nickname);
+
+  let message = null;
+  if (!isValid)
+    message =
+      "Nicknames must contain more than 3 characters, and the only allowed characters are alphabets, numbers, and underscore (_)";
+
+  const isDuplicate = contacts.some(
+    (item) => item.nickname === nickname.trim().toLowerCase()
+  );
+  if (isValid && isDuplicate) {
+    isValid = false;
+    message = "Nickname already exists";
+  }
+
   return {
     isValid,
     message,

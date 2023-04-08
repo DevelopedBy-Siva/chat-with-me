@@ -4,6 +4,9 @@ import styled from "styled-components";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import SubModal from "../Modal/SubModal";
 import LoadingSpinner from "../../Loader";
+import axios from "../../../api/axios";
+import retrieveError from "../../../api/ExceptionHandler";
+import toast from "../../Toast";
 
 const modalStyle = {
   maxHeight: "310px",
@@ -30,9 +33,18 @@ export default function DeleteAccountScreen({ close }) {
     setConfirm({ ...confirm, allow: false });
   }
 
-  function deleteAccount() {
+  async function deleteAccount() {
     if (!confirm.allow || confirm.loading === true) return;
     setConfirm({ ...confirm, loading: true });
+
+    await axios
+      .delete("/user/remove")
+      .then(() => (window.location = "/sign-in"))
+      .catch((error) => {
+        const { message } = retrieveError(error);
+        toast.error(message, toast.props.user.nonPersist);
+        setConfirm({ ...confirm, loading: false });
+      });
   }
 
   function handleClose() {
@@ -53,7 +65,7 @@ export default function DeleteAccountScreen({ close }) {
           </Description>
           <InputLabel>
             Type
-            <i style={{ fontWeight: 500 }}> delete </i>
+            <i className="hightlight"> delete </i>
             to confirm deletion
           </InputLabel>
           <InputContainer
@@ -111,6 +123,11 @@ const InputLabel = styled.label`
   color: ${(props) => props.theme.txt.sub};
   margin-top: 1.2rem;
   font-size: 0.8rem;
+
+  .hightlight {
+    color: ${(props) => props.theme.txt.main};
+    font-weight: 400;
+  }
 
   @media (max-width: 484px) {
     font-size: 0.7rem;

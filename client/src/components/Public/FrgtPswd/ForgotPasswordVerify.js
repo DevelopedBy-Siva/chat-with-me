@@ -5,6 +5,8 @@ import styled from "styled-components";
 import axios from "../../../api/axios";
 import ButtonContainer from "../common/ButtonContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
+import toast from "../../Toast";
+import retrieveError from "../../../api/ExceptionHandler";
 
 export default function ForgotPasswordVerify({
   info,
@@ -92,6 +94,7 @@ export default function ForgotPasswordVerify({
 
   const verifyEmail = (e) => {
     e.preventDefault();
+    toast.remove();
 
     setServerResponse({
       loading: true,
@@ -99,11 +102,22 @@ export default function ForgotPasswordVerify({
     });
 
     axios
-      .get("/posts/1")
+      .post(`/verify-account?email=${info.email}`, null, {
+        headers: {
+          "x-verify-code": verificationCode,
+        },
+      })
       .then(() => {
         handleScreen(SCREEN.CNG_PSWD);
       })
-      .catch(() => {
+      .catch((error) => {
+        let { message } = retrieveError(error, true);
+        try {
+          if (error.response.status === 400)
+            message = "Invalid verification code";
+        } catch (_) {}
+        toast.error(message, toast.props.user.persist);
+
         setServerResponse({
           loading: false,
           error: "ERROR MESSAGE",

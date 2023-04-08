@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
+import { BsMoonFill } from "react-icons/bs";
+import { HiOutlineSun } from "react-icons/hi";
 
 import SubInfo from "../Info/SubInfo";
 import Modal from "../Modal";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import ChangePasswordScreen from "./ChangePasswordScreen";
 import ConfirmDeleteAccount from "./DeleteAccountScreen";
+import { ThemeContext } from "../../../context/ThemeContext";
 
 const settings = [
   {
@@ -54,6 +57,10 @@ export default function Settings() {
                 ))}
               </SettingBody>
             </SettingTable>
+            <LightOrDarkMode>
+              <LightOrDarkModeHeading>Application theme</LightOrDarkModeHeading>
+              <ThemeSwitch />
+            </LightOrDarkMode>
             <ChangePassword>
               <ChangePasswordHeading>
                 Change your account password
@@ -82,6 +89,23 @@ export default function Settings() {
         <ConfirmDeleteAccount close={() => setshowDeletePswd(false)} />
       )}
     </React.Fragment>
+  );
+}
+
+function ThemeSwitch() {
+  const { appTheme, handleTheme } = useContext(ThemeContext);
+
+  const currentTheme = () => {
+    if (appTheme === "light") return "dark";
+    return "light";
+  };
+
+  return (
+    <Switch onClick={() => handleTheme(currentTheme())}>
+      <SwitchLabel className={appTheme} />
+      <BsFillMoonFillCustom className={appTheme === "dark" ? "show" : "hide"} />
+      <HiOutlineSunCustom className={appTheme === "dark" ? "hide" : "show"} />
+    </Switch>
   );
 }
 
@@ -156,20 +180,20 @@ const ChangePasswordHeading = styled.span`
 `;
 
 const ChangePasswordBtn = styled.button`
-  color: ${(props) => props.theme.txt.sub};
-  outline-color: ${(props) => props.theme.border.outline};
-  border: 1px solid ${(props) => props.theme.border.default};
-  background: ${(props) => props.theme.btn.active};
+  color: #fff;
+  outline: none;
+  border: none;
+  background: #085ed4;
   border-radius: 6px;
   padding: 8px 14px;
   font-size: 0.8rem;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
+  font-weight: 400;
   margin-left: 10px;
+  transition: background 0.25s ease-in-out;
 
-  &:hover {
-    border: 1px solid ${(props) => props.theme.txt.sub};
+  :enabled:hover {
+    background: #206ed8;
   }
 
   @media (max-width: 484px) {
@@ -225,5 +249,98 @@ const DeleteAccountBtn = styled.button`
 
   @media (max-width: 484px) {
     font-size: 0.7rem;
+  }
+`;
+
+const LightOrDarkMode = styled.div`
+  align-items: center;
+  margin-bottom: 10px;
+  display: none;
+
+  @media (max-width: 920px) {
+    display: flex;
+  }
+`;
+
+const LightOrDarkModeHeading = styled.span`
+  display: block;
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.8rem;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
+`;
+
+const Switch = styled.button`
+  width: 52px;
+  height: 26px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  position: relative;
+  cursor: pointer;
+  background: ${(props) => `${props.theme.btn.active}`};
+  border: 1px solid ${(props) => props.theme.border.default};
+  overflow: hidden;
+  margin-left: 10px;
+`;
+
+const SwitchLabel = styled.span`
+  display: block;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: ${(props) => props.theme.txt.main};
+  border-radius: 50%;
+  left: 20%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s ease-in-out;
+
+  &.dark {
+    left: 15%;
+    transform: translate(0, -50%);
+  }
+
+  &.light {
+    left: 40%;
+    transform: translate(100%, -50%);
+  }
+`;
+
+const BsFillMoonFillCustom = styled(BsMoonFill)`
+  position: absolute;
+  top: 50%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  color: ${(props) => props.theme.txt.main};
+  transition: opacity 0.3s ease-in;
+
+  &.show {
+    opacity: 1;
+  }
+
+  &.hide {
+    opacity: 0;
+  }
+`;
+
+const HiOutlineSunCustom = styled(HiOutlineSun)`
+  position: absolute;
+  top: 50%;
+  left: 28%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  color: ${(props) => props.theme.txt.main};
+  transition: opacity 0.3s ease-in;
+
+  &.show {
+    opacity: 1;
+  }
+
+  &.hide {
+    opacity: 0;
   }
 `;

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import Modal from "../Modal";
@@ -8,6 +9,7 @@ import { getAvatar } from "../../../assets/avatars";
 import SelectProfileImg from "./SelectProfileImg";
 import UserNameChange from "./UserNameChange";
 import UserDescriptionChange from "./UserDescriptionChange";
+import { updateOneTimeInfo } from "../../../store/actions/UserActions";
 
 const modalStyle = {
   maxWidth: "760px",
@@ -15,23 +17,30 @@ const modalStyle = {
 };
 
 export default function Profile() {
+  const userDetails = useSelector((state) => state.user.details);
+
   const [userNameChange, setUserNameChange] = useState({
     loading: false,
     disabled: true,
     error: null,
-    prev: "sivasanker",
-    username: "sivasanker",
+    prev: userDetails.name,
+    username: userDetails.name,
   });
 
   const [userDescriptionChange, setUserDescriptionChange] = useState({
     loading: false,
     disabled: true,
     error: null,
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
+    prev: userDetails.description,
+    description: userDetails.description,
   });
 
   const [showProfileImages, setShowProfileImages] = useState(false);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(updateOneTimeInfo(false));
+  }, [dispatch]);
 
   function toggleModal(val = false) {
     setShowProfileImages(val);
@@ -47,7 +56,7 @@ export default function Profile() {
           <ModalHeaderWrapper>Profile</ModalHeaderWrapper>
           <SubContainer>
             <ProfileImageContainer>
-              <ProfileImage src={getAvatar(2)} />
+              <ProfileImage src={getAvatar(userDetails.avatarId)} />
               <EditImgBtn onClick={() => toggleModal(true)}>
                 <BsFillPencilFillCustom style={{ marginRight: "4px" }} />
                 Edit
@@ -66,7 +75,7 @@ export default function Profile() {
       </Modal>
       {showProfileImages && (
         <SelectProfileImg
-          current={2}
+          current={userDetails.avatarId}
           setShowProfileImages={setShowProfileImages}
         />
       )}

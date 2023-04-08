@@ -1,13 +1,19 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { CgUnblock } from "react-icons/cg";
 
 import { getAvatar } from "../../../assets/avatars";
 import { sortContactsByAsc } from "../../../utils/InputHandler";
+import toast from "../../Toast";
+import axios from "../../../api/axios";
+import retrieveError from "../../../api/ExceptionHandler";
+import { unBlockUserContact } from "../../../store/actions/ContactActions";
 
-export default function BlockedContacts() {
+export default function BlockedContacts({ inProgress, setInProgress }) {
   const { contacts = [] } = useSelector((state) => state.contacts);
+
+  const dispatch = useDispatch();
 
   function filterContacts() {
     if (!contacts || contacts.length === 0) return [];
@@ -15,11 +21,30 @@ export default function BlockedContacts() {
     return sortContactsByAsc(data);
   }
 
+  async function unblockContact(email) {
+    if (inProgress) return;
+    setInProgress(true);
+
+    await axios
+      .put(`/user/unblock?email=${email}`)
+      .then(() => {
+        dispatch(unBlockUserContact(email));
+        setInProgress(false);
+        toast.success("Contact unblocked successfully");
+      })
+      .catch((error) => {
+        const { message } = retrieveError(error);
+        setInProgress(false);
+        toast.error(message, toast.props.user.nonPersist);
+      });
+  }
+
   if (filterContacts().length === 0)
     return <NoContactsMsg>No blocked contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { name, nickname, avatarId } = item;
+    const { name, nickname, avatarId, email } = item;
+
     return (
       <ContactContainer key={index}>
         <ContactDetails>
@@ -32,8 +57,8 @@ export default function BlockedContacts() {
           </ContactNameContainer>
         </ContactDetails>
         <OptionBtnContainer>
-          <OptionBtn>
-            <CgUnblock title="Unblock" />
+          <OptionBtn disabled={inProgress}>
+            <CgUnblock onClick={() => unblockContact(email)} title="Unblock" />
           </OptionBtn>
         </OptionBtnContainer>
       </ContactContainer>
@@ -143,7 +168,7 @@ const OptionBtn = styled.button`
   color: ${(props) => props.theme.txt.sub};
   cursor: pointer;
 
-  :hover {
+  :enabled:hover {
     color: ${(props) => props.theme.txt.main};
   }
 

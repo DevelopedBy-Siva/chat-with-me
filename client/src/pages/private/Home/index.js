@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 
+import OneTimeInfo from "../../../components/Home/Info/OneTimeInfo";
+import FullPageLoading from "../../../components/Loader/FullPage";
 import Navbar from "../../../components/Home/NavBar";
 import store from "../../../store";
 import { initializeContacts } from "../../../store/reducers/Contacts";
@@ -14,11 +16,16 @@ export default function UserHome() {
     dispatch(initializeContacts());
   }, [dispatch]);
 
+  const showOneTimeInfo = useSelector((state) => state.user.oneTimeInfo);
+
   return (
     <Provider store={store}>
       <Container>
+        {showOneTimeInfo && <OneTimeInfo />}
         <Navbar />
-        <Outlet />
+        <Suspense fallback={<FullPageLoading />}>
+          <Outlet />
+        </Suspense>
       </Container>
     </Provider>
   );
@@ -26,7 +33,12 @@ export default function UserHome() {
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
+  position: relative;
+
+  @media (max-width: 920px) {
+    flex-direction: column-reverse;
+  }
 `;

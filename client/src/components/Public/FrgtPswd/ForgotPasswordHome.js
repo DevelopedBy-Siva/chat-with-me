@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MdAlternateEmail } from "react-icons/md";
 
 import axios from "../../../api/axios";
-
+import toast from "../../Toast";
 import ButtonContainer from "../../Public/common/ButtonContainer";
 import InputContainer from "../../Public/common/InputContainer";
 import { FORGOT_PSWD_SCREEN as SCREEN } from "../../../utils/Screens";
@@ -12,6 +12,7 @@ import {
   emailValidation,
   inputChanges,
 } from "../../../utils/InputHandler";
+import retrieveError from "../../../api/ExceptionHandler";
 
 export default function ForgotPasswordHome({
   info,
@@ -24,6 +25,7 @@ export default function ForgotPasswordHome({
   const emailErrorRef = useRef(null);
 
   useEffect(() => {
+    toast.remove();
     emailInputRef.current.focus();
   }, []);
 
@@ -44,9 +46,10 @@ export default function ForgotPasswordHome({
 
   const verifyEmail = (e) => {
     e.preventDefault();
+    toast.remove();
+
     const mail = info.email;
     const { isValid, message } = emailValidation(mail);
-
     if (!isValid) {
       emailErrorRef.current.innerText = message;
       emailErrorRef.current.classList.add("input-error");
@@ -59,11 +62,19 @@ export default function ForgotPasswordHome({
     });
 
     axios
-      .get("/posts/1")
+      .post(`/forgot-pswd?email=${mail}`)
       .then(() => {
+        toast.success(
+          "Verification code sent to the registered mail",
+          toast.props.user.nonPersist
+        );
         handleScreen(SCREEN.VEIRFY_CODE);
       })
-      .catch(() => {
+      .catch((error) => {
+        let { message, isInfo } = retrieveError(error, true);
+        if (isInfo) toast.info(message, toast.props.user.persist);
+        else toast.error(message, toast.props.user.persist);
+
         setServerResponse({
           loading: false,
           error: "ERROR MESSAGE",

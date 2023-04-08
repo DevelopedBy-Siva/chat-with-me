@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { BiSearch } from "react-icons/bi";
 import { IoMdClose, IoMdArrowDropdown } from "react-icons/io";
+import { MdError } from "react-icons/md";
 
 import { setActive } from "../../../store/actions/ChatActions";
 import {
@@ -14,7 +15,12 @@ import Loader from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
 
 export default function SideBar() {
-  const { contacts, loading, error } = useSelector((state) => state.contacts);
+  const {
+    contacts: unfilteredContacts,
+    groups,
+    loading,
+    error,
+  } = useSelector((state) => state.contacts);
 
   const [search, setSearch] = useState("");
 
@@ -22,7 +28,7 @@ export default function SideBar() {
     const val = e.target.value;
     setSearch(val);
   }
-
+  const contacts = unfilteredContacts.filter((item) => !item.isBlocked);
   return (
     <Container>
       <Heading>Message</Heading>
@@ -46,17 +52,26 @@ export default function SideBar() {
                 <SearchInputIcon search={search} setSearch={setSearch} />
               </SearchContainer>
             )}
-            <ContactsWrapper search={search} contacts={contacts} />
+            <ContactsWrapper
+              search={search}
+              contacts={contacts}
+              groups={groups}
+            />
           </React.Fragment>
         ) : (
-          ""
+          <FetchError>
+            <MdError style={{ fontSize: "1.4rem", marginBottom: "6px" }} />
+            Oops, something went wrong.
+            <br />
+            Failed to get the contacts.
+          </FetchError>
         )}
       </ContactsContainer>
     </Container>
   );
 }
 
-function ContactsWrapper({ search, contacts }) {
+function ContactsWrapper({ search, contacts, groups }) {
   const dispatch = useDispatch();
 
   const { active } = useSelector((state) => state.chats);
@@ -65,17 +80,13 @@ function ContactsWrapper({ search, contacts }) {
     dispatch(setActive(id));
   }
 
-  function groupContacts(data = []) {
+  function groupContacts(contacts = [], groups = []) {
     let grouped = {
       directMessage: [],
       group: [],
     };
-    data.forEach((i) => {
-      if (i.isPrivate) grouped.directMessage.push(i);
-      else grouped.group.push(i);
-    });
-    grouped.directMessage = orderContactsDesc(search, grouped.directMessage);
-    grouped.group = orderContactsDesc(search, grouped.group);
+    grouped.directMessage = orderContactsDesc(search, contacts);
+    grouped.group = orderContactsDesc(search, groups);
 
     let refactoredKeys = [];
     Object.keys(grouped).forEach((k) => {
@@ -84,9 +95,9 @@ function ContactsWrapper({ search, contacts }) {
     return { keys: refactoredKeys, values: grouped };
   }
 
-  const contactsToRender = groupContacts(contacts);
+  const contactsToRender = groupContacts(contacts, groups);
 
-  if (contacts && contacts.length === 0)
+  if (contacts && contacts.length === 0 && groups && groups.length === 0)
     return (
       <EmptyContacts>
         No contacts found. <AddContact to="/contacts">Add contact</AddContact>
@@ -138,18 +149,23 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
               isOnline,
               avatarId,
               lastMsgTstmp,
-              id,
+              email,
               nickname,
+              icon,
             } = data;
             return (
               <Contact
-                className={active === id ? "active-contact" : ""}
-                onClick={() => handleContact(id)}
+                className={active === email ? "active-contact" : ""}
+                onClick={() => handleContact(email)}
                 key={`V${index}`}
               >
                 <AvatarContainer>
                   {isOnline === true && <ContactStatus />}
-                  <Avatar src={getAvatar(avatarId)} />
+                  {icon ? (
+                    <Icon bg={icon.background}>{icon.letter}</Icon>
+                  ) : (
+                    <Avatar src={getAvatar(avatarId)} />
+                  )}
                 </AvatarContainer>
                 <Details>
                   <Wrapper>
@@ -188,6 +204,13 @@ const Container = styled.div`
   z-index: 99;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 920px) {
+    min-width: 0;
+    width: auto;
+    flex: 1;
+    height: 100%;
+  }
 `;
 
 const Heading = styled.h3`
@@ -201,6 +224,11 @@ const Heading = styled.h3`
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid ${(props) => props.theme.border.default};
+
+  @media (max-width: 920px) {
+    height: 52px;
+    font-size: 1.1rem;
+  }
 `;
 
 const SearchContainer = styled.label`
@@ -216,6 +244,10 @@ const SearchContainer = styled.label`
   background: ${(props) => props.theme.bg.app};
   color: ${(props) => props.theme.txt.sub};
   cursor: text;
+
+  @media (max-width: 920px) {
+    margin: 1.2rem 0.8rem 0.8rem 0.8rem;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -309,6 +341,10 @@ const Contact = styled.li`
   &:hover {
     background: ${(props) => props.theme.contact.active};
   }
+
+  @media (max-width: 920px) {
+    height: 64px;
+  }
 `;
 
 const ContactStatus = styled.span`
@@ -330,6 +366,11 @@ const AvatarContainer = styled.div`
   flex-shrink: 0;
   position: relative;
   background: ${(props) => props.theme.btn.active};
+
+  @media (max-width: 920px) {
+    width: 38px;
+    height: 38px;
+  }
 `;
 
 const Avatar = styled.img`
@@ -362,6 +403,10 @@ const Name = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: capitalize;
+
+  @media (max-width: 920px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const LastMessage = styled.span`
@@ -372,6 +417,10 @@ const LastMessage = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 4px;
+
+  @media (max-width: 920px) {
+    font-size: 0.65rem;
+  }
 `;
 
 const LastMsgTmstp = styled.span`
@@ -394,4 +443,32 @@ const EmptyContacts = styled.span`
 const AddContact = styled(Link)`
   color: ${(props) => props.theme.txt.sub};
   text-decoration: underline;
+`;
+
+const FetchError = styled.span`
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.7rem;
+  padding: 0.4rem;
+  text-align: center;
+  display: block;
+  line-height: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const Icon = styled.span`
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: ${(props) => props.bg};
+  text-transform: capitalize;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3rem;
+  color: #fff;
 `;

@@ -1,13 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BsFillPencilFill } from "react-icons/bs";
+import { useDispatch } from "react-redux";
 
 import LoadingSpinner from "../../Loader";
-import { nameValidation } from "../../../utils/InputHandler";
 import axios from "../../../api/axios";
+import toast from "../../Toast";
+import { nameValidation } from "../../../utils/InputHandler";
+import { updateUserName } from "../../../store/actions/UserActions";
 
 export default function UserNameChange({ userNameChange, setUserNameChange }) {
   const inputRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userNameChange.disabled) inputRef.current.focus();
@@ -44,16 +49,21 @@ export default function UserNameChange({ userNameChange, setUserNameChange }) {
       loading: true,
     });
     await axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .put(`/user/profile?name=${new_username}`)
       .then(() => {
+        toast.success("Username updated successfully");
+        dispatch(updateUserName(new_username));
         setUserNameChange({
           ...userNameChange,
-          username: new_username,
           disabled: true,
           loading: false,
         });
       })
       .catch(() => {
+        toast.error(
+          "Something went wrong. Failed to change the username",
+          toast.props.user.nonPersist
+        );
         setUserNameChange({
           ...userNameChange,
           loading: false,
@@ -89,6 +99,7 @@ export default function UserNameChange({ userNameChange, setUserNameChange }) {
           maxLength={16}
           ref={inputRef}
           onChange={handleInputChange}
+          placeholder="Enter your name"
           className={userNameChange.error ? "error" : ""}
         />
       </EditLabel>
@@ -175,6 +186,23 @@ const EditNameInput = styled.input`
   font-size: 0.7rem;
   text-transform: capitalize;
 
+  ::-webkit-input-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+  ::-moz-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+  :-ms-input-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+  :-moz-placeholder {
+    color: ${(props) => props.theme.txt.danger};
+    text-transform: none;
+  }
+
   &.error {
     border: 1px solid ${(props) => props.theme.txt.danger};
     color: ${(props) => props.theme.txt.danger};
@@ -195,8 +223,9 @@ const EditDone = styled.span`
 const ErrorMsg = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.danger};
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   margin-top: 4px;
   position: absolute;
   bottom: -20px;
+  font-weight: 400;
 `;

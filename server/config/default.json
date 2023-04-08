@@ -11,5 +11,6 @@
     "pass": "default_pass"
   },
   "verify_code_expiry_secs": 300,
-  "jwt_expiry": 120
+  "jwt_expiry": "2d",
+  "http_cookie_expiry": 2
 }

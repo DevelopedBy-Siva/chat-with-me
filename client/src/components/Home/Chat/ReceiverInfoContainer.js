@@ -5,7 +5,6 @@ import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
 
-import Tooltip from "../Tooltip";
 import { getAvatar } from "../../../assets/avatars";
 
 const CONTAINER_WIDTH = "280px";
@@ -60,17 +59,15 @@ function InfoContainer({ setInfoVisible }) {
             <NicknameTitle>#nick&#32;</NicknameTitle>
             <Nickname>{nickname}</Nickname>
             <ChangeNicknameBtn>
-              <BsFillPencilFill id="change-nickname" />
-              <Tooltip id="change-nickname" msg="Change nickname" />
+              <BsFillPencilFill title="Change nickname" id="change-nickname" />
             </ChangeNicknameBtn>
           </NicknameContainer>
         )}
         <UserDescription>{description}</UserDescription>
         <UserOptionsWrapper>
           {options.map((op, index) => (
-            <UserOperationBtn id={op.id} key={index}>
+            <UserOperationBtn title={op.placeholder} id={op.id} key={index}>
               {op.icon}
-              <Tooltip id={op.id} msg={op.placeholder} />
             </UserOperationBtn>
           ))}
         </UserOptionsWrapper>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
@@ -7,6 +8,7 @@ import { TiTickOutline } from "react-icons/ti";
 import { FaRegUser } from "react-icons/fa";
 import { AiOutlinePhone } from "react-icons/ai";
 
+import toast from "../../../components/Toast";
 import axios from "../../../api/axios";
 import {
   emailValidation as validateEmail,
@@ -20,9 +22,12 @@ import {
 import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
+import retrieveError from "../../../api/ExceptionHandler";
+import { setUser } from "../../../store/actions/UserActions";
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const emailInputRef = useRef(null);
 
@@ -46,6 +51,7 @@ export default function SignUp() {
 
   useEffect(() => {
     emailInputRef.current.focus();
+    toast.remove();
   }, []);
 
   useEffect(() => {
@@ -87,6 +93,7 @@ export default function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    toast.remove();
 
     const { email, password, phone, name, confirmPassword } = signupInfo;
 
@@ -132,15 +139,21 @@ export default function SignUp() {
       loading: true,
       error: null,
     });
-
     axios
-      .get("/posts/1")
-      .then(({ data }) => {})
+      .post("/register", { ...signupInfo, confirmPassword: undefined })
+      .then(({ data }) => {
+        dispatch(setUser(data, true));
+        return navigate("/");
+      })
       .catch((err) => {
+        let { message, isInfo } = retrieveError(err, true);
+        if (isInfo) toast.info(message, toast.props.user.persist);
+        else toast.error(message, toast.props.user.persist);
+
         setServerData({
           ...serverData,
           loading: false,
-          error: "Error Message",
+          error: err,
         });
       });
   };

@@ -1,16 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BsFillPencilFill } from "react-icons/bs";
+import { useDispatch } from "react-redux";
 
 import LoadingSpinner from "../../Loader";
-import { statusValidation } from "../../../utils/InputHandler";
 import axios from "../../../api/axios";
+import toast from "../../Toast";
+import { statusValidation } from "../../../utils/InputHandler";
+import { updateDescription } from "../../../store/actions/UserActions";
 
 export default function UserDescriptionChange({
   userDescriptionChange,
   setUserDescriptionChange,
 }) {
   const inputRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userDescriptionChange.disabled) inputRef.current.focus();
@@ -35,23 +40,36 @@ export default function UserDescriptionChange({
 
   async function submitEdit() {
     if (userDescriptionChange.error) return;
-    const new_username = userDescriptionChange.description.trim();
+    const new_user_status = userDescriptionChange.description.trim();
+    if (new_user_status === userDescriptionChange.prev) {
+      setUserDescriptionChange({
+        ...userDescriptionChange,
+        description: new_user_status,
+        disabled: true,
+      });
+      return;
+    }
     setUserDescriptionChange({
       ...userDescriptionChange,
-      description: new_username,
+      description: new_user_status,
       loading: true,
     });
     await axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .put(`/user/profile?description=${new_user_status}`)
       .then(() => {
+        toast.success("User status updated successfully");
+        dispatch(updateDescription(new_user_status));
         setUserDescriptionChange({
           ...userDescriptionChange,
-          description: new_username,
           disabled: true,
           loading: false,
         });
       })
       .catch(() => {
+        toast.error(
+          "Something went wrong. Failed to change the user status",
+          toast.props.user.nonPersist
+        );
         setUserDescriptionChange({
           ...userDescriptionChange,
           loading: false,
@@ -96,6 +114,7 @@ export default function UserDescriptionChange({
           onChange={handleInputChange}
           className={userDescriptionChange.error ? "error" : ""}
           onKeyDown={handlekey}
+          placeholder="Enter what's in your mind..."
         />
       </EditLabel>
       <ErrorMsg>{userDescriptionChange.error}</ErrorMsg>
@@ -186,6 +205,19 @@ const EditDescriptionInput = styled.textarea`
   &.error {
     border: 1px solid ${(props) => props.theme.txt.danger};
     color: ${(props) => props.theme.txt.danger};
+
+    ::-webkit-input-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
+    ::-moz-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
+    :-ms-input-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
+    :-moz-placeholder {
+      color: ${(props) => props.theme.txt.danger};
+    }
   }
 `;
 
@@ -203,8 +235,9 @@ const EditDone = styled.span`
 const ErrorMsg = styled.span`
   display: block;
   color: ${(props) => props.theme.txt.danger};
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   margin-top: 4px;
   position: absolute;
   bottom: -15px;
+  font-weight: 400;
 `;

@@ -22,4 +22,11 @@ const Container = styled.div`
   flex: 1;
   min-width: 0;
   display: flex;
+
+  @media (max-width: 920px) {
+    width: 100%;
+    min-height: 0;
+    flex-direction: row;
+    flex-shrink: 0;
+  }
 `;

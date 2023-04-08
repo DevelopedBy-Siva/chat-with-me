@@ -15,7 +15,14 @@ const USER_SCHEMA = {
   name: Joi.string().trim().min(3).max(16).required().lowercase(),
   email: Joi.string().email().required().lowercase(),
   password: Joi.string().regex(PASSWORD_PATTERN).required(),
-  phone: Joi.string().trim().min(10).max(11).regex(/^\d+$/).required(),
+  phone: Joi.string().trim().min(9).max(10).regex(/^\d+$/).required(),
+  description: Joi.string()
+    .allow("", null)
+    .not()
+    .empty()
+    .trim()
+    .min(1)
+    .max(150),
 };
 
 function validateUser(user, schema = USER_SCHEMA) {
@@ -23,5 +30,11 @@ function validateUser(user, schema = USER_SCHEMA) {
   return joiObj.validate(user);
 }
 
+function validateNickname(nickname) {
+  if (!nickname) return false;
+  return /^[a-zA-Z0-9_]{3,}$/.test(nickname);
+}
+
 module.exports.validateUser = validateUser;
+module.exports.validateNickname = validateNickname;
 module.exports.schema = USER_SCHEMA;

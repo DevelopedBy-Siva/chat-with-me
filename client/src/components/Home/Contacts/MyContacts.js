@@ -1,48 +1,175 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { MdPersonOff, MdBlock } from "react-icons/md";
 
 import { getAvatar } from "../../../assets/avatars";
 import { sortContactsByAsc } from "../../../utils/InputHandler";
+import axios from "../../../api/axios";
+import toast from "../../Toast";
+import retrieveError from "../../../api/ExceptionHandler";
+import LoadingSpinner from "../../Loader";
+import {
+  blockUserContact,
+  deleteUserContact,
+} from "../../../store/actions/ContactActions";
 
-export default function MyContacts() {
+export default function MyContacts({ inProgress, setInProgress }) {
   const { contacts = [] } = useSelector((state) => state.contacts);
+
+  const dispatch = useDispatch();
+
+  const [whichOne, setWhichOne] = useState({
+    email: null,
+    msg: null,
+    type: null,
+  });
 
   function filterContacts() {
     if (!contacts || contacts.length === 0) return [];
-    const data = contacts.filter((val) => val.isPrivate);
+    const data = contacts.filter((val) => !val.isBlocked);
     return sortContactsByAsc(data);
+  }
+
+  const deleteContact = (email, msg) => {
+    if (inProgress) return;
+    setWhichOne({ email, msg, type: "delete" });
+  };
+  const blockContact = (email, msg) => {
+    if (inProgress) return;
+    setWhichOne({ email, msg, type: "block" });
+  };
+
+  const removeConfirmMessage = () => {
+    if (inProgress) return;
+    setWhichOne({ email: null, msg: null, type: null });
+  };
+  async function callServer(type, email) {
+    if (inProgress) return;
+    setInProgress(true);
+
+    switch (type) {
+      case "delete":
+        await axios
+          .delete(`/user/contact?email=${email}`)
+          .then(() => {
+            dispatch(deleteUserContact(email));
+            removeConfirmMessage();
+            setInProgress(false);
+            toast.success("Contact removed successfully");
+          })
+          .catch((error) => {
+            const { message } = retrieveError(error);
+            setInProgress(false);
+            toast.error(message, toast.props.user.nonPersist);
+          });
+        break;
+      case "block":
+        await axios
+          .put(`/user/block?email=${email}`)
+          .then(() => {
+            dispatch(blockUserContact(email));
+            removeConfirmMessage();
+            setInProgress(false);
+            toast.success("Contact blocked successfully");
+          })
+          .catch((error) => {
+            const { message } = retrieveError(error);
+            setInProgress(false);
+            toast.error(message, toast.props.user.nonPersist);
+          });
+        break;
+      default:
+        break;
+    }
   }
 
   if (filterContacts().length === 0)
     return <NoContactsMsg>No contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { name, nickname, avatarId, isOnline } = item;
+    const { name, nickname, avatarId, isOnline, email } = item;
     return (
       <ContactContainer key={index}>
-        <ContactDetails>
-          <ContactAvatarContainer>
-            <ContactAvatar src={getAvatar(avatarId)} />
-            {isOnline && <ContactStatus />}
-          </ContactAvatarContainer>
-          <ContactNameContainer>
-            <ContactName>{name}</ContactName>
-            <ContactNickname>{nickname}</ContactNickname>
-          </ContactNameContainer>
-        </ContactDetails>
-        <OptionBtnContainer>
-          <OptionBtn>
-            <MdBlock title="Block contact" />
-          </OptionBtn>
-          <OptionBtn>
-            <MdPersonOff title="Remove contact" />
-          </OptionBtn>
-        </OptionBtnContainer>
+        {whichOne.email === email ? (
+          <React.Fragment>
+            <ConfirmMsg>{whichOne.msg}</ConfirmMsg>
+            <ConfirmExecuteBtn
+              disabled={inProgress}
+              onClick={() => callServer(whichOne.type, email)}
+            >
+              {inProgress ? (
+                <LoadingSpinner
+                  style={{ width: "10px", height: "10px", opacity: 0.7 }}
+                />
+              ) : (
+                "Yes"
+              )}
+            </ConfirmExecuteBtn>
+            <ConfirmExecuteBtn
+              disabled={inProgress}
+              onClick={removeConfirmMessage}
+            >
+              No
+            </ConfirmExecuteBtn>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <ContactDetails>
+              <ContactAvatarContainer>
+                <ContactAvatar src={getAvatar(avatarId)} />
+                {isOnline && <ContactStatus />}
+              </ContactAvatarContainer>
+              <ContactNameContainer>
+                <ContactName>{name}</ContactName>
+                <ContactNickname>{nickname}</ContactNickname>
+              </ContactNameContainer>
+            </ContactDetails>
+            <OptionBtnContainer>
+              <ContactOptions
+                type="block"
+                email={email}
+                execute={blockContact}
+                inProgress={inProgress}
+              />
+              <ContactOptions
+                type="delete"
+                email={email}
+                execute={deleteContact}
+                inProgress={inProgress}
+              />
+            </OptionBtnContainer>
+          </React.Fragment>
+        )}
       </ContactContainer>
     );
   });
+}
+
+const options = {
+  delete: {
+    placeholder: "Remove contact",
+    confirmMsg: "Are you sure you want to remove the contact?",
+  },
+  block: {
+    placeholder: "Block contact",
+    confirmMsg: "Are you sure want to block the contact?",
+  },
+};
+
+function ContactOptions({ type, execute, email, inProgress }) {
+  const what = type === "delete" ? options.delete : options.block;
+  const handleClick = () => execute(email, what.confirmMsg);
+
+  return (
+    <OptionBtn disabled={inProgress}>
+      {type === "delete" ? (
+        <MdPersonOff onClick={handleClick} title={what.placeholder} />
+      ) : (
+        <MdBlock onClick={handleClick} title={what.placeholder} />
+      )}
+    </OptionBtn>
+  );
 }
 
 const ContactContainer = styled.div`
@@ -51,6 +178,7 @@ const ContactContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
+  height: 70px;
 
   &:last-of-type {
     border: none;
@@ -75,6 +203,7 @@ const ContactAvatarContainer = styled.div`
   height: 38px;
   border-radius: 50%;
   background-color: ${(props) => props.theme.btn.active};
+  flex-shrink: 0;
 
   @media (max-width: 484px) {
     width: 30px;
@@ -161,16 +290,13 @@ const OptionBtn = styled.button`
   cursor: pointer;
   margin: 0 10px;
 
-  :hover {
+  :enabled:hover {
     color: ${(props) => props.theme.txt.main};
   }
 
   :disabled {
-    cursor: progress;
+    cursor: not-allowed;
   }
-
-  /* :first-of-type { */
-  /* } */
 `;
 
 const NoContactsMsg = styled.span`
@@ -180,4 +306,47 @@ const NoContactsMsg = styled.span`
   text-align: center;
   line-height: 16px;
   margin-top: 10px;
+`;
+
+const ConfirmMsg = styled.span`
+  font-size: 0.75rem;
+  color: ${(props) => props.theme.txt.sub};
+  display: block;
+  line-height: 15px;
+  padding-left: 4px;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
+`;
+
+const ConfirmExecuteBtn = styled.button`
+  background: ${(props) => props.theme.btn.active};
+  color: ${(props) => props.theme.txt.sub};
+  padding: 3px;
+  height: 22px;
+  width: 45px;
+  border: 1px solid ${(props) => props.theme.border.default};
+  margin-left: 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  position: relative;
+  font-weight: 400;
+
+  :enabled:hover {
+    color: ${(props) => props.theme.txt.main};
+  }
+
+  :disabled:first-of-type {
+    cursor: progress;
+  }
+
+  :disabled:last-of-type {
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 484px) {
+    font-size: 0.65rem;
+  }
 `;

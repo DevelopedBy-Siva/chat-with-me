@@ -1,5 +1,29 @@
 const mongoose = require("mongoose");
 
+const ContactType = {
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+  },
+  nickname: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+  },
+  lastMsgTstmp: {
+    type: String,
+    default: "",
+  },
+  lastMsg: {
+    type: String,
+    default: "",
+  },
+  isBlocked: { type: Boolean, default: false },
+};
+
 const schema = new mongoose.Schema({
   name: {
     type: String,
@@ -24,8 +48,8 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minLength: 10,
-    maxLength: 11,
+    minLength: 9,
+    maxLength: 10,
     validate: {
       validator: function (value) {
         const pattern = /^\d+$/;
@@ -35,12 +59,34 @@ const schema = new mongoose.Schema({
     },
   },
   contacts: {
-    type: [Object],
+    type: [ContactType],
+    default: [],
+  },
+  groups: {
+    type: [
+      {
+        ref: {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+      },
+    ],
     default: [],
   },
   joinedOn: {
-    type: Date,
-    default: () => new Date(),
+    type: String,
+    default: () => new Date().toUTCString(),
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  isOnline: {
+    type: Boolean,
+    default: true,
+  },
+  avatarId: {
+    type: String,
+    default: "",
   },
 });
 

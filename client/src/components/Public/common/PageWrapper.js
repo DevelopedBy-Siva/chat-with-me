@@ -59,12 +59,16 @@ const Heading = styled.div`
 const HeadingSplit = styled.h1`
   font-weight: 600;
   font-size: 2.5rem;
-  font-family: "Shantell Sans", cursive;
+  line-height: 36px;
 
   &:nth-child(1) {
     font-size: 1.5rem;
     font-weight: 500;
     color: ${(props) => props.theme.txt.main};
+  }
+
+  &:nth-child(2) {
+    font-family: "Shantell Sans", cursive;
   }
 
   &:nth-child(1)::after {
@@ -75,6 +79,14 @@ const HeadingSplit = styled.h1`
   &:nth-child(2)::before {
     content: "\u003C ";
   }
+
+  @media (max-width: 736px) {
+    font-size: 1.6rem;
+
+    &:nth-child(1) {
+      font-size: 1.2rem;
+    }
+  }
 `;
 
 const SubHeading = styled.h2`
@@ -82,14 +94,10 @@ const SubHeading = styled.h2`
   font-size: 1.1rem;
   color: ${(props) => props.theme.txt.main};
   font-weight: 500;
-  margin: 18px 0 32px 0;
-  font-family: "Shantell Sans", cursive;
+  margin: 28px 0;
 
-  &::before {
-    content: "\u003C ";
-  }
-
-  &::after {
-    content: "\u005F";
+  @media (max-width: 736px) {
+    font-size: 1rem;
+    margin: 20px 0;
   }
 `;

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { TiTick } from "react-icons/ti";
+import { useDispatch } from "react-redux";
 
 import { getAvatar } from "../../../assets/avatars";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
 import SubModal from "../Modal/SubModal";
 import LoadingSpinner from "../../Loader";
 import axios from "../../../api/axios";
+import toast from "../../Toast";
+import { updateAvatar } from "../../../store/actions/UserActions";
 
 const modalStyle = {
   maxWidth: "500px",
@@ -19,6 +22,8 @@ export default function SelectProfileImg({ current, setShowProfileImages }) {
     loading: false,
   });
 
+  const dispatch = useDispatch();
+
   function handleClose() {
     if (isChanged.loading) return;
     setShowProfileImages(false);
@@ -30,13 +35,21 @@ export default function SelectProfileImg({ current, setShowProfileImages }) {
   }
 
   async function submitChange() {
+    if (current === imageId) return handleClose();
+
     setIsChanged({ ...isChanged, loading: true });
     await axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .put(`/user/profile?avatarId=${imageId}`)
       .then(() => {
+        toast.success("Profile pic changed successfully");
+        dispatch(updateAvatar(imageId));
         setShowProfileImages(false);
       })
       .catch(() => {
+        toast.error(
+          "Something went wrong. Failed to change the profile pic",
+          toast.props.user.nonPersist
+        );
         setIsChanged({ ...isChanged, loading: false });
       });
   }
