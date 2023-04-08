@@ -210,24 +210,26 @@ export default function AddGroup({ close }) {
                   {members.length}
                 </b>
               </PickMsg>
-              {contacts.map((item, index) => (
-                <MemberSelect
-                  disabled={isLoading}
-                  onClick={() => selectMembers(item.email)}
-                  key={index}
-                >
-                  <MemberAvatar>
-                    <MemberAvatarImg src={getAvatar(item.avatarId)} />
-                  </MemberAvatar>
-                  <MemberDetails>
-                    <MemberName>{item.name}</MemberName>
-                    <MemeberNickname>#{item.nickname}</MemeberNickname>
-                  </MemberDetails>
-                  <Selected>
-                    <TickBox>{isSelected(item.email) && <TiTick />}</TickBox>
-                  </Selected>
-                </MemberSelect>
-              ))}
+              {contacts
+                .filter((item) => !item.isBlocked)
+                .map((item, index) => (
+                  <MemberSelect
+                    disabled={isLoading}
+                    onClick={() => selectMembers(item.email)}
+                    key={index}
+                  >
+                    <MemberAvatar>
+                      <MemberAvatarImg src={getAvatar(item.avatarId)} />
+                    </MemberAvatar>
+                    <MemberDetails>
+                      <MemberName>{item.name}</MemberName>
+                      <MemeberNickname>#{item.nickname}</MemeberNickname>
+                    </MemberDetails>
+                    <Selected>
+                      <TickBox>{isSelected(item.email) && <TiTick />}</TickBox>
+                    </Selected>
+                  </MemberSelect>
+                ))}
             </MembersContainer>
           )}
         </SubContainer>
