@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { AiOutlinePlus } from "react-icons/ai";
+import { FiPlus } from "react-icons/fi";
 
 import Modal from "../Modal";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
@@ -36,7 +36,7 @@ export default function Group() {
           ) : (
             <React.Fragment>
               <AddButton onClick={() => setModalActive(true)}>
-                <AiOutlinePlus style={{ marginRight: "4px" }} />
+                <FiPlus style={{ fontSize: "1rem", marginRight: "4px" }} />
                 Create group
               </AddButton>
               {groups.length === 0 ? (
@@ -90,12 +90,13 @@ const AddButton = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 0.7rem;
-  background: rgba(45, 157, 65, 0.8);
-  color: ${(props) => props.theme.txt.main};
+  color: #fff;
   letter-spacing: 1px;
-  height: 32px;
+  height: 34px;
+  background: #085ed4;
+  transition: background 0.25s ease-in-out;
 
-  :hover {
-    background: rgba(45, 157, 65, 1);
+  :enabled:hover {
+    background: #206ed8;
   }
 `;

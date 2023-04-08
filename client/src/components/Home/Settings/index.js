@@ -180,20 +180,20 @@ const ChangePasswordHeading = styled.span`
 `;
 
 const ChangePasswordBtn = styled.button`
-  color: ${(props) => props.theme.txt.sub};
-  outline-color: ${(props) => props.theme.border.outline};
-  border: 1px solid ${(props) => props.theme.border.default};
-  background: ${(props) => props.theme.btn.active};
+  color: #fff;
+  outline: none;
+  border: none;
+  background: #085ed4;
   border-radius: 6px;
   padding: 8px 14px;
   font-size: 0.8rem;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
+  font-weight: 400;
   margin-left: 10px;
+  transition: background 0.25s ease-in-out;
 
-  &:hover {
-    border: 1px solid ${(props) => props.theme.txt.sub};
+  :enabled:hover {
+    background: #206ed8;
   }
 
   @media (max-width: 484px) {

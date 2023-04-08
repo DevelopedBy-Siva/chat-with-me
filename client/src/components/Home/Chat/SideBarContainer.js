@@ -151,6 +151,7 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
               lastMsgTstmp,
               email,
               nickname,
+              icon,
             } = data;
             return (
               <Contact
@@ -160,7 +161,11 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
               >
                 <AvatarContainer>
                   {isOnline === true && <ContactStatus />}
-                  <Avatar src={getAvatar(avatarId)} />
+                  {icon ? (
+                    <Icon bg={icon.background}>{icon.letter}</Icon>
+                  ) : (
+                    <Avatar src={getAvatar(avatarId)} />
+                  )}
                 </AvatarContainer>
                 <Details>
                   <Wrapper>
@@ -451,4 +456,19 @@ const FetchError = styled.span`
   flex-direction: column;
   align-items: center;
   margin-top: 10px;
+`;
+
+const Icon = styled.span`
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: ${(props) => props.bg};
+  text-transform: capitalize;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3rem;
+  color: #fff;
 `;

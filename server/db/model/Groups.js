@@ -9,6 +9,21 @@ const MemberType = {
   },
 };
 
+const IconType = {
+  letter: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    minLength: 1,
+    maxLength: 1,
+  },
+  background: {
+    type: String,
+    required: true,
+  },
+};
+
 const schema = new mongoose.Schema({
   name: {
     type: String,
@@ -34,6 +49,10 @@ const schema = new mongoose.Schema({
   lastMsg: {
     type: String,
     default: "",
+  },
+  icon: {
+    type: IconType,
+    required: true,
   },
   joinedOn: {
     type: String,

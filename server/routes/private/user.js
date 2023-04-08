@@ -373,6 +373,7 @@ route.get("/contacts", async (req, resp) => {
     groupsToSend.push({
       name: grp.name,
       admin: grp.admin,
+      icon: grp.icon,
       lastMsg: grp.lastMsg,
       lastMsgTstmp: grp.lastMsgTstmp,
       members: memberDetails,
@@ -409,7 +410,7 @@ route.get("/contacts/search", async (req, resp) => {
 
 route.post("/create-group", async (req, resp) => {
   const { email } = req.payload;
-  const { name, members } = req.body;
+  const { name, members, icon } = req.body;
 
   if (!Array.isArray(members) || members.length < 2)
     return resp
@@ -441,6 +442,7 @@ route.post("/create-group", async (req, resp) => {
     name,
     members: membersToStore,
     admin: email,
+    icon,
   });
   const data = await document.save();
 
@@ -475,6 +477,7 @@ route.post("/create-group", async (req, resp) => {
     admin: data.admin,
     lastMsg: data.lastMsg,
     lastMsgTstmp: data.lastMsgTstmp,
+    icon: data.icon,
     members: details,
   });
 });
