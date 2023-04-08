@@ -42,7 +42,23 @@ export default function Group() {
               {groups.length === 0 ? (
                 <AlertMsg>No groups found</AlertMsg>
               ) : (
-                <Content></Content>
+                <Content>
+                  {groups.map((item, index) => {
+                    const { name, icon, members } = item;
+                    return (
+                      <GroupContainer key={index}>
+                        <GroupIcon bg={icon.background}>
+                          {icon.letter}
+                        </GroupIcon>
+                        <GroupName>{name}</GroupName>
+                        <MemberCount>
+                          Members <br />
+                          <b>{members.length + 1}</b>
+                        </MemberCount>
+                      </GroupContainer>
+                    );
+                  })}
+                </Content>
               )}
             </React.Fragment>
           )}
@@ -66,7 +82,6 @@ const Content = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 0.6rem;
-  padding-top: 0;
 `;
 
 const AlertMsg = styled.span`
@@ -98,5 +113,77 @@ const AddButton = styled.button`
 
   :enabled:hover {
     background: #206ed8;
+  }
+`;
+
+const GroupContainer = styled.div`
+  cursor: auto;
+  border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 0;
+
+  &:last-of-type {
+    border: none;
+  }
+`;
+
+const GroupIcon = styled.span`
+  width: 38px;
+  height: 38px;
+  background: ${(props) => props.bg};
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-transform: capitalize;
+  font-weight: 500;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+
+  @media (max-width: 484px) {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+`;
+
+const GroupName = styled.span`
+  display: block;
+  text-transform: capitalize;
+  color: ${(props) => props.theme.txt.sub};
+  font-weight: 400;
+  font-size: 0.8rem;
+  margin-left: 10px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 484px) {
+    font-size: 0.7rem;
+  }
+`;
+
+const MemberCount = styled.span`
+  display: block;
+  font-size: 0.65rem;
+  text-align: center;
+  color: ${(props) => props.theme.txt.sub};
+  padding-left: 10px;
+  line-height: 16px;
+
+  b {
+    font-weight: 500;
+    font-size: 0.8rem;
+
+    @media (max-width: 484px) {
+      font-size: 0.7rem;
+    }
+  }
+  @media (max-width: 484px) {
+    font-size: 0.6rem;
   }
 `;
