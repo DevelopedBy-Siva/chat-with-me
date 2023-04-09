@@ -195,6 +195,7 @@ route.post("/add-contact", async (req, resp) => {
     isBlocked: false,
     nickname,
     chatId,
+    isPrivate: true,
   });
 });
 
@@ -359,6 +360,7 @@ route.get("/contacts", async (req, resp) => {
         lastMsgTstmp: found.lastMsgTstmp,
         isBlocked: found.isBlocked,
         chatId: found.chatId,
+        isPrivate: true,
       });
     }
   });
@@ -392,6 +394,7 @@ route.get("/contacts", async (req, resp) => {
       lastMsgTstmp: grp.lastMsgTstmp,
       members: memberDetails,
       chatId: grp.chatId,
+      isPrivate: false,
     });
   });
 
@@ -506,6 +509,7 @@ route.post("/create-group", async (req, resp) => {
     icon: data.icon,
     chatId: data.chatId,
     members: details,
+    isPrivate: false,
   });
 });
 
