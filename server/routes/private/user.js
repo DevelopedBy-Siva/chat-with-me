@@ -534,10 +534,21 @@ route.delete("/remove", async (req, resp) => {
  * Validate Token
  */
 route.get("/", async (req, resp) => {
-  const { email } = req.payload;
-  const user = await UserCollection.findOne({ email });
-  const { name, email: mail, isOnline, description, avatarId } = user;
-  resp.status(200).send({ name, email: mail, isOnline, description, avatarId });
+  try {
+    const { email } = req.payload;
+    const user = await UserCollection.findOne({ email });
+    const { name, email: mail, isOnline, description, avatarId } = user;
+    return resp
+      .status(200)
+      .send({ name, email: mail, isOnline, description, avatarId });
+  } catch (ex) {
+    const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
+    resp.clearCookie(isLoggedInKey);
+    resp.clearCookie(jwtTokenKey);
+    return resp
+      .status(403)
+      .send(new AppError(ErrorCodes.ERR_FORBIDDEN, "Invalid User"));
+  }
 });
 
 module.exports = route;
