@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { MdDeleteForever, MdPersonOff, MdBlock } from "react-icons/md";
+import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
+import { TiUserDelete } from "react-icons/ti";
+import { IoExitOutline } from "react-icons/io5";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
 
@@ -15,14 +17,23 @@ const options = [
     placeholder: "Block user",
   },
   {
-    id: "clear-user-chat",
-    icon: <MdDeleteForever />,
-    placeholder: "Clear chat",
-  },
-  {
     id: "unfriend-user",
     icon: <MdPersonOff />,
     placeholder: "Remove contact",
+  },
+];
+
+const groupOptions = [
+  {
+    id: "leave-group",
+    icon: <IoExitOutline />,
+    placeholder: "Leave group",
+  },
+  {
+    id: "delete-group",
+    icon: <MdDeleteForever />,
+    placeholder: "Delete group",
+    onlyAdmin: true,
   },
 ];
 
@@ -33,6 +44,7 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
 function InfoContainer({ setInfoVisible }) {
   const { active } = useSelector((state) => state.chats);
   const { contacts, groups } = useSelector((state) => state.contacts);
+  const { details } = useSelector((state) => state.user);
 
   function findContactInfo() {
     const { val, isPrivate } = active;
@@ -41,10 +53,27 @@ function InfoContainer({ setInfoVisible }) {
       return contacts[index];
     }
     const index = groups.findIndex((i) => i.chatId === val);
-    return groups[index];
+    const data = groups[index];
+    return { ...data, members: [...data.members, { ...details }] };
   }
-  const { name, avatarId, description, nickname, isPrivate, icon } =
-    findContactInfo();
+  const {
+    name,
+    avatarId,
+    description,
+    nickname,
+    isPrivate,
+    icon,
+    admin,
+    members = [],
+  } = findContactInfo();
+
+  function getOptions() {
+    if (isPrivate) return options;
+
+    if (admin !== details.email)
+      return groupOptions.filter((i) => !i.onlyAdmin);
+    return groupOptions;
+  }
 
   return (
     <UserInfoContainer
@@ -71,12 +100,37 @@ function InfoContainer({ setInfoVisible }) {
         )}
         <UserDescription>{description}</UserDescription>
         <UserOptionsWrapper>
-          {options.map((op, index) => (
+          {getOptions().map((op, index) => (
             <UserOperationBtn title={op.placeholder} id={op.id} key={index}>
               {op.icon}
             </UserOperationBtn>
           ))}
         </UserOptionsWrapper>
+        {!isPrivate && (
+          <UserMembersContainer>
+            <MembersLabel>Members ({members.length})</MembersLabel>
+            <MembersWrapper>
+              {members.map((item, index) => (
+                <Members key={index}>
+                  <ItemAvatarContainer>
+                    <ItemAvatar src={getAvatar(item.avatarId)} />
+                  </ItemAvatarContainer>
+                  <ItemDetails>
+                    <ItemName>
+                      {item.nickname ? item.nickname : item.name}
+                    </ItemName>
+                    {admin === item.email && <IsAdmin>admin</IsAdmin>}
+                  </ItemDetails>
+                  {admin !== item.email && (
+                    <RemoveMember>
+                      <TiUserDelete />
+                    </RemoveMember>
+                  )}
+                </Members>
+              ))}
+            </MembersWrapper>
+          </UserMembersContainer>
+        )}
       </UserInfoWrapper>
     </UserInfoContainer>
   );
@@ -155,6 +209,7 @@ const UserAvatarContainer = styled.div`
   font-weight: 500;
   color: #fff;
   text-transform: capitalize;
+  flex-shrink: 0;
 `;
 
 const UserAvatar = styled.img`
@@ -249,4 +304,91 @@ const UserOperationBtn = styled.button`
   :hover {
     font-size: 1.2rem;
   }
+`;
+
+const UserMembersContainer = styled.div`
+  width: 100%;
+  margin-top: 32px;
+`;
+
+const MembersLabel = styled.span`
+  display: block;
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.8rem;
+  text-align: left;
+  margin-bottom: 12px;
+  padding: 0.6rem;
+`;
+
+const MembersWrapper = styled.ul`
+  list-style: none;
+  display: block;
+  width: 100%;
+`;
+
+const RemoveMember = styled.button`
+  flex-shrink: 0;
+  color: ${(props) => props.theme.txt.main};
+  margin-left: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Members = styled.li`
+  padding: 0.6rem;
+  display: flex;
+  align-items: center;
+  cursor: default;
+  overflow: hidden;
+  border-radius: 4px;
+  transition: all 0.1s ease-in-out;
+
+  :hover {
+    background: ${(props) => props.theme.btn.active};
+  }
+
+  :hover ${RemoveMember} {
+    display: flex;
+  }
+`;
+
+const ItemAvatarContainer = styled.div`
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+`;
+
+const ItemAvatar = styled.img`
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+`;
+
+const ItemName = styled.span`
+  display: block;
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  color: ${(props) => props.theme.txt.main};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const ItemDetails = styled.div`
+  flex: 1;
+  overflow: hidden;
+  margin-left: 10px;
+`;
+
+const IsAdmin = styled.span`
+  display: block;
+  color: ${(props) => props.theme.txt.sub};
+  font-size: 0.7rem;
 `;
