@@ -18,7 +18,10 @@ import { sortAndGroupMsgs } from "../../utils/DateTime";
 
 const initialState = {
   loading: true,
-  active: null,
+  active: {
+    val: null,
+    isPrivate: true,
+  },
   chats: {},
   error: null,
 };
@@ -57,7 +60,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         error: null,
-        active: payload,
+        active: {
+          val: payload,
+          isPrivate: action.isPrivate,
+        },
       };
     case READY_TO_SEND_MSG:
       const { data: details, chatId, currentDate: today } = payload;

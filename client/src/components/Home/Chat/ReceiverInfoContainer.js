@@ -32,13 +32,19 @@ export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
 
 function InfoContainer({ setInfoVisible }) {
   const { active } = useSelector((state) => state.chats);
-  const { contacts } = useSelector((state) => state.contacts);
+  const { contacts, groups } = useSelector((state) => state.contacts);
 
   function findContactInfo() {
-    const index = contacts.findIndex((i) => i.id === active);
-    return contacts[index];
+    const { val, isPrivate } = active;
+    if (isPrivate) {
+      const index = contacts.findIndex((i) => i.chatId === val);
+      return contacts[index];
+    }
+    const index = groups.findIndex((i) => i.chatId === val);
+    return groups[index];
   }
-  const { name, avatarId, description, nickname } = findContactInfo();
+  const { name, avatarId, description, nickname, isPrivate, icon } =
+    findContactInfo();
 
   return (
     <UserInfoContainer
@@ -50,8 +56,8 @@ function InfoContainer({ setInfoVisible }) {
         <BiRightArrowAlt />
       </UserInfoCloseBtn>
       <UserInfoWrapper>
-        <UserAvatarContainer>
-          <UserAvatar src={getAvatar(avatarId)} />
+        <UserAvatarContainer bg={icon ? icon.background : null}>
+          {isPrivate ? <UserAvatar src={getAvatar(avatarId)} /> : icon.letter}
         </UserAvatarContainer>
         <UserInfoName>{name}</UserInfoName>
         {nickname && nickname.length > 0 && (
@@ -138,9 +144,17 @@ const UserAvatarContainer = styled.div`
   height: 100%;
   width: 130px;
   height: 130px;
-  background-color: ${(props) => props.theme.btn.active};
+  background-color: ${(props) =>
+    props.bg ? props.bg : props.theme.btn.active};
   border-radius: 50%;
   pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.5rem;
+  font-weight: 500;
+  color: #fff;
+  text-transform: capitalize;
 `;
 
 const UserAvatar = styled.img`

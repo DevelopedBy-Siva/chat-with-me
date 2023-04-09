@@ -20,16 +20,16 @@ export default function ChatContainer() {
   const { active, loading, error, chats } = useSelector((state) => state.chats);
 
   useEffect(() => {
-    if (!active) return;
+    if (!active.val) return;
 
     if (chatContainerRef)
       chatContainerRef.current.scrollTop = chatContainerRef.scrollHeight;
 
-    dispatch(fetchChats(active));
+    dispatch(fetchChats(active.val));
   }, [active, dispatch]);
 
   function getChats() {
-    const userChats = chats[active];
+    const userChats = chats[active.val];
     if (!userChats || !userChats.messages) return { keys: [], messages: {} };
     const messages = userChats.messages;
     const keys = sortDatesDesc(Object.keys(messages));
@@ -39,7 +39,7 @@ export default function ChatContainer() {
   return (
     <Container>
       <MessageBoxCover />
-      {!active ? (
+      {!active.val ? (
         <ChatLandingScreen />
       ) : (
         <Wrapper>

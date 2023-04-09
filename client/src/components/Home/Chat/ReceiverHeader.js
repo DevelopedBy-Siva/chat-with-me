@@ -23,18 +23,25 @@ export default function ReceiverHeader({
 }
 
 function ReceiverContainer({ contactId }) {
-  const { contacts } = useSelector((state) => state.contacts);
+  const { contacts, groups } = useSelector((state) => state.contacts);
 
   function findContactInfo() {
-    const index = contacts.findIndex((i) => i.id === contactId);
-    return contacts[index];
+    const { val, isPrivate } = contactId;
+    if (isPrivate) {
+      const index = contacts.findIndex((i) => i.chatId === val);
+      return contacts[index];
+    }
+    const index = groups.findIndex((i) => i.chatId === val);
+    return groups[index];
   }
-  const { isOnline, name, nickname, avatarId, isPrivate } = findContactInfo();
+
+  const { isOnline, name, nickname, avatarId, isPrivate, icon } =
+    findContactInfo();
 
   return (
     <Receiver>
-      <ReceiverAvatarContainer>
-        <ReceiverAvatar src={getAvatar(avatarId)} />
+      <ReceiverAvatarContainer bg={icon ? icon.background : null}>
+        {isPrivate ? <ReceiverAvatar src={getAvatar(avatarId)} /> : icon.letter}
       </ReceiverAvatarContainer>
       <ReceiverInfo>
         <ReceiverName>
@@ -73,7 +80,15 @@ const ReceiverAvatarContainer = styled.div`
   border-radius: 50%;
   height: 44px;
   width: 44px;
-  background-color: ${(props) => props.theme.btn.active};
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: #fff;
+  background-color: ${(props) =>
+    props.bg ? props.bg : props.theme.btn.active};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ReceiverAvatar = styled.img`
