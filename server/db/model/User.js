@@ -21,6 +21,10 @@ const ContactType = {
     type: String,
     default: "",
   },
+  chatId: {
+    type: String,
+    required: true,
+  },
   isBlocked: { type: Boolean, default: false },
 };
 

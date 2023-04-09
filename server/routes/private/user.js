@@ -1,4 +1,5 @@
 const express = require("express");
+const { v4: uuid } = require("uuid");
 const {
   validateUser,
   validateNickname,
@@ -7,6 +8,7 @@ const {
 const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
 const GroupsCollection = require("../../db/model/Groups");
+const ChatCollection = require("../../db/model/Chat");
 const { hash, login, cookies, jwtToken } = require("../../auth");
 
 const route = express.Router();
@@ -131,6 +133,12 @@ route.post("/add-contact", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid nickname"));
 
+  const toReturn = await UserCollection.findOne({ email: newContactMail });
+  if (!toReturn)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact not found"));
+
   const data = await UserCollection.findOne({ email });
   const myContacts = data.contacts;
 
@@ -160,18 +168,22 @@ route.post("/add-contact", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Nickname already exists")
       );
 
+  // Unique ID for Chat
+  const chatId = uuid();
+
   data.contacts.push({
     email: newContactMail,
     nickname,
     isBlocked: false,
+    chatId,
   });
-  data.save();
+  await data.save();
 
-  const toReturn = await UserCollection.findOne({ email: newContactMail });
-  if (!toReturn)
-    return resp
-      .status(404)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact not found"));
+  const chatDocument = new ChatCollection({
+    chatId,
+    contacts: [email, newContactMail],
+  });
+  await chatDocument.save();
 
   const { email: mail, name, avatarId, description, isOnline } = toReturn;
   resp.status(200).send({
@@ -182,6 +194,7 @@ route.post("/add-contact", async (req, resp) => {
     isOnline,
     isBlocked: false,
     nickname,
+    chatId,
   });
 });
 
@@ -220,7 +233,7 @@ route.put("/contact/nickname", async (req, resp) => {
       );
 
   data.contacts[index].nickname = nickname;
-  data.save();
+  await data.save();
 
   resp.status(201).send();
 });
@@ -245,7 +258,7 @@ route.delete("/contact", async (req, resp) => {
       );
 
   data.contacts.splice(index, 1);
-  data.save();
+  await data.save();
 
   resp.status(201).send();
 });
@@ -273,7 +286,7 @@ route.put("/block", async (req, resp) => {
       );
 
   data.contacts[index].isBlocked = true;
-  data.save();
+  await data.save();
 
   resp.status(201).send();
 });
@@ -301,7 +314,7 @@ route.put("/unblock", async (req, resp) => {
       );
 
   data.contacts[index].isBlocked = false;
-  data.save();
+  await data.save();
 
   resp.status(201).send();
 });
@@ -345,6 +358,7 @@ route.get("/contacts", async (req, resp) => {
         lastMsg: found.lastMsg,
         lastMsgTstmp: found.lastMsgTstmp,
         isBlocked: found.isBlocked,
+        chatId: found.chatId,
       });
     }
   });
@@ -377,6 +391,7 @@ route.get("/contacts", async (req, resp) => {
       lastMsg: grp.lastMsg,
       lastMsgTstmp: grp.lastMsgTstmp,
       members: memberDetails,
+      chatId: grp.chatId,
     });
   });
 
@@ -438,11 +453,15 @@ route.post("/create-group", async (req, resp) => {
     };
   });
 
+  // Unique ChatId
+  const chatId = uuid();
+
   const document = new GroupsCollection({
     name,
     members: membersToStore,
     admin: email,
     icon,
+    chatId,
   });
   const data = await document.save();
 
@@ -454,6 +473,13 @@ route.post("/create-group", async (req, resp) => {
     { email: { $in: contacts } },
     { $push: { groups: groupRef } }
   );
+
+  // Create Chat documment
+  const chatDocument = new ChatCollection({
+    chatId,
+    contacts,
+  });
+  await chatDocument.save();
 
   let details = [];
   userData.forEach((i) => {
@@ -478,6 +504,7 @@ route.post("/create-group", async (req, resp) => {
     lastMsg: data.lastMsg,
     lastMsgTstmp: data.lastMsgTstmp,
     icon: data.icon,
+    chatId: data.chatId,
     members: details,
   });
 });

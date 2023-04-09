@@ -58,6 +58,10 @@ const schema = new mongoose.Schema({
     type: String,
     default: () => new Date().toUTCString(),
   },
+  chatId: {
+    type: String,
+    required: true,
+  },
 });
 
 const Groups = mongoose.model("Groups", schema);
