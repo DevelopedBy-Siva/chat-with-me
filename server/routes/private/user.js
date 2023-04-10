@@ -535,6 +535,20 @@ route.delete("/remove", async (req, resp) => {
 });
 
 /**
+ * Get Chats
+ */
+route.get("/chat/:chatId", async (req, resp) => {
+  const chatId = req.params.chatId;
+
+  const data = await ChatCollection.findOne({ chatId });
+  if (!data)
+    resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Chat not found"));
+  resp.status(200).send(data);
+});
+
+/**
  * Validate Token
  */
 route.get("/", async (req, resp) => {

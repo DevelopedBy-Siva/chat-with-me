@@ -15,6 +15,7 @@ import {
   updateMessageSendStatus,
 } from "../actions/ChatActions";
 import { sortAndGroupMsgs } from "../../utils/DateTime";
+import toast from "../../components/Toast";
 
 const initialState = {
   loading: true,
@@ -109,11 +110,11 @@ export const fetchChats = (id) => {
 
     dispatch(chatsLoading());
     axios
-      .get(`https://apigenerator.dronahq.com/api/lZkfxOpO/chat/${id}`)
+      .get(`/user/chat/${id}`)
       .then(({ data }) => {
         dispatch(getChats(id, data));
       })
-      .catch(() => {
+      .catch((error) => {
         const { contacts } = getState();
         let isPrivate = false;
         contacts.contacts.forEach((val) => {
@@ -123,6 +124,7 @@ export const fetchChats = (id) => {
           }
         });
         dispatch(chatsError(id, isPrivate));
+        toast.error("Something weent wrong. Failed to retrieve chat");
       });
   };
 };
