@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
@@ -8,6 +8,9 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
 
 import { getAvatar } from "../../../assets/avatars";
+import axios from "../../../api/axios";
+import toast from "../../Toast";
+import Modal from "../Modal/SubModal";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -17,7 +20,7 @@ const options = [
     placeholder: "Block user",
   },
   {
-    id: "unfriend-user",
+    id: "remove-user",
     icon: <MdPersonOff />,
     placeholder: "Remove contact",
   },
@@ -45,6 +48,12 @@ function InfoContainer({ setInfoVisible }) {
   const { active } = useSelector((state) => state.chats);
   const { contacts, groups } = useSelector((state) => state.contacts);
   const { details } = useSelector((state) => state.user);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState({
+    show: false,
+    toDo: null,
+  });
 
   function findContactInfo() {
     const { val, isPrivate } = active;
@@ -75,66 +84,209 @@ function InfoContainer({ setInfoVisible }) {
     return groupOptions;
   }
 
+  async function executeOperations(type) {
+    setIsLoading(true);
+    switch (type) {
+      case "leave-group":
+        await axios
+          .put("groupId")
+          .then(() => {})
+          .catch(() => {});
+        break;
+      case "delete-group":
+        await axios
+          .delete("groupId")
+          .then(() => {})
+          .catch(() => {});
+        break;
+      case "block-user":
+        await axios
+          .put("user email")
+          .then(() => {})
+          .catch(() => {});
+        break;
+      case "remove-user":
+        await axios
+          .delete("user email")
+          .then(() => {})
+          .catch(() => {});
+        break;
+      default:
+        break;
+    }
+  }
+
+  function handleModal(show = false, toDo = null) {
+    if (isLoading) return;
+    setShowModal({ show, toDo });
+  }
+
   return (
-    <UserInfoContainer
-      initial={{ marginRight: `-${CONTAINER_WIDTH}` }}
-      animate={{ marginRight: 0 }}
-      exit={{ marginRight: `-${CONTAINER_WIDTH}` }}
-    >
-      <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
-        <BiRightArrowAlt />
-      </UserInfoCloseBtn>
-      <UserInfoWrapper>
-        <UserAvatarContainer bg={icon ? icon.background : null}>
-          {isPrivate ? <UserAvatar src={getAvatar(avatarId)} /> : icon.letter}
-        </UserAvatarContainer>
-        <UserInfoName>{name}</UserInfoName>
-        {nickname && nickname.length > 0 && (
-          <NicknameContainer>
-            <NicknameTitle>#nick&#32;</NicknameTitle>
-            <Nickname>{nickname}</Nickname>
-            <ChangeNicknameBtn>
-              <BsFillPencilFill title="Change nickname" id="change-nickname" />
-            </ChangeNicknameBtn>
-          </NicknameContainer>
-        )}
-        <UserDescription>{description}</UserDescription>
-        <UserOptionsWrapper>
-          {getOptions().map((op, index) => (
-            <UserOperationBtn title={op.placeholder} id={op.id} key={index}>
-              {op.icon}
-            </UserOperationBtn>
-          ))}
-        </UserOptionsWrapper>
-        {!isPrivate && (
-          <UserMembersContainer>
-            <MembersLabel>Members ({members.length})</MembersLabel>
-            <MembersWrapper>
-              {members.map((item, index) => (
-                <Members key={index}>
-                  <ItemAvatarContainer>
-                    <ItemAvatar src={getAvatar(item.avatarId)} />
-                  </ItemAvatarContainer>
-                  <ItemDetails>
-                    <ItemName>
-                      {item.nickname ? item.nickname : item.name}
-                    </ItemName>
-                    {admin === item.email && <IsAdmin>admin</IsAdmin>}
-                  </ItemDetails>
-                  {admin !== item.email && (
-                    <RemoveMember>
-                      <TiUserDelete />
-                    </RemoveMember>
-                  )}
-                </Members>
-              ))}
-            </MembersWrapper>
-          </UserMembersContainer>
-        )}
-      </UserInfoWrapper>
-    </UserInfoContainer>
+    <React.Fragment>
+      <UserInfoContainer
+        initial={{ marginRight: `-${CONTAINER_WIDTH}` }}
+        animate={{ marginRight: 0 }}
+        exit={{ marginRight: `-${CONTAINER_WIDTH}` }}
+      >
+        <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
+          <BiRightArrowAlt />
+        </UserInfoCloseBtn>
+        <UserInfoWrapper>
+          <UserAvatarContainer bg={icon ? icon.background : null}>
+            {isPrivate ? <UserAvatar src={getAvatar(avatarId)} /> : icon.letter}
+          </UserAvatarContainer>
+          <UserInfoName>{name}</UserInfoName>
+          {nickname && nickname.length > 0 && (
+            <NicknameContainer>
+              <NicknameTitle>#nick&#32;</NicknameTitle>
+              <Nickname>{nickname}</Nickname>
+              <ChangeNicknameBtn>
+                <BsFillPencilFill
+                  title="Change nickname"
+                  id="change-nickname"
+                />
+              </ChangeNicknameBtn>
+            </NicknameContainer>
+          )}
+          <UserDescription>{description}</UserDescription>
+          <UserOptionsWrapper>
+            {getOptions().map((op, index) => (
+              <UserOperationBtn
+                onClick={() => handleModal(true, op.id)}
+                title={op.placeholder}
+                id={op.id}
+                key={index}
+              >
+                {op.icon}
+              </UserOperationBtn>
+            ))}
+          </UserOptionsWrapper>
+          {!isPrivate && (
+            <UserMembersContainer>
+              <MembersLabel>Members ({members.length})</MembersLabel>
+              <MembersWrapper>
+                {members.map((item, index) => (
+                  <Members key={index}>
+                    <ItemAvatarContainer>
+                      <ItemAvatar src={getAvatar(item.avatarId)} />
+                    </ItemAvatarContainer>
+                    <ItemDetails>
+                      <ItemName>
+                        {item.nickname ? item.nickname : item.name}
+                      </ItemName>
+                      {admin === item.email && <IsAdmin>admin</IsAdmin>}
+                    </ItemDetails>
+                    {admin !== item.email && (
+                      <RemoveMember>
+                        <TiUserDelete />
+                      </RemoveMember>
+                    )}
+                  </Members>
+                ))}
+              </MembersWrapper>
+            </UserMembersContainer>
+          )}
+        </UserInfoWrapper>
+      </UserInfoContainer>
+      {showModal.show && (
+        <OperationConfirmationContainer
+          isLoading={isLoading}
+          handleModal={handleModal}
+          toDo={showModal.toDo}
+          execute={executeOperations}
+        />
+      )}
+    </React.Fragment>
   );
 }
+
+const modalStyle = {
+  maxWidth: "500px",
+  height: "auto",
+};
+
+function OperationConfirmationContainer({
+  isLoading,
+  handleModal,
+  toDo,
+  execute,
+}) {
+  function getConfirmationTitle() {
+    let response = "Are you sure you want to ";
+    switch (toDo) {
+      case "leave-group":
+        response += "leave the group?";
+        break;
+      case "delete-group":
+        response += "delete the group?";
+        break;
+      case "block-user":
+        response += "block the contact?";
+        break;
+      case "remove-user":
+        response += "remove the contact?";
+        break;
+      default:
+        break;
+    }
+    return response;
+  }
+  return (
+    <Modal style={modalStyle} inactive={isLoading} close={handleModal}>
+      <ConfirmationContainer>
+        <ConfirmationLabel>{getConfirmationTitle()}</ConfirmationLabel>
+        <ConfirmationBtnContainer>
+          <ConfimrBtn onClick={() => execute(toDo)} disabled={isLoading}>
+            Yes
+          </ConfimrBtn>
+          <ConfimrBtn onClick={() => handleModal()} disabled={isLoading}>
+            No
+          </ConfimrBtn>
+        </ConfirmationBtnContainer>
+      </ConfirmationContainer>
+    </Modal>
+  );
+}
+
+const ConfirmationContainer = styled.div``;
+
+const ConfirmationLabel = styled.p`
+  color: ${(props) => props.theme.txt.main};
+  font-size: 0.8rem;
+  text-align: center;
+`;
+
+const ConfirmationBtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+`;
+
+const ConfimrBtn = styled.button`
+  margin: 4px;
+  display: block;
+  width: 60px;
+  padding: 4px;
+  font-size: 0.7rem;
+  border-radius: 3px;
+  cursor: pointer;
+  border: none;
+  background: ${(props) => props.theme.btn.active};
+  color: ${(props) => props.theme.txt.main};
+  border: 1px solid ${(props) => props.theme.btn.active};
+
+  &:enabled:hover {
+    border: 1px solid ${(props) => props.theme.txt.main};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:first-of-type:disabled {
+    cursor: wait;
+  }
+`;
 
 const UserInfoContainer = styled.div`
   width: ${CONTAINER_WIDTH};

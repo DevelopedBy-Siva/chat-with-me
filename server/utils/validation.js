@@ -35,6 +35,15 @@ function validateNickname(nickname) {
   return /^[a-zA-Z0-9_]{3,}$/.test(nickname);
 }
 
+function getNextAdminIndex(notLookUp, range) {
+  let num = notLookUp;
+  while (num === notLookUp) {
+    num = Math.floor(Math.random() * range);
+  }
+  return num;
+}
+
 module.exports.validateUser = validateUser;
 module.exports.validateNickname = validateNickname;
+module.exports.nextAdminIndex = getNextAdminIndex;
 module.exports.schema = USER_SCHEMA;

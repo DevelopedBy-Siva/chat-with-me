@@ -110,11 +110,11 @@ export const fetchChats = (id) => {
 
     dispatch(chatsLoading());
     axios
-      .get(`/user/chat/${id}`)
+      .get(`/chat/${id}`)
       .then(({ data }) => {
         dispatch(getChats(id, data));
       })
-      .catch((error) => {
+      .catch(() => {
         const { contacts } = getState();
         let isPrivate = false;
         contacts.contacts.forEach((val) => {
