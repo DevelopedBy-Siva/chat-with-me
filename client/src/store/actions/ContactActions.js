@@ -6,6 +6,7 @@ export const BLOCK_CONTACT = "BLOCK_CONTACT";
 export const UNBLOCK_CONTACT = "UNBLOCK_CONTACT";
 export const DELETE_CONTACT = "DELETE_CONTACT";
 export const CREATE_GROUP = "CREATE_GROUP";
+export const REMOVE_GROUP = "REMOVE_GROUP";
 
 export const getContacts = (payload) => {
   return {
@@ -58,6 +59,13 @@ export const unBlockUserContact = (payload) => {
 export const createUserGroup = (payload) => {
   return {
     type: CREATE_GROUP,
+    payload,
+  };
+};
+
+export const removeUserGroup = (payload) => {
+  return {
+    type: REMOVE_GROUP,
     payload,
   };
 };

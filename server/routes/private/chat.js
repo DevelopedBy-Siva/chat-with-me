@@ -82,6 +82,7 @@ route.put("/leave/:chatId", async (req, resp) => {
       { email },
       { $pull: { groups: { ref: data._id } } }
     ),
+    ChatCollection.updateOne({ chatId }, { $pull: { contacts: email } }),
   ]);
 
   return resp.status(201).send();

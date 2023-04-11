@@ -10,6 +10,7 @@ import {
   DELETE_CONTACT,
   getContacts,
   GET_CONTACTS,
+  REMOVE_GROUP,
   UNBLOCK_CONTACT,
 } from "../actions/ContactActions";
 
@@ -83,6 +84,15 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         groups: newGroups,
+      };
+    case REMOVE_GROUP:
+      const afterRemove = [...state.groups];
+      const groupIndex = afterRemove.findIndex((i) => i.chatId === payload);
+      if (groupIndex === -1) return { ...state };
+      afterRemove.splice(groupIndex, 1);
+      return {
+        ...state,
+        groups: [...afterRemove],
       };
     default:
       return state;

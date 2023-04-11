@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
 import { TiUserDelete } from "react-icons/ti";
 import { IoExitOutline } from "react-icons/io5";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
 
-import { getAvatar } from "../../../assets/avatars";
 import axios from "../../../api/axios";
 import toast from "../../Toast";
 import Modal from "../Modal/SubModal";
+import retrieveError from "../../../api/ExceptionHandler";
+import LoadingSpinner from "../../Loader";
+import { getAvatar } from "../../../assets/avatars";
+import { setActive } from "../../../store/actions/ChatActions";
+import {
+  blockUserContact,
+  deleteUserContact,
+  removeUserGroup,
+} from "../../../store/actions/ContactActions";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -55,6 +63,8 @@ function InfoContainer({ setInfoVisible }) {
     toDo: null,
   });
 
+  const dispatch = useDispatch();
+
   function findContactInfo() {
     const { val, isPrivate } = active;
     if (isPrivate) {
@@ -73,6 +83,8 @@ function InfoContainer({ setInfoVisible }) {
     isPrivate,
     icon,
     admin,
+    chatId,
+    email,
     members = [],
   } = findContactInfo();
 
@@ -86,33 +98,48 @@ function InfoContainer({ setInfoVisible }) {
 
   async function executeOperations(type) {
     setIsLoading(true);
-    switch (type) {
-      case "leave-group":
-        await axios
-          .put("groupId")
-          .then(() => {})
-          .catch(() => {});
-        break;
-      case "delete-group":
-        await axios
-          .delete("groupId")
-          .then(() => {})
-          .catch(() => {});
-        break;
-      case "block-user":
-        await axios
-          .put("user email")
-          .then(() => {})
-          .catch(() => {});
-        break;
-      case "remove-user":
-        await axios
-          .delete("user email")
-          .then(() => {})
-          .catch(() => {});
-        break;
-      default:
-        break;
+    try {
+      switch (type) {
+        case "leave-group":
+          await axios.put(`/chat/leave/${chatId}`).then(() => {
+            dispatch(setActive(null, true));
+            dispatch(removeUserGroup(chatId));
+            toast.success("Left group successfully");
+          });
+          break;
+        case "delete-group":
+          await axios.delete(`/chat/${chatId}`).then(() => {
+            dispatch(setActive(null, true));
+            dispatch(removeUserGroup(chatId));
+            toast.success("Group removed successfully");
+          });
+
+          break;
+        case "block-user":
+          await axios.put(`/user/block?email=${email}`).then(() => {
+            dispatch(setActive(null, true));
+            dispatch(blockUserContact(email));
+            toast.success("Contact blocked successfully");
+          });
+
+          break;
+        case "remove-user":
+          await axios.delete(`/user/contact?email=${email}`).then(() => {
+            dispatch(setActive(null, true));
+            dispatch(deleteUserContact(email));
+            toast.success("Contact removed successfully");
+          });
+
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      const { message } = retrieveError(error);
+      setShowModal({ show: false, toDo: null });
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -237,7 +264,11 @@ function OperationConfirmationContainer({
         <ConfirmationLabel>{getConfirmationTitle()}</ConfirmationLabel>
         <ConfirmationBtnContainer>
           <ConfimrBtn onClick={() => execute(toDo)} disabled={isLoading}>
-            Yes
+            {isLoading ? (
+              <LoadingSpinner style={{ width: "14px", height: "14px" }} />
+            ) : (
+              "Yes"
+            )}
           </ConfimrBtn>
           <ConfimrBtn onClick={() => handleModal()} disabled={isLoading}>
             No
@@ -248,7 +279,10 @@ function OperationConfirmationContainer({
   );
 }
 
-const ConfirmationContainer = styled.div``;
+const ConfirmationContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const ConfirmationLabel = styled.p`
   color: ${(props) => props.theme.txt.main};
@@ -274,6 +308,7 @@ const ConfimrBtn = styled.button`
   background: ${(props) => props.theme.btn.active};
   color: ${(props) => props.theme.txt.main};
   border: 1px solid ${(props) => props.theme.btn.active};
+  position: relative;
 
   &:enabled:hover {
     border: 1px solid ${(props) => props.theme.txt.main};
