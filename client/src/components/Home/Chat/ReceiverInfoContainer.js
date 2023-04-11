@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
@@ -65,6 +65,11 @@ function InfoContainer({ setInfoVisible }) {
     show: false,
     toDo: null,
   });
+  const [changeNickname, setChangeNickname] = useState({
+    val: "",
+    show: false,
+    error: null,
+  });
 
   const dispatch = useDispatch();
 
@@ -72,7 +77,8 @@ function InfoContainer({ setInfoVisible }) {
     const { val, isPrivate } = active;
     if (isPrivate) {
       const index = contacts.findIndex((i) => i.chatId === val);
-      return contacts[index];
+      const data = contacts[index];
+      return data;
     }
     const index = groups.findIndex((i) => i.chatId === val);
     const data = groups[index];
@@ -91,11 +97,13 @@ function InfoContainer({ setInfoVisible }) {
     members = [],
   } = findContactInfo();
 
-  const [changeNickname, setChangeNickname] = useState({
-    val: nickname,
-    show: false,
-    error: null,
-  });
+  useEffect(() => {
+    setChangeNickname({
+      show: false,
+      val: nickname,
+      error: null,
+    });
+  }, [nickname]);
 
   function getOptions() {
     if (isPrivate) return options;

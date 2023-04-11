@@ -96,7 +96,7 @@ const reducer = (state = initialState, action) => {
         groups: [...afterRemove],
       };
     case CHANGE_NICKNAME:
-      const index = state.contacts.findIndex((i) => i.email == payload.email);
+      const index = state.contacts.findIndex((i) => i.email === payload.email);
       if (index === -1) return { ...state };
       const afterNicknameUpdate = [...state.contacts];
       afterNicknameUpdate[index].nickname = payload.nickname;
