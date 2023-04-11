@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
 import { TiUserDelete } from "react-icons/ti";
@@ -52,7 +53,11 @@ const groupOptions = [
 ];
 
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
-  return infoVisible && <InfoContainer setInfoVisible={setInfoVisible} />;
+  return (
+    <AnimatePresence>
+      {infoVisible && <InfoContainer setInfoVisible={setInfoVisible} />}
+    </AnimatePresence>
+  );
 }
 
 function InfoContainer({ setInfoVisible }) {
@@ -507,7 +512,7 @@ const ConfimrBtn = styled.button`
   }
 `;
 
-const UserInfoContainer = styled.div`
+const UserInfoContainer = styled(motion.div)`
   width: ${CONTAINER_WIDTH};
   flex-shrink: 0;
   position: relative;
