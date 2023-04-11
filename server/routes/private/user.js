@@ -4,6 +4,7 @@ const {
   validateUser,
   validateNickname,
   schema,
+  nextAdminIndex,
 } = require("../../utils/validation");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
@@ -521,11 +522,48 @@ route.delete("/remove", async (req, resp) => {
 
   const isDeleted = await UserCollection.deleteOne({ email });
 
-  if (isDeleted.deletedCount > 0)
+  if (isDeleted.deletedCount > 0) {
+    const groups = await GroupsCollection.find({ members: { email } });
+
+    for (let item of groups) {
+      const noOfMembers = item.members.length;
+      const iamAdmin = item.admin === email;
+
+      if (noOfMembers > 3) {
+        const userIndex = item.members.findIndex((i) => i.email === email);
+        if (userIndex === -1) continue;
+
+        if (iamAdmin) {
+          // Generate a Random Admin Index
+          const adminIndex = nextAdminIndex(userIndex, noOfMembers);
+          item.admin = item.members[adminIndex].email;
+        }
+        item.members.splice(userIndex, 1);
+        await item.save();
+      } else await item.remove();
+    }
+
     await Promise.all([
       UserCollection.updateMany({}, { $pull: { contacts: { email } } }),
-      GroupsCollection.updateMany({}, { $pull: { members: { email } } }),
+      ChatCollection.deleteMany({
+        isPrivate: true,
+        contacts: { $in: [email] },
+      }),
+      ChatCollection.updateMany(
+        {
+          isPrivate: false,
+          contacts: { $in: [email] },
+        },
+        {
+          $pull: {
+            contacts: {
+              email,
+            },
+          },
+        }
+      ),
     ]);
+  }
 
   const { jwtTokenKey, isLoggedInKey } = cookies.cookieNames;
   resp.clearCookie(jwtTokenKey);

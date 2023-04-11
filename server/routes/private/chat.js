@@ -67,17 +67,18 @@ route.put("/leave/:chatId", async (req, resp) => {
     return resp.status(201).send();
   }
 
-  // Generate a Random Admin Index
   const dontLookUpIndex = data.members.findIndex((i) => i.email === email);
-  const adminIndex = nextAdminIndex(dontLookUpIndex, data.members.length);
-
-  const nextAdmin = data.members[adminIndex].email;
-
-  await Promise.all([
-    GroupsCollection.updateOne(
+  if (dontLookUpIndex !== -1 && data.admin === email) {
+    // Generate a Random Admin Index
+    const adminIndex = nextAdminIndex(dontLookUpIndex, data.members.length);
+    const nextAdmin = data.members[adminIndex].email;
+    await GroupsCollection.updateOne(
       { chatId },
       { $pull: { members: { email } }, $set: { admin: nextAdmin } }
-    ),
+    );
+  }
+
+  await Promise.all([
     UserCollection.updateOne(
       { email },
       { $pull: { groups: { ref: data._id } } }
