@@ -2,6 +2,7 @@ import axios from "../../api/axios";
 import {
   ADD_NEW_CONTACT,
   BLOCK_CONTACT,
+  CHANGE_NICKNAME,
   contactsError,
   contactsLoading,
   CONTACTS_ERROR,
@@ -93,6 +94,15 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         groups: [...afterRemove],
+      };
+    case CHANGE_NICKNAME:
+      const index = state.contacts.findIndex((i) => i.email == payload.email);
+      if (index === -1) return { ...state };
+      const afterNicknameUpdate = [...state.contacts];
+      afterNicknameUpdate[index].nickname = payload.nickname;
+      return {
+        ...state,
+        contacts: afterNicknameUpdate,
       };
     default:
       return state;

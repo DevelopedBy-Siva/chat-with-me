@@ -16,9 +16,12 @@ import { getAvatar } from "../../../assets/avatars";
 import { setActive } from "../../../store/actions/ChatActions";
 import {
   blockUserContact,
+  changeContactNickname,
   deleteUserContact,
   removeUserGroup,
 } from "../../../store/actions/ContactActions";
+import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
+import { nicknameValidation } from "../../../utils/InputHandler";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -88,6 +91,12 @@ function InfoContainer({ setInfoVisible }) {
     members = [],
   } = findContactInfo();
 
+  const [changeNickname, setChangeNickname] = useState({
+    val: nickname,
+    show: false,
+    error: null,
+  });
+
   function getOptions() {
     if (isPrivate) return options;
 
@@ -148,6 +157,39 @@ function InfoContainer({ setInfoVisible }) {
     setShowModal({ show, toDo });
   }
 
+  function handleNicknameModal(show = false) {
+    if (isLoading) return;
+    setChangeNickname({ ...changeNickname, show });
+  }
+
+  function handleNicknameChange(e) {
+    const value = e.target.value;
+    const { message } = nicknameValidation(value, contacts);
+    setChangeNickname({ ...changeNickname, val: value, error: message });
+  }
+
+  async function updateNickname() {
+    if (isLoading || changeNickname.error) return;
+
+    const newNickname = changeNickname.val.toLowerCase();
+    if (newNickname === nickname)
+      return setChangeNickname({ ...changeNickname, show: false });
+
+    setIsLoading(true);
+    await axios
+      .put(`/user/contact/nickname?email=${email}&nickname=${newNickname}`)
+      .then(() => {
+        setChangeNickname({ ...changeNickname, show: false });
+        dispatch(changeContactNickname({ email, nickname: newNickname }));
+        toast.success("Nickname updated successfully");
+      })
+      .catch((error) => {
+        const { message } = retrieveError(error);
+        toast.error(message, toast.props.user.nonPersist);
+      });
+    setIsLoading(false);
+  }
+
   return (
     <React.Fragment>
       <UserInfoContainer
@@ -167,7 +209,7 @@ function InfoContainer({ setInfoVisible }) {
             <NicknameContainer>
               <NicknameTitle>#nick&#32;</NicknameTitle>
               <Nickname>{nickname}</Nickname>
-              <ChangeNicknameBtn>
+              <ChangeNicknameBtn onClick={() => handleNicknameModal(true)}>
                 <BsFillPencilFill
                   title="Change nickname"
                   id="change-nickname"
@@ -221,6 +263,17 @@ function InfoContainer({ setInfoVisible }) {
           handleModal={handleModal}
           toDo={showModal.toDo}
           execute={executeOperations}
+        />
+      )}
+      {changeNickname.show && (
+        <ChangeNicknameContainer
+          isLoading={isLoading}
+          nickname={changeNickname.val}
+          handleNicknameModal={handleNicknameModal}
+          name={name}
+          handleNicknameChange={handleNicknameChange}
+          error={changeNickname.error}
+          updateNickname={updateNickname}
         />
       )}
     </React.Fragment>
@@ -278,6 +331,129 @@ function OperationConfirmationContainer({
     </Modal>
   );
 }
+
+const nicknameModalStyle = {
+  maxWidth: "420px",
+  maxHeight: "230px",
+};
+function ChangeNicknameContainer({
+  name,
+  isLoading,
+  handleNicknameModal,
+  nickname,
+  handleNicknameChange,
+  error,
+  updateNickname,
+}) {
+  return (
+    <Modal
+      inactive={isLoading}
+      style={nicknameModalStyle}
+      close={handleNicknameModal}
+    >
+      <ChangeNicknameModalContainer>
+        <ModalHeaderWrapper>Change nickname</ModalHeaderWrapper>
+        <ChangeNicknamModalWrapper>
+          <ChangeNicknamModalLabel>{name}'s nickname:</ChangeNicknamModalLabel>
+          <ChangeNicknameModalInputWrapper>
+            <ChangeNicknameModalInput
+              value={nickname}
+              name="nickname"
+              type="text"
+              spellCheck={false}
+              autoComplete="off"
+              disabled={isLoading}
+              placeholder="Enter the nickname"
+              onChange={handleNicknameChange}
+            />
+            <ChangeNicknamModalError>{error}</ChangeNicknamModalError>
+          </ChangeNicknameModalInputWrapper>
+          <ChangeNicknamModalBtn
+            onClick={updateNickname}
+            disabled={isLoading || error}
+          >
+            {isLoading ? (
+              <LoadingSpinner style={{ width: "14px", height: "14px" }} />
+            ) : (
+              "Change"
+            )}
+          </ChangeNicknamModalBtn>
+        </ChangeNicknamModalWrapper>
+      </ChangeNicknameModalContainer>
+    </Modal>
+  );
+}
+
+const ChangeNicknamModalWrapper = styled.div`
+  flex: 1;
+  padding: 0.6rem;
+  overflow-y: auto;
+`;
+
+const ChangeNicknameModalInputWrapper = styled.div`
+  display: block;
+  width: 100%;
+  min-height: 50px;
+`;
+
+const ChangeNicknamModalError = styled.span`
+  display: block;
+  font-size: 0.7rem;
+  color: ${(props) => props.theme.txt.danger};
+  margin-top: 5px;
+`;
+
+const ChangeNicknamModalBtn = styled.button`
+  display: block;
+  width: 70px;
+  height: 24px;
+  margin: auto;
+  margin-top: 8px;
+  background: #085ed4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  position: relative;
+  cursor: pointer;
+
+  :enabled:hover {
+    background: #206ed8;
+  }
+
+  :disabled {
+    cursor: not-allowed;
+  }
+`;
+
+const ChangeNicknamModalLabel = styled.span`
+  display: block;
+  font-size: 0.8rem;
+  color: ${(props) => props.theme.txt.sub};
+  ::first-letter {
+    text-transform: capitalize;
+  }
+`;
+
+const ChangeNicknameModalInput = styled.input`
+  display: block;
+  width: 100%;
+  border: 1px solid ${(props) => props.theme.border.inputbox};
+  background: none;
+  margin-top: 6px;
+  padding: 6px 4px;
+  color: ${(props) => props.theme.txt.main};
+  border-radius: 4px;
+  outline: none;
+  font-size: 0.8rem;
+`;
+
+const ChangeNicknameModalContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 const ConfirmationContainer = styled.div`
   width: 100%;
