@@ -20,25 +20,37 @@ export default function UserHome() {
 
   return (
     <Provider store={store}>
-      <Container>
-        {showOneTimeInfo && <OneTimeInfo />}
-        <Navbar />
-        <Suspense fallback={<FullPageLoading />}>
-          <Outlet />
-        </Suspense>
-      </Container>
+      <Wrapper className="home-container">
+        <Container>
+          {showOneTimeInfo && <OneTimeInfo />}
+          <Navbar />
+          <Suspense fallback={<FullPageLoading />}>
+            <Outlet />
+          </Suspense>
+        </Container>
+      </Wrapper>
     </Provider>
   );
 }
+
+const Wrapper = styled.div`
+  overflow: hidden;
+  scroll-behavior: smooth;
+`;
 
 const Container = styled.div`
   width: 100%;
   height: 100dvh;
   overflow: hidden;
-  display: flex;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 64px 300px 1fr;
   position: relative;
 
   @media (max-width: 920px) {
-    flex-direction: column-reverse;
+    width: 200%;
+    height: 100dvh;
+    grid-template-rows: 1fr 52px;
+    grid-template-columns: 1fr 1fr;
   }
 `;

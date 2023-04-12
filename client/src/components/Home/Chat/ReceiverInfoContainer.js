@@ -203,12 +203,23 @@ function InfoContainer({ setInfoVisible }) {
     setIsLoading(false);
   }
 
+  const isScreenSmall = window.innerWidth <= 920;
+
   return (
     <React.Fragment>
       <UserInfoContainer
-        initial={{ marginRight: `-${CONTAINER_WIDTH}` }}
-        animate={{ marginRight: 0 }}
-        exit={{ marginRight: `-${CONTAINER_WIDTH}` }}
+        initial={{
+          marginRight: isScreenSmall ? 0 : `-${CONTAINER_WIDTH}`,
+          transform: isScreenSmall ? "translateX(100%)" : 0,
+        }}
+        animate={{
+          marginRight: 0,
+          transform: isScreenSmall ? "translateX(0)" : 0,
+        }}
+        exit={{
+          marginRight: isScreenSmall ? 0 : `-${CONTAINER_WIDTH}`,
+          transform: isScreenSmall ? "translateX(100%)" : 0,
+        }}
       >
         <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
           <BiRightArrowAlt />
@@ -471,6 +482,8 @@ const ChangeNicknameModalContainer = styled.div`
 const ConfirmationContainer = styled.div`
   width: 100%;
   height: 100%;
+  padding: 0.6rem;
+  padding-bottom: 0;
 `;
 
 const ConfirmationLabel = styled.p`
@@ -482,7 +495,7 @@ const ConfirmationLabel = styled.p`
 const ConfirmationBtnContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 10px;
 `;
 
 const ConfimrBtn = styled.button`
@@ -518,6 +531,16 @@ const UserInfoContainer = styled(motion.div)`
   position: relative;
   z-index: 9;
   background-color: ${(props) => props.theme.bg.container};
+
+  @media (max-width: 920px) {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+  }
 `;
 
 const UserInfoCloseBtn = styled.button`

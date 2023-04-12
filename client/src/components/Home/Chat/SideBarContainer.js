@@ -13,6 +13,7 @@ import {
 } from "../../../utils/DateTime";
 import Loader from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
+import { toggle_BW_Chats } from "../../../utils/Screens";
 
 export default function SideBar() {
   const {
@@ -77,6 +78,7 @@ function ContactsWrapper({ search, contacts, groups }) {
   const { active } = useSelector((state) => state.chats);
 
   function handleContact(id, isPrivate) {
+    toggle_BW_Chats();
     dispatch(setActive(id, isPrivate));
   }
 
@@ -199,7 +201,10 @@ function SearchInputIcon({ search, setSearch }) {
 }
 
 const Container = styled.div`
-  width: 300px;
+  grid-row-start: 1;
+  grid-column-start: 2;
+  grid-row-end: 2;
+  grid-column-end: 3;
   overflow: hidden;
   background: ${(props) => props.theme.bg.container};
   z-index: 99;
@@ -207,10 +212,10 @@ const Container = styled.div`
   flex-direction: column;
 
   @media (max-width: 920px) {
-    min-width: 0;
-    width: auto;
-    flex: 1;
-    height: 100%;
+    grid-row-start: 1;
+    grid-column-start: 1;
+    grid-row-end: 2;
+    grid-column-end: 2;
   }
 `;
 
@@ -345,6 +350,10 @@ const Contact = styled.li`
 
   @media (max-width: 920px) {
     height: 64px;
+
+    &.active-contact {
+      background: none;
+    }
   }
 `;
 

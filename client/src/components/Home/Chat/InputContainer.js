@@ -16,10 +16,7 @@ export default function InputContainer({ chatContainerRef }) {
   const { active, loading } = useSelector((state) => state.chats);
 
   useEffect(() => {
-    if (msgInputRef) {
-      msgInputRef.current.value = "";
-      msgInputRef.current.focus();
-    }
+    if (msgInputRef) msgInputRef.current.value = "";
   }, [active]);
 
   function submitMessage(e) {

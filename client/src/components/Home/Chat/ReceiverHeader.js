@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CgDetailsMore } from "react-icons/cg";
+import { IoArrowBack } from "react-icons/io5";
 
 import { getAvatar } from "../../../assets/avatars";
+import { toggle_BW_Chats } from "../../../utils/Screens";
+import { setActive } from "../../../store/actions/ChatActions";
 
 export default function ReceiverHeader({
   contactId,
@@ -25,6 +28,8 @@ export default function ReceiverHeader({
 function ReceiverContainer({ contactId }) {
   const { contacts, groups } = useSelector((state) => state.contacts);
 
+  const dispatch = useDispatch();
+
   function findContactInfo() {
     const { val, isPrivate } = contactId;
     if (isPrivate) {
@@ -35,11 +40,21 @@ function ReceiverContainer({ contactId }) {
     return groups[index];
   }
 
+  function goBack() {
+    toggle_BW_Chats(true);
+    setTimeout(() => {
+      dispatch(setActive(null));
+    }, 300);
+  }
+
   const { isOnline, name, nickname, avatarId, isPrivate, icon } =
     findContactInfo();
 
   return (
     <Receiver>
+      <ReceiverBackBtn onClick={goBack}>
+        <IoArrowBack />
+      </ReceiverBackBtn>
       <ReceiverAvatarContainer bg={icon ? icon.background : null}>
         {isPrivate ? <ReceiverAvatar src={getAvatar(avatarId)} /> : icon.letter}
       </ReceiverAvatarContainer>
@@ -57,6 +72,23 @@ function ReceiverContainer({ contactId }) {
   );
 }
 
+const ReceiverBackBtn = styled.button`
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.txt.main};
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  display: none;
+
+  @media (max-width: 920px) {
+    display: flex;
+  }
+`;
+
 const Container = styled.div`
   height: 70px;
   flex-shrink: 0;
@@ -66,6 +98,10 @@ const Container = styled.div`
   align-items: center;
   background: ${(props) => props.theme.bg.app};
   z-index: 1;
+
+  @media (max-width: 920px) {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 const Receiver = styled.div`
@@ -89,6 +125,8 @@ const ReceiverAvatarContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 14px;
+  flex-shrink: 0;
 `;
 
 const ReceiverAvatar = styled.img`
@@ -99,7 +137,6 @@ const ReceiverAvatar = styled.img`
 `;
 
 const ReceiverInfo = styled.div`
-  margin-left: 1rem;
   min-width: 0;
   width: 90%;
 `;

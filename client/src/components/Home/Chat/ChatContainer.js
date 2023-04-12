@@ -103,21 +103,19 @@ export default function ChatContainer() {
 }
 
 const Container = styled.div`
-  flex: 1;
-  min-width: 0;
+  grid-row-start: 1;
+  grid-column-start: 3;
+  grid-row-end: 2;
+  grid-column-end: 4;
   display: flex;
   flex-direction: column;
   position: relative;
 
   @media (max-width: 920px) {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 99;
-    transform: translateX(100%);
-    height: 100dvh;
+    grid-row-start: 1;
+    grid-column-start: 2;
+    grid-row-end: 3;
+    grid-column-end: 3;
   }
 `;
 
