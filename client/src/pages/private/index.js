@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import FullPageLoading from "../../components/Loader/FullPage";
 import axios from "../../api/axios";
 import { setUser } from "../../store/actions/UserActions";
+import { removeIsLoggedIn } from "../../utils/UserLocal";
 
 export default function Private() {
   const [proceed, setProceed] = useState(null);
@@ -19,7 +20,10 @@ export default function Private() {
           dispatch(setUser(data));
           return true;
         })
-        .catch(() => false);
+        .catch(() => {
+          removeIsLoggedIn();
+          return false;
+        });
       setProceed(isValid);
     }
     startupValidation();
