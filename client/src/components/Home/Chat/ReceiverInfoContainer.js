@@ -210,15 +210,15 @@ function InfoContainer({ setInfoVisible }) {
       <UserInfoContainer
         initial={{
           marginRight: isScreenSmall ? 0 : `-${CONTAINER_WIDTH}`,
-          transform: isScreenSmall ? "translateX(100%)" : 0,
+          transform: isScreenSmall ? "translateX(100%)" : "none",
         }}
         animate={{
           marginRight: 0,
-          transform: isScreenSmall ? "translateX(0)" : 0,
+          transform: isScreenSmall ? "translateX(0)" : "none",
         }}
         exit={{
           marginRight: isScreenSmall ? 0 : `-${CONTAINER_WIDTH}`,
-          transform: isScreenSmall ? "translateX(100%)" : 0,
+          transform: isScreenSmall ? "translateX(100%)" : "none",
         }}
       >
         <UserInfoCloseBtn onClick={() => setInfoVisible(false)}>
@@ -271,7 +271,7 @@ function InfoContainer({ setInfoVisible }) {
                     </ItemDetails>
                     {admin !== item.email && (
                       <RemoveMember>
-                        <TiUserDelete />
+                        <TiUserDelete style={{ opacity: 0.8 }} />
                       </RemoveMember>
                     )}
                   </Members>
