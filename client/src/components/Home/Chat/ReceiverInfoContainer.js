@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
-import { TiUserDelete } from "react-icons/ti";
-import { IoExitOutline } from "react-icons/io5";
+import { IoExitOutline, IoAddOutline, IoClose } from "react-icons/io5";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { BsFillPencilFill } from "react-icons/bs";
 
@@ -28,25 +27,30 @@ const CONTAINER_WIDTH = "280px";
 const options = [
   {
     id: "block-user",
-    icon: <MdBlock />,
+    icon: <MdBlock className="icon" />,
     placeholder: "Block user",
   },
   {
     id: "remove-user",
-    icon: <MdPersonOff />,
+    icon: <MdPersonOff className="icon" />,
     placeholder: "Remove contact",
   },
 ];
 
 const groupOptions = [
   {
+    id: "add-to-group",
+    icon: <IoAddOutline className="icon" />,
+    placeholder: "Add members",
+  },
+  {
     id: "leave-group",
-    icon: <IoExitOutline />,
+    icon: <IoExitOutline className="icon" />,
     placeholder: "Leave group",
   },
   {
     id: "delete-group",
-    icon: <MdDeleteForever />,
+    icon: <MdDeleteForever className="icon" />,
     placeholder: "Delete group",
     onlyAdmin: true,
   },
@@ -271,7 +275,7 @@ function InfoContainer({ setInfoVisible }) {
                     </ItemDetails>
                     {admin !== item.email && (
                       <RemoveMember>
-                        <TiUserDelete style={{ opacity: 0.8 }} />
+                        <IoClose style={{ opacity: 0.8 }} />
                       </RemoveMember>
                     )}
                   </Members>
@@ -690,18 +694,18 @@ const UserOperationBtn = styled.button`
   align-items: center;
   cursor: pointer;
   margin-left: 8px;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   border-radius: 5px;
   padding: 8px;
   outline: none;
   border: none;
   color: ${(props) => props.theme.txt.main};
   background-color: ${(props) => props.theme.btn.active};
-  width: 56px;
-  height: 56px;
-  transition: font-size 0.3s ease-in-out;
-  :hover {
-    font-size: 1.2rem;
+  width: 45px;
+  height: 45px;
+
+  :hover .icon {
+    transform: scale(1.06);
   }
 `;
 
