@@ -8,6 +8,7 @@ export const DELETE_CONTACT = "DELETE_CONTACT";
 export const CREATE_GROUP = "CREATE_GROUP";
 export const REMOVE_GROUP = "REMOVE_GROUP";
 export const CHANGE_NICKNAME = "CHANGE_NICKNAME";
+export const ADD_TO_GROUP = "ADD_TO_GROUP";
 
 export const getContacts = (payload) => {
   return {
@@ -75,5 +76,15 @@ export const changeContactNickname = (payload) => {
   return {
     type: CHANGE_NICKNAME,
     payload,
+  };
+};
+
+export const addContactToGroup = (chatId, contact) => {
+  return {
+    type: ADD_TO_GROUP,
+    payload: {
+      chatId,
+      contact,
+    },
   };
 };

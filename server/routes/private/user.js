@@ -427,6 +427,9 @@ route.get("/contacts/search", async (req, resp) => {
   resp.status(200).send(contacts);
 });
 
+/**
+ * Create Group
+ */
 route.post("/create-group", async (req, resp) => {
   const { email } = req.payload;
   const { name, members, icon } = req.body;

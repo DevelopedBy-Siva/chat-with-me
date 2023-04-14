@@ -16,7 +16,7 @@ route.get("/:chatId", async (req, resp) => {
 
   const data = await ChatCollection.findOne({ chatId });
   if (!data)
-    resp
+    return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Chat not found"));
   resp.status(200).send(data);
@@ -30,7 +30,7 @@ route.delete("/:chatId", async (req, resp) => {
 
   const data = await GroupsCollection.findOne({ chatId });
   if (!data)
-    resp
+    return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Group not found"));
 
@@ -40,7 +40,7 @@ route.delete("/:chatId", async (req, resp) => {
     UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
   ]);
 
-  return resp.status(201).send();
+  resp.status(201).send();
 });
 
 /**
@@ -52,7 +52,7 @@ route.put("/leave/:chatId", async (req, resp) => {
 
   const data = await GroupsCollection.findOne({ chatId });
   if (!data)
-    resp
+    return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Group not found"));
 
@@ -84,7 +84,65 @@ route.put("/leave/:chatId", async (req, resp) => {
       { $pull: { groups: { ref: data._id } } }
     ),
     ChatCollection.updateOne({ chatId }, { $pull: { contacts: email } }),
+    GroupsCollection.updateOne({ chatId }, { $pull: { members: { email } } }),
   ]);
+
+  resp.status(201).send();
+});
+
+/**
+ * Add contact to group
+ */
+route.put("/add-to-group/:chatId", async (req, resp) => {
+  const { email } = req.payload;
+  const chatId = req.params.chatId;
+  const contactToAdd = req.query.contact.trim().toLowerCase();
+
+  const data = await GroupsCollection.findOne({ chatId });
+  if (!data)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Group not found"));
+
+  const contactAlreadyExists = data.members.some(
+    (i) => i.email === contactToAdd
+  );
+  if (contactAlreadyExists) return resp.status(201).send();
+
+  const user = await UserCollection.findOne({ email });
+
+  const isInTheGroup = user.groups.some(
+    (i) => String(i.ref) === String(data._id)
+  );
+  if (!isInTheGroup)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Not in the group"));
+
+  const isInTheContact = user.contacts.some(
+    (item) => item.email === contactToAdd
+  );
+  if (!isInTheContact)
+    return resp
+      .status(404)
+      .send(
+        new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact doesn't exists")
+      );
+
+  const isAdded = await UserCollection.updateOne(
+    { email: contactToAdd },
+    { $push: { groups: { ref: data._id } } }
+  );
+  if (isAdded.modifiedCount > 0) {
+    data.members.push({ email: contactToAdd });
+    await Promise.all([
+      data.save(),
+      ChatCollection.updateOne(
+        { chatId },
+        { $push: { contacts: contactToAdd } }
+      ),
+    ]);
+  }
 
   return resp.status(201).send();
 });

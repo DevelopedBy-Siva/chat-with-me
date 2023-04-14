@@ -13,6 +13,7 @@ import {
   GET_CONTACTS,
   REMOVE_GROUP,
   UNBLOCK_CONTACT,
+  ADD_TO_GROUP,
 } from "../actions/ContactActions";
 
 const initialState = {
@@ -103,6 +104,19 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         contacts: afterNicknameUpdate,
+      };
+    case ADD_TO_GROUP:
+      const groupAfterNewContact = [...state.groups];
+      const groupToAddIndex = groupAfterNewContact.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (groupToAddIndex === -1) return { ...state };
+
+      groupAfterNewContact[groupToAddIndex].members.push(payload.contact);
+
+      return {
+        ...state,
+        groups: [...groupAfterNewContact],
       };
     default:
       return state;

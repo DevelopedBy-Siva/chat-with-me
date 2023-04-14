@@ -15,6 +15,7 @@ import LoadingSpinner from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
 import { setActive } from "../../../store/actions/ChatActions";
 import {
+  addContactToGroup,
   blockUserContact,
   changeContactNickname,
   deleteUserContact,
@@ -41,7 +42,8 @@ const groupOptions = [
   {
     id: "add-to-group",
     icon: <IoAddOutline className="icon" />,
-    placeholder: "Add members",
+    placeholder: "Add member",
+    isModal: true,
   },
   {
     id: "leave-group",
@@ -79,6 +81,7 @@ function InfoContainer({ setInfoVisible }) {
     show: false,
     error: null,
   });
+  const [addMember, setAddMember] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -130,14 +133,14 @@ function InfoContainer({ setInfoVisible }) {
           await axios.put(`/chat/leave/${chatId}`).then(() => {
             dispatch(setActive(null, true));
             dispatch(removeUserGroup(chatId));
-            toast.success("Left group successfully");
+            toast.success("Left the group successfully");
           });
           break;
         case "delete-group":
           await axios.delete(`/chat/${chatId}`).then(() => {
             dispatch(setActive(null, true));
             dispatch(removeUserGroup(chatId));
-            toast.success("Group removed successfully");
+            toast.success("Group the removed successfully");
           });
 
           break;
@@ -207,6 +210,11 @@ function InfoContainer({ setInfoVisible }) {
     setIsLoading(false);
   }
 
+  function handleAddMemberToggle(val = false) {
+    if (isLoading) return;
+    setAddMember(val);
+  }
+
   const isScreenSmall = window.innerWidth <= 920;
 
   return (
@@ -249,7 +257,11 @@ function InfoContainer({ setInfoVisible }) {
           <UserOptionsWrapper>
             {getOptions().map((op, index) => (
               <UserOperationBtn
-                onClick={() => handleModal(true, op.id)}
+                onClick={() =>
+                  op.isModal
+                    ? handleAddMemberToggle(true)
+                    : handleModal(true, op.id)
+                }
                 title={op.placeholder}
                 id={op.id}
                 key={index}
@@ -273,11 +285,12 @@ function InfoContainer({ setInfoVisible }) {
                       </ItemName>
                       {admin === item.email && <IsAdmin>admin</IsAdmin>}
                     </ItemDetails>
-                    {admin !== item.email && item.email !== details.email && (
-                      <RemoveMember>
-                        <IoClose style={{ opacity: 0.8 }} />
-                      </RemoveMember>
-                    )}
+                    {admin === details.email &&
+                      item.email !== details.email && (
+                        <RemoveMember>
+                          <IoClose style={{ opacity: 0.8 }} />
+                        </RemoveMember>
+                      )}
                   </Members>
                 ))}
               </MembersWrapper>
@@ -302,6 +315,16 @@ function InfoContainer({ setInfoVisible }) {
           handleNicknameChange={handleNicknameChange}
           error={changeNickname.error}
           updateNickname={updateNickname}
+        />
+      )}
+      {addMember && (
+        <AddNewMembers
+          isLoading={isLoading}
+          handleAddMemberToggle={handleAddMemberToggle}
+          contacts={contacts}
+          active={active}
+          groups={groups}
+          setIsLoading={setIsLoading}
         />
       )}
     </React.Fragment>
@@ -411,6 +434,201 @@ function ChangeNicknameContainer({
     </Modal>
   );
 }
+
+const newMembersModalStyle = {
+  maxWidth: "420px",
+  maxHeight: "350px",
+};
+
+function AddNewMembers({
+  isLoading,
+  handleAddMemberToggle,
+  active,
+  contacts,
+  groups,
+  setIsLoading,
+}) {
+  const dispatch = useDispatch();
+
+  function handleClose() {
+    handleAddMemberToggle(false);
+  }
+
+  function getMembers() {
+    const currentGroupIndex = groups.findIndex((i) => i.chatId === active.val);
+    if (currentGroupIndex === -1) return [];
+    let toRender = [];
+    const currentGroupMembers = groups[currentGroupIndex].members;
+    contacts.forEach((i) => {
+      const isPresent = currentGroupMembers.some((m) => m.email === i.email);
+      if (!isPresent) toRender.push(i);
+    });
+    return toRender;
+  }
+
+  async function addContact(contact) {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    await axios
+      .put(`/chat/add-to-group/${active.val}?contact=${contact.email}`)
+      .then(() => {
+        dispatch(addContactToGroup(active.val, contact));
+        toast.success("Contact added to the group successfully");
+        handleClose();
+      })
+      .catch((error) => {
+        console.log(error);
+        const { message } = retrieveError(error);
+        toast.error(message, toast.props.user.nonPersist);
+      });
+
+    setIsLoading(false);
+  }
+
+  const membersAvailable = getMembers();
+  return (
+    <Modal
+      close={handleClose}
+      style={newMembersModalStyle}
+      inactive={isLoading}
+    >
+      <AddNewMembersContainer>
+        <ModalHeaderWrapper>Add member</ModalHeaderWrapper>
+        <AddNewMembersWrapper>
+          <AddNewMembersTitle
+            className={membersAvailable.length === 0 ? "center" : ""}
+          >
+            {membersAvailable.length === 0
+              ? "No new contacts available"
+              : "Select a contact to add in the group"}
+          </AddNewMembersTitle>
+          <AddNewMembersContatctContainer>
+            {membersAvailable.map((item, index) => (
+              <AddNewMembersContact key={index}>
+                <AddNewMembersAvatarContainer>
+                  <AddNewMembersAvatar src={getAvatar(item.avatarId)} />
+                </AddNewMembersAvatarContainer>
+                <AddNewMembersName>{item.nickname}</AddNewMembersName>
+                <AddNewMembersBtn disabled={isLoading}>
+                  {isLoading ? (
+                    <LoadingSpinner style={{ width: "14px", height: "14px" }} />
+                  ) : (
+                    <IoAddOutline
+                      onClick={() => addContact(item)}
+                      className="icon"
+                    />
+                  )}
+                </AddNewMembersBtn>
+              </AddNewMembersContact>
+            ))}
+          </AddNewMembersContatctContainer>
+        </AddNewMembersWrapper>
+      </AddNewMembersContainer>
+    </Modal>
+  );
+}
+
+const AddNewMembersContact = styled.li`
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  height: 50px;
+  border-bottom: 1px solid ${(props) => props.theme.border.inputbox};
+  padding: 5px 0;
+
+  &:last-of-type {
+    border: none;
+  }
+`;
+
+const AddNewMembersAvatarContainer = styled.span`
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  margin-right: 8px;
+`;
+
+const AddNewMembersAvatar = styled.img`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+`;
+
+const AddNewMembersName = styled.span`
+  display: block;
+  flex: 1;
+  font-size: 0.8rem;
+  color: ${(props) => props.theme.txt.main};
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const AddNewMembersBtn = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.txt.sub};
+  background: none;
+  outline: none;
+  border: none;
+  font-size: 1.2rem;
+  position: relative;
+  width: 30px;
+  height: 25px;
+
+  .icon {
+    cursor: pointer;
+  }
+
+  :enabled:hover {
+    color: ${(props) => props.theme.txt.main};
+  }
+
+  :disabled .icon {
+    cursor: not-allowed;
+  }
+`;
+
+const AddNewMembersContatctContainer = styled.ul`
+  display: block;
+  list-style: none;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  margin-top: 15px;
+`;
+
+const AddNewMembersTitle = styled.h5`
+  font-size: 0.7rem;
+  color: ${(props) => props.theme.txt.sub};
+  flex-shrink: 0;
+  margin-top: 5px;
+
+  &.center {
+    text-align: center;
+  }
+`;
+
+const AddNewMembersWrapper = styled.div`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.6rem;
+`;
+
+const AddNewMembersContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 const ChangeNicknamModalWrapper = styled.div`
   flex: 1;
