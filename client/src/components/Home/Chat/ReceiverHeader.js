@@ -114,8 +114,8 @@ const Receiver = styled.div`
 
 const ReceiverAvatarContainer = styled.div`
   border-radius: 50%;
-  height: 44px;
-  width: 44px;
+  height: 38px;
+  width: 38px;
   font-size: 1.4rem;
   font-weight: 500;
   text-transform: capitalize;

@@ -554,6 +554,7 @@ const AddNewMembersAvatarContainer = styled.span`
   height: 34px;
   flex-shrink: 0;
   margin-right: 8px;
+  background-color: ${(props) => props.theme.btn.active};
 `;
 
 const AddNewMembersAvatar = styled.img`
