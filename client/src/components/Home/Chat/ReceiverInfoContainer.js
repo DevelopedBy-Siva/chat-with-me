@@ -22,7 +22,10 @@ import {
   removeUserGroup,
 } from "../../../store/actions/ContactActions";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
-import { nicknameValidation } from "../../../utils/InputHandler";
+import {
+  getContactNickname,
+  nicknameValidation,
+} from "../../../utils/InputHandler";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -274,25 +277,28 @@ function InfoContainer({ setInfoVisible }) {
             <UserMembersContainer>
               <MembersLabel>Members ({members.length})</MembersLabel>
               <MembersWrapper>
-                {members.map((item, index) => (
-                  <Members key={index}>
-                    <ItemAvatarContainer>
-                      <ItemAvatar src={getAvatar(item.avatarId)} />
-                    </ItemAvatarContainer>
-                    <ItemDetails>
-                      <ItemName>
-                        {item.nickname ? item.nickname : item.name}
-                      </ItemName>
-                      {admin === item.email && <IsAdmin>admin</IsAdmin>}
-                    </ItemDetails>
-                    {admin === details.email &&
-                      item.email !== details.email && (
-                        <RemoveMember>
-                          <IoClose style={{ opacity: 0.8 }} />
-                        </RemoveMember>
-                      )}
-                  </Members>
-                ))}
+                {members.map((item, index) => {
+                  const contactName = getContactNickname(contacts, item.email);
+                  return (
+                    <Members key={index}>
+                      <ItemAvatarContainer>
+                        <ItemAvatar src={getAvatar(item.avatarId)} />
+                      </ItemAvatarContainer>
+                      <ItemDetails>
+                        <ItemName>
+                          {contactName ? contactName : item.name}
+                        </ItemName>
+                        {admin === item.email && <IsAdmin>admin</IsAdmin>}
+                      </ItemDetails>
+                      {admin === details.email &&
+                        item.email !== details.email && (
+                          <RemoveMember>
+                            <IoClose style={{ opacity: 0.8 }} />
+                          </RemoveMember>
+                        )}
+                    </Members>
+                  );
+                })}
               </MembersWrapper>
             </UserMembersContainer>
           )}
