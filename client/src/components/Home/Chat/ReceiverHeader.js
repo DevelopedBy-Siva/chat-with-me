@@ -125,8 +125,14 @@ const ReceiverAvatarContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 5px;
   margin-right: 14px;
   flex-shrink: 0;
+
+  @media (max-width: 920px) {
+    height: 38px;
+    width: 38px;
+  }
 `;
 
 const ReceiverAvatar = styled.img`
@@ -150,6 +156,10 @@ const ReceiverName = styled.span`
   text-transform: capitalize;
   font-size: 0.9rem;
   font-weight: 400;
+
+  @media (max-width: 920px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ReceiverStatus = styled.span`
@@ -173,4 +183,8 @@ const ReceiverInfoBtn = styled.button`
   cursor: pointer;
   color: ${(props) => props.theme.txt.main};
   font-size: 1.4rem;
+
+  @media (max-width: 920px) {
+    font-size: 1.3rem;
+  }
 `;

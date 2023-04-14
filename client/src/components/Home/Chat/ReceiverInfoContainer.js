@@ -273,7 +273,7 @@ function InfoContainer({ setInfoVisible }) {
                       </ItemName>
                       {admin === item.email && <IsAdmin>admin</IsAdmin>}
                     </ItemDetails>
-                    {admin !== item.email && (
+                    {admin !== item.email && item.email !== details.email && (
                       <RemoveMember>
                         <IoClose style={{ opacity: 0.8 }} />
                       </RemoveMember>
@@ -362,7 +362,7 @@ function OperationConfirmationContainer({
 
 const nicknameModalStyle = {
   maxWidth: "420px",
-  maxHeight: "230px",
+  maxHeight: "234px",
 };
 function ChangeNicknameContainer({
   name,

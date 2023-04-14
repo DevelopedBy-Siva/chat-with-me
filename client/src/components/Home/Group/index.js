@@ -169,7 +169,7 @@ const GroupName = styled.span`
 
 const MemberCount = styled.span`
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-align: center;
   color: ${(props) => props.theme.txt.sub};
   padding-left: 10px;
@@ -177,7 +177,7 @@ const MemberCount = styled.span`
 
   b {
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 
     @media (max-width: 484px) {
       font-size: 0.7rem;

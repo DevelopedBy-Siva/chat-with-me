@@ -158,7 +158,7 @@ const MessageBoxCover = styled.div`
   left: 0;
   right: 0;
   background-image: url(${CHAT_COVER});
-  background-size: contain;
+  object-fit: cover;
   opacity: 0.4;
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
   filter: invert(${(props) => props.theme.msgBox.bgCover});

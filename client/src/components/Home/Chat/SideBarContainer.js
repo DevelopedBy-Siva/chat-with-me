@@ -309,6 +309,7 @@ const GroupName = styled.span`
   margin-left: 5px;
   font-weight: 400;
   text-transform: capitalize;
+  font-size: 0.7rem;
 `;
 
 const GroupDropBtn = styled.button`
@@ -321,6 +322,10 @@ const GroupDropBtn = styled.button`
   letter-spacing: 1px;
   margin: 1.3rem 0.6rem 0.6rem 0.6rem;
   cursor: pointer;
+
+  @media (max-width: 920px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const GroupContacts = styled.ul`
@@ -331,7 +336,7 @@ const GroupContacts = styled.ul`
 
 const Contact = styled.li`
   width: 100%;
-  height: 80px;
+  height: 70px;
   border-bottom: 1px solid ${(props) => props.theme.border.default};
   display: flex;
   align-items: center;
@@ -349,7 +354,7 @@ const Contact = styled.li`
   }
 
   @media (max-width: 920px) {
-    height: 64px;
+    height: 60px;
 
     &.active-contact {
       background: none;
@@ -358,8 +363,8 @@ const Contact = styled.li`
 `;
 
 const ContactStatus = styled.span`
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background-image: linear-gradient(#40bf32, #10a300);
   background-clip: padding-box;
   position: absolute;
@@ -370,16 +375,16 @@ const ContactStatus = styled.span`
 `;
 
 const AvatarContainer = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   flex-shrink: 0;
   position: relative;
   background: ${(props) => props.theme.btn.active};
 
   @media (max-width: 920px) {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
   }
 `;
 
@@ -421,7 +426,7 @@ const Name = styled.span`
 
 const LastMessage = styled.span`
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: ${(props) => props.theme.txt.sub};
   white-space: nowrap;
   overflow: hidden;
