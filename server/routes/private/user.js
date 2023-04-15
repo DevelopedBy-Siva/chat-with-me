@@ -169,8 +169,23 @@ route.post("/add-contact", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Nickname already exists")
       );
 
-  // Unique ID for Chat
-  const chatId = uuid();
+  // Check whether chat exists or not
+  const chatExists = await ChatCollection.findOne({
+    isPrivate: true,
+    contacts: { $all: [email, newContactMail] },
+  });
+
+  // Get the ChatId if exists, else create a new chat
+  let chatId;
+  if (chatExists) chatId = chatExists.chatId;
+  else {
+    chatId = uuid();
+    const chatDocument = new ChatCollection({
+      chatId,
+      contacts: [email, newContactMail],
+    });
+    await chatDocument.save();
+  }
 
   data.contacts.push({
     email: newContactMail,
@@ -179,12 +194,6 @@ route.post("/add-contact", async (req, resp) => {
     chatId,
   });
   await data.save();
-
-  const chatDocument = new ChatCollection({
-    chatId,
-    contacts: [email, newContactMail],
-  });
-  await chatDocument.save();
 
   const { email: mail, name, avatarId, description, isOnline } = toReturn;
   resp.status(200).send({
@@ -259,9 +268,16 @@ route.delete("/contact", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact doesn't exist")
       );
 
+  const chatId = data.contacts[index].chatId;
+  const howManyChats = await UserCollection.find({
+    contacts: { $elemMatch: { chatId } },
+  });
+  let deleteChat = false;
+  if (howManyChats.length < 2) deleteChat = true;
+
   data.contacts.splice(index, 1);
   await data.save();
-
+  if (deleteChat) await ChatCollection.deleteOne({ chatId });
   resp.status(201).send();
 });
 
@@ -288,7 +304,10 @@ route.put("/block", async (req, resp) => {
       );
 
   data.contacts[index].isBlocked = true;
+  const chatId = data.contacts[index].chatId;
+
   await data.save();
+  await ChatCollection.updateOne({ chatId }, { $set: { blockedBy: email } });
 
   resp.status(201).send();
 });
@@ -316,7 +335,10 @@ route.put("/unblock", async (req, resp) => {
       );
 
   data.contacts[index].isBlocked = false;
+  const chatId = data.contacts[index].chatId;
+
   await data.save();
+  await ChatCollection.updateOne({ chatId }, { $unset: { blockedBy: "" } });
 
   resp.status(201).send();
 });

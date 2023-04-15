@@ -13,6 +13,7 @@ import {
   blockUserContact,
   deleteUserContact,
 } from "../../../store/actions/ContactActions";
+import { setActive } from "../../../store/actions/ChatActions";
 
 export default function MyContacts({ inProgress, setInProgress }) {
   const { contacts = [] } = useSelector((state) => state.contacts);
@@ -53,6 +54,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
         await axios
           .delete(`/user/contact?email=${email}`)
           .then(() => {
+            dispatch(setActive(null, true));
             dispatch(deleteUserContact(email));
             removeConfirmMessage();
             setInProgress(false);
@@ -68,6 +70,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
         await axios
           .put(`/user/block?email=${email}`)
           .then(() => {
+            dispatch(setActive(null, true));
             dispatch(blockUserContact(email));
             removeConfirmMessage();
             setInProgress(false);
