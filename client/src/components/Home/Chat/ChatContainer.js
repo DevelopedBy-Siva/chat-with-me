@@ -24,7 +24,6 @@ export default function ChatContainer() {
 
     if (chatContainerRef)
       chatContainerRef.current.scrollTop = chatContainerRef.scrollHeight;
-
     dispatch(fetchChats(active.val));
   }, [active, dispatch]);
 

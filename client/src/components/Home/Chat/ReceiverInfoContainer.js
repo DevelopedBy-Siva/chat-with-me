@@ -19,6 +19,7 @@ import {
   blockUserContact,
   changeContactNickname,
   deleteUserContact,
+  kickContactFromGroup,
   removeUserGroup,
 } from "../../../store/actions/ContactActions";
 import ModalHeaderWrapper from "../Modal/ModalHeaderWrapper";
@@ -62,15 +63,18 @@ const groupOptions = [
 ];
 
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
+  const { active } = useSelector((state) => state.chats);
+
   return (
-    <AnimatePresence>
-      {infoVisible && <InfoContainer setInfoVisible={setInfoVisible} />}
+    <AnimatePresence key={active.val}>
+      {infoVisible && (
+        <InfoContainer setInfoVisible={setInfoVisible} active={active} />
+      )}
     </AnimatePresence>
   );
 }
 
-function InfoContainer({ setInfoVisible }) {
-  const { active } = useSelector((state) => state.chats);
+function InfoContainer({ setInfoVisible, active }) {
   const { contacts, groups } = useSelector((state) => state.contacts);
   const { details } = useSelector((state) => state.user);
 
@@ -85,6 +89,11 @@ function InfoContainer({ setInfoVisible }) {
     error: null,
   });
   const [addMember, setAddMember] = useState(false);
+  const [kickMember, setKickMember] = useState({
+    loading: false,
+    item: null,
+    show: false,
+  });
 
   const dispatch = useDispatch();
 
@@ -176,7 +185,7 @@ function InfoContainer({ setInfoVisible }) {
   }
 
   function handleModal(show = false, toDo = null) {
-    if (isLoading) return;
+    if (isLoading || kickMember.loading) return;
     setShowModal({ show, toDo });
   }
 
@@ -214,7 +223,7 @@ function InfoContainer({ setInfoVisible }) {
   }
 
   function handleAddMemberToggle(val = false) {
-    if (isLoading) return;
+    if (isLoading || kickMember.loading) return;
     setAddMember(val);
   }
 
@@ -268,6 +277,7 @@ function InfoContainer({ setInfoVisible }) {
                 title={op.placeholder}
                 id={op.id}
                 key={index}
+                disabled={isLoading || kickMember.loading}
               >
                 {op.icon}
               </UserOperationBtn>
@@ -280,23 +290,15 @@ function InfoContainer({ setInfoVisible }) {
                 {members.map((item, index) => {
                   const contactName = getContactNickname(contacts, item.email);
                   return (
-                    <Members key={index}>
-                      <ItemAvatarContainer>
-                        <ItemAvatar src={getAvatar(item.avatarId)} />
-                      </ItemAvatarContainer>
-                      <ItemDetails>
-                        <ItemName>
-                          {contactName ? contactName : item.name}
-                        </ItemName>
-                        {admin === item.email && <IsAdmin>admin</IsAdmin>}
-                      </ItemDetails>
-                      {admin === details.email &&
-                        item.email !== details.email && (
-                          <RemoveMember>
-                            <IoClose style={{ opacity: 0.8 }} />
-                          </RemoveMember>
-                        )}
-                    </Members>
+                    <GroupMemberDetails
+                      admin={admin}
+                      contactName={contactName}
+                      details={details}
+                      item={item}
+                      key={index}
+                      kickMember={kickMember}
+                      setKickMember={setKickMember}
+                    />
                   );
                 })}
               </MembersWrapper>
@@ -333,7 +335,122 @@ function InfoContainer({ setInfoVisible }) {
           setIsLoading={setIsLoading}
         />
       )}
+      {kickMember.show && (
+        <ConfirmMemberKick
+          kickMember={kickMember}
+          setKickMember={setKickMember}
+          groups={groups}
+          chatId={active.val}
+        />
+      )}
     </React.Fragment>
+  );
+}
+
+function GroupMemberDetails({
+  item,
+  contactName,
+  admin,
+  details,
+  kickMember,
+  setKickMember,
+}) {
+  function kickMemberFromGroup(email) {
+    setKickMember({ ...kickMember, show: true, item: email });
+  }
+
+  const showLoading = kickMember.loading && kickMember.item === item.email;
+  const name = contactName ? contactName : item.name;
+  return (
+    <Members>
+      <ItemAvatarContainer>
+        <ItemAvatar src={getAvatar(item.avatarId)} />
+      </ItemAvatarContainer>
+      <ItemDetails>
+        <ItemName>{name}</ItemName>
+        {admin === item.email && <IsAdmin>admin</IsAdmin>}
+      </ItemDetails>
+      {admin === details.email && item.email !== details.email && (
+        <RemoveMember
+          className={showLoading ? "loading" : ""}
+          disabled={kickMember.loading}
+        >
+          {showLoading ? (
+            <LoadingSpinner style={{ width: "14px", height: "14px" }} />
+          ) : (
+            <IoClose
+              onClick={() => kickMemberFromGroup(item.email)}
+              className="icon"
+            />
+          )}
+        </RemoveMember>
+      )}
+    </Members>
+  );
+}
+
+const confirmMemberKickModalStyle = {
+  maxWidth: "500px",
+  height: "auto",
+};
+function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
+  const dispatch = useDispatch();
+  function getTitle() {
+    let response = {
+      deleteGroup: false,
+      msg: "Are you sure?",
+    };
+    const index = groups.findIndex((i) => i.chatId === chatId);
+    if (index === -1) return response;
+    const count = groups[index].members.length;
+    if (count <= 2) {
+      response.deleteGroup = true;
+      response.msg =
+        "As the group contains less than or equal to 3 members, group will be removed when you kick this member. Do you still wish to continue?";
+      return response;
+    }
+    response.msg = "Are you sure you want to kick this member?";
+    return response;
+  }
+
+  function handleClose() {
+    setKickMember({ ...kickMember, show: false, item: null });
+  }
+
+  const { msg, deleteGroup } = getTitle();
+
+  async function kickMemberFromGroup() {
+    if (kickMember.loading) return;
+    const contact = kickMember.item;
+    setKickMember({ ...kickMember, loading: true, show: false });
+    await axios
+      .put(`/chat/kick/${chatId}?contact=${contact}`)
+      .then(() => {
+        if (deleteGroup) {
+          dispatch(setActive(null, true));
+          dispatch(removeUserGroup(chatId));
+          toast.success("Group removed successfully");
+        } else {
+          dispatch(kickContactFromGroup(chatId, contact));
+          toast.success("Contact removed successfully");
+        }
+      })
+      .catch(() => {
+        toast.error("Something went wrong. Failed to remove the contact");
+      });
+    setKickMember({ show: false, loading: false, item: null });
+  }
+
+  return (
+    <Modal style={confirmMemberKickModalStyle} close={handleClose}>
+      <ConfirmationContainer>
+        <ConfirmationLabel>{msg}</ConfirmationLabel>
+        <ConfirmationBtnContainer>
+          <ConfimrBtn onClick={kickMemberFromGroup}>Yes</ConfimrBtn>
+          <ConfimrBtn onClick={handleClose}>No</ConfimrBtn>
+        </ConfirmationBtnContainer>
+      </ConfirmationContainer>
+    </Modal>
   );
 }
 
@@ -718,6 +835,7 @@ const ConfirmationContainer = styled.div`
 const ConfirmationLabel = styled.p`
   color: ${(props) => props.theme.txt.main};
   font-size: 0.8rem;
+  line-height: 18px;
   text-align: center;
 `;
 
@@ -929,8 +1047,12 @@ const UserOperationBtn = styled.button`
   width: 45px;
   height: 45px;
 
-  :hover .icon {
+  :enabled:hover .icon {
     transform: scale(1.06);
+  }
+
+  :disabled {
+    cursor: not-allowed;
   }
 `;
 
@@ -956,7 +1078,7 @@ const MembersWrapper = styled.ul`
 
 const RemoveMember = styled.button`
   flex-shrink: 0;
-  color: ${(props) => props.theme.txt.main};
+  color: ${(props) => props.theme.txt.sub};
   margin-left: 5px;
   font-size: 1.2rem;
   cursor: pointer;
@@ -966,6 +1088,26 @@ const RemoveMember = styled.button`
   display: none;
   align-items: center;
   justify-content: center;
+  width: 25px;
+  height: 25px;
+  position: relative;
+
+  &.loading {
+    display: flex;
+    cursor: wait;
+  }
+
+  &.icon {
+    cursor: pointer;
+  }
+
+  :enabled:hover {
+    color: ${(props) => props.theme.txt.main};
+  }
+
+  :disabled .icon {
+    cursor: not-allowed;
+  }
 `;
 
 const Members = styled.li`

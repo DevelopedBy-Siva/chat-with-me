@@ -14,6 +14,7 @@ import {
   REMOVE_GROUP,
   UNBLOCK_CONTACT,
   ADD_TO_GROUP,
+  KICK_FROM_GROUP,
 } from "../actions/ContactActions";
 
 const initialState = {
@@ -117,6 +118,27 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         groups: [...groupAfterNewContact],
+      };
+    case KICK_FROM_GROUP:
+      const groupIndexToKick = state.groups.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (groupIndexToKick === -1)
+        return {
+          ...state,
+        };
+      const groupToKick = [...state.groups];
+      const contactToKickIndex = groupToKick[
+        groupIndexToKick
+      ].members.findIndex((i) => i.email === payload.contact);
+      if (contactToKickIndex === -1)
+        return {
+          ...state,
+        };
+      groupToKick[groupIndexToKick].members.splice(contactToKickIndex, 1);
+      return {
+        ...state,
+        groups: [...groupToKick],
       };
     default:
       return state;

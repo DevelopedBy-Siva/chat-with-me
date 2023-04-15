@@ -27,8 +27,9 @@ route.get("/:chatId", async (req, resp) => {
  */
 route.delete("/:chatId", async (req, resp) => {
   const chatId = req.params.chatId;
+  const { email } = req.payload;
 
-  const data = await GroupsCollection.findOne({ chatId });
+  const data = await GroupsCollection.findOne({ chatId, admin: email });
   if (!data)
     return resp
       .status(404)
@@ -50,7 +51,10 @@ route.put("/leave/:chatId", async (req, resp) => {
   const { email } = req.payload;
   const chatId = req.params.chatId;
 
-  const data = await GroupsCollection.findOne({ chatId });
+  const data = await GroupsCollection.findOne({
+    chatId,
+    members: { $elemMatch: { email } },
+  });
   if (!data)
     return resp
       .status(404)
@@ -145,6 +149,48 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
   }
 
   return resp.status(201).send();
+});
+
+/**
+ * Leave a Group
+ */
+route.put("/kick/:chatId", async (req, resp) => {
+  const chatId = req.params.chatId;
+  const toKick = req.query.contact.trim().toLowerCase();
+
+  const data = await GroupsCollection.findOne({
+    chatId,
+    members: { $elemMatch: { email: toKick } },
+  });
+  if (!data)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Group not found"));
+
+  // Delete group & its references, if members are <= 3
+  if (data.members.length <= 3) {
+    await Promise.all([
+      GroupsCollection.deleteOne({ chatId }),
+      ChatCollection.deleteOne({ chatId }),
+      UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
+    ]);
+
+    return resp.status(201).send();
+  }
+
+  await Promise.all([
+    UserCollection.updateOne(
+      { email: toKick },
+      { $pull: { groups: { ref: data._id } } }
+    ),
+    ChatCollection.updateOne({ chatId }, { $pull: { contacts: toKick } }),
+    GroupsCollection.updateOne(
+      { chatId },
+      { $pull: { members: { email: toKick } } }
+    ),
+  ]);
+
+  resp.status(201).send();
 });
 
 module.exports = route;
