@@ -485,6 +485,7 @@ route.post("/create-group", async (req, resp) => {
   const chatDocument = new ChatCollection({
     chatId,
     contacts,
+    isPrivate: false,
   });
   await chatDocument.save();
 
@@ -526,8 +527,9 @@ route.delete("/remove", async (req, resp) => {
   const isDeleted = await UserCollection.deleteOne({ email });
 
   if (isDeleted.deletedCount > 0) {
-    const groups = await GroupsCollection.find({ members: { email } });
-
+    const groups = await GroupsCollection.find({
+      members: { $elemMatch: { email } },
+    });
     for (let item of groups) {
       const noOfMembers = item.members.length;
       const iamAdmin = item.admin === email;
@@ -543,25 +545,31 @@ route.delete("/remove", async (req, resp) => {
         }
         item.members.splice(userIndex, 1);
         await item.save();
-      } else await item.remove();
+      } else
+        await Promise.all([
+          ChatCollection.deleteOne({ chatId: item.chatId }),
+          UserCollection.updateMany(
+            {},
+            { $pull: { groups: { ref: item._id } } }
+          ),
+          item.remove(),
+        ]);
     }
 
     await Promise.all([
       UserCollection.updateMany({}, { $pull: { contacts: { email } } }),
       ChatCollection.deleteMany({
         isPrivate: true,
-        contacts: { $in: [email] },
+        contacts: email,
       }),
       ChatCollection.updateMany(
         {
           isPrivate: false,
-          contacts: { $in: [email] },
+          contacts: email,
         },
         {
           $pull: {
-            contacts: {
-              email,
-            },
+            contacts: email,
           },
         }
       ),
