@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import FocusLock from "react-focus-lock";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import styled from "styled-components";
 import Lottie from "lottie-react";
 
@@ -23,7 +24,10 @@ export default function OneTimeInfo() {
     <FocusLock>
       <Container>
         <Overlay />
-        <DetailsContainer>
+        <DetailsContainer
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
           <Content>
             <Anim>
               <Lottie
@@ -68,7 +72,7 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Overlay = styled.div`
+const Overlay = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
@@ -76,18 +80,15 @@ const Overlay = styled.div`
   bottom: 0;
   background-color: ${(props) => props.theme.bg.overlay};
   opacity: 0.94;
+  z-index: -1;
 `;
 
-const DetailsContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+const DetailsContainer = styled(motion.div)`
   background: rgb(0, 165, 248);
   background: linear-gradient(
     90deg,
-    rgba(0, 165, 248, 1) 29%,
-    rgba(0, 136, 248, 1) 100%
+    rgba(0, 155, 248, 1) 29%,
+    rgba(0, 120, 248, 1) 100%
   );
   padding: 1.2rem 0;
   border-radius: 12px;
@@ -130,17 +131,21 @@ const RedirectBtn = styled.button`
   margin-top: 8px;
   font-size: 0.8rem;
   padding: 8px 1.2rem;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   letter-spacing: 1px;
   background: #fff;
   color: #1b1b1b;
   border: none;
   font-weight: 400;
-  outline-color: rgba(0, 165, 248, 1);
+  outline: none;
 
   @media (max-width: 869px) {
     font-size: 0.7rem;
+  }
+
+  :hover {
+    background: #f1f1f1;
   }
 `;
 
