@@ -624,10 +624,10 @@ route.get("/", async (req, resp) => {
   try {
     const { email } = req.payload;
     const user = await UserCollection.findOne({ email });
-    const { name, email: mail, isOnline, description, avatarId } = user;
+    const { name, email: mail, isOnline, description, avatarId, _id } = user;
     return resp
       .status(200)
-      .send({ name, email: mail, isOnline, description, avatarId });
+      .send({ name, email: mail, isOnline, description, avatarId, _id });
   } catch (ex) {
     const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
     resp.clearCookie(isLoggedInKey);
