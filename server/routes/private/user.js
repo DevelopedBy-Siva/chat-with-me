@@ -307,8 +307,13 @@ route.put("/block", async (req, resp) => {
   const chatId = data.contacts[index].chatId;
 
   await data.save();
-  await ChatCollection.updateOne({ chatId }, { $set: { blockedBy: email } });
 
+  const chat = await ChatCollection.findOne({ chatId });
+  if (chat) {
+    if (chat.blockedBy) chat.blockedBy = "both";
+    else chat.blockedBy = email;
+  }
+  await chat.save();
   resp.status(201).send();
 });
 
@@ -338,8 +343,15 @@ route.put("/unblock", async (req, resp) => {
   const chatId = data.contacts[index].chatId;
 
   await data.save();
-  await ChatCollection.updateOne({ chatId }, { $unset: { blockedBy: "" } });
 
+  const chat = await ChatCollection.findOne({ chatId });
+  if (chat) {
+    if (chat.blockedBy === "both") {
+      const otherContactIndex = chat.contacts.findIndex((i) => i !== email);
+      chat.blockedBy = chat.contacts[otherContactIndex];
+    } else chat.blockedBy = undefined;
+  }
+  await chat.save();
   resp.status(201).send();
 });
 
