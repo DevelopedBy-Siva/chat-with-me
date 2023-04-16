@@ -15,10 +15,14 @@ import {
   updateMessageSendStatus,
 } from "../actions/ChatActions";
 import { sortAndGroupMsgs } from "../../utils/DateTime";
+import toast from "../../components/Toast";
 
 const initialState = {
   loading: true,
-  active: null,
+  active: {
+    val: null,
+    isPrivate: true,
+  },
   chats: {},
   error: null,
 };
@@ -57,7 +61,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         error: null,
-        active: payload,
+        active: {
+          val: payload,
+          isPrivate: action.isPrivate,
+        },
       };
     case READY_TO_SEND_MSG:
       const { data: details, chatId, currentDate: today } = payload;
@@ -103,7 +110,7 @@ export const fetchChats = (id) => {
 
     dispatch(chatsLoading());
     axios
-      .get(`https://apigenerator.dronahq.com/api/lZkfxOpO/chat/${id}`)
+      .get(`/chat/${id}`)
       .then(({ data }) => {
         dispatch(getChats(id, data));
       })
@@ -117,6 +124,7 @@ export const fetchChats = (id) => {
           }
         });
         dispatch(chatsError(id, isPrivate));
+        toast.error("Something weent wrong. Failed to retrieve chat");
       });
   };
 };

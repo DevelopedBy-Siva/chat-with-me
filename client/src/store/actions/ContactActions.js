@@ -6,6 +6,10 @@ export const BLOCK_CONTACT = "BLOCK_CONTACT";
 export const UNBLOCK_CONTACT = "UNBLOCK_CONTACT";
 export const DELETE_CONTACT = "DELETE_CONTACT";
 export const CREATE_GROUP = "CREATE_GROUP";
+export const REMOVE_GROUP = "REMOVE_GROUP";
+export const CHANGE_NICKNAME = "CHANGE_NICKNAME";
+export const ADD_TO_GROUP = "ADD_TO_GROUP";
+export const KICK_FROM_GROUP = "KICK_FROM_GROUP";
 
 export const getContacts = (payload) => {
   return {
@@ -59,5 +63,39 @@ export const createUserGroup = (payload) => {
   return {
     type: CREATE_GROUP,
     payload,
+  };
+};
+
+export const removeUserGroup = (payload) => {
+  return {
+    type: REMOVE_GROUP,
+    payload,
+  };
+};
+
+export const changeContactNickname = (payload) => {
+  return {
+    type: CHANGE_NICKNAME,
+    payload,
+  };
+};
+
+export const addContactToGroup = (chatId, contact) => {
+  return {
+    type: ADD_TO_GROUP,
+    payload: {
+      chatId,
+      contact,
+    },
+  };
+};
+
+export const kickContactFromGroup = (chatId, contact) => {
+  return {
+    type: KICK_FROM_GROUP,
+    payload: {
+      chatId,
+      contact,
+    },
   };
 };

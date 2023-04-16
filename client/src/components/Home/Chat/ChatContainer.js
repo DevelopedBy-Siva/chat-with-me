@@ -20,16 +20,15 @@ export default function ChatContainer() {
   const { active, loading, error, chats } = useSelector((state) => state.chats);
 
   useEffect(() => {
-    if (!active) return;
+    if (!active.val) return;
 
     if (chatContainerRef)
       chatContainerRef.current.scrollTop = chatContainerRef.scrollHeight;
-
-    dispatch(fetchChats(active));
+    dispatch(fetchChats(active.val));
   }, [active, dispatch]);
 
   function getChats() {
-    const userChats = chats[active];
+    const userChats = chats[active.val];
     if (!userChats || !userChats.messages) return { keys: [], messages: {} };
     const messages = userChats.messages;
     const keys = sortDatesDesc(Object.keys(messages));
@@ -39,7 +38,7 @@ export default function ChatContainer() {
   return (
     <Container>
       <MessageBoxCover />
-      {!active ? (
+      {!active.val ? (
         <ChatLandingScreen />
       ) : (
         <Wrapper>
@@ -103,21 +102,19 @@ export default function ChatContainer() {
 }
 
 const Container = styled.div`
-  flex: 1;
-  min-width: 0;
+  grid-row-start: 1;
+  grid-column-start: 3;
+  grid-row-end: 2;
+  grid-column-end: 4;
   display: flex;
   flex-direction: column;
   position: relative;
 
   @media (max-width: 920px) {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 99;
-    transform: translateX(100%);
-    height: 100dvh;
+    grid-row-start: 1;
+    grid-column-start: 2;
+    grid-row-end: 3;
+    grid-column-end: 3;
   }
 `;
 
@@ -160,6 +157,7 @@ const MessageBoxCover = styled.div`
   left: 0;
   right: 0;
   background-image: url(${CHAT_COVER});
+  object-fit: cover;
   opacity: 0.4;
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
   filter: invert(${(props) => props.theme.msgBox.bgCover});

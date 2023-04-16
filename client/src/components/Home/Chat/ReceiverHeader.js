@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CgDetailsMore } from "react-icons/cg";
+import { IoArrowBack } from "react-icons/io5";
 
 import { getAvatar } from "../../../assets/avatars";
+import { toggle_BW_Chats } from "../../../utils/Screens";
+import { setActive } from "../../../store/actions/ChatActions";
 
 export default function ReceiverHeader({
   contactId,
@@ -23,18 +26,37 @@ export default function ReceiverHeader({
 }
 
 function ReceiverContainer({ contactId }) {
-  const { contacts } = useSelector((state) => state.contacts);
+  const { contacts, groups } = useSelector((state) => state.contacts);
+
+  const dispatch = useDispatch();
 
   function findContactInfo() {
-    const index = contacts.findIndex((i) => i.id === contactId);
-    return contacts[index];
+    const { val, isPrivate } = contactId;
+    if (isPrivate) {
+      const index = contacts.findIndex((i) => i.chatId === val);
+      return contacts[index];
+    }
+    const index = groups.findIndex((i) => i.chatId === val);
+    return groups[index];
   }
-  const { isOnline, name, nickname, avatarId, isPrivate } = findContactInfo();
+
+  function goBack() {
+    toggle_BW_Chats(true);
+    setTimeout(() => {
+      dispatch(setActive(null));
+    }, 300);
+  }
+
+  const { isOnline, name, nickname, avatarId, isPrivate, icon } =
+    findContactInfo();
 
   return (
     <Receiver>
-      <ReceiverAvatarContainer>
-        <ReceiverAvatar src={getAvatar(avatarId)} />
+      <ReceiverBackBtn onClick={goBack}>
+        <IoArrowBack />
+      </ReceiverBackBtn>
+      <ReceiverAvatarContainer bg={icon ? icon.background : null}>
+        {isPrivate ? <ReceiverAvatar src={getAvatar(avatarId)} /> : icon.letter}
       </ReceiverAvatarContainer>
       <ReceiverInfo>
         <ReceiverName>
@@ -50,6 +72,23 @@ function ReceiverContainer({ contactId }) {
   );
 }
 
+const ReceiverBackBtn = styled.button`
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.txt.main};
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  display: none;
+
+  @media (max-width: 920px) {
+    display: flex;
+  }
+`;
+
 const Container = styled.div`
   height: 70px;
   flex-shrink: 0;
@@ -59,6 +98,10 @@ const Container = styled.div`
   align-items: center;
   background: ${(props) => props.theme.bg.app};
   z-index: 1;
+
+  @media (max-width: 920px) {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 const Receiver = styled.div`
@@ -71,9 +114,25 @@ const Receiver = styled.div`
 
 const ReceiverAvatarContainer = styled.div`
   border-radius: 50%;
-  height: 44px;
-  width: 44px;
-  background-color: ${(props) => props.theme.btn.active};
+  height: 38px;
+  width: 38px;
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: #fff;
+  background-color: ${(props) =>
+    props.bg ? props.bg : props.theme.btn.active};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+  margin-right: 14px;
+  flex-shrink: 0;
+
+  @media (max-width: 920px) {
+    height: 38px;
+    width: 38px;
+  }
 `;
 
 const ReceiverAvatar = styled.img`
@@ -84,7 +143,6 @@ const ReceiverAvatar = styled.img`
 `;
 
 const ReceiverInfo = styled.div`
-  margin-left: 1rem;
   min-width: 0;
   width: 90%;
 `;
@@ -98,6 +156,10 @@ const ReceiverName = styled.span`
   text-transform: capitalize;
   font-size: 0.9rem;
   font-weight: 400;
+
+  @media (max-width: 920px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ReceiverStatus = styled.span`
@@ -121,4 +183,8 @@ const ReceiverInfoBtn = styled.button`
   cursor: pointer;
   color: ${(props) => props.theme.txt.main};
   font-size: 1.4rem;
+
+  @media (max-width: 920px) {
+    font-size: 1.3rem;
+  }
 `;

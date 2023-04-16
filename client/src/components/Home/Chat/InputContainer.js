@@ -16,10 +16,7 @@ export default function InputContainer({ chatContainerRef }) {
   const { active, loading } = useSelector((state) => state.chats);
 
   useEffect(() => {
-    if (msgInputRef) {
-      msgInputRef.current.value = "";
-      msgInputRef.current.focus();
-    }
+    if (msgInputRef) msgInputRef.current.value = "";
   }, [active]);
 
   function submitMessage(e) {
@@ -96,6 +93,10 @@ const InputWrapper = styled.label`
   display: flex;
   align-items: center;
   cursor: ${(props) => (props.isLoading ? "wait" : "text")};
+
+  @media (max-width: 920px) {
+    width: calc(100% - 65px);
+  }
 `;
 
 const MsgInput = styled.textarea`
@@ -115,6 +116,7 @@ const MsgInput = styled.textarea`
   &::placeholder {
     color: ${(props) => props.theme.txt.sub};
     opacity: 1;
+    font-size: 0.7rem;
   }
 
   &:-ms-input-placeholder {
@@ -152,5 +154,10 @@ const SendBtn = styled.button`
 
   &:hover {
     color: ${(props) => props.theme.txt.main};
+  }
+
+  @media (max-width: 920px) {
+    font-size: 1.1rem;
+    margin-left: 0.9rem;
   }
 `;

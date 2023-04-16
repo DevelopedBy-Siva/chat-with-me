@@ -1,12 +1,15 @@
 const express = require("express");
+const { v4: uuid } = require("uuid");
 const {
   validateUser,
   validateNickname,
   schema,
+  nextAdminIndex,
 } = require("../../utils/validation");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
 const GroupsCollection = require("../../db/model/Groups");
+const ChatCollection = require("../../db/model/Chat");
 const { hash, login, cookies, jwtToken } = require("../../auth");
 
 const route = express.Router();
@@ -131,6 +134,12 @@ route.post("/add-contact", async (req, resp) => {
       .status(400)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Invalid nickname"));
 
+  const toReturn = await UserCollection.findOne({ email: newContactMail });
+  if (!toReturn)
+    return resp
+      .status(404)
+      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact not found"));
+
   const data = await UserCollection.findOne({ email });
   const myContacts = data.contacts;
 
@@ -160,18 +169,31 @@ route.post("/add-contact", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Nickname already exists")
       );
 
+  // Check whether chat exists or not
+  const chatExists = await ChatCollection.findOne({
+    isPrivate: true,
+    contacts: { $all: [email, newContactMail] },
+  });
+
+  // Get the ChatId if exists, else create a new chat
+  let chatId;
+  if (chatExists) chatId = chatExists.chatId;
+  else {
+    chatId = uuid();
+    const chatDocument = new ChatCollection({
+      chatId,
+      contacts: [email, newContactMail],
+    });
+    await chatDocument.save();
+  }
+
   data.contacts.push({
     email: newContactMail,
     nickname,
     isBlocked: false,
+    chatId,
   });
-  data.save();
-
-  const toReturn = await UserCollection.findOne({ email: newContactMail });
-  if (!toReturn)
-    return resp
-      .status(404)
-      .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact not found"));
+  await data.save();
 
   const { email: mail, name, avatarId, description, isOnline } = toReturn;
   resp.status(200).send({
@@ -182,6 +204,8 @@ route.post("/add-contact", async (req, resp) => {
     isOnline,
     isBlocked: false,
     nickname,
+    chatId,
+    isPrivate: true,
   });
 });
 
@@ -220,7 +244,7 @@ route.put("/contact/nickname", async (req, resp) => {
       );
 
   data.contacts[index].nickname = nickname;
-  data.save();
+  await data.save();
 
   resp.status(201).send();
 });
@@ -244,9 +268,16 @@ route.delete("/contact", async (req, resp) => {
         new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Contact doesn't exist")
       );
 
-  data.contacts.splice(index, 1);
-  data.save();
+  const chatId = data.contacts[index].chatId;
+  const howManyChats = await UserCollection.find({
+    contacts: { $elemMatch: { chatId } },
+  });
+  let deleteChat = false;
+  if (howManyChats.length < 2) deleteChat = true;
 
+  data.contacts.splice(index, 1);
+  await data.save();
+  if (deleteChat) await ChatCollection.deleteOne({ chatId });
   resp.status(201).send();
 });
 
@@ -273,8 +304,16 @@ route.put("/block", async (req, resp) => {
       );
 
   data.contacts[index].isBlocked = true;
-  data.save();
+  const chatId = data.contacts[index].chatId;
 
+  await data.save();
+
+  const chat = await ChatCollection.findOne({ chatId });
+  if (chat) {
+    if (chat.blockedBy) chat.blockedBy = "both";
+    else chat.blockedBy = email;
+  }
+  await chat.save();
   resp.status(201).send();
 });
 
@@ -301,8 +340,18 @@ route.put("/unblock", async (req, resp) => {
       );
 
   data.contacts[index].isBlocked = false;
-  data.save();
+  const chatId = data.contacts[index].chatId;
 
+  await data.save();
+
+  const chat = await ChatCollection.findOne({ chatId });
+  if (chat) {
+    if (chat.blockedBy === "both") {
+      const otherContactIndex = chat.contacts.findIndex((i) => i !== email);
+      chat.blockedBy = chat.contacts[otherContactIndex];
+    } else chat.blockedBy = undefined;
+  }
+  await chat.save();
   resp.status(201).send();
 });
 
@@ -345,6 +394,8 @@ route.get("/contacts", async (req, resp) => {
         lastMsg: found.lastMsg,
         lastMsgTstmp: found.lastMsgTstmp,
         isBlocked: found.isBlocked,
+        chatId: found.chatId,
+        isPrivate: true,
       });
     }
   });
@@ -377,6 +428,8 @@ route.get("/contacts", async (req, resp) => {
       lastMsg: grp.lastMsg,
       lastMsgTstmp: grp.lastMsgTstmp,
       members: memberDetails,
+      chatId: grp.chatId,
+      isPrivate: false,
     });
   });
 
@@ -408,6 +461,9 @@ route.get("/contacts/search", async (req, resp) => {
   resp.status(200).send(contacts);
 });
 
+/**
+ * Create Group
+ */
 route.post("/create-group", async (req, resp) => {
   const { email } = req.payload;
   const { name, members, icon } = req.body;
@@ -438,11 +494,15 @@ route.post("/create-group", async (req, resp) => {
     };
   });
 
+  // Unique ChatId
+  const chatId = uuid();
+
   const document = new GroupsCollection({
     name,
     members: membersToStore,
     admin: email,
     icon,
+    chatId,
   });
   const data = await document.save();
 
@@ -454,6 +514,14 @@ route.post("/create-group", async (req, resp) => {
     { email: { $in: contacts } },
     { $push: { groups: groupRef } }
   );
+
+  // Create Chat documment
+  const chatDocument = new ChatCollection({
+    chatId,
+    contacts,
+    isPrivate: false,
+  });
+  await chatDocument.save();
 
   let details = [];
   userData.forEach((i) => {
@@ -478,7 +546,9 @@ route.post("/create-group", async (req, resp) => {
     lastMsg: data.lastMsg,
     lastMsgTstmp: data.lastMsgTstmp,
     icon: data.icon,
+    chatId: data.chatId,
     members: details,
+    isPrivate: false,
   });
 });
 
@@ -490,11 +560,55 @@ route.delete("/remove", async (req, resp) => {
 
   const isDeleted = await UserCollection.deleteOne({ email });
 
-  if (isDeleted.deletedCount > 0)
+  if (isDeleted.deletedCount > 0) {
+    const groups = await GroupsCollection.find({
+      members: { $elemMatch: { email } },
+    });
+    for (let item of groups) {
+      const noOfMembers = item.members.length;
+      const iamAdmin = item.admin === email;
+
+      if (noOfMembers > 3) {
+        const userIndex = item.members.findIndex((i) => i.email === email);
+        if (userIndex === -1) continue;
+
+        if (iamAdmin) {
+          // Generate a Random Admin Index
+          const adminIndex = nextAdminIndex(userIndex, noOfMembers);
+          item.admin = item.members[adminIndex].email;
+        }
+        item.members.splice(userIndex, 1);
+        await item.save();
+      } else
+        await Promise.all([
+          ChatCollection.deleteOne({ chatId: item.chatId }),
+          UserCollection.updateMany(
+            {},
+            { $pull: { groups: { ref: item._id } } }
+          ),
+          item.remove(),
+        ]);
+    }
+
     await Promise.all([
       UserCollection.updateMany({}, { $pull: { contacts: { email } } }),
-      GroupsCollection.updateMany({}, { $pull: { members: { email } } }),
+      ChatCollection.deleteMany({
+        isPrivate: true,
+        contacts: email,
+      }),
+      ChatCollection.updateMany(
+        {
+          isPrivate: false,
+          contacts: email,
+        },
+        {
+          $pull: {
+            contacts: email,
+          },
+        }
+      ),
     ]);
+  }
 
   const { jwtTokenKey, isLoggedInKey } = cookies.cookieNames;
   resp.clearCookie(jwtTokenKey);
@@ -507,10 +621,21 @@ route.delete("/remove", async (req, resp) => {
  * Validate Token
  */
 route.get("/", async (req, resp) => {
-  const { email } = req.payload;
-  const user = await UserCollection.findOne({ email });
-  const { name, email: mail, isOnline, description, avatarId } = user;
-  resp.status(200).send({ name, email: mail, isOnline, description, avatarId });
+  try {
+    const { email } = req.payload;
+    const user = await UserCollection.findOne({ email });
+    const { name, email: mail, isOnline, description, avatarId } = user;
+    return resp
+      .status(200)
+      .send({ name, email: mail, isOnline, description, avatarId });
+  } catch (ex) {
+    const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
+    resp.clearCookie(isLoggedInKey);
+    resp.clearCookie(jwtTokenKey);
+    return resp
+      .status(403)
+      .send(new AppError(ErrorCodes.ERR_FORBIDDEN, "Invalid User"));
+  }
 });
 
 module.exports = route;

@@ -20,7 +20,7 @@ export default function retrieveError(error = {}, isPublicError = false) {
           break;
         case 401:
         case 403:
-          message = "Incorrect email or password";
+          message = "Unable to sign in. Please check your email or password";
           toastId = "AUTH_ERROR";
           break;
         case 409:

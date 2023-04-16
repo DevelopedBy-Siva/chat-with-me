@@ -2,6 +2,7 @@ import axios from "../../api/axios";
 import {
   ADD_NEW_CONTACT,
   BLOCK_CONTACT,
+  CHANGE_NICKNAME,
   contactsError,
   contactsLoading,
   CONTACTS_ERROR,
@@ -10,7 +11,10 @@ import {
   DELETE_CONTACT,
   getContacts,
   GET_CONTACTS,
+  REMOVE_GROUP,
   UNBLOCK_CONTACT,
+  ADD_TO_GROUP,
+  KICK_FROM_GROUP,
 } from "../actions/ContactActions";
 
 const initialState = {
@@ -83,6 +87,58 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         groups: newGroups,
+      };
+    case REMOVE_GROUP:
+      const afterRemove = [...state.groups];
+      const groupIndex = afterRemove.findIndex((i) => i.chatId === payload);
+      if (groupIndex === -1) return { ...state };
+      afterRemove.splice(groupIndex, 1);
+      return {
+        ...state,
+        groups: [...afterRemove],
+      };
+    case CHANGE_NICKNAME:
+      const index = state.contacts.findIndex((i) => i.email === payload.email);
+      if (index === -1) return { ...state };
+      const afterNicknameUpdate = [...state.contacts];
+      afterNicknameUpdate[index].nickname = payload.nickname;
+      return {
+        ...state,
+        contacts: afterNicknameUpdate,
+      };
+    case ADD_TO_GROUP:
+      const groupAfterNewContact = [...state.groups];
+      const groupToAddIndex = groupAfterNewContact.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (groupToAddIndex === -1) return { ...state };
+
+      groupAfterNewContact[groupToAddIndex].members.push(payload.contact);
+
+      return {
+        ...state,
+        groups: [...groupAfterNewContact],
+      };
+    case KICK_FROM_GROUP:
+      const groupIndexToKick = state.groups.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (groupIndexToKick === -1)
+        return {
+          ...state,
+        };
+      const groupToKick = [...state.groups];
+      const contactToKickIndex = groupToKick[
+        groupIndexToKick
+      ].members.findIndex((i) => i.email === payload.contact);
+      if (contactToKickIndex === -1)
+        return {
+          ...state,
+        };
+      groupToKick[groupIndexToKick].members.splice(contactToKickIndex, 1);
+      return {
+        ...state,
+        groups: [...groupToKick],
       };
     default:
       return state;

@@ -146,7 +146,6 @@ const InputContainer = styled.input`
   border-radius: 6px;
   letter-spacing: 1px;
   font-weight: 400;
-  font-style: italic;
   height: 38px;
 
   @media (max-width: 484px) {

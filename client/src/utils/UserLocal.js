@@ -34,3 +34,7 @@ export function isLoggedIn() {
   if (isLogged === "yes") return true;
   return false;
 }
+
+export function removeIsLoggedIn() {
+  cookies.remove(IS_LOGGED_IN_KEY);
+}

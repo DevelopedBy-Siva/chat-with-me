@@ -91,16 +91,19 @@ function ThemeSwitch() {
 }
 
 const Container = styled.nav`
-  width: 64px;
-  height: 100%;
+  grid-row-start: 1;
+  grid-column-start: 1;
+  grid-row-end: 2;
+  grid-column-end: 2;
   display: flex;
   flex-direction: column;
 
   @media (max-width: 920px) {
-    width: 100%;
-    height: 52px;
+    grid-row-start: 2;
+    grid-column-start: 1;
+    grid-row-end: 3;
+    grid-column-end: 2;
     flex-direction: row;
-    flex-shrink: 0;
   }
 `;
 

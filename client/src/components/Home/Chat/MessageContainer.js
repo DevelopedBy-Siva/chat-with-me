@@ -16,11 +16,16 @@ export default function MessageContainer({
   isSent,
   receiverId,
 }) {
-  const { contacts } = useSelector((state) => state.contacts);
+  const { contacts, groups } = useSelector((state) => state.contacts);
 
   function getRecceiverAvatar() {
-    const index = contacts.findIndex((i) => i.id === receiverId);
-    return getAvatar(contacts[index].avatarId);
+    const { val, isPrivate } = receiverId;
+    if (isPrivate) {
+      const index = contacts.findIndex((i) => i.id === val);
+      return getAvatar(contacts[index].avatarId);
+    }
+    const index = groups.findIndex((i) => i.id === val);
+    return getAvatar(groups[index].avatarId);
   }
 
   function isSender() {

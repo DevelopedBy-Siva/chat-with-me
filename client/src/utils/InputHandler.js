@@ -158,3 +158,9 @@ export function filterBy_Name_Nickname(searchInput = "", data = []) {
 export function sortContactsByAsc(data = []) {
   return _.orderBy(data, ["name"], "asc");
 }
+
+export function getContactNickname(contacts = [], lookupEmail) {
+  const index = contacts.findIndex((item) => item.email === lookupEmail);
+  if (index === -1) return null;
+  return contacts[index].nickname;
+}

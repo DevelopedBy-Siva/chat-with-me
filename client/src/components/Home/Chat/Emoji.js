@@ -95,6 +95,10 @@ const EmojiBtn = styled.button`
   &:hover {
     color: ${(props) => props.theme.txt.main};
   }
+
+  @media (max-width: 920px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const EmojiWrapper = styled.div`
@@ -109,5 +113,19 @@ const EmojiWrapper = styled.div`
     --rgb-background: ${(props) => props.theme.emoji.background};
     --rgb-color: ${(props) => props.theme.emoji.title};
     height: 300px;
+  }
+
+  @media (max-width: 300px) {
+    right: -35px;
+    em-emoji-picker {
+      width: 250px;
+    }
+  }
+
+  @media (max-height: 380px) {
+    bottom: 28px;
+    em-emoji-picker {
+      height: 180px;
+    }
   }
 `;
