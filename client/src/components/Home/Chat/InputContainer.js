@@ -6,10 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 
 import EmojiContainer from "./Emoji";
 import { sendMessage } from "../../../store/reducers/Chats";
+import { useSocket } from "../../../context/SocketContext";
 
 export default function InputContainer({ chatContainerRef }) {
   const msgInputRef = useRef(null);
   const formRef = useRef(null);
+
+  const socket = useSocket();
 
   const dispatch = useDispatch();
 
@@ -30,7 +33,9 @@ export default function InputContainer({ chatContainerRef }) {
       createdAt: new Date().toUTCString(),
       msgId,
     };
-    dispatch(sendMessage(toSend, active));
+
+    dispatch(sendMessage(socket, toSend, active));
+
     msgInputRef.current.value = "";
     msgInputRef.current.style.height = "auto";
     if (chatContainerRef)

@@ -77,9 +77,9 @@ function ContactsWrapper({ search, contacts, groups }) {
 
   const { active } = useSelector((state) => state.chats);
 
-  function handleContact(id, isPrivate) {
+  function handleContact(id, isPrivate, _id) {
     toggle_BW_Chats();
-    dispatch(setActive(id, isPrivate));
+    dispatch(setActive(id, isPrivate, _id));
   }
 
   function groupContacts(contacts = [], groups = []) {
@@ -155,11 +155,12 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
               icon,
               chatId,
               isPrivate,
+              _id,
             } = data;
             return (
               <Contact
                 className={active.val === chatId ? "active-contact" : ""}
-                onClick={() => handleContact(chatId, isPrivate)}
+                onClick={() => handleContact(chatId, isPrivate, _id)}
                 key={`V${index}`}
               >
                 <AvatarContainer>

@@ -28,11 +28,12 @@ export const chatsError = (errorId, isPrivate) => {
   };
 };
 
-export const setActive = (payload, isPrivate = true) => {
+export const setActive = (payload, isPrivate = true, _id = null) => {
   return {
     type: SET_ACTIVE,
     payload,
     isPrivate,
+    _id,
   };
 };
 

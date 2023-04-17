@@ -22,6 +22,7 @@ const initialState = {
   active: {
     val: null,
     isPrivate: true,
+    _id: null,
   },
   chats: {},
   error: null,
@@ -64,6 +65,7 @@ const reducer = (state = initialState, action) => {
         active: {
           val: payload,
           isPrivate: action.isPrivate,
+          _id: action._id,
         },
       };
     case READY_TO_SEND_MSG:
@@ -138,14 +140,19 @@ function dontFetchChats(state, id) {
   return true;
 }
 
-export function sendMessage(data, chatId) {
+export function sendMessage(socket, data, active) {
   const currentDate = moment().format("LL");
   const { msgId } = data;
+  socket.emit("send-message", {
+    recipients: active._id,
+    text: data.message,
+    chatId: active.val,
+  });
 
   return (dispatch) => {
-    dispatch(readyToSendMsg(data, chatId, currentDate));
+    dispatch(readyToSendMsg(data, active.val, currentDate));
     wait(() =>
-      dispatch(updateMessageSendStatus(chatId, msgId, true, currentDate))
+      dispatch(updateMessageSendStatus(active.val, msgId, true, currentDate))
     );
   };
 }

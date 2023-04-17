@@ -195,8 +195,9 @@ route.post("/add-contact", async (req, resp) => {
   });
   await data.save();
 
-  const { email: mail, name, avatarId, description, isOnline } = toReturn;
+  const { email: mail, name, avatarId, description, isOnline, _id } = toReturn;
   resp.status(200).send({
+    _id,
     email: mail,
     name,
     avatarId,
@@ -385,6 +386,7 @@ route.get("/contacts", async (req, resp) => {
       const found = data.contacts.find((ele) => ele.email === details.email);
 
       contactsToSend.push({
+        _id: details._id,
         email: details.email,
         description: details.description,
         name: details.name,
@@ -413,6 +415,7 @@ route.get("/contacts", async (req, resp) => {
           );
           const nickname = found ? found.nickname : undefined;
           memberDetails.push({
+            _id: contactDetails._id,
             name: contactDetails.name,
             email: contactDetails.email,
             avatarId: contactDetails.avatarId,
@@ -422,6 +425,7 @@ route.get("/contacts", async (req, resp) => {
       }
     });
     groupsToSend.push({
+      _id: grp._id,
       name: grp.name,
       admin: grp.admin,
       icon: grp.icon,
@@ -541,6 +545,7 @@ route.post("/create-group", async (req, resp) => {
   });
 
   resp.status(200).send({
+    _id: data._id,
     name: data.name,
     admin: data.admin,
     lastMsg: data.lastMsg,
