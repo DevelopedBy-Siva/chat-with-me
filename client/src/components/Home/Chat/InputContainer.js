@@ -3,10 +3,14 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 import EmojiContainer from "./Emoji";
-import { sendMessage } from "../../../store/reducers/Chats";
 import { useSocket } from "../../../context/SocketContext";
+import {
+  readyToSendMsg,
+  updateMessageSendStatus,
+} from "../../../store/actions/ChatActions";
 
 export default function InputContainer({ chatContainerRef }) {
   const msgInputRef = useRef(null);
@@ -26,15 +30,30 @@ export default function InputContainer({ chatContainerRef }) {
     e.preventDefault();
     const msg = msgInputRef.current.value;
     if (!msg || msg.trim().length === 0) return;
-    const msgId = uuidv4();
-    const toSend = {
-      sendBy: "siva",
+
+    const { val: chatId, _id } = active;
+
+    const data = {
+      sendBy: _id,
       message: msg.trim(),
       createdAt: new Date().toUTCString(),
-      msgId,
     };
 
-    dispatch(sendMessage(socket, toSend, active));
+    const chat = {
+      recipients: _id,
+      data,
+      chatId,
+    };
+
+    const currentDate = moment().format("LL");
+    const msgId = uuidv4();
+
+    dispatch(readyToSendMsg({ ...data, msgId }, chatId, currentDate));
+
+    socket.emit("send-message", chat, (isSent) => {
+      if (isSent)
+        dispatch(updateMessageSendStatus(chatId, msgId, true, currentDate));
+    });
 
     msgInputRef.current.value = "";
     msgInputRef.current.style.height = "auto";

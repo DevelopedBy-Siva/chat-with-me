@@ -1,5 +1,3 @@
-import moment from "moment";
-
 import axios from "../../api/axios";
 import {
   chatsError,
@@ -9,10 +7,8 @@ import {
   getChats,
   GET_CHATS,
   MSG_SEND_STATUS,
-  readyToSendMsg,
   READY_TO_SEND_MSG,
   SET_ACTIVE,
-  updateMessageSendStatus,
 } from "../actions/ChatActions";
 import { sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
@@ -138,30 +134,4 @@ function dontFetchChats(state, id) {
   const chats = chatState.chats;
   if (!chats || !chats[id]) return false;
   return true;
-}
-
-export function sendMessage(socket, data, active) {
-  const currentDate = moment().format("LL");
-  const { msgId } = data;
-  socket.emit("send-message", {
-    recipients: active._id,
-    text: data.message,
-    chatId: active.val,
-  });
-
-  return (dispatch) => {
-    dispatch(readyToSendMsg(data, active.val, currentDate));
-    wait(() =>
-      dispatch(updateMessageSendStatus(active.val, msgId, true, currentDate))
-    );
-  };
-}
-
-function wait(callback) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      callback();
-      resolve();
-    }, 5000);
-  });
 }

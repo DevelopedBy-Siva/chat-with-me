@@ -18,11 +18,20 @@ module.exports.connect = (server) => {
     // Connection ID -> UserId
     const id = socket.handshake.query.id;
     socket.join(id);
-    socket.on("send-message", ({ recipients, text, chatId }) => {
-      socket.broadcast.to(recipients).emit("receive-message", {
-        text,
-        chatId,
-      });
-    });
+    socket.on(
+      "send-message",
+      async ({ recipients, data, chatId }, callback) => {
+        await new Promise((r) => {
+          setTimeout(() => {
+            r();
+          }, 5000);
+        });
+        callback(true);
+        socket.broadcast.to(recipients).emit("receive-message", {
+          data,
+          chatId,
+        });
+      }
+    );
   });
 };

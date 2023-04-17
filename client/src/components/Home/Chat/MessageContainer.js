@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { BiCheckDouble } from "react-icons/bi";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { GiSandsOfTime } from "react-icons/gi";
@@ -14,18 +14,12 @@ export default function MessageContainer({
   sender = "",
   message = "",
   isSent,
-  receiverId,
+  // receiverId,
 }) {
-  const { contacts, groups } = useSelector((state) => state.contacts);
+  // const { contacts, groups } = useSelector((state) => state.contacts);
 
   function getRecceiverAvatar() {
-    const { val, isPrivate } = receiverId;
-    if (isPrivate) {
-      const index = contacts.findIndex((i) => i.id === val);
-      return getAvatar(contacts[index].avatarId);
-    }
-    const index = groups.findIndex((i) => i.id === val);
-    return getAvatar(groups[index].avatarId);
+    return getAvatar(undefined);
   }
 
   function isSender() {
