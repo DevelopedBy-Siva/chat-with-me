@@ -109,6 +109,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 0;
 
   @media (max-width: 920px) {
     grid-row-start: 1;
@@ -144,7 +145,6 @@ const MessageBox = styled.div`
   flex: 1;
   min-height: 0;
   position: relative;
-  font-size: 32%;
   display: flex;
   flex-direction: column;
   background-size: contain;

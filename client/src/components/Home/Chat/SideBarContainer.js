@@ -206,6 +206,7 @@ const Container = styled.div`
   grid-column-start: 2;
   grid-row-end: 2;
   grid-column-end: 3;
+  min-height: 0;
   overflow: hidden;
   background: ${(props) => props.theme.bg.container};
   z-index: 99;

@@ -95,6 +95,7 @@ const Container = styled.nav`
   grid-column-start: 1;
   grid-row-end: 2;
   grid-column-end: 2;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 
@@ -178,9 +179,14 @@ const Navs = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   overflow-y: auto;
   margin: 10px 0;
+
+  ::before,
+  ::after {
+    content: "";
+    margin: auto;
+  }
 
   @media (max-width: 920px) {
     height: 100%;
@@ -188,6 +194,12 @@ const Navs = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin: 0;
+
+    ::before,
+    ::after {
+      content: none;
+      margin: auto;
+    }
   }
 `;
 
