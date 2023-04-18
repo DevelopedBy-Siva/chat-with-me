@@ -15,6 +15,7 @@ import {
   UNBLOCK_CONTACT,
   ADD_TO_GROUP,
   KICK_FROM_GROUP,
+  LAST_MSG_AND_TMSTP,
 } from "../actions/ContactActions";
 
 const initialState = {
@@ -139,6 +140,28 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         groups: [...groupToKick],
+      };
+    case LAST_MSG_AND_TMSTP:
+      const { isPrivate, lastMsg, lastMsgTstmp, chatId } = payload;
+      const contacts = [...state.contacts];
+      const groups = [...state.groups];
+      if (isPrivate) {
+        const index = contacts.findIndex((i) => i.chatId === chatId);
+        if (index !== -1) {
+          contacts[index].lastMsg = lastMsg;
+          contacts[index].lastMsgTstmp = lastMsgTstmp;
+        }
+      } else {
+        const index = groups.findIndex((i) => i.chatId === chatId);
+        if (index !== -1) {
+          groups[index].lastMsg = lastMsg;
+          groups[index].lastMsgTstmp = lastMsgTstmp;
+        }
+      }
+      return {
+        ...state,
+        groups,
+        contacts,
       };
     default:
       return state;

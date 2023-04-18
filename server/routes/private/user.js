@@ -11,6 +11,7 @@ const UserCollection = require("../../db/model/User");
 const GroupsCollection = require("../../db/model/Groups");
 const ChatCollection = require("../../db/model/Chat");
 const { hash, login, cookies, jwtToken } = require("../../auth");
+const { decrypt } = require("../../utils/messages");
 
 const route = express.Router();
 
@@ -177,8 +178,13 @@ route.post("/add-contact", async (req, resp) => {
 
   // Get the ChatId if exists, else create a new chat
   let chatId;
-  if (chatExists) chatId = chatExists.chatId;
-  else {
+  let lastMsg = "";
+  let lastMsgTstmp = "";
+  if (chatExists) {
+    chatId = chatExists.chatId;
+    lastMsg = decrypt(chatExists.lastMsg);
+    lastMsgTstmp = chatExists.lastMsgTstmp;
+  } else {
     chatId = uuid();
     const chatDocument = new ChatCollection({
       chatId,
@@ -207,6 +213,8 @@ route.post("/add-contact", async (req, resp) => {
     nickname,
     chatId,
     isPrivate: true,
+    lastMsg,
+    lastMsgTstmp,
   });
 });
 
@@ -379,12 +387,16 @@ route.get("/contacts", async (req, resp) => {
   const contacts = await UserCollection.find({ email: { $in: [...toLookUp] } });
 
   let contactsToSend = [];
-  myContacts.forEach((con) => {
+  for (const con of myContacts) {
     const index = contacts.findIndex((item) => item.email === con);
     if (index !== -1) {
       const details = contacts[index];
       const found = data.contacts.find((ele) => ele.email === details.email);
 
+      const chatDetails = await ChatCollection.findOne(
+        { chatId: found.chatId },
+        { lastMsg: 1, lastMsgTstmp: 1, _id: 0 }
+      );
       contactsToSend.push({
         _id: details._id,
         email: details.email,
@@ -393,17 +405,17 @@ route.get("/contacts", async (req, resp) => {
         avatarId: details.avatarId,
         isOnline: details.isOnline,
         nickname: found.nickname,
-        lastMsg: found.lastMsg,
-        lastMsgTstmp: found.lastMsgTstmp,
+        lastMsg: decrypt(chatDetails.lastMsg),
+        lastMsgTstmp: chatDetails.lastMsgTstmp,
         isBlocked: found.isBlocked,
         chatId: found.chatId,
         isPrivate: true,
       });
     }
-  });
+  }
 
   let groupsToSend = [];
-  groups.forEach((grp) => {
+  for (const grp of groups) {
     let memberDetails = [];
     grp.members.forEach((item) => {
       if (item.email !== email) {
@@ -424,18 +436,22 @@ route.get("/contacts", async (req, resp) => {
         }
       }
     });
+    const chatDetails = await ChatCollection.findOne(
+      { chatId: grp.chatId },
+      { lastMsg: 1, lastMsgTstmp: 1, _id: 0 }
+    );
     groupsToSend.push({
       _id: grp._id,
       name: grp.name,
       admin: grp.admin,
       icon: grp.icon,
-      lastMsg: grp.lastMsg,
-      lastMsgTstmp: grp.lastMsgTstmp,
+      lastMsg: decrypt(chatDetails.lastMsg),
+      lastMsgTstmp: chatDetails.lastMsgTstmp,
       members: memberDetails,
       chatId: grp.chatId,
       isPrivate: false,
     });
-  });
+  }
 
   resp.status(200).send({
     contacts: contactsToSend,
@@ -548,8 +564,8 @@ route.post("/create-group", async (req, resp) => {
     _id: data._id,
     name: data.name,
     admin: data.admin,
-    lastMsg: data.lastMsg,
-    lastMsgTstmp: data.lastMsgTstmp,
+    lastMsg: "",
+    lastMsgTstmp: "",
     icon: data.icon,
     chatId: data.chatId,
     members: details,

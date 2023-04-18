@@ -10,8 +10,9 @@ import {
   readyToSendMsg,
   updateMessageSendStatus,
 } from "../../../store/actions/ChatActions";
+import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
 
-export default function InputContainer({ chatContainerRef }) {
+export default function InputContainer({ chatContainerRef, isPrivate }) {
   const msgInputRef = useRef(null);
   const formRef = useRef(null);
 
@@ -48,6 +49,9 @@ export default function InputContainer({ chatContainerRef }) {
     const msgId = uuidv4();
 
     dispatch(readyToSendMsg({ ...data, msgId }, chatId, createdAt));
+    dispatch(
+      updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+    );
 
     socket.emit("send-message", chat, (isSent) => {
       if (isSent)

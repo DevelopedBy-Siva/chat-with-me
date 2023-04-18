@@ -90,7 +90,10 @@ export default function ChatContainer() {
                 </MessageBox>
               </React.Fragment>
             </ChatBox>
-            <InputContainer chatContainerRef={chatContainerRef} />
+            <InputContainer
+              isPrivate={active.isPrivate}
+              chatContainerRef={chatContainerRef}
+            />
           </SubContainer>
           <ReceiverInfoContainer
             infoVisible={infoVisible}

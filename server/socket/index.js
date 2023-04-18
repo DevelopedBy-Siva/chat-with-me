@@ -38,8 +38,12 @@ module.exports.connect = (server) => {
 };
 
 async function saveMessageToChat(data, chatId) {
+  const encryptedMessage = encrypt(data.message);
   return await ChatCollection.updateOne(
     { chatId },
-    { $push: { messages: { ...data, message: encrypt(data.message) } } }
+    {
+      $push: { messages: { ...data, message: encryptedMessage } },
+      $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
+    }
   );
 }

@@ -13,14 +13,6 @@ const ContactType = {
     trim: true,
     lowercase: true,
   },
-  lastMsgTstmp: {
-    type: String,
-    default: "",
-  },
-  lastMsg: {
-    type: String,
-    default: "",
-  },
   chatId: {
     type: String,
     required: true,
