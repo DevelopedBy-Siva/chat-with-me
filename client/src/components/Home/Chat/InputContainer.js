@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 
 import EmojiContainer from "./Emoji";
 import { useSocket } from "../../../context/SocketContext";
@@ -33,10 +32,11 @@ export default function InputContainer({ chatContainerRef }) {
 
     const { val: chatId, _id } = active;
 
+    const createdAt = new Date().toUTCString();
     const data = {
       sendBy: _id,
       message: msg.trim(),
-      createdAt: new Date().toUTCString(),
+      createdAt,
     };
 
     const chat = {
@@ -45,14 +45,13 @@ export default function InputContainer({ chatContainerRef }) {
       chatId,
     };
 
-    const currentDate = moment().format("LL");
     const msgId = uuidv4();
 
-    dispatch(readyToSendMsg({ ...data, msgId }, chatId, currentDate));
+    dispatch(readyToSendMsg({ ...data, msgId }, chatId, createdAt));
 
     socket.emit("send-message", chat, (isSent) => {
       if (isSent)
-        dispatch(updateMessageSendStatus(chatId, msgId, true, currentDate));
+        dispatch(updateMessageSendStatus(chatId, msgId, true, createdAt));
     });
 
     msgInputRef.current.value = "";

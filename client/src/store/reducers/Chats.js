@@ -9,8 +9,9 @@ import {
   MSG_SEND_STATUS,
   READY_TO_SEND_MSG,
   SET_ACTIVE,
+  MSG_RECEIVED,
 } from "../actions/ChatActions";
-import { sortAndGroupMsgs } from "../../utils/DateTime";
+import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
 
 const initialState = {
@@ -68,11 +69,13 @@ const reducer = (state = initialState, action) => {
       const { data: details, chatId, currentDate: today } = payload;
       const conversations = { ...state.chats };
       const chat = conversations[chatId];
+      const dateTime_LL = getDateTime_LL_format(today);
 
       if (chat && chat.messages) {
-        const key = chat.messages[today];
-        if (key) chat.messages[today].unshift({ ...details, isSent: false });
-        else chat.messages[today] = [{ ...details, isSent: false }];
+        const key = chat.messages[dateTime_LL];
+        if (key)
+          chat.messages[dateTime_LL].unshift({ ...details, isSent: false });
+        else chat.messages[dateTime_LL] = [{ ...details, isSent: false }];
       }
       return {
         ...state,
@@ -82,9 +85,10 @@ const reducer = (state = initialState, action) => {
       const { msgId, status, chatId: chat_id, dateGroup } = payload;
       const convs = { ...state.chats };
       const con = convs[chat_id];
+      const dateTime_LL_key = getDateTime_LL_format(dateGroup);
 
-      if (con && con.messages && con.messages[dateGroup]) {
-        con.messages[dateGroup].forEach((msg) => {
+      if (con && con.messages && con.messages[dateTime_LL_key]) {
+        con.messages[dateTime_LL_key].forEach((msg) => {
           if (msg.msgId === msgId) {
             msg.isSent = status;
             return;
@@ -94,6 +98,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: convs,
+      };
+    case MSG_RECEIVED:
+      const updatedChats = { ...state.chats };
+      // try{
+      //   // updatedChats[action.chatId]
+      // }
+      return {
+        ...state,
       };
     default:
       return state;

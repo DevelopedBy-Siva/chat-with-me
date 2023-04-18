@@ -1,6 +1,8 @@
 const { Server } = require("socket.io");
 const config = require("config");
 
+const ChatCollection = require("../db/model/Chat");
+
 module.exports.connect = (server) => {
   /**
    * Socket.io server
@@ -21,17 +23,22 @@ module.exports.connect = (server) => {
     socket.on(
       "send-message",
       async ({ recipients, data, chatId }, callback) => {
-        await new Promise((r) => {
-          setTimeout(() => {
-            r();
-          }, 5000);
-        });
-        callback(true);
-        socket.broadcast.to(recipients).emit("receive-message", {
-          data,
-          chatId,
-        });
+        const messageSaved = await saveMessageToChat(data, chatId);
+        if (messageSaved.modifiedCount > 0) {
+          socket.broadcast.to(recipients).emit("receive-message", {
+            data,
+            chatId,
+          });
+          callback(true);
+        } else callback(false);
       }
     );
   });
 };
+
+async function saveMessageToChat(data, chatId) {
+  return await ChatCollection.updateOne(
+    { chatId },
+    { $push: { messages: data } }
+  );
+}

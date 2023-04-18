@@ -4,6 +4,7 @@ export const CHATS_ERROR = "CHATS_ERROR";
 export const SET_ACTIVE = "SET_ACTIVE";
 export const READY_TO_SEND_MSG = "READY_TO_SEND_MSG";
 export const MSG_SEND_STATUS = "MSG_SEND_STATUS";
+export const MSG_RECEIVED = "MSG_RECEIVED";
 
 export const getChats = (id, data) => {
   return {
@@ -57,5 +58,13 @@ export const updateMessageSendStatus = (chatId, msgId, status, dateGroup) => {
       status,
       dateGroup,
     },
+  };
+};
+
+export const addMessageToChat = (chatId, payload) => {
+  return {
+    type: MSG_RECEIVED,
+    payload,
+    chatId,
   };
 };

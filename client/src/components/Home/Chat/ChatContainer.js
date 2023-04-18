@@ -18,6 +18,7 @@ export default function ChatContainer() {
   const [infoVisible, setInfoVisible] = useState(false);
   const dispatch = useDispatch();
   const { active, loading, error, chats } = useSelector((state) => state.chats);
+  const { details } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!active.val) return;
@@ -69,12 +70,12 @@ export default function ChatContainer() {
                             {msgs.map((msg, index) => (
                               <MessageContainer
                                 key={index}
-                                timestamp={msg.createdAt}
-                                currentUser={"siva"}
+                                currentUser={details._id}
                                 message={msg.message}
                                 sender={msg.sendBy}
                                 isSent={msg.isSent}
                                 receiverId={active}
+                                createdAt={msg.createdAt}
                               />
                             ))}
                             <MessageBreak>

@@ -27,7 +27,7 @@ export function orderContactsDesc(searchInput, data) {
   );
 }
 
-export function getMessageTime(utc) {
+export function getMessageTime(utc = new Date().toUTCString()) {
   const localDate = new Date(utc);
   const tmstp = moment(localDate).format("LT");
   return tmstp;
@@ -43,7 +43,7 @@ export function sortAndGroupMsgs(messages) {
   );
 
   const grouped = _.groupBy(sorted, (msg) =>
-    moment(msg.createdAt).format("LL")
+    moment(new Date(msg.createdAt)).format("LL")
   );
   return grouped;
 }
@@ -62,4 +62,10 @@ export function sortDatesDesc(data = []) {
   return data.sort(
     (a, b) => moment(new Date(b)).valueOf() - moment(new Date(a)).valueOf()
   );
+}
+
+export function getDateTime_LL_format(utc) {
+  const localDate = new Date(utc);
+  const tmstp = moment(localDate).format("LL");
+  return tmstp;
 }

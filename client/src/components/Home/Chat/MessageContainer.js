@@ -13,6 +13,7 @@ export default function MessageContainer({
   currentUser = "",
   sender = "",
   message = "",
+  createdAt,
   isSent,
   // receiverId,
 }) {
@@ -44,9 +45,7 @@ export default function MessageContainer({
           <UserAvatar src={isSender() ? SenderAvatar : getRecceiverAvatar()} />
         </UserAvatarContainer>
         <Wrapper>
-          <MsgTimestamp>
-            {getMessageTime(new Date().toUTCString())}
-          </MsgTimestamp>
+          <MsgTimestamp>{getMessageTime(createdAt)}</MsgTimestamp>
           <MsgWrapper>
             <Message>{message}</Message>
             <MsgStatus>
@@ -84,10 +83,10 @@ const UserAvatarContainer = styled.div`
   overflow: hidden;
 
   &.sender-avatar {
-    margin-left: 8px;
+    margin-right: 8px;
   }
   &.receiver-avatar {
-    margin-right: 8px;
+    margin-left: 8px;
   }
 `;
 
@@ -108,14 +107,15 @@ const ContentWrapper = styled.div`
   max-width: 55%;
   min-width: 60px;
   display: flex;
+  flex-direction: row-reverse;
 
   &.sender-avatar {
-    flex-direction: row-reverse;
+    flex-direction: row;
   }
 `;
 
 const MessageSender = styled.ul`
-  justify-content: flex-end;
+  justify-content: flex-start;
   li {
     background-color: ${(props) => props.theme.msgBox.sender};
     color: ${(props) => props.theme.msgBox.senderColor};
@@ -123,7 +123,7 @@ const MessageSender = styled.ul`
 `;
 
 const MessageReceiver = styled.ul`
-  justify-content: flex-start;
+  justify-content: flex-end;
   li {
     background-color: ${(props) => props.theme.msgBox.receiver};
     color: ${(props) => props.theme.msgBox.receiverColor};
