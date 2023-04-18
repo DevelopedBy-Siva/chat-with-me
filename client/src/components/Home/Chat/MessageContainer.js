@@ -1,11 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-// import { useSelector } from "react-redux";
 import { BiCheckDouble } from "react-icons/bi";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { GiSandsOfTime } from "react-icons/gi";
 
-import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
 import { getAvatar } from "../../../assets/avatars";
 
@@ -15,18 +13,11 @@ export default function MessageContainer({
   message = "",
   createdAt,
   isSent,
-  // receiverId,
+  contactInfo = {},
 }) {
-  // const { contacts, groups } = useSelector((state) => state.contacts);
-
-  function getRecceiverAvatar() {
-    return getAvatar(undefined);
-  }
-
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
   }
-
   const avatarPosition = isSender() ? "sender-avatar" : "receiver-avatar";
 
   const sentStatus =
@@ -42,7 +33,7 @@ export default function MessageContainer({
     <Container as={isSender() ? MessageSender : MessageReceiver}>
       <ContentWrapper className={avatarPosition}>
         <UserAvatarContainer className={avatarPosition}>
-          <UserAvatar src={isSender() ? SenderAvatar : getRecceiverAvatar()} />
+          <UserAvatar src={getAvatar(contactInfo.avatarId)} />
         </UserAvatarContainer>
         <Wrapper>
           <MsgTimestamp>{getMessageTime(createdAt)}</MsgTimestamp>
@@ -81,6 +72,7 @@ const UserAvatarContainer = styled.div`
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
+  flex-shrink: 0;
 
   &.sender-avatar {
     margin-right: 8px;

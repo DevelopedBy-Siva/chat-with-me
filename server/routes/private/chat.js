@@ -13,6 +13,7 @@ const route = express.Router();
  * Get Chats
  */
 route.get("/:chatId", async (req, resp) => {
+  const { email } = req.payload;
   const chatId = req.params.chatId;
 
   const data = await ChatCollection.findOne({ chatId });
@@ -21,11 +22,18 @@ route.get("/:chatId", async (req, resp) => {
       .status(404)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Chat not found"));
 
+  const contacts = data.contacts.filter((item) => item !== email);
+
+  const contactInfos = await UserCollection.find(
+    { email: { $in: [...contacts] } },
+    { avatarId: 1, name: 1, _id: 1, email: 1 }
+  );
+
   let messages = data.messages;
   messages.forEach((item) => {
     item.message = decrypt(item.message);
   });
-  resp.status(200).send({ ...data, messages });
+  resp.status(200).send({ ...data, messages, contactInfos });
 });
 
 /**

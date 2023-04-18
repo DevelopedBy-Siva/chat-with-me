@@ -17,6 +17,7 @@ export default function ChatContainer() {
 
   const [infoVisible, setInfoVisible] = useState(false);
   const dispatch = useDispatch();
+  const { contacts } = useSelector((state) => state.contacts);
   const { active, loading, error, chats } = useSelector((state) => state.chats);
   const { details } = useSelector((state) => state.user);
 
@@ -34,6 +35,32 @@ export default function ChatContainer() {
     const messages = userChats.messages;
     const keys = sortDatesDesc(Object.keys(messages));
     return { keys, messages };
+  }
+
+  function getContactDetails(id) {
+    let response = {
+      name: null,
+      nickname: null,
+      avatarId: null,
+    };
+
+    if (id === details._id) {
+      response.name = details.name;
+      response.avatarId = details.avatarId;
+      return response;
+    }
+
+    const chat = chats[active.val];
+    if (!chat || !chat.contactInfos) return response;
+    const index = chat.contactInfos.findIndex((i) => i._id === id);
+    if (index === -1) return response;
+
+    const found = chat.contactInfos[index];
+    const existsLocal = contacts.findIndex((i) => i._id === id);
+    if (existsLocal !== -1) response.nickname = contacts[existsLocal].nickname;
+    response.name = found.name;
+    response.avatarId = found.avatarId;
+    return response;
   }
 
   return (
@@ -74,8 +101,8 @@ export default function ChatContainer() {
                                 message={msg.message}
                                 sender={msg.sendBy}
                                 isSent={msg.isSent}
-                                receiverId={active}
                                 createdAt={msg.createdAt}
+                                contactInfo={getContactDetails(msg.sendBy)}
                               />
                             ))}
                             <MessageBreak>
