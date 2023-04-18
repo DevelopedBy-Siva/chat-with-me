@@ -2,6 +2,7 @@ const { Server } = require("socket.io");
 const config = require("config");
 
 const ChatCollection = require("../db/model/Chat");
+const { encrypt } = require("../utils/messages");
 
 module.exports.connect = (server) => {
   /**
@@ -39,6 +40,6 @@ module.exports.connect = (server) => {
 async function saveMessageToChat(data, chatId) {
   return await ChatCollection.updateOne(
     { chatId },
-    { $push: { messages: data } }
+    { $push: { messages: { ...data, message: encrypt(data.message) } } }
   );
 }

@@ -5,6 +5,7 @@ const GroupsCollection = require("../../db/model/Groups");
 const UserCollection = require("../../db/model/User");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const { nextAdminIndex } = require("../../utils/validation");
+const { decrypt } = require("../../utils/messages");
 
 const route = express.Router();
 
@@ -19,7 +20,12 @@ route.get("/:chatId", async (req, resp) => {
     return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Chat not found"));
-  resp.status(200).send(data);
+
+  let messages = data.messages;
+  messages.forEach((item) => {
+    item.message = decrypt(item.message);
+  });
+  resp.status(200).send({ ...data, messages });
 });
 
 /**
