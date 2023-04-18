@@ -201,14 +201,13 @@ route.post("/add-contact", async (req, resp) => {
   });
   await data.save();
 
-  const { email: mail, name, avatarId, description, isOnline, _id } = toReturn;
+  const { email: mail, name, avatarId, description, _id } = toReturn;
   resp.status(200).send({
     _id,
     email: mail,
     name,
     avatarId,
     description,
-    isOnline,
     isBlocked: false,
     nickname,
     chatId,
@@ -403,7 +402,6 @@ route.get("/contacts", async (req, resp) => {
         description: details.description,
         name: details.name,
         avatarId: details.avatarId,
-        isOnline: details.isOnline,
         nickname: found.nickname,
         lastMsg: decrypt(chatDetails.lastMsg),
         lastMsgTstmp: chatDetails.lastMsgTstmp,
@@ -645,10 +643,10 @@ route.get("/", async (req, resp) => {
   try {
     const { email } = req.payload;
     const user = await UserCollection.findOne({ email });
-    const { name, email: mail, isOnline, description, avatarId, _id } = user;
+    const { name, email: mail, description, avatarId, _id } = user;
     return resp
       .status(200)
-      .send({ name, email: mail, isOnline, description, avatarId, _id });
+      .send({ name, email: mail, description, avatarId, _id });
   } catch (ex) {
     const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
     resp.clearCookie(isLoggedInKey);

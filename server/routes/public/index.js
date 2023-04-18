@@ -28,7 +28,7 @@ route.post("/login", async (req, resp) => {
   // Get User Details from DB
   const user = await UserCollection.findOne(
     { email: value.email },
-    { email: 1, password: 1, name: 1, isOnline: 1, description: 1, _id: 1 }
+    { email: 1, password: 1, name: 1, description: 1, _id: 1 }
   );
   if (!user)
     return resp
@@ -57,10 +57,8 @@ route.post("/login", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  const { name, email: mail, isOnline, description, avatarId, _id } = user;
-  resp
-    .status(200)
-    .send({ name, email: mail, isOnline, description, avatarId, _id });
+  const { name, email: mail, description, avatarId, _id } = user;
+  resp.status(200).send({ name, email: mail, description, avatarId, _id });
 });
 
 /**
@@ -96,8 +94,7 @@ route.post("/register", async (req, resp) => {
   // Create User Document
   const document = new UserCollection({ ...value, password: hashedPswd });
   // Save Document to DB
-  const { email, name, description, isOnline, avatarId, _id } =
-    await document.save();
+  const { email, name, description, avatarId, _id } = await document.save();
 
   // Generate JWT token
   const token = auth.jwtToken(value.email);
@@ -107,7 +104,7 @@ route.post("/register", async (req, resp) => {
     ...httpOnlyCookieProps,
     expires: expiresAt,
   });
-  resp.status(200).send({ email, name, description, isOnline, avatarId, _id });
+  resp.status(200).send({ email, name, description, avatarId, _id });
 });
 
 /**

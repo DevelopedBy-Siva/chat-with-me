@@ -76,10 +76,6 @@ const schema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  isOnline: {
-    type: Boolean,
-    default: true,
-  },
   avatarId: {
     type: String,
     default: "",
