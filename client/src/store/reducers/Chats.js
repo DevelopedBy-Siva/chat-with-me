@@ -101,11 +101,30 @@ const reducer = (state = initialState, action) => {
       };
     case MSG_RECEIVED:
       const updatedChats = { ...state.chats };
-      // try{
-      //   // updatedChats[action.chatId]
-      // }
+      const specific_updatedChat = updatedChats[action.chatId];
+
+      if (specific_updatedChat && specific_updatedChat.messages) {
+        const receivedMsg_dateTime_LL_key = getDateTime_LL_format(
+          payload.createdAt
+        );
+
+        const specific_updatedChatKey =
+          specific_updatedChat.messages[receivedMsg_dateTime_LL_key];
+
+        if (specific_updatedChatKey)
+          specific_updatedChat.messages[receivedMsg_dateTime_LL_key].unshift({
+            ...payload,
+            isSent: true,
+          });
+        else
+          specific_updatedChat.messages[receivedMsg_dateTime_LL_key] = [
+            { ...payload, isSent: true },
+          ];
+      }
+
       return {
         ...state,
+        chats: { ...updatedChats },
       };
     default:
       return state;

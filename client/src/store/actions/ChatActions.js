@@ -61,7 +61,7 @@ export const updateMessageSendStatus = (chatId, msgId, status, dateGroup) => {
   };
 };
 
-export const addMessageToChat = (chatId, payload) => {
+export const updateMessageReceived = (chatId, payload) => {
   return {
     type: MSG_RECEIVED,
     payload,
