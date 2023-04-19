@@ -20,7 +20,8 @@ export default function InputContainer({ chatContainerRef, isPrivate }) {
 
   const dispatch = useDispatch();
 
-  const { active, loading } = useSelector((state) => state.chats);
+  const { details } = useSelector((state) => state.user);
+  const { active, loading, chats } = useSelector((state) => state.chats);
 
   useEffect(() => {
     if (msgInputRef) msgInputRef.current.value = "";
@@ -31,19 +32,27 @@ export default function InputContainer({ chatContainerRef, isPrivate }) {
     const msg = msgInputRef.current.value;
     if (!msg || msg.trim().length === 0) return;
 
-    const { val: chatId, _id } = active;
+    const { val: chatId } = active;
 
     const createdAt = new Date().toUTCString();
     const data = {
-      sendBy: _id,
+      sendBy: details._id,
       message: msg.trim(),
       createdAt,
     };
 
+    let recipients = [];
+    const chatDetails = chats[chatId];
+    if (chatDetails) {
+      const contactInfos = chatDetails.contactInfos;
+      if (contactInfos) contactInfos.forEach((i) => recipients.push(i._id));
+    }
+
     const chat = {
-      recipients: _id,
+      recipients,
       data,
       chatId,
+      isPrivate: active.isPrivate,
     };
 
     const msgId = uuidv4();

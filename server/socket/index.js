@@ -23,13 +23,16 @@ module.exports.connect = (server) => {
     socket.join(id);
     socket.on(
       "send-message",
-      async ({ recipients, data, chatId }, callback) => {
+      async ({ recipients = [], data, chatId, isPrivate }, callback) => {
         const messageSaved = await saveMessageToChat(data, chatId);
         if (messageSaved.modifiedCount > 0) {
-          socket.broadcast.to(recipients).emit("receive-message", {
-            data,
-            chatId,
-          });
+          recipients.forEach((to) =>
+            socket.broadcast.to(to).emit("receive-message", {
+              data,
+              chatId,
+              isPrivate,
+            })
+          );
           callback(true);
         } else callback(false);
       }

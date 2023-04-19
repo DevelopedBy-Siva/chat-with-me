@@ -7,6 +7,7 @@ import ChatContainer from "../Chat/ChatContainer";
 import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
 import { updateMessageReceived } from "../../../store/actions/ChatActions";
+import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
 
 export default function Chat() {
   const dispatch = useDispatch();
@@ -15,8 +16,11 @@ export default function Chat() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on("receive-message", ({ data, chatId }) => {
+    socket.on("receive-message", ({ data, chatId, isPrivate }) => {
       dispatch(updateMessageReceived(chatId, data));
+      dispatch(
+        updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+      );
     });
     return () => socket.off("receive-message");
   }, [socket]);
