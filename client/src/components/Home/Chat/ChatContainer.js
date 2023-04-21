@@ -11,10 +11,7 @@ import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
-import {
-  getContactNickname,
-  getContactNicknameById,
-} from "../../../utils/InputHandler";
+import { getContactNicknameById } from "../../../utils/InputHandler";
 
 export default function ChatContainer() {
   const chatContainerRef = useRef(null);
@@ -65,11 +62,6 @@ export default function ChatContainer() {
     response.name = found.name;
     response.avatarId = found.avatarId;
     return response;
-  }
-
-  function getSenderName(email, name) {
-    const nickname = getContactNickname(contacts, email);
-    return nickname ? nickname : name;
   }
 
   return (
