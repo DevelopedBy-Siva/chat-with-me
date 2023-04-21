@@ -12,5 +12,6 @@
   },
   "verify_code_expiry_secs": 300,
   "jwt_expiry": "2d",
-  "http_cookie_expiry": 2
+  "http_cookie_expiry": 2,
+  "cleanup_messages_olderthan": "1"
 }
