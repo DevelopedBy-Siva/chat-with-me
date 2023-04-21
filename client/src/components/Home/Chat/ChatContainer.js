@@ -11,6 +11,10 @@ import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
+import {
+  getContactNickname,
+  getContactNicknameById,
+} from "../../../utils/InputHandler";
 
 export default function ChatContainer() {
   const chatContainerRef = useRef(null);
@@ -63,6 +67,11 @@ export default function ChatContainer() {
     return response;
   }
 
+  function getSenderName(email, name) {
+    const nickname = getContactNickname(contacts, email);
+    return nickname ? nickname : name;
+  }
+
   return (
     <Container>
       <MessageBoxCover />
@@ -103,6 +112,11 @@ export default function ChatContainer() {
                                 isSent={msg.isSent}
                                 createdAt={msg.createdAt}
                                 contactInfo={getContactDetails(msg.sendBy)}
+                                isPrivate={active.isPrivate}
+                                nickname={getContactNicknameById(
+                                  contacts,
+                                  msg.sendBy
+                                )}
                               />
                             ))}
                             <MessageBreak>

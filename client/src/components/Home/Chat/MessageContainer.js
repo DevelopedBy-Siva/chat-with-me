@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BiCheckDouble } from "react-icons/bi";
+import { BsCheck } from "react-icons/bs";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { GiSandsOfTime } from "react-icons/gi";
 
@@ -14,6 +14,8 @@ export default function MessageContainer({
   createdAt,
   isSent,
   contactInfo = {},
+  isPrivate,
+  nickname,
 }) {
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
@@ -22,7 +24,7 @@ export default function MessageContainer({
 
   const sentStatus =
     isSent === undefined || isSent === true ? (
-      <BiCheckDouble />
+      <BsCheck />
     ) : isSent === false ? (
       <GiSandsOfTime style={{ fontSize: "0.6rem" }} />
     ) : (
@@ -38,6 +40,9 @@ export default function MessageContainer({
         <Wrapper>
           <MsgTimestamp>{getMessageTime(createdAt)}</MsgTimestamp>
           <MsgWrapper>
+            {isPrivate === false && !isSender() && (
+              <SenderName>{nickname ? nickname : contactInfo.name}</SenderName>
+            )}
             <Message>{message}</Message>
             <MsgStatus>
               <MsgStatusIcon>{sentStatus}</MsgStatusIcon>
@@ -87,6 +92,20 @@ const UserAvatar = styled.img`
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+`;
+
+const SenderName = styled.span`
+  display: block;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(-2px);
+  padding: 0 0.5rem 2px 0.5rem;
+  font-weight: 600;
+  font-size: 0.6rem;
+  color: ${(props) => props.theme.txt.highlight};
+  text-transform: capitalize;
 `;
 
 const MsgWrapper = styled.li`

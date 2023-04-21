@@ -164,3 +164,9 @@ export function getContactNickname(contacts = [], lookupEmail) {
   if (index === -1) return null;
   return contacts[index].nickname;
 }
+
+export function getContactNicknameById(contacts = [], id) {
+  const index = contacts.findIndex((item) => item._id === id);
+  if (index === -1) return null;
+  return contacts[index].nickname;
+}
