@@ -29,7 +29,7 @@ if [[ $choice == "y" || $choice == "Y" ]]; then
     if [[ $choice == "y" || $choice == "Y" ]]; then
         read -p "Enter a commit message: " message
         git add .
-        git commit $message
+        git commit -m "$message"
         git push origin client
         echo "\nClient changes successfully pushed to remote repository. You can check the deployment status in GitHub"
     fi
@@ -51,7 +51,7 @@ if [[ $choice == "y" || $choice == "Y" ]]; then
     if [[ $choice == "y" || $choice == "Y" ]]; then
         read -p "Enter a commit message: " message
         git add .
-        git commit $message
+        git commit -m "$message"
         git push origin server
         echo "\nServer changes successfully pushed to remote repository. You can check the deployment status in GitHub"
     fi
