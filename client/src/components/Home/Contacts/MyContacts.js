@@ -16,7 +16,7 @@ import {
 import { setActive } from "../../../store/actions/ChatActions";
 
 export default function MyContacts({ inProgress, setInProgress }) {
-  const { contacts = [] } = useSelector((state) => state.contacts);
+  const { contacts = [], isOnline } = useSelector((state) => state.contacts);
 
   const dispatch = useDispatch();
 
@@ -87,11 +87,16 @@ export default function MyContacts({ inProgress, setInProgress }) {
     }
   }
 
+  function isContactOnline(id) {
+    const index = isOnline.findIndex((i) => i === id);
+    return index === -1 ? false : true;
+  }
+
   if (filterContacts().length === 0)
     return <NoContactsMsg>No contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { name, nickname, avatarId, isOnline, email } = item;
+    const { _id, name, nickname, avatarId, isOnline, email } = item;
     return (
       <ContactContainer key={index}>
         {whichOne.email === email ? (
@@ -121,7 +126,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
             <ContactDetails>
               <ContactAvatarContainer>
                 <ContactAvatar src={getAvatar(avatarId)} />
-                {isOnline && <ContactStatus />}
+                {isContactOnline(_id) && <ContactStatus />}
               </ContactAvatarContainer>
               <ContactNameContainer>
                 <ContactName>{name}</ContactName>

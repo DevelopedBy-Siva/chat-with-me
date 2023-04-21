@@ -129,6 +129,13 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
 
   const groupName = group === "group" ? "Groups" : "Direct Messages";
 
+  const onlineContacts = useSelector((state) => state.contacts.isOnline);
+
+  function isContactOnline(id) {
+    const index = onlineContacts.findIndex((i) => i === id);
+    return index === -1 ? false : true;
+  }
+
   return (
     <GroupContainer stretch={contactsToRender.keys.length === 1 ? 1 : 0}>
       {contactsToRender.keys && contactsToRender.keys.length > 1 && (
@@ -148,7 +155,6 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
             const {
               name,
               lastMsg,
-              isOnline,
               avatarId,
               lastMsgTstmp,
               nickname,
@@ -164,7 +170,7 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
                 key={`V${index}`}
               >
                 <AvatarContainer>
-                  {isOnline === true && <ContactStatus />}
+                  {isContactOnline(_id) === true && <ContactStatus />}
                   {icon ? (
                     <Icon bg={icon.background}>{icon.letter}</Icon>
                   ) : (

@@ -4,6 +4,8 @@ const config = require("config");
 const ChatCollection = require("../db/model/Chat");
 const { encrypt } = require("../utils/messages");
 
+const JOINED_IDS = new Set();
+
 module.exports.connect = (server) => {
   /**
    * Socket.io server
@@ -21,6 +23,11 @@ module.exports.connect = (server) => {
     // Connection ID -> UserId
     const id = socket.handshake.query.id;
     socket.join(id);
+    JOINED_IDS.add(id);
+
+    // Is Online or not
+    weAreOnline();
+
     socket.on(
       "send-message",
       async ({ recipients = [], data, chatId, isPrivate }, callback) => {
@@ -37,7 +44,17 @@ module.exports.connect = (server) => {
         } else callback(false);
       }
     );
+    socket.on("disconnect", () => {
+      JOINED_IDS.delete(id);
+      weAreOnline();
+    });
   });
+
+  function weAreOnline() {
+    io.emit("is-online", {
+      online: [...JOINED_IDS],
+    });
+  }
 };
 
 async function saveMessageToChat(data, chatId) {

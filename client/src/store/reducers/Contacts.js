@@ -16,12 +16,14 @@ import {
   ADD_TO_GROUP,
   KICK_FROM_GROUP,
   LAST_MSG_AND_TMSTP,
+  IS_ONLINE,
 } from "../actions/ContactActions";
 
 const initialState = {
   loading: true,
   contacts: [],
   groups: [],
+  isOnline: [],
   error: null,
 };
 
@@ -162,6 +164,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         groups,
         contacts,
+      };
+    case IS_ONLINE:
+      return {
+        ...state,
+        isOnline: [...payload],
       };
     default:
       return state;

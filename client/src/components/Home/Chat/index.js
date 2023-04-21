@@ -7,7 +7,10 @@ import ChatContainer from "../Chat/ChatContainer";
 import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
 import { updateMessageReceived } from "../../../store/actions/ChatActions";
-import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
+import {
+  updateLastMsgAndTmstp,
+  updateOnlineContacts,
+} from "../../../store/actions/ContactActions";
 
 export default function Chat() {
   const dispatch = useDispatch();
@@ -22,7 +25,15 @@ export default function Chat() {
         updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
       );
     });
-    return () => socket.off("receive-message");
+
+    socket.on("is-online", ({ online = [] }) => {
+      dispatch(updateOnlineContacts(online));
+    });
+
+    return () => {
+      socket.off("receive-message");
+      socket.off("is-online");
+    };
   }, [socket]);
 
   return (
