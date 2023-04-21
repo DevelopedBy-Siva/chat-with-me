@@ -1,4 +1,5 @@
 import { enqueueSnackbar, closeSnackbar } from "notistack";
+import { toast } from "react-toastify";
 
 import GeneralToast from "./GeneralToast";
 import MsgToastContainer from "./MsgToastContainer";
@@ -26,9 +27,14 @@ const notify = (key, message, props = {}) => {
   });
 };
 
-const notifyMsg = (message, from, avatarId) => {
-  enqueueSnackbar(
-    <MsgToastContainer message={message} from={from} avatarId={avatarId} />
+const notifyMsg = (message, from, avatarId, email) => {
+  toast(
+    <MsgToastContainer
+      message={message}
+      sendBy={from}
+      avatarId={avatarId}
+      email={email}
+    />
   );
 };
 
@@ -66,7 +72,8 @@ const toExpose = {
   success: (message, props) => notify("success", message, props),
   error: (message, props) => notify("error", message, props),
   info: (message, props) => notify("info", message, props),
-  msg: (message, from, avatarId) => notifyMsg(message, from, avatarId),
+  msg: (message, from, avatarId, email) =>
+    notifyMsg(message, from, avatarId, email),
   remove: () => remove(),
   props: toastProps,
 };

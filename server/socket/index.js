@@ -30,7 +30,18 @@ module.exports.connect = (server) => {
 
     socket.on(
       "send-message",
-      async ({ recipients = [], data, chatId, isPrivate }, callback) => {
+      async (
+        {
+          recipients = [],
+          data,
+          chatId,
+          isPrivate,
+          senderName,
+          senderAvatarId,
+          senderEmail,
+        },
+        callback
+      ) => {
         const messageSaved = await saveMessageToChat(data, chatId);
         if (messageSaved.modifiedCount > 0) {
           recipients.forEach((to) =>
@@ -38,6 +49,9 @@ module.exports.connect = (server) => {
               data,
               chatId,
               isPrivate,
+              senderName,
+              senderAvatarId,
+              senderEmail,
             })
           );
           callback(true);

@@ -96,7 +96,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
     return <NoContactsMsg>No contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { _id, name, nickname, avatarId, isOnline, email } = item;
+    const { _id, name, nickname, avatarId, email } = item;
     return (
       <ContactContainer key={index}>
         {whichOne.email === email ? (

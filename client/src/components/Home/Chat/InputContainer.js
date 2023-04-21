@@ -53,6 +53,9 @@ export default function InputContainer({ chatContainerRef, isPrivate }) {
       data,
       chatId,
       isPrivate: active.isPrivate,
+      senderAvatarId: details.avatarId,
+      senderName: details.name,
+      senderEmail: details.email,
     };
 
     const msgId = uuidv4();
