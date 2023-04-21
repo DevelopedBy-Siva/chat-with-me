@@ -11,6 +11,7 @@ const UserCollection = require("../../db/model/User");
 const GroupsCollection = require("../../db/model/Groups");
 const ChatCollection = require("../../db/model/Chat");
 const { hash, login, cookies, jwtToken } = require("../../auth");
+const { decrypt } = require("../../utils/messages");
 
 const route = express.Router();
 
@@ -177,8 +178,13 @@ route.post("/add-contact", async (req, resp) => {
 
   // Get the ChatId if exists, else create a new chat
   let chatId;
-  if (chatExists) chatId = chatExists.chatId;
-  else {
+  let lastMsg = "";
+  let lastMsgTstmp = "";
+  if (chatExists) {
+    chatId = chatExists.chatId;
+    lastMsg = decrypt(chatExists.lastMsg);
+    lastMsgTstmp = chatExists.lastMsgTstmp;
+  } else {
     chatId = uuid();
     const chatDocument = new ChatCollection({
       chatId,
@@ -195,17 +201,19 @@ route.post("/add-contact", async (req, resp) => {
   });
   await data.save();
 
-  const { email: mail, name, avatarId, description, isOnline } = toReturn;
+  const { email: mail, name, avatarId, description, _id } = toReturn;
   resp.status(200).send({
+    _id,
     email: mail,
     name,
     avatarId,
     description,
-    isOnline,
     isBlocked: false,
     nickname,
     chatId,
     isPrivate: true,
+    lastMsg,
+    lastMsgTstmp,
   });
 });
 
@@ -378,30 +386,34 @@ route.get("/contacts", async (req, resp) => {
   const contacts = await UserCollection.find({ email: { $in: [...toLookUp] } });
 
   let contactsToSend = [];
-  myContacts.forEach((con) => {
+  for (const con of myContacts) {
     const index = contacts.findIndex((item) => item.email === con);
     if (index !== -1) {
       const details = contacts[index];
       const found = data.contacts.find((ele) => ele.email === details.email);
 
+      const chatDetails = await ChatCollection.findOne(
+        { chatId: found.chatId },
+        { lastMsg: 1, lastMsgTstmp: 1, _id: 0 }
+      );
       contactsToSend.push({
+        _id: details._id,
         email: details.email,
         description: details.description,
         name: details.name,
         avatarId: details.avatarId,
-        isOnline: details.isOnline,
         nickname: found.nickname,
-        lastMsg: found.lastMsg,
-        lastMsgTstmp: found.lastMsgTstmp,
+        lastMsg: decrypt(chatDetails.lastMsg),
+        lastMsgTstmp: chatDetails.lastMsgTstmp,
         isBlocked: found.isBlocked,
         chatId: found.chatId,
         isPrivate: true,
       });
     }
-  });
+  }
 
   let groupsToSend = [];
-  groups.forEach((grp) => {
+  for (const grp of groups) {
     let memberDetails = [];
     grp.members.forEach((item) => {
       if (item.email !== email) {
@@ -413,6 +425,7 @@ route.get("/contacts", async (req, resp) => {
           );
           const nickname = found ? found.nickname : undefined;
           memberDetails.push({
+            _id: contactDetails._id,
             name: contactDetails.name,
             email: contactDetails.email,
             avatarId: contactDetails.avatarId,
@@ -421,17 +434,22 @@ route.get("/contacts", async (req, resp) => {
         }
       }
     });
+    const chatDetails = await ChatCollection.findOne(
+      { chatId: grp.chatId },
+      { lastMsg: 1, lastMsgTstmp: 1, _id: 0 }
+    );
     groupsToSend.push({
+      _id: grp._id,
       name: grp.name,
       admin: grp.admin,
       icon: grp.icon,
-      lastMsg: grp.lastMsg,
-      lastMsgTstmp: grp.lastMsgTstmp,
+      lastMsg: decrypt(chatDetails.lastMsg),
+      lastMsgTstmp: chatDetails.lastMsgTstmp,
       members: memberDetails,
       chatId: grp.chatId,
       isPrivate: false,
     });
-  });
+  }
 
   resp.status(200).send({
     contacts: contactsToSend,
@@ -541,10 +559,11 @@ route.post("/create-group", async (req, resp) => {
   });
 
   resp.status(200).send({
+    _id: data._id,
     name: data.name,
     admin: data.admin,
-    lastMsg: data.lastMsg,
-    lastMsgTstmp: data.lastMsgTstmp,
+    lastMsg: "",
+    lastMsgTstmp: "",
     icon: data.icon,
     chatId: data.chatId,
     members: details,
@@ -624,10 +643,10 @@ route.get("/", async (req, resp) => {
   try {
     const { email } = req.payload;
     const user = await UserCollection.findOne({ email });
-    const { name, email: mail, isOnline, description, avatarId } = user;
+    const { name, email: mail, description, avatarId, _id } = user;
     return resp
       .status(200)
-      .send({ name, email: mail, isOnline, description, avatarId });
+      .send({ name, email: mail, description, avatarId, _id });
   } catch (ex) {
     const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
     resp.clearCookie(isLoggedInKey);

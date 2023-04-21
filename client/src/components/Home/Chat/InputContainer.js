@@ -5,15 +5,23 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { v4 as uuidv4 } from "uuid";
 
 import EmojiContainer from "./Emoji";
-import { sendMessage } from "../../../store/reducers/Chats";
+import { useSocket } from "../../../context/SocketContext";
+import {
+  readyToSendMsg,
+  updateMessageSendStatus,
+} from "../../../store/actions/ChatActions";
+import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
 
-export default function InputContainer({ chatContainerRef }) {
+export default function InputContainer({ chatContainerRef, isPrivate }) {
   const msgInputRef = useRef(null);
   const formRef = useRef(null);
 
+  const socket = useSocket();
+
   const dispatch = useDispatch();
 
-  const { active, loading } = useSelector((state) => state.chats);
+  const { details } = useSelector((state) => state.user);
+  const { active, loading, chats } = useSelector((state) => state.chats);
 
   useEffect(() => {
     if (msgInputRef) msgInputRef.current.value = "";
@@ -23,14 +31,45 @@ export default function InputContainer({ chatContainerRef }) {
     e.preventDefault();
     const msg = msgInputRef.current.value;
     if (!msg || msg.trim().length === 0) return;
-    const msgId = uuidv4();
-    const toSend = {
-      sendBy: "siva",
+
+    const { val: chatId } = active;
+
+    const createdAt = new Date().toUTCString();
+    const data = {
+      sendBy: details._id,
       message: msg.trim(),
-      createdAt: new Date().toUTCString(),
-      msgId,
+      createdAt,
     };
-    dispatch(sendMessage(toSend, active));
+
+    let recipients = [];
+    const chatDetails = chats[chatId];
+    if (chatDetails) {
+      const contactInfos = chatDetails.contactInfos;
+      if (contactInfos) contactInfos.forEach((i) => recipients.push(i._id));
+    }
+
+    const chat = {
+      recipients,
+      data,
+      chatId,
+      isPrivate: active.isPrivate,
+      senderAvatarId: details.avatarId,
+      senderName: details.name,
+      senderEmail: details.email,
+    };
+
+    const msgId = uuidv4();
+
+    dispatch(readyToSendMsg({ ...data, msgId }, chatId, createdAt));
+    dispatch(
+      updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+    );
+
+    socket.emit("send-message", chat, (isSent) => {
+      if (isSent)
+        dispatch(updateMessageSendStatus(chatId, msgId, true, createdAt));
+    });
+
     msgInputRef.current.value = "";
     msgInputRef.current.style.height = "auto";
     if (chatContainerRef)

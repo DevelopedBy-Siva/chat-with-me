@@ -1,6 +1,6 @@
 import _ from "axios";
 
-const baseURL = process.env.REACT_APP_API_BASEURL;
+const baseURL = process.env.REACT_APP_API_BASEURL + "/api";
 const apiTimeout = process.env.REACT_APP_API_TIMEOUT;
 
 const axios = _.create({ baseURL });

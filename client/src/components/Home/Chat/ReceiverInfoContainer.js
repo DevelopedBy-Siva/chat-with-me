@@ -977,6 +977,7 @@ const UserInfoName = styled.span`
   text-transform: capitalize;
   text-align: center;
   font-weight: 400;
+  flex-shrink: 0;
 `;
 
 const NicknameContainer = styled.div`
@@ -988,6 +989,7 @@ const NicknameContainer = styled.div`
   color: ${(props) => props.theme.txt.sub};
   opacity: 1;
   margin-top: 5px;
+  flex-shrink: 0;
 `;
 
 const Nickname = styled.span`

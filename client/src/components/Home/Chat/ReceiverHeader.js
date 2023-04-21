@@ -26,7 +26,7 @@ export default function ReceiverHeader({
 }
 
 function ReceiverContainer({ contactId }) {
-  const { contacts, groups } = useSelector((state) => state.contacts);
+  const { contacts, groups, isOnline } = useSelector((state) => state.contacts);
 
   const dispatch = useDispatch();
 
@@ -47,8 +47,12 @@ function ReceiverContainer({ contactId }) {
     }, 300);
   }
 
-  const { isOnline, name, nickname, avatarId, isPrivate, icon } =
-    findContactInfo();
+  function isContactOnline(id) {
+    const index = isOnline.findIndex((i) => i === id);
+    return index === -1 ? false : true;
+  }
+
+  const { _id, name, nickname, avatarId, isPrivate, icon } = findContactInfo();
 
   return (
     <Receiver>
@@ -63,7 +67,9 @@ function ReceiverContainer({ contactId }) {
           {nickname && nickname.length > 0 ? nickname : name}
         </ReceiverName>
         {isPrivate ? (
-          <ReceiverStatus>{isOnline ? "online" : "offline"}</ReceiverStatus>
+          <ReceiverStatus>
+            {isContactOnline(_id) ? "online" : "offline"}
+          </ReceiverStatus>
         ) : (
           ""
         )}

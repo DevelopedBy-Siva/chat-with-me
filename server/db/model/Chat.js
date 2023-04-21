@@ -34,6 +34,14 @@ const schema = new mongoose.Schema({
   blockedBy: {
     type: String,
   },
+  lastMsgTstmp: {
+    type: String,
+    default: "",
+  },
+  lastMsg: {
+    type: String,
+    default: "",
+  },
 });
 
 const Chat = mongoose.model("Chat", schema);

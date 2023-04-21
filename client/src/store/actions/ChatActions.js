@@ -4,6 +4,7 @@ export const CHATS_ERROR = "CHATS_ERROR";
 export const SET_ACTIVE = "SET_ACTIVE";
 export const READY_TO_SEND_MSG = "READY_TO_SEND_MSG";
 export const MSG_SEND_STATUS = "MSG_SEND_STATUS";
+export const MSG_RECEIVED = "MSG_RECEIVED";
 
 export const getChats = (id, data) => {
   return {
@@ -28,11 +29,12 @@ export const chatsError = (errorId, isPrivate) => {
   };
 };
 
-export const setActive = (payload, isPrivate = true) => {
+export const setActive = (payload, isPrivate = true, _id = null) => {
   return {
     type: SET_ACTIVE,
     payload,
     isPrivate,
+    _id,
   };
 };
 
@@ -56,5 +58,13 @@ export const updateMessageSendStatus = (chatId, msgId, status, dateGroup) => {
       status,
       dateGroup,
     },
+  };
+};
+
+export const updateMessageReceived = (chatId, payload) => {
+  return {
+    type: MSG_RECEIVED,
+    payload,
+    chatId,
   };
 };

@@ -8,6 +8,7 @@ import FullPageLoading from "../../../components/Loader/FullPage";
 import Navbar from "../../../components/Home/NavBar";
 import store from "../../../store";
 import { initializeContacts } from "../../../store/reducers/Contacts";
+import { SocketProvider } from "../../../context/SocketContext";
 
 export default function UserHome() {
   const dispatch = useDispatch();
@@ -16,19 +17,21 @@ export default function UserHome() {
     dispatch(initializeContacts());
   }, [dispatch]);
 
-  const showOneTimeInfo = useSelector((state) => state.user.oneTimeInfo);
+  const { oneTimeInfo, details } = useSelector((state) => state.user);
 
   return (
     <Provider store={store}>
-      <Wrapper className="home-container">
-        <Container>
-          {showOneTimeInfo && <OneTimeInfo />}
-          <Navbar />
-          <Suspense fallback={<FullPageLoading />}>
-            <Outlet />
-          </Suspense>
-        </Container>
-      </Wrapper>
+      <SocketProvider id={details._id}>
+        <Wrapper className="home-container">
+          <Container>
+            {oneTimeInfo && <OneTimeInfo />}
+            <Navbar />
+            <Suspense fallback={<FullPageLoading />}>
+              <Outlet />
+            </Suspense>
+          </Container>
+        </Wrapper>
+      </SocketProvider>
     </Provider>
   );
 }

@@ -13,14 +13,6 @@ const ContactType = {
     trim: true,
     lowercase: true,
   },
-  lastMsgTstmp: {
-    type: String,
-    default: "",
-  },
-  lastMsg: {
-    type: String,
-    default: "",
-  },
   chatId: {
     type: String,
     required: true,
@@ -83,10 +75,6 @@ const schema = new mongoose.Schema({
   description: {
     type: String,
     default: "",
-  },
-  isOnline: {
-    type: Boolean,
-    default: true,
   },
   avatarId: {
     type: String,

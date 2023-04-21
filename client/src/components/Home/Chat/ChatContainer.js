@@ -11,13 +11,16 @@ import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
+import { getContactNicknameById } from "../../../utils/InputHandler";
 
 export default function ChatContainer() {
   const chatContainerRef = useRef(null);
 
   const [infoVisible, setInfoVisible] = useState(false);
   const dispatch = useDispatch();
+  const { contacts } = useSelector((state) => state.contacts);
   const { active, loading, error, chats } = useSelector((state) => state.chats);
+  const { details } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!active.val) return;
@@ -33,6 +36,32 @@ export default function ChatContainer() {
     const messages = userChats.messages;
     const keys = sortDatesDesc(Object.keys(messages));
     return { keys, messages };
+  }
+
+  function getContactDetails(id) {
+    let response = {
+      name: null,
+      nickname: null,
+      avatarId: null,
+    };
+
+    if (id === details._id) {
+      response.name = details.name;
+      response.avatarId = details.avatarId;
+      return response;
+    }
+
+    const chat = chats[active.val];
+    if (!chat || !chat.contactInfos) return response;
+    const index = chat.contactInfos.findIndex((i) => i._id === id);
+    if (index === -1) return response;
+
+    const found = chat.contactInfos[index];
+    const existsLocal = contacts.findIndex((i) => i._id === id);
+    if (existsLocal !== -1) response.nickname = contacts[existsLocal].nickname;
+    response.name = found.name;
+    response.avatarId = found.avatarId;
+    return response;
   }
 
   return (
@@ -69,12 +98,17 @@ export default function ChatContainer() {
                             {msgs.map((msg, index) => (
                               <MessageContainer
                                 key={index}
-                                timestamp={msg.createdAt}
-                                currentUser={"siva"}
+                                currentUser={details._id}
                                 message={msg.message}
                                 sender={msg.sendBy}
                                 isSent={msg.isSent}
-                                receiverId={active}
+                                createdAt={msg.createdAt}
+                                contactInfo={getContactDetails(msg.sendBy)}
+                                isPrivate={active.isPrivate}
+                                nickname={getContactNicknameById(
+                                  contacts,
+                                  msg.sendBy
+                                )}
                               />
                             ))}
                             <MessageBreak>
@@ -89,7 +123,10 @@ export default function ChatContainer() {
                 </MessageBox>
               </React.Fragment>
             </ChatBox>
-            <InputContainer chatContainerRef={chatContainerRef} />
+            <InputContainer
+              isPrivate={active.isPrivate}
+              chatContainerRef={chatContainerRef}
+            />
           </SubContainer>
           <ReceiverInfoContainer
             infoVisible={infoVisible}
@@ -109,6 +146,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 0;
 
   @media (max-width: 920px) {
     grid-row-start: 1;
@@ -144,7 +182,6 @@ const MessageBox = styled.div`
   flex: 1;
   min-height: 0;
   position: relative;
-  font-size: 32%;
   display: flex;
   flex-direction: column;
   background-size: contain;

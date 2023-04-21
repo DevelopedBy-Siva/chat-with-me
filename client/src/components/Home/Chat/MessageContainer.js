@@ -1,11 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { BiCheckDouble } from "react-icons/bi";
+import { BsCheck } from "react-icons/bs";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { GiSandsOfTime } from "react-icons/gi";
 
-import SenderAvatar from "../../../assets/avatars/2.svg";
 import { getMessageTime } from "../../../utils/DateTime";
 import { getAvatar } from "../../../assets/avatars";
 
@@ -13,30 +11,20 @@ export default function MessageContainer({
   currentUser = "",
   sender = "",
   message = "",
+  createdAt,
   isSent,
-  receiverId,
+  contactInfo = {},
+  isPrivate,
+  nickname,
 }) {
-  const { contacts, groups } = useSelector((state) => state.contacts);
-
-  function getRecceiverAvatar() {
-    const { val, isPrivate } = receiverId;
-    if (isPrivate) {
-      const index = contacts.findIndex((i) => i.id === val);
-      return getAvatar(contacts[index].avatarId);
-    }
-    const index = groups.findIndex((i) => i.id === val);
-    return getAvatar(groups[index].avatarId);
-  }
-
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
   }
-
   const avatarPosition = isSender() ? "sender-avatar" : "receiver-avatar";
 
   const sentStatus =
     isSent === undefined || isSent === true ? (
-      <BiCheckDouble />
+      <BsCheck />
     ) : isSent === false ? (
       <GiSandsOfTime style={{ fontSize: "0.6rem" }} />
     ) : (
@@ -47,13 +35,14 @@ export default function MessageContainer({
     <Container as={isSender() ? MessageSender : MessageReceiver}>
       <ContentWrapper className={avatarPosition}>
         <UserAvatarContainer className={avatarPosition}>
-          <UserAvatar src={isSender() ? SenderAvatar : getRecceiverAvatar()} />
+          <UserAvatar src={getAvatar(contactInfo.avatarId)} />
         </UserAvatarContainer>
         <Wrapper>
-          <MsgTimestamp>
-            {getMessageTime(new Date().toUTCString())}
-          </MsgTimestamp>
+          <MsgTimestamp>{getMessageTime(createdAt)}</MsgTimestamp>
           <MsgWrapper>
+            {isPrivate === false && !isSender() && (
+              <SenderName>{nickname ? nickname : contactInfo.name}</SenderName>
+            )}
             <Message>{message}</Message>
             <MsgStatus>
               <MsgStatusIcon>{sentStatus}</MsgStatusIcon>
@@ -88,12 +77,13 @@ const UserAvatarContainer = styled.div`
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
+  flex-shrink: 0;
 
   &.sender-avatar {
-    margin-left: 8px;
+    margin-right: 8px;
   }
   &.receiver-avatar {
-    margin-right: 8px;
+    margin-left: 8px;
   }
 `;
 
@@ -102,6 +92,20 @@ const UserAvatar = styled.img`
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+`;
+
+const SenderName = styled.span`
+  display: block;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(-2px);
+  padding: 0 0.5rem 2px 0.5rem;
+  font-weight: 600;
+  font-size: 0.6rem;
+  color: ${(props) => props.theme.txt.highlight};
+  text-transform: capitalize;
 `;
 
 const MsgWrapper = styled.li`
@@ -114,14 +118,15 @@ const ContentWrapper = styled.div`
   max-width: 55%;
   min-width: 60px;
   display: flex;
+  flex-direction: row-reverse;
 
   &.sender-avatar {
-    flex-direction: row-reverse;
+    flex-direction: row;
   }
 `;
 
 const MessageSender = styled.ul`
-  justify-content: flex-end;
+  justify-content: flex-start;
   li {
     background-color: ${(props) => props.theme.msgBox.sender};
     color: ${(props) => props.theme.msgBox.senderColor};
@@ -129,7 +134,7 @@ const MessageSender = styled.ul`
 `;
 
 const MessageReceiver = styled.ul`
-  justify-content: flex-start;
+  justify-content: flex-end;
   li {
     background-color: ${(props) => props.theme.msgBox.receiver};
     color: ${(props) => props.theme.msgBox.receiverColor};

@@ -1,24 +1,31 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 import popupsound from "../../assets/sounds/popup.mp3";
 import { getAvatar } from "../../assets/avatars";
+import { getContactNickname } from "../../utils/InputHandler";
 
 export default function MsgToastContainer({
   message = "...",
   avatarId,
   sendBy = "unknown",
+  email = "",
 }) {
   useEffect(() => {
     new Audio(popupsound).play();
   }, []);
+
+  const { contacts } = useSelector((state) => state.contacts);
+
+  const nickname = getContactNickname(contacts, email);
   return (
     <Container>
       <ImageContainer>
         <Img src={getAvatar(avatarId)} />
       </ImageContainer>
       <Details>
-        <From>{sendBy}</From>
+        <From>{nickname ? nickname : sendBy}</From>
         <Msg>{message}</Msg>
       </Details>
     </Container>
@@ -28,20 +35,9 @@ export default function MsgToastContainer({
 const Container = styled.div`
   display: flex;
   align-items: center;
-  width: 90%;
-  max-width: 310px;
-  margin: auto;
+  flex-direction: row;
+  width: 100%;
   overflow: hidden;
-  padding: 15px 10px;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
-  transition: transform 0.5s ease-in-out;
-  cursor: pointer;
-
-  :hover {
-    transform: scale(0.96);
-  }
 `;
 
 const ImageContainer = styled.span`
@@ -49,6 +45,7 @@ const ImageContainer = styled.span`
   width: 36px;
   height: 36px;
   border-radius: 50%;
+  flex-shrink: 0;
   flex-shrink: 0;
 `;
 
@@ -62,18 +59,19 @@ const Details = styled.div`
   margin-left: 15px;
   overflow: hidden;
   flex: 1;
+  min-width: 0;
+  user-select: none;
 `;
 
 const From = styled.span`
   display: block;
-  width: 100%;
   text-transform: capitalize;
   font-size: 0.8rem;
   font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${(props) => props.theme.toast.txtBold};
+  color: #1b1b1b;
 `;
 
 const Msg = styled.p`
@@ -87,5 +85,5 @@ const Msg = styled.p`
   margin-top: 4px;
   color: #989898;
   line-height: 16px;
-  color: ${(props) => props.theme.toast.default};
+  color: #1b1b1b;
 `;

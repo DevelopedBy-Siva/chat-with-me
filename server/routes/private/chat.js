@@ -5,6 +5,7 @@ const GroupsCollection = require("../../db/model/Groups");
 const UserCollection = require("../../db/model/User");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const { nextAdminIndex } = require("../../utils/validation");
+const { decrypt } = require("../../utils/messages");
 
 const route = express.Router();
 
@@ -12,6 +13,7 @@ const route = express.Router();
  * Get Chats
  */
 route.get("/:chatId", async (req, resp) => {
+  const { email } = req.payload;
   const chatId = req.params.chatId;
 
   const data = await ChatCollection.findOne({ chatId });
@@ -19,7 +21,19 @@ route.get("/:chatId", async (req, resp) => {
     return resp
       .status(404)
       .send(new AppError(ErrorCodes.ERR_INVALID_REQUEST, "Chat not found"));
-  resp.status(200).send(data);
+
+  const contacts = data.contacts.filter((item) => item !== email);
+
+  const contactInfos = await UserCollection.find(
+    { email: { $in: [...contacts] } },
+    { avatarId: 1, name: 1, _id: 1, email: 1 }
+  );
+
+  let messages = data.messages;
+  messages.forEach((item) => {
+    item.message = decrypt(item.message);
+  });
+  resp.status(200).send({ ...data, messages, contactInfos });
 });
 
 /**

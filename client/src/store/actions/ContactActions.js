@@ -10,6 +10,8 @@ export const REMOVE_GROUP = "REMOVE_GROUP";
 export const CHANGE_NICKNAME = "CHANGE_NICKNAME";
 export const ADD_TO_GROUP = "ADD_TO_GROUP";
 export const KICK_FROM_GROUP = "KICK_FROM_GROUP";
+export const LAST_MSG_AND_TMSTP = "LAST_MSG_AND_TMSTP";
+export const IS_ONLINE = "IS_ONLINE";
 
 export const getContacts = (payload) => {
   return {
@@ -97,5 +99,29 @@ export const kickContactFromGroup = (chatId, contact) => {
       chatId,
       contact,
     },
+  };
+};
+
+export const updateLastMsgAndTmstp = (
+  chatId,
+  lastMsg,
+  lastMsgTstmp,
+  isPrivate = true
+) => {
+  return {
+    type: LAST_MSG_AND_TMSTP,
+    payload: {
+      lastMsg,
+      lastMsgTstmp,
+      chatId,
+      isPrivate,
+    },
+  };
+};
+
+export const updateOnlineContacts = (payload) => {
+  return {
+    type: IS_ONLINE,
+    payload,
   };
 };

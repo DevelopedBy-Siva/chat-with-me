@@ -77,9 +77,9 @@ function ContactsWrapper({ search, contacts, groups }) {
 
   const { active } = useSelector((state) => state.chats);
 
-  function handleContact(id, isPrivate) {
+  function handleContact(id, isPrivate, _id) {
     toggle_BW_Chats();
-    dispatch(setActive(id, isPrivate));
+    dispatch(setActive(id, isPrivate, _id));
   }
 
   function groupContacts(contacts = [], groups = []) {
@@ -129,6 +129,13 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
 
   const groupName = group === "group" ? "Groups" : "Direct Messages";
 
+  const onlineContacts = useSelector((state) => state.contacts.isOnline);
+
+  function isContactOnline(id) {
+    const index = onlineContacts.findIndex((i) => i === id);
+    return index === -1 ? false : true;
+  }
+
   return (
     <GroupContainer stretch={contactsToRender.keys.length === 1 ? 1 : 0}>
       {contactsToRender.keys && contactsToRender.keys.length > 1 && (
@@ -148,22 +155,22 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
             const {
               name,
               lastMsg,
-              isOnline,
               avatarId,
               lastMsgTstmp,
               nickname,
               icon,
               chatId,
               isPrivate,
+              _id,
             } = data;
             return (
               <Contact
                 className={active.val === chatId ? "active-contact" : ""}
-                onClick={() => handleContact(chatId, isPrivate)}
+                onClick={() => handleContact(chatId, isPrivate, _id)}
                 key={`V${index}`}
               >
                 <AvatarContainer>
-                  {isOnline === true && <ContactStatus />}
+                  {isContactOnline(_id) === true && <ContactStatus />}
                   {icon ? (
                     <Icon bg={icon.background}>{icon.letter}</Icon>
                   ) : (
@@ -205,6 +212,7 @@ const Container = styled.div`
   grid-column-start: 2;
   grid-row-end: 2;
   grid-column-end: 3;
+  min-height: 0;
   overflow: hidden;
   background: ${(props) => props.theme.bg.container};
   z-index: 99;

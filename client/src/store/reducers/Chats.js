@@ -1,5 +1,3 @@
-import moment from "moment";
-
 import axios from "../../api/axios";
 import {
   chatsError,
@@ -9,12 +7,11 @@ import {
   getChats,
   GET_CHATS,
   MSG_SEND_STATUS,
-  readyToSendMsg,
   READY_TO_SEND_MSG,
   SET_ACTIVE,
-  updateMessageSendStatus,
+  MSG_RECEIVED,
 } from "../actions/ChatActions";
-import { sortAndGroupMsgs } from "../../utils/DateTime";
+import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
 
 const initialState = {
@@ -22,6 +19,7 @@ const initialState = {
   active: {
     val: null,
     isPrivate: true,
+    _id: null,
   },
   chats: {},
   error: null,
@@ -64,17 +62,20 @@ const reducer = (state = initialState, action) => {
         active: {
           val: payload,
           isPrivate: action.isPrivate,
+          _id: action._id,
         },
       };
     case READY_TO_SEND_MSG:
       const { data: details, chatId, currentDate: today } = payload;
       const conversations = { ...state.chats };
       const chat = conversations[chatId];
+      const dateTime_LL = getDateTime_LL_format(today);
 
       if (chat && chat.messages) {
-        const key = chat.messages[today];
-        if (key) chat.messages[today].unshift({ ...details, isSent: false });
-        else chat.messages[today] = [{ ...details, isSent: false }];
+        const key = chat.messages[dateTime_LL];
+        if (key)
+          chat.messages[dateTime_LL].unshift({ ...details, isSent: false });
+        else chat.messages[dateTime_LL] = [{ ...details, isSent: false }];
       }
       return {
         ...state,
@@ -84,9 +85,10 @@ const reducer = (state = initialState, action) => {
       const { msgId, status, chatId: chat_id, dateGroup } = payload;
       const convs = { ...state.chats };
       const con = convs[chat_id];
+      const dateTime_LL_key = getDateTime_LL_format(dateGroup);
 
-      if (con && con.messages && con.messages[dateGroup]) {
-        con.messages[dateGroup].forEach((msg) => {
+      if (con && con.messages && con.messages[dateTime_LL_key]) {
+        con.messages[dateTime_LL_key].forEach((msg) => {
           if (msg.msgId === msgId) {
             msg.isSent = status;
             return;
@@ -96,6 +98,33 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: convs,
+      };
+    case MSG_RECEIVED:
+      const updatedChats = { ...state.chats };
+      const specific_updatedChat = updatedChats[action.chatId];
+
+      if (specific_updatedChat && specific_updatedChat.messages) {
+        const receivedMsg_dateTime_LL_key = getDateTime_LL_format(
+          payload.createdAt
+        );
+
+        const specific_updatedChatKey =
+          specific_updatedChat.messages[receivedMsg_dateTime_LL_key];
+
+        if (specific_updatedChatKey)
+          specific_updatedChat.messages[receivedMsg_dateTime_LL_key].unshift({
+            ...payload,
+            isSent: true,
+          });
+        else
+          specific_updatedChat.messages[receivedMsg_dateTime_LL_key] = [
+            { ...payload, isSent: true },
+          ];
+      }
+
+      return {
+        ...state,
+        chats: { ...updatedChats },
       };
     default:
       return state;
@@ -136,25 +165,4 @@ function dontFetchChats(state, id) {
   const chats = chatState.chats;
   if (!chats || !chats[id]) return false;
   return true;
-}
-
-export function sendMessage(data, chatId) {
-  const currentDate = moment().format("LL");
-  const { msgId } = data;
-
-  return (dispatch) => {
-    dispatch(readyToSendMsg(data, chatId, currentDate));
-    wait(() =>
-      dispatch(updateMessageSendStatus(chatId, msgId, true, currentDate))
-    );
-  };
-}
-
-function wait(callback) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      callback();
-      resolve();
-    }, 5000);
-  });
 }
