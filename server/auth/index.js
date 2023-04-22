@@ -78,6 +78,7 @@ const httpOnlyCookieProps = {
   httpOnly: true,
   path: "/",
   secure: true,
+  sameSite: "none",
   domain: config.get("app_domain"),
 };
 
