@@ -8,5 +8,6 @@
   "db": {
     "url": "DB_URL"
   },
-  "client_url": "CLIENT_URL"
+  "client_url": "CLIENT_URL",
+  "app_domain": "APP_DOMAIN"
 }
