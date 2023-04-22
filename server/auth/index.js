@@ -51,6 +51,7 @@ function authorizeJWT(req, res, next) {
     res.cookie(cookieNames.isLoggedInKey, "yes", {
       expires: getIsLoggedInExpiryDate(),
     });
+    res.setHeader("Access-Control-Allow-Origin", config.get("client_url"));
     next();
   } catch (ex) {
     res.clearCookie(cookieNames.jwtTokenKey);
