@@ -74,12 +74,13 @@ const cookieNames = {
 /**
  * HttpOnly Cookie props
  */
+const cookieDomain = new URL(config.get("client_url")).hostname;
 const httpOnlyCookieProps = {
   httpOnly: true,
   path: "/",
   sameSite: "none",
   secure: true,
-  domain: config.get("client_url"),
+  domain: cookieDomain,
 };
 
 /**
