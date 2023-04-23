@@ -9,6 +9,9 @@ import { getAvatar } from "../../assets/avatars";
 import { getContactNickname } from "../../utils/InputHandler";
 import { setActive } from "../../store/actions/ChatActions";
 import { toggle_BW_Chats } from "../../utils/Screens";
+import { AnimatePresence, motion } from "framer-motion";
+
+const audio = new Audio(popupsound);
 
 export default function MsgToastContainer({
   message = "...",
@@ -23,7 +26,7 @@ export default function MsgToastContainer({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    new Audio(popupsound).play();
+    audio.play();
   }, []);
 
   const { contacts } = useSelector((state) => state.contacts);
@@ -49,24 +52,32 @@ export default function MsgToastContainer({
   const nickname = getContactNickname(contacts, email);
 
   return (
-    <Container>
-      <Wrapper onClick={() => goToChat()}>
-        <ImageContainer>
-          <Img src={getAvatar(avatarId)} />
-        </ImageContainer>
-        <Details>
-          <From>{nickname ? nickname : sendBy}</From>
-          <Msg>{message}</Msg>
-        </Details>
-      </Wrapper>
-      <CloseBtn>
-        <IoClose className="icon" onClick={closeToast} />
-      </CloseBtn>
-    </Container>
+    <AnimatePresence key={toastProps.id}>
+      {toastProps.visible && (
+        <Container
+          initial={{ opacity: 0, y: -100 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ y: -100, opacity: 0 }}
+        >
+          <Wrapper onClick={() => goToChat()}>
+            <ImageContainer>
+              <Img src={getAvatar(avatarId)} />
+            </ImageContainer>
+            <Details>
+              <From>{nickname ? nickname : sendBy}</From>
+              <Msg>{message}</Msg>
+            </Details>
+          </Wrapper>
+          <CloseBtn>
+            <IoClose className="icon" onClick={closeToast} />
+          </CloseBtn>
+        </Container>
+      )}
+    </AnimatePresence>
   );
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   position: relative;
   width: 100%;
   max-width: 340px;
