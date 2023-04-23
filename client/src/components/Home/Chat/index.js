@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
 
 import SideBar from "../Chat/SideBarContainer";
 import ChatContainer from "../Chat/ChatContainer";
@@ -13,12 +12,14 @@ import {
   updateOnlineContacts,
 } from "../../../store/actions/ContactActions";
 import toast from "../../Toast";
-import MessageToastContainer from "../../Toast/MessageToastContainer";
+import ToastContainer from "../../Toast/MessageToast";
 
 export default function Chat() {
   const dispatch = useDispatch();
 
   const socket = useSocket();
+
+  const { active } = useSelector((state) => state.chats);
 
   useEffect(() => {
     if (!socket) return;
@@ -36,7 +37,16 @@ export default function Chat() {
         dispatch(
           updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
         );
-        toast.msg(data.message, senderName, senderAvatarId, senderEmail);
+        if (active.val !== chatId)
+          toast.msg(
+            data.message,
+            senderName,
+            senderAvatarId,
+            senderEmail,
+            chatId,
+            isPrivate,
+            data.sendBy
+          );
       }
     );
 
@@ -48,7 +58,7 @@ export default function Chat() {
       socket.off("receive-message");
       socket.off("is-online");
     };
-  }, [socket, dispatch]);
+  }, [socket, active, dispatch]);
 
   return (
     <React.Fragment>
@@ -57,7 +67,7 @@ export default function Chat() {
       </Suspense>
       <SideBar />
       <ChatContainer />
-      <MessageToastContainer />
+      <ToastContainer />
     </React.Fragment>
   );
 }
