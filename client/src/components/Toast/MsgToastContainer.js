@@ -11,29 +11,33 @@ import { setActive } from "../../store/actions/ChatActions";
 import { toggle_BW_Chats } from "../../utils/Screens";
 import { AnimatePresence, motion } from "framer-motion";
 
-const audio = new Audio(popupsound);
-
 export default function MsgToastContainer({
   message = "...",
   avatarId,
   sendBy = "unknown",
   email = "",
   chatId,
-  isPrivate = true,
+  isPrivate,
   toastProps = {},
   senderId,
 }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const audio = new Audio(popupsound);
     audio.play();
   }, []);
 
-  const { contacts } = useSelector((state) => state.contacts);
+  const { contacts, groups } = useSelector((state) => state.contacts);
   const { active } = useSelector((state) => state.chats);
 
   function goToChat() {
-    const isChatPresent = contacts.findIndex((item) => item.chatId === chatId);
+    let isChatPresent = -1;
+    if (isPrivate === true)
+      isChatPresent = contacts.findIndex((item) => item.chatId === chatId);
+    else if (isPrivate === false)
+      isChatPresent = groups.findIndex((item) => item.chatId === chatId);
+
     if (isChatPresent !== -1) {
       if (active.val !== chatId) {
         toggle_BW_Chats();

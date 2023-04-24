@@ -21,7 +21,7 @@ export function orderContactsDesc(searchInput, data) {
   return _.orderBy(
     filteredData,
     function (o) {
-      return o.lastMsgTstmp;
+      return new Date(o.lastMsgTstmp);
     },
     ["desc"]
   );
