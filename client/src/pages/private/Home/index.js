@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -8,31 +8,64 @@ import FullPageLoading from "../../../components/Loader/FullPage";
 import Navbar from "../../../components/Home/NavBar";
 import store from "../../../store";
 import { initializeContacts } from "../../../store/reducers/Contacts";
-import { SocketProvider } from "../../../context/SocketContext";
+import { SocketProvider, useSocket } from "../../../context/SocketContext";
+import toast from "../../../components/Toast";
+import AnotherDevice from "../../../components/Home/Info/AnotherDevice";
 
 export default function UserHome() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(initializeContacts());
-  }, [dispatch]);
-
   const { oneTimeInfo, details } = useSelector((state) => state.user);
 
   return (
     <Provider store={store}>
       <SocketProvider id={details._id}>
-        <Wrapper className="home-container">
-          <Container>
-            {oneTimeInfo && <OneTimeInfo />}
-            <Navbar />
-            <Suspense fallback={<FullPageLoading />}>
-              <Outlet />
-            </Suspense>
-          </Container>
-        </Wrapper>
+        <RenderHome oneTimeInfo={oneTimeInfo} />
       </SocketProvider>
     </Provider>
+  );
+}
+
+function RenderHome({ oneTimeInfo }) {
+  const [connected, setConnected] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const socket = useSocket();
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("connect", () => {
+      setConnected(true);
+    });
+
+    socket.on("connect_error", (error) => {
+      if (error.message === "ERR_DEVICE_ALREADY_CONNECTED") setConnected(false);
+      else {
+        toast.error(
+          "Something went wrong. The connection could not be established. Please try reloading the page or try again later",
+          toast.props.user.persist
+        );
+      }
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    if (connected) dispatch(initializeContacts());
+  }, [dispatch, connected]);
+
+  return connected === null ? (
+    <FullPageLoading />
+  ) : connected === false ? (
+    <AnotherDevice />
+  ) : (
+    <Wrapper className="home-container">
+      <Container>
+        {oneTimeInfo && <OneTimeInfo />}
+        <Navbar />
+        <Suspense fallback={<FullPageLoading />}>
+          <Outlet />
+        </Suspense>
+      </Container>
+    </Wrapper>
   );
 }
 

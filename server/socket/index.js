@@ -3,6 +3,7 @@ const config = require("config");
 
 const ChatCollection = require("../db/model/Chat");
 const { encrypt } = require("../utils/messages");
+const { AppError, ErrorCodes } = require("../exceptions");
 
 const JOINED_IDS = new Set();
 
@@ -14,6 +15,13 @@ module.exports.connect = (server) => {
     cors: {
       origin: config.get("client_url"),
     },
+  });
+
+  io.use((socket, next) => {
+    const id = socket.handshake.query.id;
+    const isOn = isUserAlreadyLoggedIn(id);
+    if (isOn) return next(new Error(ErrorCodes.ERR_DEVICE_ALREADY_CONNECTED));
+    next();
   });
 
   /**
@@ -65,9 +73,18 @@ module.exports.connect = (server) => {
   });
 
   function weAreOnline() {
-    io.emit("is-online", {
-      online: [...JOINED_IDS],
-    });
+    try {
+      let onlineIds = [];
+      JOINED_IDS.forEach((i) => {
+        if (i) {
+          const splitted = i.split("--__--");
+          if (splitted && splitted.length > 0) onlineIds.push(splitted[0]);
+        }
+      });
+      io.emit("is-online", {
+        online: onlineIds,
+      });
+    } catch (_) {}
   }
 };
 
@@ -80,4 +97,12 @@ async function saveMessageToChat(data, chatId) {
       $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
     }
   );
+}
+
+function isUserAlreadyLoggedIn(id) {
+  const ids = [...JOINED_IDS];
+  const lookup = id.split("--__--")[0];
+  const index = ids.findIndex((i) => i.startsWith(lookup));
+  if (index === -1) return false;
+  return true;
 }

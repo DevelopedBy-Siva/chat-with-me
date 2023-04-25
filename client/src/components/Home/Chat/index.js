@@ -23,6 +23,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (!socket) return;
+
     socket.on(
       "receive-message",
       ({
