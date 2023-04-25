@@ -27,6 +27,7 @@ import {
   getContactNickname,
   nicknameValidation,
 } from "../../../utils/InputHandler";
+import { toggle_BW_Chats } from "../../../utils/Screens";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -176,6 +177,7 @@ function InfoContainer({ setInfoVisible, active }) {
         default:
           break;
       }
+      toggle_BW_Chats(true);
     } catch (error) {
       const { message } = retrieveError(error);
       setShowModal({ show: false, toDo: null });
@@ -426,7 +428,7 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
     setKickMember({ ...kickMember, loading: true, show: false });
     await axios
       .put(`/chat/kick/${chatId}?contact=${contact}`)
-      .then(() => {
+      .then(({ data }) => {
         if (deleteGroup) {
           dispatch(setActive(null, true));
           dispatch(removeUserGroup(chatId));
@@ -435,6 +437,7 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
           dispatch(kickContactFromGroup(chatId, contact));
           toast.success("Contact removed successfully");
         }
+        if (data.status === "group") toggle_BW_Chats(true);
       })
       .catch(() => {
         toast.error("Something went wrong. Failed to remove the contact");
@@ -602,7 +605,6 @@ function AddNewMembers({
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
         const { message } = retrieveError(error);
         toast.error(message, toast.props.user.nonPersist);
       });

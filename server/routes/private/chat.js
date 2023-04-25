@@ -191,7 +191,7 @@ route.put("/kick/:chatId", async (req, resp) => {
       UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
     ]);
 
-    return resp.status(201).send();
+    return resp.status(201).send({ status: "group" });
   }
 
   await Promise.all([
@@ -206,7 +206,7 @@ route.put("/kick/:chatId", async (req, resp) => {
     ),
   ]);
 
-  resp.status(201).send();
+  resp.status(200).send();
 });
 
 module.exports = route;
