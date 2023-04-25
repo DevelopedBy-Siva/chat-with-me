@@ -35,7 +35,7 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   cursor: auto;
-  padding: 3px 12px;
+  padding: 3px 18px 3px 12px;
 `;
 
 const Icon = styled.div`

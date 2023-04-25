@@ -15,9 +15,10 @@ const notify = (key, message, props = {}) => {
     autoHideDuration: 5000,
     style: {
       background: toastBg[key],
-      width: "100%",
+      width: "fit-content",
+      minWidth: "0",
       maxWidth: "280px",
-      borderRadius: "8px",
+      borderRadius: "5px",
     },
     anchorOrigin: {
       vertical: "top",
