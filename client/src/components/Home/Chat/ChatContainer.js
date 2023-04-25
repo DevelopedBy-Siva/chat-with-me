@@ -64,6 +64,26 @@ export default function ChatContainer() {
     return response;
   }
 
+  function isBlocked() {
+    const chat = chats[active.val];
+    if (chat && chat.blockedBy && chat.blockedBy.length > 0) {
+      const blockedBy = chat.blockedBy;
+      let msg;
+      if (details.mail === blockedBy || blockedBy === "both")
+        msg = "You have blocked the user. Please unblock to continue";
+      else
+        msg = "Sorry, you have been blocked by the user. Cannot chat right now";
+      return {
+        msg,
+        status: true,
+      };
+    }
+    return {
+      msg: undefined,
+      status: false,
+    };
+  }
+
   return (
     <Container>
       <MessageBoxCover />
@@ -87,6 +107,11 @@ export default function ChatContainer() {
                         opacity: 0.8,
                       }}
                     />
+                  )}
+                  {isBlocked().status ? (
+                    <IsBlockedMessage>{isBlocked().msg}</IsBlockedMessage>
+                  ) : (
+                    ""
                   )}
                   <MessageWrapper ref={chatContainerRef}>
                     {!error &&
@@ -126,6 +151,7 @@ export default function ChatContainer() {
             <InputContainer
               isPrivate={active.isPrivate}
               chatContainerRef={chatContainerRef}
+              isBlocked={isBlocked().status}
             />
           </SubContainer>
           <ReceiverInfoContainer
@@ -248,4 +274,19 @@ const BreakTimestamp = styled.span`
   font-weight: 400;
   min-width: 70px;
   text-align: center;
+`;
+
+const IsBlockedMessage = styled.p`
+  position: absolute;
+  top: 0;
+  text-align: center;
+  background: ${(props) => props.theme.bg.container};
+  color: ${(props) => props.theme.txt.main};
+  width: 100%;
+  z-index: 99;
+  font-size: 0.7rem;
+  padding: 8px;
+  border: 1px solid ${(props) => props.theme.bg.app};
+  border-bottom: 0;
+  border-top: 0;
 `;

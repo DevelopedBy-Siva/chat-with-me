@@ -321,8 +321,8 @@ route.put("/block", async (req, resp) => {
     if (chat.blockedBy) chat.blockedBy = "both";
     else chat.blockedBy = email;
   }
-  await chat.save();
-  resp.status(201).send();
+  const response = await chat.save();
+  resp.status(200).send({ blockedBy: response.blockedBy });
 });
 
 /**
@@ -359,8 +359,8 @@ route.put("/unblock", async (req, resp) => {
       chat.blockedBy = chat.contacts[otherContactIndex];
     } else chat.blockedBy = undefined;
   }
-  await chat.save();
-  resp.status(201).send();
+  const response = await chat.save();
+  resp.status(200).send({ blockedBy: response.blockedBy });
 });
 
 /**

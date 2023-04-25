@@ -12,7 +12,11 @@ import {
 } from "../../../store/actions/ChatActions";
 import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
 
-export default function InputContainer({ chatContainerRef, isPrivate }) {
+export default function InputContainer({
+  chatContainerRef,
+  isPrivate,
+  isBlocked,
+}) {
   const msgInputRef = useRef(null);
   const formRef = useRef(null);
 
@@ -29,6 +33,9 @@ export default function InputContainer({ chatContainerRef, isPrivate }) {
 
   function submitMessage(e) {
     e.preventDefault();
+
+    if (loading || isBlocked) return;
+
     const msg = msgInputRef.current.value;
     if (!msg || msg.trim().length === 0) return;
 
@@ -88,17 +95,20 @@ export default function InputContainer({ chatContainerRef, isPrivate }) {
       submitMessage(e);
     }
   }
-
   return (
     <Container ref={formRef} onSubmit={submitMessage}>
-      <InputWrapper isLoading={loading}>
+      <InputWrapper
+        className={`${loading ? "isloading" : ""} ${
+          isBlocked ? "not-allowed" : ""
+        }`}
+      >
         <MsgInput
           ref={msgInputRef}
           rows={1}
           onInput={handleResize}
           onKeyDown={handleKeyDown}
           placeholder="Type something here..."
-          disabled={loading}
+          disabled={loading || isBlocked}
         />
       </InputWrapper>
       <MessageOprs>
@@ -131,7 +141,15 @@ const InputWrapper = styled.label`
   max-height: 120px;
   display: flex;
   align-items: center;
-  cursor: ${(props) => (props.isLoading ? "wait" : "text")};
+  cursor: text;
+
+  &.isloading {
+    cursor: wait;
+  }
+
+  &.not-allowed {
+    cursor: not-allowed;
+  }
 
   @media (max-width: 920px) {
     width: calc(100% - 65px);
@@ -151,6 +169,7 @@ const MsgInput = styled.textarea`
   font-size: 0.8rem;
   height: 100%;
   max-height: 80px;
+  cursor: inherit;
 
   &::placeholder {
     color: ${(props) => props.theme.txt.sub};
@@ -164,10 +183,6 @@ const MsgInput = styled.textarea`
 
   &::-ms-input-placeholder {
     color: ${(props) => props.theme.txt.sub};
-  }
-
-  &:disabled {
-    cursor: wait;
   }
 `;
 

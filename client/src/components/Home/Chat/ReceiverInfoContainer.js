@@ -13,7 +13,7 @@ import Modal from "../Modal/SubModal";
 import retrieveError from "../../../api/ExceptionHandler";
 import LoadingSpinner from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
-import { setActive } from "../../../store/actions/ChatActions";
+import { setActive, setBlockedBy } from "../../../store/actions/ChatActions";
 import {
   addContactToGroup,
   blockUserContact,
@@ -157,9 +157,10 @@ function InfoContainer({ setInfoVisible, active }) {
 
           break;
         case "block-user":
-          await axios.put(`/user/block?email=${email}`).then(() => {
+          await axios.put(`/user/block?email=${email}`).then(({ data }) => {
             dispatch(setActive(null, true));
             dispatch(blockUserContact(email));
+            dispatch(setBlockedBy(chatId, data.blockedBy));
             toast.success("Contact blocked successfully");
           });
 

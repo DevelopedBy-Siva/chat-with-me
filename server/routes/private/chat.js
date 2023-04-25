@@ -33,7 +33,9 @@ route.get("/:chatId", async (req, resp) => {
   messages.forEach((item) => {
     item.message = decrypt(item.message);
   });
-  resp.status(200).send({ ...data, messages, contactInfos });
+  resp
+    .status(200)
+    .send({ ...data, messages, contactInfos, blockedBy: data.blockedBy });
 });
 
 /**

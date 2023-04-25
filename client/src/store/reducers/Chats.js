@@ -10,6 +10,7 @@ import {
   READY_TO_SEND_MSG,
   SET_ACTIVE,
   MSG_RECEIVED,
+  SET_BLOCKED_BY,
 } from "../actions/ChatActions";
 import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
@@ -125,6 +126,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: { ...updatedChats },
+      };
+    case SET_BLOCKED_BY:
+      const updateBlockedChats = { ...state.chats };
+      const chatToSetBlocked = updateBlockedChats[action.chatId];
+      if (chatToSetBlocked) chatToSetBlocked.blockedBy = action.blockedBy;
+      return {
+        ...state,
+        chats: { ...updateBlockedChats },
       };
     default:
       return state;
