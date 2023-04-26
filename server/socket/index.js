@@ -92,7 +92,7 @@ module.exports.connect = (server) => {
 async function saveMessageToChat(data, chatId) {
   const encryptedMessage = encrypt(data.message);
   return await ChatCollection.updateOne(
-    { chatId },
+    { chatId, blockedBy: { $exists: false } },
     {
       $push: { messages: { ...data, message: encryptedMessage } },
       $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
