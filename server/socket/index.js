@@ -52,16 +52,17 @@ module.exports.connect = (server) => {
       ) => {
         const messageSaved = await saveMessageToChat(data, chatId);
         if (messageSaved.modifiedCount > 0) {
-          recipients.forEach((to) =>
-            socket.broadcast.to(to).emit("receive-message", {
+          recipients.forEach((to) => {
+            const broadcastId = getConnectionId(to);
+            socket.broadcast.to(broadcastId).emit("receive-message", {
               data,
               chatId,
               isPrivate,
               senderName,
               senderAvatarId,
               senderEmail,
-            })
-          );
+            });
+          });
           callback(true);
         } else callback(false);
       }
@@ -105,4 +106,11 @@ function isUserAlreadyLoggedIn(id) {
   const index = ids.findIndex((i) => i.startsWith(lookup));
   if (index === -1) return false;
   return true;
+}
+
+function getConnectionId(id) {
+  const ids = [...JOINED_IDS];
+  const index = ids.findIndex((i) => i.startsWith(id));
+  if (index === -1) return id;
+  return ids[index];
 }

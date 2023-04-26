@@ -40,6 +40,7 @@ const InfoContainer = styled.div`
 
 const Info = styled.p`
   color: ${(props) => props.theme.txt.main};
+  text-align: center;
 `;
 
 const TryAgainBtn = styled.button`
