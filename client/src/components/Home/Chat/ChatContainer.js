@@ -70,9 +70,10 @@ export default function ChatContainer() {
       const blockedBy = chat.blockedBy;
       let msg;
       if (details.mail === blockedBy || blockedBy === "both")
-        msg = "You have blocked the user. Please unblock to continue";
+        msg = "You have blocked the user. Please unblock to continue.";
       else
-        msg = "Sorry, you have been blocked by the user. Cannot chat right now";
+        msg =
+          "Sorry, you have been blocked by the user. Cannot chat right now.";
       return {
         msg,
         status: true,
@@ -82,6 +83,14 @@ export default function ChatContainer() {
       msg: undefined,
       status: false,
     };
+  }
+
+  function showInContactInfo() {
+    const index = contacts.findIndex((i) => i.chatId === active.val);
+    if (index === -1) return false;
+    const inContact = contacts[index].inContact;
+    if (inContact) return false;
+    return true;
   }
 
   return (
@@ -108,11 +117,19 @@ export default function ChatContainer() {
                       }}
                     />
                   )}
-                  {isBlocked().status ? (
-                    <IsBlockedMessage>{isBlocked().msg}</IsBlockedMessage>
-                  ) : (
-                    ""
-                  )}
+                  <AdditionalInfoBox>
+                    {showInContactInfo() && (
+                      <AddThisContact>
+                        <AddThisContactInfo>
+                          This user is not in your contacts.
+                        </AddThisContactInfo>
+                        <AddThisContactBtn>Add to contact?</AddThisContactBtn>
+                      </AddThisContact>
+                    )}
+                    {isBlocked().status && (
+                      <IsBlockedMessage>{isBlocked().msg}</IsBlockedMessage>
+                    )}
+                  </AdditionalInfoBox>
                   <MessageWrapper ref={chatContainerRef}>
                     {!error &&
                       getChats().keys.map((tmstp, c_index) => {
@@ -276,17 +293,50 @@ const BreakTimestamp = styled.span`
   text-align: center;
 `;
 
-const IsBlockedMessage = styled.p`
+const AdditionalInfoBox = styled.div`
   position: absolute;
   top: 0;
+  width: 100%;
+  z-index: 99;
+`;
+
+const IsBlockedMessage = styled.p`
   text-align: center;
   background: ${(props) => props.theme.bg.container};
   color: ${(props) => props.theme.txt.main};
-  width: 100%;
-  z-index: 99;
   font-size: 0.7rem;
   padding: 8px;
   border: 1px solid ${(props) => props.theme.bg.app};
   border-bottom: 0;
   border-top: 0;
+  font-weight: 400;
+`;
+
+const AddThisContact = styled.div`
+  display: flex;
+  background: #085ed4;
+  padding: 8px;
+  justify-content: center;
+  align-items: flex-end;
+  border: 1px solid ${(props) => props.theme.bg.app};
+  border-bottom: 0;
+  border-top: 0;
+`;
+
+const AddThisContactInfo = styled.p`
+  font-size: 0.7rem;
+  color: #fff;
+  font-weight: 400;
+`;
+
+const AddThisContactBtn = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 0.7rem;
+  color: #fff;
+  border-bottom: 0.5px solid #fff;
+  margin-left: 5px;
+  font-weight: 400;
+  cursor: pointer;
 `;

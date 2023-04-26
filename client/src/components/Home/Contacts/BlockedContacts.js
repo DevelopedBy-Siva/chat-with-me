@@ -55,7 +55,7 @@ export default function BlockedContacts({ inProgress, setInProgress }) {
           </ContactAvatarContainer>
           <ContactNameContainer>
             <ContactName>{name}</ContactName>
-            <ContactNickname>{nickname}</ContactNickname>
+            {nickname && <ContactNickname>{nickname}</ContactNickname>}
           </ContactNameContainer>
         </ContactDetails>
         <OptionBtnContainer>
