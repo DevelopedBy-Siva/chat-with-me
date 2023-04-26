@@ -105,6 +105,7 @@ const reducer = (state = initialState, action) => {
       const specific_updatedChat = updatedChats[action.chatId];
 
       if (specific_updatedChat && specific_updatedChat.messages) {
+        specific_updatedChat.blockedBy = undefined;
         const receivedMsg_dateTime_LL_key = getDateTime_LL_format(
           payload.createdAt
         );

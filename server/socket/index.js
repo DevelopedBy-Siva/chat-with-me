@@ -76,7 +76,7 @@ module.exports.connect = (server) => {
   function weAreOnline() {
     try {
       let onlineIds = [];
-      JOINED_IDS.forEach((i) => {
+      [...JOINED_IDS].forEach((i) => {
         if (i) {
           const splitted = i.split("--__--");
           if (splitted && splitted.length > 0) onlineIds.push(splitted[0]);
