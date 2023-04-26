@@ -2,8 +2,10 @@ const { Server } = require("socket.io");
 const config = require("config");
 
 const ChatCollection = require("../db/model/Chat");
+const UserCollection = require("../db/model/User");
 const { encrypt } = require("../utils/messages");
-const { AppError, ErrorCodes } = require("../exceptions");
+const { ErrorCodes } = require("../exceptions");
+const logger = require("../logger");
 
 const JOINED_IDS = new Set();
 
@@ -50,21 +52,47 @@ module.exports.connect = (server) => {
         },
         callback
       ) => {
-        const messageSaved = await saveMessageToChat(data, chatId);
-        if (messageSaved.modifiedCount > 0) {
-          recipients.forEach((to) => {
-            const broadcastId = getConnectionId(to);
-            socket.broadcast.to(broadcastId).emit("receive-message", {
-              data,
-              chatId,
-              isPrivate,
-              senderName,
-              senderAvatarId,
-              senderEmail,
+        try {
+          // Check contact existed or not, if not add it
+          const exists = await addContactIfNotExists(
+            isPrivate,
+            recipients,
+            senderEmail,
+            chatId
+          );
+
+          // Save message to chat
+          const messageSaved = await saveMessageToChat(data, chatId);
+
+          if (messageSaved.modifiedCount > 0) {
+            // If receiver doesn't have this contact, send it
+            let newContact;
+            if (!exists) {
+              newContact = await getUserDetails(senderEmail);
+              if (newContact) {
+                newContact.chatId = chatId;
+                newContact.lastMsg = data.message;
+                newContact.lastMsgTstmp = data.createdAt;
+              }
+            }
+            recipients.forEach((to) => {
+              const broadcastId = getConnectionId(to);
+              socket.broadcast.to(broadcastId).emit("receive-message", {
+                data,
+                chatId,
+                isPrivate,
+                senderName,
+                senderAvatarId,
+                senderEmail,
+                newContact,
+              });
             });
-          });
-          callback(true);
-        } else callback(false);
+            callback(true);
+          } else callback(false);
+        } catch (ex) {
+          logger.error(ex);
+          callback(false);
+        }
       }
     );
     socket.on("disconnect", () => {
@@ -88,6 +116,33 @@ module.exports.connect = (server) => {
     } catch (_) {}
   }
 };
+
+async function addContactIfNotExists(
+  isPrivate,
+  recipients = [],
+  senderEmail,
+  chatId
+) {
+  if (isPrivate && recipients.length === 1) {
+    const user = await UserCollection.findOne({ _id: recipients[0] });
+    if (user && senderEmail) {
+      const contactFound = user.contacts.findIndex(
+        (i) => i.email === senderEmail
+      );
+      if (contactFound === -1) {
+        user.contacts.push({
+          email: senderEmail,
+          nickname: "",
+          inContact: false,
+          chatId,
+        });
+        await user.save();
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
 async function saveMessageToChat(data, chatId) {
   const encryptedMessage = encrypt(data.message);
@@ -113,4 +168,20 @@ function getConnectionId(id) {
   const index = ids.findIndex((i) => i.startsWith(id));
   if (index === -1) return id;
   return ids[index];
+}
+
+async function getUserDetails(email) {
+  const user = await UserCollection.findOne({ email });
+  if (!user) return undefined;
+  return {
+    _id: user._id,
+    email: user.email,
+    description: user.description,
+    name: user.name,
+    avatarId: user.avatarId,
+    nickname: "",
+    isBlocked: false,
+    isPrivate: true,
+    inContact: false,
+  };
 }

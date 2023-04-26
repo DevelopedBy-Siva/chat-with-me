@@ -46,7 +46,10 @@ const reducer = (state = initialState, action) => {
       };
     case ADD_NEW_CONTACT:
       const newContacts = [...state.contacts];
-      newContacts.unshift(payload);
+      const contactExists = newContacts.findIndex(
+        (i) => i.email === payload.email
+      );
+      if (contactExists === -1) newContacts.unshift(payload);
       return {
         ...state,
         contacts: [...newContacts],

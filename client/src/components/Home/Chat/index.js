@@ -8,6 +8,7 @@ import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
 import { updateMessageReceived } from "../../../store/actions/ChatActions";
 import {
+  addNewContact,
   updateLastMsgAndTmstp,
   updateOnlineContacts,
 } from "../../../store/actions/ContactActions";
@@ -33,7 +34,10 @@ export default function Chat() {
         senderName,
         senderAvatarId,
         senderEmail,
+        newContact,
       }) => {
+        if (newContact) dispatch(addNewContact(newContact));
+
         dispatch(updateMessageReceived(chatId, data));
         dispatch(
           updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)

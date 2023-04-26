@@ -28,7 +28,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
 
   function filterContacts() {
     if (!contacts || contacts.length === 0) return [];
-    const data = contacts.filter((val) => !val.isBlocked);
+    const data = contacts.filter((val) => !val.isBlocked && val.inContact);
     return sortContactsByAsc(data);
   }
 

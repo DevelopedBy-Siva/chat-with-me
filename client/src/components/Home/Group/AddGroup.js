@@ -211,7 +211,7 @@ export default function AddGroup({ close }) {
                 </b>
               </PickMsg>
               {contacts
-                .filter((item) => !item.isBlocked)
+                .filter((item) => !item.isBlocked && item.inContact)
                 .map((item, index) => (
                   <MemberSelect
                     disabled={isLoading}

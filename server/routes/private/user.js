@@ -408,6 +408,7 @@ route.get("/contacts", async (req, resp) => {
         isBlocked: found.isBlocked,
         chatId: found.chatId,
         isPrivate: true,
+        inContact: found.inContact,
       });
     }
   }
