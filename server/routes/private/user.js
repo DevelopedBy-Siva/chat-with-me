@@ -215,6 +215,7 @@ route.post("/add-contact", async (req, resp) => {
     isPrivate: true,
     lastMsg,
     lastMsgTstmp,
+    inContact: true,
   });
 });
 

@@ -95,8 +95,8 @@ export default function ChatContainer() {
     const index = contacts.findIndex((i) => i.chatId === active.val);
     if (index === -1) return false;
     const inContact = contacts[index].inContact;
-    if (inContact) return false;
-    return true;
+    if (inContact === false) return true;
+    return false;
   }
 
   return (
@@ -309,6 +309,8 @@ const MessageBoxCover = styled.div`
   left: 0;
   right: 0;
   background-image: url(${CHAT_COVER});
+  background-repeat: repeat;
+  background-size: contain;
   object-fit: cover;
   opacity: 0.4;
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
@@ -316,6 +318,10 @@ const MessageBoxCover = styled.div`
   transform: translateZ(0);
   pointer-events: none;
   z-index: 1;
+
+  @media screen and (max-width: 680px) {
+    background-size: cover;
+  }
 `;
 
 const MessageWrapper = styled.div`
