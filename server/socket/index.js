@@ -70,7 +70,9 @@ module.exports.connect = (server) => {
           );
 
           // Save message to chat
-          const messageSaved = await saveMessageToChat(data, chatId);
+          const messageSaved = await saveMessageToChat(data, chatId, [
+            senderEmail,
+          ]);
 
           if (messageSaved.modifiedCount > 0) {
             // If receiver doesn't have this contact, send it
@@ -168,10 +170,10 @@ async function addContactIfNotExists(
   return true;
 }
 
-async function saveMessageToChat(data, chatId) {
+async function saveMessageToChat(data, chatId, lookup = []) {
   const encryptedMessage = encrypt(data.message);
   return await ChatCollection.updateOne(
-    { chatId, blockedBy: { $exists: false } },
+    { chatId, blockedBy: { $exists: false }, contacts: { $in: lookup } },
     {
       $push: { messages: { ...data, message: encryptedMessage } },
       $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
