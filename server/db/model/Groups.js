@@ -7,6 +7,10 @@ const MemberType = {
     trim: true,
     lowercase: true,
   },
+  ref: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
 };
 
 const IconType = {

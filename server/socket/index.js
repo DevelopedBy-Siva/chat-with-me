@@ -3,6 +3,7 @@ const config = require("config");
 
 const ChatCollection = require("../db/model/Chat");
 const UserCollection = require("../db/model/User");
+const GroupsCollection = require("../db/model/Groups");
 const { encrypt } = require("../utils/messages");
 const { ErrorCodes } = require("../exceptions");
 const logger = require("../logger");
@@ -82,6 +83,22 @@ module.exports.connect = (server) => {
                 newContact.lastMsgTstmp = data.createdAt;
               }
             }
+
+            if (!isPrivate) {
+              try {
+                const chat = await GroupsCollection.findOne(
+                  { chatId },
+                  { members: 1 }
+                );
+                if (!chat) return callback(false);
+                recipients = chat.members
+                  .filter((i) => i.email !== senderEmail)
+                  .map((i) => i.ref);
+              } catch (_) {
+                recipients = [];
+              }
+            }
+
             recipients.forEach((to) => {
               const broadcastId = getConnectionId(to);
               socket.broadcast.to(broadcastId).emit("receive-message", {

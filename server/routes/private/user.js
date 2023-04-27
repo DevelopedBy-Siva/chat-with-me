@@ -512,6 +512,7 @@ route.post("/create-group", async (req, resp) => {
   const membersToStore = userData.map((i) => {
     return {
       email: i.email,
+      ref: i._id,
     };
   });
 

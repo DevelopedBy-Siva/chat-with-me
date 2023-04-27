@@ -143,7 +143,15 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
   const isInTheContact = user.contacts.some(
     (item) => item.email === contactToAdd
   );
-  if (!isInTheContact)
+
+  const contactToAddDetails = await UserCollection.findOne(
+    {
+      email: contactToAdd,
+    },
+    { _id: 1 }
+  );
+
+  if (!isInTheContact || !contactToAddDetails)
     return resp
       .status(404)
       .send(
@@ -155,7 +163,7 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
     { $push: { groups: { ref: data._id } } }
   );
   if (isAdded.modifiedCount > 0) {
-    data.members.push({ email: contactToAdd });
+    data.members.push({ email: contactToAdd, ref: contactToAddDetails._id });
     await Promise.all([
       data.save(),
       ChatCollection.updateOne(
