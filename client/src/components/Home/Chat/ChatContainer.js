@@ -12,6 +12,7 @@ import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
 import {
+  getContactAvatarById,
   getContactNicknameById,
   nicknameValidation,
 } from "../../../utils/InputHandler";
@@ -145,6 +146,10 @@ export default function ChatContainer() {
                                 createdAt={msg.createdAt}
                                 contactInfo={getContactDetails(msg.sendBy)}
                                 isPrivate={active.isPrivate}
+                                avatar={getContactAvatarById(
+                                  contacts,
+                                  msg.sendBy
+                                )}
                                 nickname={getContactNicknameById(
                                   contacts,
                                   msg.sendBy

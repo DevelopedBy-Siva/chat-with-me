@@ -170,3 +170,9 @@ export function getContactNicknameById(contacts = [], id) {
   if (index === -1) return null;
   return contacts[index].nickname;
 }
+
+export function getContactAvatarById(contacts = [], id) {
+  const index = contacts.findIndex((item) => item._id === id);
+  if (index === -1) return null;
+  return contacts[index].avatarId;
+}

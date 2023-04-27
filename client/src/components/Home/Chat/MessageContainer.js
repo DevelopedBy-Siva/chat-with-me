@@ -16,6 +16,7 @@ export default function MessageContainer({
   contactInfo = {},
   isPrivate,
   nickname,
+  avatar,
 }) {
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
@@ -35,7 +36,7 @@ export default function MessageContainer({
     <Container as={isSender() ? MessageSender : MessageReceiver}>
       <ContentWrapper className={avatarPosition}>
         <UserAvatarContainer className={avatarPosition}>
-          <UserAvatar src={getAvatar(contactInfo.avatarId)} />
+          <UserAvatar src={getAvatar(avatar ? avatar : contactInfo.avatarId)} />
         </UserAvatarContainer>
         <Wrapper>
           <MsgTimestamp>{getMessageTime(createdAt)}</MsgTimestamp>
