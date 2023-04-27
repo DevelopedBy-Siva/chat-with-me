@@ -12,6 +12,7 @@ const GroupsCollection = require("../../db/model/Groups");
 const ChatCollection = require("../../db/model/Chat");
 const { hash, login, cookies, jwtToken } = require("../../auth");
 const { decrypt } = require("../../utils/messages");
+const { getSocketServer, getConnectionId } = require("../../socket");
 
 const route = express.Router();
 
@@ -214,6 +215,7 @@ route.post("/add-contact", async (req, resp) => {
     isPrivate: true,
     lastMsg,
     lastMsgTstmp,
+    inContact: true,
   });
 });
 
@@ -252,6 +254,7 @@ route.put("/contact/nickname", async (req, resp) => {
       );
 
   data.contacts[index].nickname = nickname;
+  data.contacts[index].inContact = true;
   await data.save();
 
   resp.status(201).send();
@@ -321,8 +324,8 @@ route.put("/block", async (req, resp) => {
     if (chat.blockedBy) chat.blockedBy = "both";
     else chat.blockedBy = email;
   }
-  await chat.save();
-  resp.status(201).send();
+  const response = await chat.save();
+  resp.status(200).send({ blockedBy: response.blockedBy });
 });
 
 /**
@@ -359,8 +362,8 @@ route.put("/unblock", async (req, resp) => {
       chat.blockedBy = chat.contacts[otherContactIndex];
     } else chat.blockedBy = undefined;
   }
-  await chat.save();
-  resp.status(201).send();
+  const response = await chat.save();
+  resp.status(200).send({ blockedBy: response.blockedBy });
 });
 
 /**
@@ -408,6 +411,7 @@ route.get("/contacts", async (req, resp) => {
         isBlocked: found.isBlocked,
         chatId: found.chatId,
         isPrivate: true,
+        inContact: found.inContact,
       });
     }
   }
@@ -509,6 +513,7 @@ route.post("/create-group", async (req, resp) => {
   const membersToStore = userData.map((i) => {
     return {
       email: i.email,
+      ref: i._id,
     };
   });
 
@@ -542,6 +547,7 @@ route.post("/create-group", async (req, resp) => {
   await chatDocument.save();
 
   let details = [];
+  let connectionIds = [];
   userData.forEach((i) => {
     if (i.email !== email) {
       let data = {
@@ -550,6 +556,7 @@ route.post("/create-group", async (req, resp) => {
         email: i.email,
         avatarId: i.avatarId,
       };
+      connectionIds.push(getConnectionId(i._id));
       const exists = currentUserContacts.findIndex(
         (cur) => cur.email === i.email
       );
@@ -558,7 +565,7 @@ route.post("/create-group", async (req, resp) => {
     }
   });
 
-  resp.status(200).send({
+  const toSend = {
     _id: data._id,
     name: data.name,
     admin: data.admin,
@@ -568,7 +575,14 @@ route.post("/create-group", async (req, resp) => {
     chatId: data.chatId,
     members: details,
     isPrivate: false,
-  });
+  };
+
+  try {
+    const socket = getSocketServer();
+    if (socket) socket.to([...connectionIds]).emit("new-group", toSend);
+  } catch (_) {}
+
+  resp.status(200).send(toSend);
 });
 
 /**

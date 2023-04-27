@@ -6,6 +6,7 @@ const UserCollection = require("../../db/model/User");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const { nextAdminIndex } = require("../../utils/validation");
 const { decrypt } = require("../../utils/messages");
+const { getSocketServer, getConnectionId } = require("../../socket");
 
 const route = express.Router();
 
@@ -33,7 +34,9 @@ route.get("/:chatId", async (req, resp) => {
   messages.forEach((item) => {
     item.message = decrypt(item.message);
   });
-  resp.status(200).send({ ...data, messages, contactInfos });
+  resp
+    .status(200)
+    .send({ ...data, messages, contactInfos, blockedBy: data.blockedBy });
 });
 
 /**
@@ -140,7 +143,15 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
   const isInTheContact = user.contacts.some(
     (item) => item.email === contactToAdd
   );
-  if (!isInTheContact)
+
+  const contactToAddDetails = await UserCollection.findOne(
+    {
+      email: contactToAdd,
+    },
+    { _id: 1 }
+  );
+
+  if (!isInTheContact || !contactToAddDetails)
     return resp
       .status(404)
       .send(
@@ -152,7 +163,7 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
     { $push: { groups: { ref: data._id } } }
   );
   if (isAdded.modifiedCount > 0) {
-    data.members.push({ email: contactToAdd });
+    data.members.push({ email: contactToAdd, ref: contactToAddDetails._id });
     await Promise.all([
       data.save(),
       ChatCollection.updateOne(
@@ -160,6 +171,43 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
         { $push: { contacts: contactToAdd } }
       ),
     ]);
+
+    try {
+      const groupMembers = data.members.map((i) => i.email);
+      const userData = await UserCollection.find({
+        email: { $in: groupMembers },
+      });
+
+      let details = [];
+      let connectionId;
+      userData.forEach((i) => {
+        if (i.email === contactToAdd) connectionId = i._id;
+        else {
+          let data = {
+            nickname: null,
+            name: i.name,
+            email: i.email,
+            avatarId: i.avatarId,
+          };
+          details.push(data);
+        }
+      });
+
+      const toSend = {
+        _id: data._id,
+        name: data.name,
+        admin: data.admin,
+        lastMsg: data.lastMsg,
+        lastMsgTstmp: data.lastMsgTstmp,
+        icon: data.icon,
+        chatId: data.chatId,
+        members: details,
+        isPrivate: false,
+      };
+      const socket = getSocketServer();
+      if (socket)
+        socket.to(getConnectionId(connectionId)).emit("new-group", toSend);
+    } catch (_) {}
   }
 
   return resp.status(201).send();
@@ -189,7 +237,7 @@ route.put("/kick/:chatId", async (req, resp) => {
       UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
     ]);
 
-    return resp.status(201).send();
+    return resp.status(201).send({ status: "group" });
   }
 
   await Promise.all([
@@ -204,7 +252,7 @@ route.put("/kick/:chatId", async (req, resp) => {
     ),
   ]);
 
-  resp.status(201).send();
+  resp.status(200).send();
 });
 
 module.exports = route;

@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
 
 import SideBar from "../Chat/SideBarContainer";
 import ChatContainer from "../Chat/ChatContainer";
@@ -9,19 +8,24 @@ import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
 import { updateMessageReceived } from "../../../store/actions/ChatActions";
 import {
+  addNewContact,
+  createUserGroup,
   updateLastMsgAndTmstp,
   updateOnlineContacts,
 } from "../../../store/actions/ContactActions";
 import toast from "../../Toast";
-import MessageToastContainer from "../../Toast/MessageToastContainer";
+import ToastContainer from "../../Toast/MessageToast";
 
 export default function Chat() {
   const dispatch = useDispatch();
 
   const socket = useSocket();
 
+  const { active } = useSelector((state) => state.chats);
+
   useEffect(() => {
     if (!socket) return;
+
     socket.on(
       "receive-message",
       ({
@@ -31,12 +35,24 @@ export default function Chat() {
         senderName,
         senderAvatarId,
         senderEmail,
+        newContact,
       }) => {
+        if (newContact) dispatch(addNewContact(newContact));
+
         dispatch(updateMessageReceived(chatId, data));
         dispatch(
           updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
         );
-        toast.msg(data.message, senderName, senderAvatarId, senderEmail);
+        if (active.val !== chatId && !data.isNotification)
+          toast.msg(
+            data.message,
+            senderName,
+            senderAvatarId,
+            senderEmail,
+            chatId,
+            isPrivate,
+            data.sendBy
+          );
       }
     );
 
@@ -44,11 +60,16 @@ export default function Chat() {
       dispatch(updateOnlineContacts(online));
     });
 
+    socket.on("new-group", (data = {}) => {
+      dispatch(createUserGroup(data));
+    });
+
     return () => {
       socket.off("receive-message");
       socket.off("is-online");
+      socket.off("new-group");
     };
-  }, [socket, dispatch]);
+  }, [socket, active, dispatch]);
 
   return (
     <React.Fragment>
@@ -57,7 +78,7 @@ export default function Chat() {
       </Suspense>
       <SideBar />
       <ChatContainer />
-      <MessageToastContainer />
+      <ToastContainer />
     </React.Fragment>
   );
 }

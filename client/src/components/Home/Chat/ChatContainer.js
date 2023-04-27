@@ -11,12 +11,18 @@ import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
-import { getContactNicknameById } from "../../../utils/InputHandler";
+import {
+  getContactAvatarById,
+  getContactNicknameById,
+  nicknameValidation,
+} from "../../../utils/InputHandler";
+import NicknameInput from "./NicknameInput";
 
 export default function ChatContainer() {
   const chatContainerRef = useRef(null);
 
   const [infoVisible, setInfoVisible] = useState(false);
+
   const dispatch = useDispatch();
   const { contacts } = useSelector((state) => state.contacts);
   const { active, loading, error, chats } = useSelector((state) => state.chats);
@@ -64,6 +70,35 @@ export default function ChatContainer() {
     return response;
   }
 
+  function isBlocked() {
+    const chat = chats[active.val];
+    if (chat && chat.blockedBy && chat.blockedBy.length > 0) {
+      const blockedBy = chat.blockedBy;
+      let msg;
+      if (details.mail === blockedBy || blockedBy === "both")
+        msg = "You have blocked the user. Please unblock to continue.";
+      else
+        msg =
+          "Sorry, you have been blocked by the user. Cannot chat right now.";
+      return {
+        msg,
+        status: true,
+      };
+    }
+    return {
+      msg: undefined,
+      status: false,
+    };
+  }
+
+  function showInContactInfo() {
+    const index = contacts.findIndex((i) => i.chatId === active.val);
+    if (index === -1) return false;
+    const inContact = contacts[index].inContact;
+    if (inContact === false) return true;
+    return false;
+  }
+
   return (
     <Container>
       <MessageBoxCover />
@@ -88,6 +123,12 @@ export default function ChatContainer() {
                       }}
                     />
                   )}
+                  <AdditionalInfos
+                    showInfo={showInContactInfo()}
+                    isBlocked={isBlocked()}
+                    contacts={contacts}
+                    active={active}
+                  />
                   <MessageWrapper ref={chatContainerRef}>
                     {!error &&
                       getChats().keys.map((tmstp, c_index) => {
@@ -102,9 +143,14 @@ export default function ChatContainer() {
                                 message={msg.message}
                                 sender={msg.sendBy}
                                 isSent={msg.isSent}
+                                isNotification={msg.isNotification}
                                 createdAt={msg.createdAt}
                                 contactInfo={getContactDetails(msg.sendBy)}
                                 isPrivate={active.isPrivate}
+                                avatar={getContactAvatarById(
+                                  contacts,
+                                  msg.sendBy
+                                )}
                                 nickname={getContactNicknameById(
                                   contacts,
                                   msg.sendBy
@@ -126,6 +172,7 @@ export default function ChatContainer() {
             <InputContainer
               isPrivate={active.isPrivate}
               chatContainerRef={chatContainerRef}
+              isBlocked={isBlocked().status}
             />
           </SubContainer>
           <ReceiverInfoContainer
@@ -135,6 +182,75 @@ export default function ChatContainer() {
         </Wrapper>
       )}
     </Container>
+  );
+}
+
+function AdditionalInfos({ showInfo, isBlocked, contacts = [], active = {} }) {
+  return (
+    <AdditionalInfoBox>
+      {showInfo && <AddContactInfo contacts={contacts} active={active} />}
+      {isBlocked.status && <IsBlockedMessage>{isBlocked.msg}</IsBlockedMessage>}
+    </AdditionalInfoBox>
+  );
+}
+
+function AddContactInfo({ contacts, active }) {
+  const [changeNickname, setChangeNickname] = useState({
+    val: "",
+    show: false,
+    error: null,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  function handleNicknameModal(show = false) {
+    if (isLoading) return;
+    setChangeNickname({ ...changeNickname, show });
+  }
+
+  function handleNicknameChange(e) {
+    const value = e.target.value;
+    const { message } = nicknameValidation(value, contacts);
+    setChangeNickname({ ...changeNickname, val: value, error: message });
+  }
+
+  function getContactInfo() {
+    const index = contacts.findIndex((i) => i.chatId === active.val);
+    if (index === -1) return { name: "unknown", email: "unknown" };
+    return {
+      email: contacts[index].email,
+      name: contacts[index].name,
+    };
+  }
+
+  const info = getContactInfo();
+
+  return (
+    <React.Fragment>
+      <AddThisContact>
+        <AddThisContactInfo>
+          This user is not in your contacts.
+        </AddThisContactInfo>
+        <AddThisContactBtn onClick={() => handleNicknameModal(true)}>
+          Add to contact?
+        </AddThisContactBtn>
+      </AddThisContact>
+      {changeNickname.show && (
+        <NicknameInput
+          isLoading={isLoading}
+          nickname=""
+          handleNicknameModal={handleNicknameModal}
+          name={info.name}
+          handleNicknameChange={handleNicknameChange}
+          error={changeNickname.error}
+          title="Create nickname"
+          btnLabel="Create"
+          changeNickname={changeNickname}
+          setChangeNickname={setChangeNickname}
+          email={info.email}
+          setIsLoading={setIsLoading}
+        />
+      )}
+    </React.Fragment>
   );
 }
 
@@ -194,6 +310,8 @@ const MessageBoxCover = styled.div`
   left: 0;
   right: 0;
   background-image: url(${CHAT_COVER});
+  background-repeat: repeat;
+  background-size: contain;
   object-fit: cover;
   opacity: 0.4;
   -webkit-filter: invert(${(props) => props.theme.msgBox.bgCover});
@@ -201,6 +319,10 @@ const MessageBoxCover = styled.div`
   transform: translateZ(0);
   pointer-events: none;
   z-index: 1;
+
+  @media screen and (max-width: 680px) {
+    background-size: cover;
+  }
 `;
 
 const MessageWrapper = styled.div`
@@ -248,4 +370,52 @@ const BreakTimestamp = styled.span`
   font-weight: 400;
   min-width: 70px;
   text-align: center;
+`;
+
+const AdditionalInfoBox = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+`;
+
+const IsBlockedMessage = styled.p`
+  text-align: center;
+  background: ${(props) => props.theme.bg.container};
+  color: ${(props) => props.theme.txt.main};
+  font-size: 0.7rem;
+  padding: 8px;
+  border: 1px solid ${(props) => props.theme.bg.app};
+  border-bottom: 0;
+  border-top: 0;
+  font-weight: 400;
+`;
+
+const AddThisContact = styled.div`
+  display: flex;
+  background: #085ed4;
+  padding: 8px;
+  justify-content: center;
+  align-items: flex-end;
+  border: 1px solid ${(props) => props.theme.bg.app};
+  border-bottom: 0;
+  border-top: 0;
+`;
+
+const AddThisContactInfo = styled.p`
+  font-size: 0.7rem;
+  color: #fff;
+  font-weight: 400;
+`;
+
+const AddThisContactBtn = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 0.7rem;
+  color: #fff;
+  border-bottom: 0.5px solid #fff;
+  margin-left: 5px;
+  font-weight: 400;
+  cursor: pointer;
 `;

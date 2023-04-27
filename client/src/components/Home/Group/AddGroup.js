@@ -211,7 +211,7 @@ export default function AddGroup({ close }) {
                 </b>
               </PickMsg>
               {contacts
-                .filter((item) => !item.isBlocked)
+                .filter((item) => !item.isBlocked && item.inContact)
                 .map((item, index) => (
                   <MemberSelect
                     disabled={isLoading}
@@ -368,7 +368,7 @@ const MemberAvatarImg = styled.img`
   object-fit: cover;
   width: 100%;
   height: 100%;
-  border-radius: 50%; ;
+  border-radius: 50%;
 `;
 
 const MemberDetails = styled.div`
@@ -474,7 +474,7 @@ const GroupIcon = styled.button`
   outline: none;
   background: ${(props) => props.bg};
   border: 2px solid ${(props) => props.bg};
-  margin-left: 5px;
+  margin: 5px;
   cursor: pointer;
   display: flex;
   justify-content: center;

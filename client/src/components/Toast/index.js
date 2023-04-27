@@ -1,5 +1,5 @@
 import { enqueueSnackbar, closeSnackbar } from "notistack";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 import GeneralToast from "./GeneralToast";
 import MsgToastContainer from "./MsgToastContainer";
@@ -15,9 +15,10 @@ const notify = (key, message, props = {}) => {
     autoHideDuration: 5000,
     style: {
       background: toastBg[key],
-      width: "100%",
+      width: "fit-content",
+      minWidth: "0",
       maxWidth: "280px",
-      borderRadius: "8px",
+      borderRadius: "5px",
     },
     anchorOrigin: {
       vertical: "top",
@@ -27,15 +28,27 @@ const notify = (key, message, props = {}) => {
   });
 };
 
-const notifyMsg = (message, from, avatarId, email) => {
-  toast(
+const notifyMsg = (
+  message,
+  from,
+  avatarId,
+  email,
+  chatId,
+  isPrivate,
+  senderId
+) => {
+  toast.custom((id) => (
     <MsgToastContainer
       message={message}
       sendBy={from}
       avatarId={avatarId}
       email={email}
+      chatId={chatId}
+      isPrivate={isPrivate}
+      toastProps={id}
+      senderId={senderId}
     />
-  );
+  ));
 };
 
 const remove = () => {
@@ -72,8 +85,8 @@ const toExpose = {
   success: (message, props) => notify("success", message, props),
   error: (message, props) => notify("error", message, props),
   info: (message, props) => notify("info", message, props),
-  msg: (message, from, avatarId, email) =>
-    notifyMsg(message, from, avatarId, email),
+  msg: (message, from, avatarId, email, chatId, isPrivate, senderId) =>
+    notifyMsg(message, from, avatarId, email, chatId, isPrivate, senderId),
   remove: () => remove(),
   props: toastProps,
 };

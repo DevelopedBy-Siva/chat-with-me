@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import _ from "lodash";
 import { BsCheck } from "react-icons/bs";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { GiSandsOfTime } from "react-icons/gi";
@@ -16,6 +17,8 @@ export default function MessageContainer({
   contactInfo = {},
   isPrivate,
   nickname,
+  avatar,
+  isNotification,
 }) {
   function isSender() {
     return currentUser.trim().toLowerCase() === sender.trim().toLowerCase();
@@ -31,11 +34,14 @@ export default function MessageContainer({
       <MdReportGmailerrorred />
     );
 
+  if (isNotification)
+    return <Notification>{_.capitalize(message)}</Notification>;
+
   return (
     <Container as={isSender() ? MessageSender : MessageReceiver}>
       <ContentWrapper className={avatarPosition}>
         <UserAvatarContainer className={avatarPosition}>
-          <UserAvatar src={getAvatar(contactInfo.avatarId)} />
+          <UserAvatar src={getAvatar(avatar ? avatar : contactInfo.avatarId)} />
         </UserAvatarContainer>
         <Wrapper>
           <MsgTimestamp>{getMessageTime(createdAt)}</MsgTimestamp>
@@ -123,6 +129,18 @@ const ContentWrapper = styled.div`
   &.sender-avatar {
     flex-direction: row;
   }
+`;
+
+const Notification = styled.ul`
+  text-align: center;
+  font-size: 0.65rem;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: ${(props) => props.theme.txt.sub};
+  font-weight: 400;
+  margin: 24px auto;
+  letter-spacing: 1.4px;
+  pointer-events: none;
 `;
 
 const MessageSender = styled.ul`

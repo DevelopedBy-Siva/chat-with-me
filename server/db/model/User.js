@@ -9,7 +9,6 @@ const ContactType = {
   },
   nickname: {
     type: String,
-    required: true,
     trim: true,
     lowercase: true,
   },
@@ -18,6 +17,10 @@ const ContactType = {
     required: true,
   },
   isBlocked: { type: Boolean, default: false },
+  inContact: {
+    type: Boolean,
+    default: true,
+  },
 };
 
 const schema = new mongoose.Schema({

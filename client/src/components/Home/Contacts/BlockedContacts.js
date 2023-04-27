@@ -9,6 +9,7 @@ import toast from "../../Toast";
 import axios from "../../../api/axios";
 import retrieveError from "../../../api/ExceptionHandler";
 import { unBlockUserContact } from "../../../store/actions/ContactActions";
+import { setBlockedBy } from "../../../store/actions/ChatActions";
 
 export default function BlockedContacts({ inProgress, setInProgress }) {
   const { contacts = [] } = useSelector((state) => state.contacts);
@@ -21,14 +22,15 @@ export default function BlockedContacts({ inProgress, setInProgress }) {
     return sortContactsByAsc(data);
   }
 
-  async function unblockContact(email) {
+  async function unblockContact(email, chatId) {
     if (inProgress) return;
     setInProgress(true);
 
     await axios
       .put(`/user/unblock?email=${email}`)
-      .then(() => {
+      .then(({ data }) => {
         dispatch(unBlockUserContact(email));
+        dispatch(setBlockedBy(chatId, data.blockedBy));
         setInProgress(false);
         toast.success("Contact unblocked successfully");
       })
@@ -43,7 +45,7 @@ export default function BlockedContacts({ inProgress, setInProgress }) {
     return <NoContactsMsg>No blocked contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { name, nickname, avatarId, email } = item;
+    const { name, nickname, avatarId, email, chatId } = item;
 
     return (
       <ContactContainer key={index}>
@@ -53,12 +55,15 @@ export default function BlockedContacts({ inProgress, setInProgress }) {
           </ContactAvatarContainer>
           <ContactNameContainer>
             <ContactName>{name}</ContactName>
-            <ContactNickname>{nickname}</ContactNickname>
+            {nickname && <ContactNickname>{nickname}</ContactNickname>}
           </ContactNameContainer>
         </ContactDetails>
         <OptionBtnContainer>
           <OptionBtn disabled={inProgress}>
-            <CgUnblock onClick={() => unblockContact(email)} title="Unblock" />
+            <CgUnblock
+              onClick={() => unblockContact(email, chatId)}
+              title="Unblock"
+            />
           </OptionBtn>
         </OptionBtnContainer>
       </ContactContainer>

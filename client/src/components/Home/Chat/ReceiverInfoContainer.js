@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import _ from "lodash";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
@@ -13,11 +14,14 @@ import Modal from "../Modal/SubModal";
 import retrieveError from "../../../api/ExceptionHandler";
 import LoadingSpinner from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
-import { setActive } from "../../../store/actions/ChatActions";
+import {
+  readyToSendMsg,
+  setActive,
+  setBlockedBy,
+} from "../../../store/actions/ChatActions";
 import {
   addContactToGroup,
   blockUserContact,
-  changeContactNickname,
   deleteUserContact,
   kickContactFromGroup,
   removeUserGroup,
@@ -27,6 +31,9 @@ import {
   getContactNickname,
   nicknameValidation,
 } from "../../../utils/InputHandler";
+import { toggle_BW_Chats } from "../../../utils/Screens";
+import NicknameInput from "./NicknameInput";
+import { useSocket } from "../../../context/SocketContext";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -63,18 +70,22 @@ const groupOptions = [
 ];
 
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
-  const { active } = useSelector((state) => state.chats);
+  const { active, chats } = useSelector((state) => state.chats);
 
   return (
     <AnimatePresence key={active.val}>
       {infoVisible && (
-        <InfoContainer setInfoVisible={setInfoVisible} active={active} />
+        <InfoContainer
+          setInfoVisible={setInfoVisible}
+          active={active}
+          chats={chats}
+        />
       )}
     </AnimatePresence>
   );
 }
 
-function InfoContainer({ setInfoVisible, active }) {
+function InfoContainer({ setInfoVisible, active, chats }) {
   const { contacts, groups } = useSelector((state) => state.contacts);
   const { details } = useSelector((state) => state.user);
 
@@ -93,9 +104,12 @@ function InfoContainer({ setInfoVisible, active }) {
     loading: false,
     item: null,
     show: false,
+    name: null,
   });
 
   const dispatch = useDispatch();
+
+  const socket = useSocket();
 
   function findContactInfo() {
     const { val, isPrivate } = active;
@@ -145,6 +159,7 @@ function InfoContainer({ setInfoVisible, active }) {
           await axios.put(`/chat/leave/${chatId}`).then(() => {
             dispatch(setActive(null, true));
             dispatch(removeUserGroup(chatId));
+            notifyGroup(details.name, "left the chat");
             toast.success("Left the group successfully");
           });
           break;
@@ -157,9 +172,10 @@ function InfoContainer({ setInfoVisible, active }) {
 
           break;
         case "block-user":
-          await axios.put(`/user/block?email=${email}`).then(() => {
+          await axios.put(`/user/block?email=${email}`).then(({ data }) => {
             dispatch(setActive(null, true));
             dispatch(blockUserContact(email));
+            dispatch(setBlockedBy(chatId, data.blockedBy));
             toast.success("Contact blocked successfully");
           });
 
@@ -175,6 +191,7 @@ function InfoContainer({ setInfoVisible, active }) {
         default:
           break;
       }
+      toggle_BW_Chats(true);
     } catch (error) {
       const { message } = retrieveError(error);
       setShowModal({ show: false, toDo: null });
@@ -182,6 +199,38 @@ function InfoContainer({ setInfoVisible, active }) {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function notifyGroup(name, placeholder, type) {
+    const createdAt = new Date().toUTCString();
+    const data = {
+      sendBy: details._id,
+      message: `${_.startCase(name)} ${placeholder}`,
+      createdAt,
+      isNotification: true,
+    };
+
+    let recipients = [];
+    const chatDetails = chats[chatId];
+    if (chatDetails) {
+      const contactInfos = chatDetails.contactInfos;
+      if (contactInfos) contactInfos.forEach((i) => recipients.push(i._id));
+    }
+    const chat = {
+      recipients,
+      data,
+      chatId,
+      isPrivate: active.isPrivate,
+      senderAvatarId: details.avatarId,
+      senderName: details.name,
+      senderEmail: details.email,
+    };
+    if (type === "kick")
+      dispatch(
+        readyToSendMsg({ ...data, msgId: Date.now() }, chatId, createdAt)
+      );
+
+    socket.emit("send-message", chat, () => {});
   }
 
   function handleModal(show = false, toDo = null) {
@@ -198,28 +247,6 @@ function InfoContainer({ setInfoVisible, active }) {
     const value = e.target.value;
     const { message } = nicknameValidation(value, contacts);
     setChangeNickname({ ...changeNickname, val: value, error: message });
-  }
-
-  async function updateNickname() {
-    if (isLoading || changeNickname.error) return;
-
-    const newNickname = changeNickname.val.toLowerCase();
-    if (newNickname === nickname)
-      return setChangeNickname({ ...changeNickname, show: false });
-
-    setIsLoading(true);
-    await axios
-      .put(`/user/contact/nickname?email=${email}&nickname=${newNickname}`)
-      .then(() => {
-        setChangeNickname({ ...changeNickname, show: false });
-        dispatch(changeContactNickname({ email, nickname: newNickname }));
-        toast.success("Nickname updated successfully");
-      })
-      .catch((error) => {
-        const { message } = retrieveError(error);
-        toast.error(message, toast.props.user.nonPersist);
-      });
-    setIsLoading(false);
   }
 
   function handleAddMemberToggle(val = false) {
@@ -315,14 +342,18 @@ function InfoContainer({ setInfoVisible, active }) {
         />
       )}
       {changeNickname.show && (
-        <ChangeNicknameContainer
+        <NicknameInput
           isLoading={isLoading}
-          nickname={changeNickname.val}
+          nickname={nickname}
           handleNicknameModal={handleNicknameModal}
           name={name}
           handleNicknameChange={handleNicknameChange}
           error={changeNickname.error}
-          updateNickname={updateNickname}
+          title="Change nickname"
+          changeNickname={changeNickname}
+          setChangeNickname={setChangeNickname}
+          email={email}
+          setIsLoading={setIsLoading}
         />
       )}
       {addMember && (
@@ -341,6 +372,7 @@ function InfoContainer({ setInfoVisible, active }) {
           setKickMember={setKickMember}
           groups={groups}
           chatId={active.val}
+          notifyGroup={notifyGroup}
         />
       )}
     </React.Fragment>
@@ -355,8 +387,8 @@ function GroupMemberDetails({
   kickMember,
   setKickMember,
 }) {
-  function kickMemberFromGroup(email) {
-    setKickMember({ ...kickMember, show: true, item: email });
+  function kickMemberFromGroup(email, name) {
+    setKickMember({ ...kickMember, show: true, item: email, name });
   }
 
   const showLoading = kickMember.loading && kickMember.item === item.email;
@@ -379,7 +411,7 @@ function GroupMemberDetails({
             <LoadingSpinner style={{ width: "14px", height: "14px" }} />
           ) : (
             <IoClose
-              onClick={() => kickMemberFromGroup(item.email)}
+              onClick={() => kickMemberFromGroup(item.email, item.name)}
               className="icon"
             />
           )}
@@ -393,7 +425,13 @@ const confirmMemberKickModalStyle = {
   maxWidth: "500px",
   height: "auto",
 };
-function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
+function ConfirmMemberKick({
+  groups,
+  chatId,
+  kickMember,
+  setKickMember,
+  notifyGroup,
+}) {
   const dispatch = useDispatch();
   function getTitle() {
     let response = {
@@ -414,7 +452,7 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
   }
 
   function handleClose() {
-    setKickMember({ ...kickMember, show: false, item: null });
+    setKickMember({ ...kickMember, show: false, item: null, name: null });
   }
 
   const { msg, deleteGroup } = getTitle();
@@ -422,10 +460,11 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
   async function kickMemberFromGroup() {
     if (kickMember.loading) return;
     const contact = kickMember.item;
+    const name = kickMember.name;
     setKickMember({ ...kickMember, loading: true, show: false });
     await axios
       .put(`/chat/kick/${chatId}?contact=${contact}`)
-      .then(() => {
+      .then(({ data }) => {
         if (deleteGroup) {
           dispatch(setActive(null, true));
           dispatch(removeUserGroup(chatId));
@@ -434,11 +473,13 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
           dispatch(kickContactFromGroup(chatId, contact));
           toast.success("Contact removed successfully");
         }
+        if (data.status === "group") toggle_BW_Chats(true);
+        notifyGroup(name, "is kicked from the group", "kick");
       })
       .catch(() => {
         toast.error("Something went wrong. Failed to remove the contact");
       });
-    setKickMember({ show: false, loading: false, item: null });
+    setKickMember({ show: false, loading: false, item: null, name: null });
   }
 
   return (
@@ -506,58 +547,6 @@ function OperationConfirmationContainer({
   );
 }
 
-const nicknameModalStyle = {
-  maxWidth: "420px",
-  maxHeight: "234px",
-};
-function ChangeNicknameContainer({
-  name,
-  isLoading,
-  handleNicknameModal,
-  nickname,
-  handleNicknameChange,
-  error,
-  updateNickname,
-}) {
-  return (
-    <Modal
-      inactive={isLoading}
-      style={nicknameModalStyle}
-      close={handleNicknameModal}
-    >
-      <ChangeNicknameModalContainer>
-        <ModalHeaderWrapper>Change nickname</ModalHeaderWrapper>
-        <ChangeNicknamModalWrapper>
-          <ChangeNicknamModalLabel>{name}'s nickname:</ChangeNicknamModalLabel>
-          <ChangeNicknameModalInputWrapper>
-            <ChangeNicknameModalInput
-              value={nickname}
-              name="nickname"
-              type="text"
-              spellCheck={false}
-              autoComplete="off"
-              disabled={isLoading}
-              placeholder="Enter the nickname"
-              onChange={handleNicknameChange}
-            />
-            <ChangeNicknamModalError>{error}</ChangeNicknamModalError>
-          </ChangeNicknameModalInputWrapper>
-          <ChangeNicknamModalBtn
-            onClick={updateNickname}
-            disabled={isLoading || error}
-          >
-            {isLoading ? (
-              <LoadingSpinner style={{ width: "14px", height: "14px" }} />
-            ) : (
-              "Change"
-            )}
-          </ChangeNicknamModalBtn>
-        </ChangeNicknamModalWrapper>
-      </ChangeNicknameModalContainer>
-    </Modal>
-  );
-}
-
 const newMembersModalStyle = {
   maxWidth: "420px",
   maxHeight: "350px",
@@ -601,7 +590,6 @@ function AddNewMembers({
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
         const { message } = retrieveError(error);
         toast.error(message, toast.props.user.nonPersist);
       });
@@ -748,77 +736,6 @@ const AddNewMembersWrapper = styled.div`
 `;
 
 const AddNewMembersContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ChangeNicknamModalWrapper = styled.div`
-  flex: 1;
-  padding: 0.6rem;
-  overflow-y: auto;
-`;
-
-const ChangeNicknameModalInputWrapper = styled.div`
-  display: block;
-  width: 100%;
-  min-height: 50px;
-`;
-
-const ChangeNicknamModalError = styled.span`
-  display: block;
-  font-size: 0.7rem;
-  color: ${(props) => props.theme.txt.danger};
-  margin-top: 5px;
-`;
-
-const ChangeNicknamModalBtn = styled.button`
-  display: block;
-  width: 70px;
-  height: 24px;
-  margin: auto;
-  margin-top: 8px;
-  background: #085ed4;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  position: relative;
-  cursor: pointer;
-
-  :enabled:hover {
-    background: #206ed8;
-  }
-
-  :disabled {
-    cursor: not-allowed;
-  }
-`;
-
-const ChangeNicknamModalLabel = styled.span`
-  display: block;
-  font-size: 0.8rem;
-  color: ${(props) => props.theme.txt.sub};
-  ::first-letter {
-    text-transform: capitalize;
-  }
-`;
-
-const ChangeNicknameModalInput = styled.input`
-  display: block;
-  width: 100%;
-  border: 1px solid ${(props) => props.theme.border.inputbox};
-  background: none;
-  margin-top: 6px;
-  padding: 6px 4px;
-  color: ${(props) => props.theme.txt.main};
-  border-radius: 4px;
-  outline: none;
-  font-size: 0.8rem;
-`;
-
-const ChangeNicknameModalContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;

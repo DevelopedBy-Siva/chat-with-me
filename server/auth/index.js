@@ -77,8 +77,8 @@ const cookieNames = {
 const httpOnlyCookieProps = {
   httpOnly: true,
   path: "/",
-  sameSite: "lax",
   secure: true,
+  sameSite: "none",
 };
 
 /**

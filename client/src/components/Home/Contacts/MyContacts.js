@@ -13,7 +13,7 @@ import {
   blockUserContact,
   deleteUserContact,
 } from "../../../store/actions/ContactActions";
-import { setActive } from "../../../store/actions/ChatActions";
+import { setActive, setBlockedBy } from "../../../store/actions/ChatActions";
 
 export default function MyContacts({ inProgress, setInProgress }) {
   const { contacts = [], isOnline } = useSelector((state) => state.contacts);
@@ -28,7 +28,9 @@ export default function MyContacts({ inProgress, setInProgress }) {
 
   function filterContacts() {
     if (!contacts || contacts.length === 0) return [];
-    const data = contacts.filter((val) => !val.isBlocked);
+    const data = contacts.filter(
+      (val) => !val.isBlocked && !val.inContact === false
+    );
     return sortContactsByAsc(data);
   }
 
@@ -45,7 +47,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
     if (inProgress) return;
     setWhichOne({ email: null, msg: null, type: null });
   };
-  async function callServer(type, email) {
+  async function callServer(type, email, chatId) {
     if (inProgress) return;
     setInProgress(true);
 
@@ -69,9 +71,10 @@ export default function MyContacts({ inProgress, setInProgress }) {
       case "block":
         await axios
           .put(`/user/block?email=${email}`)
-          .then(() => {
+          .then(({ data }) => {
             dispatch(setActive(null, true));
             dispatch(blockUserContact(email));
+            dispatch(setBlockedBy(chatId, data.blockedBy));
             removeConfirmMessage();
             setInProgress(false);
             toast.success("Contact blocked successfully");
@@ -96,7 +99,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
     return <NoContactsMsg>No contacts found</NoContactsMsg>;
 
   return filterContacts().map((item, index) => {
-    const { _id, name, nickname, avatarId, email } = item;
+    const { _id, name, nickname, avatarId, email, chatId } = item;
     return (
       <ContactContainer key={index}>
         {whichOne.email === email ? (
@@ -104,7 +107,7 @@ export default function MyContacts({ inProgress, setInProgress }) {
             <ConfirmMsg>{whichOne.msg}</ConfirmMsg>
             <ConfirmExecuteBtn
               disabled={inProgress}
-              onClick={() => callServer(whichOne.type, email)}
+              onClick={() => callServer(whichOne.type, email, chatId)}
             >
               {inProgress ? (
                 <LoadingSpinner

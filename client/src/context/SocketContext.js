@@ -13,7 +13,8 @@ export function SocketProvider({ id, children }) {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const newSocket = io(baseURL, { query: { id } });
+    const uniqueId = id + "--__--" + Date.now();
+    const newSocket = io(baseURL, { query: { id: uniqueId } });
     setSocket(newSocket);
 
     return () => newSocket.close();

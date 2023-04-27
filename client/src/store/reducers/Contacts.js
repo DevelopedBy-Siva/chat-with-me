@@ -46,7 +46,10 @@ const reducer = (state = initialState, action) => {
       };
     case ADD_NEW_CONTACT:
       const newContacts = [...state.contacts];
-      newContacts.unshift(payload);
+      const contactExists = newContacts.findIndex(
+        (i) => i.email === payload.email
+      );
+      if (contactExists === -1) newContacts.unshift(payload);
       return {
         ...state,
         contacts: [...newContacts],
@@ -86,7 +89,10 @@ const reducer = (state = initialState, action) => {
       };
     case CREATE_GROUP:
       const newGroups = [...state.groups];
-      newGroups.unshift(payload);
+      const newGroupIndex = newGroups.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (newGroupIndex === -1) newGroups.unshift(payload);
       return {
         ...state,
         groups: newGroups,
@@ -105,6 +111,7 @@ const reducer = (state = initialState, action) => {
       if (index === -1) return { ...state };
       const afterNicknameUpdate = [...state.contacts];
       afterNicknameUpdate[index].nickname = payload.nickname;
+      afterNicknameUpdate[index].inContact = true;
       return {
         ...state,
         contacts: afterNicknameUpdate,
