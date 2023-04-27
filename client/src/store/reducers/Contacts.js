@@ -89,7 +89,10 @@ const reducer = (state = initialState, action) => {
       };
     case CREATE_GROUP:
       const newGroups = [...state.groups];
-      newGroups.unshift(payload);
+      const newGroupIndex = newGroups.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (newGroupIndex === -1) newGroups.unshift(payload);
       return {
         ...state,
         groups: newGroups,

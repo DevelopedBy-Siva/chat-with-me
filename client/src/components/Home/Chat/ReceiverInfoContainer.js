@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import _ from "lodash";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { MdPersonOff, MdBlock, MdDeleteForever } from "react-icons/md";
@@ -13,7 +14,11 @@ import Modal from "../Modal/SubModal";
 import retrieveError from "../../../api/ExceptionHandler";
 import LoadingSpinner from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
-import { setActive, setBlockedBy } from "../../../store/actions/ChatActions";
+import {
+  readyToSendMsg,
+  setActive,
+  setBlockedBy,
+} from "../../../store/actions/ChatActions";
 import {
   addContactToGroup,
   blockUserContact,
@@ -28,6 +33,7 @@ import {
 } from "../../../utils/InputHandler";
 import { toggle_BW_Chats } from "../../../utils/Screens";
 import NicknameInput from "./NicknameInput";
+import { useSocket } from "../../../context/SocketContext";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -64,18 +70,22 @@ const groupOptions = [
 ];
 
 export default function ReceiverInfoContainer({ infoVisible, setInfoVisible }) {
-  const { active } = useSelector((state) => state.chats);
+  const { active, chats } = useSelector((state) => state.chats);
 
   return (
     <AnimatePresence key={active.val}>
       {infoVisible && (
-        <InfoContainer setInfoVisible={setInfoVisible} active={active} />
+        <InfoContainer
+          setInfoVisible={setInfoVisible}
+          active={active}
+          chats={chats}
+        />
       )}
     </AnimatePresence>
   );
 }
 
-function InfoContainer({ setInfoVisible, active }) {
+function InfoContainer({ setInfoVisible, active, chats }) {
   const { contacts, groups } = useSelector((state) => state.contacts);
   const { details } = useSelector((state) => state.user);
 
@@ -94,9 +104,12 @@ function InfoContainer({ setInfoVisible, active }) {
     loading: false,
     item: null,
     show: false,
+    name: null,
   });
 
   const dispatch = useDispatch();
+
+  const socket = useSocket();
 
   function findContactInfo() {
     const { val, isPrivate } = active;
@@ -146,6 +159,7 @@ function InfoContainer({ setInfoVisible, active }) {
           await axios.put(`/chat/leave/${chatId}`).then(() => {
             dispatch(setActive(null, true));
             dispatch(removeUserGroup(chatId));
+            notifyGroup(details.name, "left the chat");
             toast.success("Left the group successfully");
           });
           break;
@@ -185,6 +199,38 @@ function InfoContainer({ setInfoVisible, active }) {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function notifyGroup(name, placeholder, type) {
+    const createdAt = new Date().toUTCString();
+    const data = {
+      sendBy: details._id,
+      message: `${_.startCase(name)} ${placeholder}`,
+      createdAt,
+      isNotification: true,
+    };
+
+    let recipients = [];
+    const chatDetails = chats[chatId];
+    if (chatDetails) {
+      const contactInfos = chatDetails.contactInfos;
+      if (contactInfos) contactInfos.forEach((i) => recipients.push(i._id));
+    }
+    const chat = {
+      recipients,
+      data,
+      chatId,
+      isPrivate: active.isPrivate,
+      senderAvatarId: details.avatarId,
+      senderName: details.name,
+      senderEmail: details.email,
+    };
+    if (type === "kick")
+      dispatch(
+        readyToSendMsg({ ...data, msgId: Date.now() }, chatId, createdAt)
+      );
+
+    socket.emit("send-message", chat, () => {});
   }
 
   function handleModal(show = false, toDo = null) {
@@ -326,6 +372,7 @@ function InfoContainer({ setInfoVisible, active }) {
           setKickMember={setKickMember}
           groups={groups}
           chatId={active.val}
+          notifyGroup={notifyGroup}
         />
       )}
     </React.Fragment>
@@ -340,8 +387,8 @@ function GroupMemberDetails({
   kickMember,
   setKickMember,
 }) {
-  function kickMemberFromGroup(email) {
-    setKickMember({ ...kickMember, show: true, item: email });
+  function kickMemberFromGroup(email, name) {
+    setKickMember({ ...kickMember, show: true, item: email, name });
   }
 
   const showLoading = kickMember.loading && kickMember.item === item.email;
@@ -364,7 +411,7 @@ function GroupMemberDetails({
             <LoadingSpinner style={{ width: "14px", height: "14px" }} />
           ) : (
             <IoClose
-              onClick={() => kickMemberFromGroup(item.email)}
+              onClick={() => kickMemberFromGroup(item.email, item.name)}
               className="icon"
             />
           )}
@@ -378,7 +425,13 @@ const confirmMemberKickModalStyle = {
   maxWidth: "500px",
   height: "auto",
 };
-function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
+function ConfirmMemberKick({
+  groups,
+  chatId,
+  kickMember,
+  setKickMember,
+  notifyGroup,
+}) {
   const dispatch = useDispatch();
   function getTitle() {
     let response = {
@@ -399,7 +452,7 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
   }
 
   function handleClose() {
-    setKickMember({ ...kickMember, show: false, item: null });
+    setKickMember({ ...kickMember, show: false, item: null, name: null });
   }
 
   const { msg, deleteGroup } = getTitle();
@@ -407,6 +460,7 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
   async function kickMemberFromGroup() {
     if (kickMember.loading) return;
     const contact = kickMember.item;
+    const name = kickMember.name;
     setKickMember({ ...kickMember, loading: true, show: false });
     await axios
       .put(`/chat/kick/${chatId}?contact=${contact}`)
@@ -420,11 +474,12 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
           toast.success("Contact removed successfully");
         }
         if (data.status === "group") toggle_BW_Chats(true);
+        notifyGroup(name, "is kicked from the group", "kick");
       })
       .catch(() => {
         toast.error("Something went wrong. Failed to remove the contact");
       });
-    setKickMember({ show: false, loading: false, item: null });
+    setKickMember({ show: false, loading: false, item: null, name: null });
   }
 
   return (

@@ -143,6 +143,7 @@ export default function ChatContainer() {
                                 message={msg.message}
                                 sender={msg.sendBy}
                                 isSent={msg.isSent}
+                                isNotification={msg.isNotification}
                                 createdAt={msg.createdAt}
                                 contactInfo={getContactDetails(msg.sendBy)}
                                 isPrivate={active.isPrivate}

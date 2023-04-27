@@ -12,6 +12,10 @@ const MessageType = {
   message: {
     type: String,
   },
+  isNotification: {
+    type: Boolean,
+    default: false,
+  },
 };
 
 const schema = new mongoose.Schema({
