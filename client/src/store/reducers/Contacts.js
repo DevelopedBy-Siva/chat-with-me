@@ -108,6 +108,7 @@ const reducer = (state = initialState, action) => {
       if (index === -1) return { ...state };
       const afterNicknameUpdate = [...state.contacts];
       afterNicknameUpdate[index].nickname = payload.nickname;
+      afterNicknameUpdate[index].inContact = true;
       return {
         ...state,
         contacts: afterNicknameUpdate,

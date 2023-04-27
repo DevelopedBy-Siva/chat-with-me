@@ -252,6 +252,7 @@ route.put("/contact/nickname", async (req, resp) => {
       );
 
   data.contacts[index].nickname = nickname;
+  data.contacts[index].inContact = true;
   await data.save();
 
   resp.status(201).send();

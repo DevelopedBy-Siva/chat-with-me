@@ -11,12 +11,17 @@ import ChatLandingScreen from "./ChatLandingScreen";
 import LoadingSpinner from "../../Loader";
 import { fetchChats } from "../../../store/reducers/Chats";
 import { isTodayOrYesterday, sortDatesDesc } from "../../../utils/DateTime";
-import { getContactNicknameById } from "../../../utils/InputHandler";
+import {
+  getContactNicknameById,
+  nicknameValidation,
+} from "../../../utils/InputHandler";
+import NicknameInput from "./NicknameInput";
 
 export default function ChatContainer() {
   const chatContainerRef = useRef(null);
 
   const [infoVisible, setInfoVisible] = useState(false);
+
   const dispatch = useDispatch();
   const { contacts } = useSelector((state) => state.contacts);
   const { active, loading, error, chats } = useSelector((state) => state.chats);
@@ -117,19 +122,12 @@ export default function ChatContainer() {
                       }}
                     />
                   )}
-                  <AdditionalInfoBox>
-                    {showInContactInfo() && (
-                      <AddThisContact>
-                        <AddThisContactInfo>
-                          This user is not in your contacts.
-                        </AddThisContactInfo>
-                        <AddThisContactBtn>Add to contact?</AddThisContactBtn>
-                      </AddThisContact>
-                    )}
-                    {isBlocked().status && (
-                      <IsBlockedMessage>{isBlocked().msg}</IsBlockedMessage>
-                    )}
-                  </AdditionalInfoBox>
+                  <AdditionalInfos
+                    showInfo={showInContactInfo()}
+                    isBlocked={isBlocked()}
+                    contacts={contacts}
+                    active={active}
+                  />
                   <MessageWrapper ref={chatContainerRef}>
                     {!error &&
                       getChats().keys.map((tmstp, c_index) => {
@@ -178,6 +176,75 @@ export default function ChatContainer() {
         </Wrapper>
       )}
     </Container>
+  );
+}
+
+function AdditionalInfos({ showInfo, isBlocked, contacts = [], active = {} }) {
+  return (
+    <AdditionalInfoBox>
+      {showInfo && <AddContactInfo contacts={contacts} active={active} />}
+      {isBlocked.status && <IsBlockedMessage>{isBlocked.msg}</IsBlockedMessage>}
+    </AdditionalInfoBox>
+  );
+}
+
+function AddContactInfo({ contacts, active }) {
+  const [changeNickname, setChangeNickname] = useState({
+    val: "",
+    show: false,
+    error: null,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  function handleNicknameModal(show = false) {
+    if (isLoading) return;
+    setChangeNickname({ ...changeNickname, show });
+  }
+
+  function handleNicknameChange(e) {
+    const value = e.target.value;
+    const { message } = nicknameValidation(value, contacts);
+    setChangeNickname({ ...changeNickname, val: value, error: message });
+  }
+
+  function getContactInfo() {
+    const index = contacts.findIndex((i) => i.chatId === active.val);
+    if (index === -1) return { name: "unknown", email: "unknown" };
+    return {
+      email: contacts[index].email,
+      name: contacts[index].name,
+    };
+  }
+
+  const info = getContactInfo();
+
+  return (
+    <React.Fragment>
+      <AddThisContact>
+        <AddThisContactInfo>
+          This user is not in your contacts.
+        </AddThisContactInfo>
+        <AddThisContactBtn onClick={() => handleNicknameModal(true)}>
+          Add to contact?
+        </AddThisContactBtn>
+      </AddThisContact>
+      {changeNickname.show && (
+        <NicknameInput
+          isLoading={isLoading}
+          nickname=""
+          handleNicknameModal={handleNicknameModal}
+          name={info.name}
+          handleNicknameChange={handleNicknameChange}
+          error={changeNickname.error}
+          title="Create nickname"
+          btnLabel="Create"
+          changeNickname={changeNickname}
+          setChangeNickname={setChangeNickname}
+          email={info.email}
+          setIsLoading={setIsLoading}
+        />
+      )}
+    </React.Fragment>
   );
 }
 
