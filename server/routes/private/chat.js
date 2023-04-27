@@ -6,6 +6,7 @@ const UserCollection = require("../../db/model/User");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const { nextAdminIndex } = require("../../utils/validation");
 const { decrypt } = require("../../utils/messages");
+const { getSocketServer, getConnectionId } = require("../../socket");
 
 const route = express.Router();
 
@@ -162,6 +163,43 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
         { $push: { contacts: contactToAdd } }
       ),
     ]);
+
+    try {
+      const groupMembers = data.members.map((i) => i.email);
+      const userData = await UserCollection.find({
+        email: { $in: groupMembers },
+      });
+
+      let details = [];
+      let connectionId;
+      userData.forEach((i) => {
+        if (i.email === contactToAdd) connectionId = i._id;
+        else {
+          let data = {
+            nickname: null,
+            name: i.name,
+            email: i.email,
+            avatarId: i.avatarId,
+          };
+          details.push(data);
+        }
+      });
+
+      const toSend = {
+        _id: data._id,
+        name: data.name,
+        admin: data.admin,
+        lastMsg: data.lastMsg,
+        lastMsgTstmp: data.lastMsgTstmp,
+        icon: data.icon,
+        chatId: data.chatId,
+        members: details,
+        isPrivate: false,
+      };
+      const socket = getSocketServer();
+      if (socket)
+        socket.to(getConnectionId(connectionId)).emit("new-group", toSend);
+    } catch (_) {}
   }
 
   return resp.status(201).send();

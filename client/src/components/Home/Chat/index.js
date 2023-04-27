@@ -9,6 +9,7 @@ import { useSocket } from "../../../context/SocketContext";
 import { updateMessageReceived } from "../../../store/actions/ChatActions";
 import {
   addNewContact,
+  createUserGroup,
   updateLastMsgAndTmstp,
   updateOnlineContacts,
 } from "../../../store/actions/ContactActions";
@@ -59,9 +60,14 @@ export default function Chat() {
       dispatch(updateOnlineContacts(online));
     });
 
+    socket.on("new-group", (data = {}) => {
+      dispatch(createUserGroup(data));
+    });
+
     return () => {
       socket.off("receive-message");
       socket.off("is-online");
+      socket.off("new-group");
     };
   }, [socket, active, dispatch]);
 

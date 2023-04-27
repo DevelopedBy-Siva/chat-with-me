@@ -9,11 +9,18 @@ const logger = require("../logger");
 
 const JOINED_IDS = new Set();
 
+let io;
+
+/**
+ * Get SOCKET SERVER
+ */
+module.exports.getSocketServer = () => io;
+
 module.exports.connect = (server) => {
   /**
    * Socket.io server
    */
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin: config.get("client_url"),
     },
@@ -163,13 +170,6 @@ function isUserAlreadyLoggedIn(id) {
   return true;
 }
 
-function getConnectionId(id) {
-  const ids = [...JOINED_IDS];
-  const index = ids.findIndex((i) => i.startsWith(id));
-  if (index === -1) return id;
-  return ids[index];
-}
-
 async function getUserDetails(email) {
   const user = await UserCollection.findOne({ email });
   if (!user) return undefined;
@@ -185,3 +185,11 @@ async function getUserDetails(email) {
     inContact: false,
   };
 }
+
+function getConnectionId(id) {
+  const ids = [...JOINED_IDS];
+  const index = ids.findIndex((i) => i.startsWith(id));
+  if (index === -1) return id;
+  return ids[index];
+}
+module.exports.getConnectionId = (id) => getConnectionId(id);
