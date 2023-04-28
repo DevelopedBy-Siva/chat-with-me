@@ -1,13 +1,11 @@
-const { Server } = require("socket.io");
 const config = require("config");
+const { Server } = require("socket.io");
 
-const ChatCollection = require("../db/model/Chat");
-const UserCollection = require("../db/model/User");
+const db = require("./db");
 const GroupsCollection = require("../db/model/Groups");
-const { encrypt } = require("../utils/messages");
+const logger = require("../logger");
 const { authorizeSocket } = require("../auth");
 const { ErrorCodes } = require("../exceptions");
-const logger = require("../logger");
 
 const JOINED_IDS = new Set();
 
@@ -28,13 +26,18 @@ module.exports.connect = (server) => {
     },
   });
 
+  /**
+   * Middleware to Authorize and ensures that the use is logged on to a single device
+   */
   io.use((socket, next) => {
     const id = socket.handshake.query.id;
+
     // Authorise Socket
     const token = socket.handshake.query.token;
     if (!authorizeSocket(token))
       return next(new Error(ErrorCodes.ERR_FORBIDDEN));
 
+    // Check whether the user is already connected or not
     const isOn = isUserAlreadyLoggedIn(id);
     if (isOn) return next(new Error(ErrorCodes.ERR_DEVICE_ALREADY_CONNECTED));
     next();
@@ -71,7 +74,7 @@ module.exports.connect = (server) => {
       ) => {
         try {
           // Check contact existed or not, if not add it
-          const exists = await addContactIfNotExists(
+          const exists = await db.addContactIfNotExists(
             isPrivate,
             recipients,
             senderEmail,
@@ -79,7 +82,7 @@ module.exports.connect = (server) => {
           );
 
           // Save message to chat
-          const chat = await saveMessageToChatIfExists(data, chatId, [
+          const chat = await db.saveMessageToChatIfExists(data, chatId, [
             senderEmail,
           ]);
 
@@ -87,7 +90,7 @@ module.exports.connect = (server) => {
             // If receiver doesn't have this contact, send it
             let newContact;
             if (!exists) {
-              newContact = await getUserDetails(senderEmail);
+              newContact = await db.getUserDetails(senderEmail);
               if (newContact) {
                 newContact.chatId = chatId;
                 newContact.lastMsg = data.message;
@@ -97,10 +100,7 @@ module.exports.connect = (server) => {
 
             if (!isPrivate) {
               try {
-                const chat = await GroupsCollection.findOne(
-                  { chatId },
-                  { members: 1 }
-                );
+                const chat = await db.getGroupDetails(chatId);
                 if (!chat) return callback(false);
                 recipients = chat.members
                   .filter((i) => i.email !== senderEmail)
@@ -150,58 +150,6 @@ function getOnlineIds() {
   return onlineIds;
 }
 
-async function addContactIfNotExists(
-  isPrivate,
-  recipients = [],
-  senderEmail,
-  chatId
-) {
-  if (isPrivate && recipients.length === 1) {
-    const user = await UserCollection.findOne({ _id: recipients[0] });
-    if (user && senderEmail) {
-      const contactFound = user.contacts.findIndex(
-        (i) => i.email === senderEmail
-      );
-      if (contactFound === -1) {
-        user.contacts.push({
-          email: senderEmail,
-          nickname: "",
-          inContact: false,
-          chatId,
-        });
-        await user.save();
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-async function saveMessageToChat(data, chatId, lookup = []) {
-  const encryptedMessage = encrypt(data.message);
-  return await ChatCollection.updateOne(
-    { chatId, blockedBy: { $exists: false }, contacts: { $in: lookup } },
-    {
-      $push: { messages: { ...data, message: encryptedMessage } },
-      $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
-    }
-  );
-}
-
-async function saveMessageToChatIfExists(data, chatId, lookup = []) {
-  const encryptedMessage = encrypt(data.message);
-  return await ChatCollection.findOneAndUpdate(
-    { chatId, blockedBy: { $exists: false }, contacts: { $in: lookup } },
-    {
-      $push: { messages: { ...data, message: encryptedMessage } },
-      $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
-    },
-    {
-      new: true,
-    }
-  );
-}
-
 function isUserAlreadyLoggedIn(id) {
   const ids = [...JOINED_IDS];
   const lookup = id.split("--__--")[0];
@@ -210,26 +158,10 @@ function isUserAlreadyLoggedIn(id) {
   return true;
 }
 
-async function getUserDetails(email) {
-  const user = await UserCollection.findOne({ email });
-  if (!user) return undefined;
-  return {
-    _id: user._id,
-    email: user.email,
-    description: user.description,
-    name: user.name,
-    avatarId: user.avatarId,
-    nickname: "",
-    isBlocked: false,
-    isPrivate: true,
-    inContact: false,
-  };
-}
-
 function getConnectionId(id) {
   const ids = [...JOINED_IDS];
   const index = ids.findIndex((i) => i.startsWith(id));
   if (index === -1) return id;
   return ids[index];
 }
-module.exports.getConnectionId = (id) => getConnectionId(id);
+module.exports.getConnectionId = getConnectionId;
