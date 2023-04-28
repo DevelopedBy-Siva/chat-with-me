@@ -12,6 +12,7 @@ import { SocketProvider, useSocket } from "../../../context/SocketContext";
 import toast from "../../../components/Toast";
 import AnotherDevice from "../../../components/Home/Info/AnotherDevice";
 import { removeIsLoggedIn } from "../../../utils/UserLocal";
+import { initialiseChat } from "../../../store/actions/ChatActions";
 
 export default function UserHome() {
   const { oneTimeInfo, details } = useSelector((state) => state.user);
@@ -36,6 +37,7 @@ function RenderHome({ oneTimeInfo }) {
 
     socket.on("connect", () => {
       setConnected(true);
+      dispatch(initialiseChat());
       dispatch(initializeContacts());
     });
 

@@ -6,6 +6,7 @@ export const READY_TO_SEND_MSG = "READY_TO_SEND_MSG";
 export const MSG_SEND_STATUS = "MSG_SEND_STATUS";
 export const MSG_RECEIVED = "MSG_RECEIVED";
 export const SET_BLOCKED_BY = "SET_BLOCKED_BY";
+export const INITIALISE_CHAT = "INITIALISE_CHAT";
 
 export const getChats = (id, data) => {
   return {
@@ -75,5 +76,11 @@ export const setBlockedBy = (chatId, blockedBy) => {
     type: SET_BLOCKED_BY,
     blockedBy,
     chatId,
+  };
+};
+
+export const initialiseChat = () => {
+  return {
+    type: INITIALISE_CHAT,
   };
 };

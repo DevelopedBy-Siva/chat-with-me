@@ -11,6 +11,7 @@ import {
   SET_ACTIVE,
   MSG_RECEIVED,
   SET_BLOCKED_BY,
+  INITIALISE_CHAT,
 } from "../actions/ChatActions";
 import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
@@ -135,6 +136,20 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: { ...updateBlockedChats },
+      };
+    case INITIALISE_CHAT:
+      const newState = {
+        loading: true,
+        active: {
+          val: null,
+          isPrivate: true,
+          _id: null,
+        },
+        chats: {},
+        error: null,
+      };
+      return {
+        ...newState,
       };
     default:
       return state;
