@@ -16,6 +16,10 @@ const MessageType = {
     type: Boolean,
     default: false,
   },
+  msgId: {
+    type: String,
+    required: true,
+  },
 };
 
 const schema = new mongoose.Schema({

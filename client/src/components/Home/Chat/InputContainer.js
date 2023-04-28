@@ -42,10 +42,12 @@ export default function InputContainer({
     const { val: chatId } = active;
 
     const createdAt = new Date().toUTCString();
+    const msgId = uuidv4();
     const data = {
       sendBy: details._id,
       message: msg.trim(),
       createdAt,
+      msgId,
     };
 
     let recipients = [];
@@ -65,9 +67,7 @@ export default function InputContainer({
       senderEmail: details.email,
     };
 
-    const msgId = uuidv4();
-
-    dispatch(readyToSendMsg({ ...data, msgId }, chatId, createdAt));
+    dispatch(readyToSendMsg(data, chatId, createdAt));
     dispatch(
       updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
     );
