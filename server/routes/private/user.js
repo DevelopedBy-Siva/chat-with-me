@@ -660,7 +660,14 @@ route.get("/", async (req, resp) => {
     const { name, email: mail, description, avatarId, _id } = user;
     return resp
       .status(200)
-      .send({ name, email: mail, description, avatarId, _id });
+      .send({
+        name,
+        email: mail,
+        description,
+        avatarId,
+        _id,
+        token: req.token,
+      });
   } catch (ex) {
     const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
     resp.clearCookie(isLoggedInKey);

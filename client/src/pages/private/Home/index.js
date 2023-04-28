@@ -11,13 +11,14 @@ import { initializeContacts } from "../../../store/reducers/Contacts";
 import { SocketProvider, useSocket } from "../../../context/SocketContext";
 import toast from "../../../components/Toast";
 import AnotherDevice from "../../../components/Home/Info/AnotherDevice";
+import { removeIsLoggedIn } from "../../../utils/UserLocal";
 
 export default function UserHome() {
   const { oneTimeInfo, details } = useSelector((state) => state.user);
 
   return (
     <Provider store={store}>
-      <SocketProvider id={details._id}>
+      <SocketProvider id={details._id} token={details.token}>
         <RenderHome oneTimeInfo={oneTimeInfo} />
       </SocketProvider>
     </Provider>
@@ -35,10 +36,22 @@ function RenderHome({ oneTimeInfo }) {
 
     socket.on("connect", () => {
       setConnected(true);
+      dispatch(initializeContacts());
     });
 
     socket.on("connect_error", (error) => {
-      if (error.message === "ERR_DEVICE_ALREADY_CONNECTED") setConnected(false);
+      if (error.message === "ERR_FORBIDDEN") {
+        removeIsLoggedIn();
+        socket.close();
+        toast.info(
+          "Your session has expired. Please wait while we redirect you to the login page.",
+          toast.props.user.persist
+        );
+        setTimeout(() => {
+          window.location = "/";
+        }, 4000);
+      } else if (error.message === "ERR_DEVICE_ALREADY_CONNECTED")
+        setConnected(false);
       else {
         toast.error(
           "Something went wrong. The connection could not be established. Please try reloading the page or try again later",
@@ -46,11 +59,7 @@ function RenderHome({ oneTimeInfo }) {
         );
       }
     });
-  }, [socket]);
-
-  useEffect(() => {
-    if (connected) dispatch(initializeContacts());
-  }, [dispatch, connected]);
+  }, [socket, dispatch]);
 
   return connected === null ? (
     <FullPageLoading />

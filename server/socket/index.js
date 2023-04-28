@@ -5,6 +5,7 @@ const ChatCollection = require("../db/model/Chat");
 const UserCollection = require("../db/model/User");
 const GroupsCollection = require("../db/model/Groups");
 const { encrypt } = require("../utils/messages");
+const { authorizeSocket } = require("../auth");
 const { ErrorCodes } = require("../exceptions");
 const logger = require("../logger");
 
@@ -29,6 +30,11 @@ module.exports.connect = (server) => {
 
   io.use((socket, next) => {
     const id = socket.handshake.query.id;
+    // Authorise Socket
+    const token = socket.handshake.query.token;
+    if (!authorizeSocket(token))
+      return next(new Error(ErrorCodes.ERR_FORBIDDEN));
+
     const isOn = isUserAlreadyLoggedIn(id);
     if (isOn) return next(new Error(ErrorCodes.ERR_DEVICE_ALREADY_CONNECTED));
     next();
@@ -70,11 +76,11 @@ module.exports.connect = (server) => {
           );
 
           // Save message to chat
-          const messageSaved = await saveMessageToChat(data, chatId, [
+          const chat = await saveMessageToChatIfExists(data, chatId, [
             senderEmail,
           ]);
 
-          if (messageSaved.modifiedCount > 0) {
+          if (chat) {
             // If receiver doesn't have this contact, send it
             let newContact;
             if (!exists) {
@@ -177,6 +183,20 @@ async function saveMessageToChat(data, chatId, lookup = []) {
     {
       $push: { messages: { ...data, message: encryptedMessage } },
       $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
+    }
+  );
+}
+
+async function saveMessageToChatIfExists(data, chatId, lookup = []) {
+  const encryptedMessage = encrypt(data.message);
+  return await ChatCollection.findOneAndUpdate(
+    { chatId, blockedBy: { $exists: false }, contacts: { $in: lookup } },
+    {
+      $push: { messages: { ...data, message: encryptedMessage } },
+      $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
+    },
+    {
+      new: true,
     }
   );
 }
