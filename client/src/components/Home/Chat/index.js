@@ -26,6 +26,12 @@ export default function Chat() {
   useEffect(() => {
     if (!socket) return;
 
+    socket.emit("getOnline");
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
     socket.on(
       "receive-message",
       ({
@@ -56,7 +62,7 @@ export default function Chat() {
       }
     );
 
-    socket.on("is-online", ({ online = [] }) => {
+    socket.on("online", ({ online = [] }) => {
       dispatch(updateOnlineContacts(online));
     });
 
@@ -66,7 +72,7 @@ export default function Chat() {
 
     return () => {
       socket.off("receive-message");
-      socket.off("is-online");
+      socket.off("online");
       socket.off("new-group");
     };
   }, [socket, active, dispatch]);

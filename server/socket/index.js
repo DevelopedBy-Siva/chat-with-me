@@ -49,8 +49,11 @@ module.exports.connect = (server) => {
     socket.join(id);
     JOINED_IDS.add(id);
 
-    // Is Online or not
-    weAreOnline();
+    socket.on("getOnline", () => {
+      io.emit("online", {
+        online: getOnlineIds(),
+      });
+    });
 
     socket.on(
       "send-message",
@@ -129,25 +132,23 @@ module.exports.connect = (server) => {
     );
     socket.on("disconnect", () => {
       JOINED_IDS.delete(id);
-      weAreOnline();
+      io.emit("online", {
+        online: getOnlineIds(),
+      });
     });
   });
-
-  function weAreOnline() {
-    try {
-      let onlineIds = [];
-      [...JOINED_IDS].forEach((i) => {
-        if (i) {
-          const splitted = i.split("--__--");
-          if (splitted && splitted.length > 0) onlineIds.push(splitted[0]);
-        }
-      });
-      io.emit("is-online", {
-        online: onlineIds,
-      });
-    } catch (_) {}
-  }
 };
+
+function getOnlineIds() {
+  let onlineIds = [];
+  [...JOINED_IDS].forEach((i) => {
+    if (i) {
+      const splitted = i.split("--__--");
+      if (splitted && splitted.length > 0) onlineIds.push(splitted[0]);
+    }
+  });
+  return onlineIds;
+}
 
 async function addContactIfNotExists(
   isPrivate,
