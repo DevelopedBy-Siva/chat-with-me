@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { v4: uuid } = require("uuid");
 
 const MessageType = {
   sendBy: {
@@ -22,6 +23,21 @@ const MessageType = {
   },
 };
 
+const LastMessage = {
+  message: {
+    type: String,
+    default: "",
+  },
+  timestamp: {
+    type: String,
+    default: "",
+  },
+  uuid: {
+    type: String,
+    default: uuid(),
+  },
+};
+
 const schema = new mongoose.Schema({
   chatId: {
     unique: true,
@@ -42,13 +58,9 @@ const schema = new mongoose.Schema({
   blockedBy: {
     type: String,
   },
-  lastMsgTstmp: {
-    type: String,
-    default: "",
-  },
-  lastMsg: {
-    type: String,
-    default: "",
+  lastMessage: {
+    type: LastMessage,
+    default: {},
   },
 });
 

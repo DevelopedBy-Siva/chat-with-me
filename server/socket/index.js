@@ -2,7 +2,6 @@ const config = require("config");
 const { Server } = require("socket.io");
 
 const db = require("./db");
-const GroupsCollection = require("../db/model/Groups");
 const logger = require("../logger");
 const { authorizeSocket } = require("../auth");
 const { ErrorCodes } = require("../exceptions");
@@ -93,8 +92,11 @@ module.exports.connect = (server) => {
               newContact = await db.getUserDetails(senderEmail);
               if (newContact) {
                 newContact.chatId = chatId;
-                newContact.lastMsg = data.message;
-                newContact.lastMsgTstmp = data.createdAt;
+                newContact.lastMessage = {
+                  message: data.message,
+                  timestamp: data.createdAt,
+                  uuid: data.msgId,
+                };
               }
             }
 

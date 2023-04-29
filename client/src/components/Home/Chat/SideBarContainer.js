@@ -154,9 +154,8 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
           {contactsToRender.values[group].map((data, index) => {
             const {
               name,
-              lastMsg,
+              lastMessage,
               avatarId,
-              lastMsgTstmp,
               nickname,
               icon,
               chatId,
@@ -183,10 +182,10 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
                       {nickname && nickname.length > 0 ? nickname : name}
                     </Name>
                     <LastMsgTmstp>
-                      {getContactsTimestamp(lastMsgTstmp)}
+                      {getContactsTimestamp(lastMessage.timestamp)}
                     </LastMsgTmstp>
                   </Wrapper>
-                  <LastMessage>{lastMsg}</LastMessage>
+                  <LastMessage>{lastMessage.message}</LastMessage>
                 </Details>
               </Contact>
             );

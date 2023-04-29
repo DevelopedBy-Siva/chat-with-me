@@ -13,6 +13,8 @@ export function SocketProvider({ id, token, children }) {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
+    if (!id) return;
+
     const uniqueId = id + "--__--" + uuid();
     const newSocket = io(baseURL, {
       query: { id: uniqueId, token },

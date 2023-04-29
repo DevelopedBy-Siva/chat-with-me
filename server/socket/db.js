@@ -9,7 +9,13 @@ async function saveMessageToChatIfExists(data, chatId, lookup = []) {
     { chatId, blockedBy: { $exists: false }, contacts: { $in: lookup } },
     {
       $push: { messages: { ...data, message: encryptedMessage } },
-      $set: { lastMsg: encryptedMessage, lastMsgTstmp: data.createdAt },
+      $set: {
+        lastMessage: {
+          message: encryptedMessage,
+          timestamp: data.createdAt,
+          uuid: data.msgId,
+        },
+      },
     },
     {
       new: true,

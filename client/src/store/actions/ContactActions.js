@@ -106,6 +106,7 @@ export const updateLastMsgAndTmstp = (
   chatId,
   lastMsg,
   lastMsgTstmp,
+  lastMsgId,
   isPrivate = true
 ) => {
   return {
@@ -113,6 +114,7 @@ export const updateLastMsgAndTmstp = (
     payload: {
       lastMsg,
       lastMsgTstmp,
+      lastMsgId,
       chatId,
       isPrivate,
     },

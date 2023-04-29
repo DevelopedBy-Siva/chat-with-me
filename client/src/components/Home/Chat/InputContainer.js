@@ -69,7 +69,13 @@ export default function InputContainer({
 
     dispatch(readyToSendMsg(data, chatId, createdAt));
     dispatch(
-      updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+      updateLastMsgAndTmstp(
+        chatId,
+        data.message,
+        data.createdAt,
+        data.msgId,
+        isPrivate
+      )
     );
 
     socket.emit("send-message", chat, (isSent) => {

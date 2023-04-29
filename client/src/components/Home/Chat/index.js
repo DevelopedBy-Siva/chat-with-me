@@ -47,7 +47,13 @@ export default function Chat() {
 
         dispatch(updateMessageReceived(chatId, data));
         dispatch(
-          updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+          updateLastMsgAndTmstp(
+            chatId,
+            data.message,
+            data.createdAt,
+            data.msgId,
+            isPrivate
+          )
         );
         if (active.val !== chatId && !data.isNotification)
           toast.msg(

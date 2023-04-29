@@ -15,6 +15,7 @@ import {
 } from "../actions/ChatActions";
 import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
+import localStorage from "../../utils/MessageLocal";
 
 const initialState = {
   loading: true,
@@ -54,7 +55,7 @@ const reducer = (state = initialState, action) => {
     case GET_CHATS:
       const { data = {}, id } = payload;
       const chats = { ...state.chats };
-      chats[id] = { ...data, messages: sortAndGroupMsgs(data.messages) };
+      chats[id] = { ...data, messages: data.messages };
 
       return { ...state, loading: false, error: null, chats };
     case SET_ACTIVE:
@@ -166,6 +167,9 @@ export const fetchChats = (id) => {
     axios
       .get(`/chat/${id}`)
       .then(({ data }) => {
+        const messages = sortAndGroupMsgs(data.messages);
+        data.messages = messages;
+        localStorage.saveChat(id, data);
         dispatch(getChats(id, data));
       })
       .catch(() => {

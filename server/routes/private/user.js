@@ -179,12 +179,17 @@ route.post("/add-contact", async (req, resp) => {
 
   // Get the ChatId if exists, else create a new chat
   let chatId;
-  let lastMsg = "";
-  let lastMsgTstmp = "";
+  let lastMessage = {
+    uuid: "",
+    message: "",
+    timestamp: "",
+  };
+
   if (chatExists) {
     chatId = chatExists.chatId;
-    lastMsg = decrypt(chatExists.lastMsg);
-    lastMsgTstmp = chatExists.lastMsgTstmp;
+    lastMessage._id = chatExists.lastMessage.uuid;
+    lastMessage.message = decrypt(chatExists.lastMessage.message);
+    lastMessage.timestamp = chatExists.lastMessage.timestamp;
   } else {
     chatId = uuid();
     const chatDocument = new ChatCollection({
@@ -213,8 +218,7 @@ route.post("/add-contact", async (req, resp) => {
     nickname,
     chatId,
     isPrivate: true,
-    lastMsg,
-    lastMsgTstmp,
+    lastMessage,
     inContact: true,
   });
 });
@@ -397,7 +401,7 @@ route.get("/contacts", async (req, resp) => {
 
       const chatDetails = await ChatCollection.findOne(
         { chatId: found.chatId },
-        { lastMsg: 1, lastMsgTstmp: 1, _id: 0 }
+        { lastMessage: 1, _id: 0 }
       );
       contactsToSend.push({
         _id: details._id,
@@ -406,8 +410,10 @@ route.get("/contacts", async (req, resp) => {
         name: details.name,
         avatarId: details.avatarId,
         nickname: found.nickname,
-        lastMsg: decrypt(chatDetails.lastMsg),
-        lastMsgTstmp: chatDetails.lastMsgTstmp,
+        lastMessage: {
+          ...chatDetails.lastMessage,
+          message: decrypt(chatDetails.lastMessage.message),
+        },
         isBlocked: found.isBlocked,
         chatId: found.chatId,
         isPrivate: true,
@@ -440,15 +446,17 @@ route.get("/contacts", async (req, resp) => {
     });
     const chatDetails = await ChatCollection.findOne(
       { chatId: grp.chatId },
-      { lastMsg: 1, lastMsgTstmp: 1, _id: 0 }
+      { lastMessage: 1, _id: 0 }
     );
     groupsToSend.push({
       _id: grp._id,
       name: grp.name,
       admin: grp.admin,
       icon: grp.icon,
-      lastMsg: decrypt(chatDetails.lastMsg),
-      lastMsgTstmp: chatDetails.lastMsgTstmp,
+      lastMessage: {
+        ...chatDetails.lastMessage,
+        message: decrypt(chatDetails.lastMessage.message),
+      },
       members: memberDetails,
       chatId: grp.chatId,
       isPrivate: false,
@@ -569,8 +577,11 @@ route.post("/create-group", async (req, resp) => {
     _id: data._id,
     name: data.name,
     admin: data.admin,
-    lastMsg: "",
-    lastMsgTstmp: "",
+    lastMessage: {
+      uuid: "",
+      message: "",
+      timestamp: "",
+    },
     icon: data.icon,
     chatId: data.chatId,
     members: details,
@@ -658,16 +669,14 @@ route.get("/", async (req, resp) => {
     const { email } = req.payload;
     const user = await UserCollection.findOne({ email });
     const { name, email: mail, description, avatarId, _id } = user;
-    return resp
-      .status(200)
-      .send({
-        name,
-        email: mail,
-        description,
-        avatarId,
-        _id,
-        token: req.token,
-      });
+    return resp.status(200).send({
+      name,
+      email: mail,
+      description,
+      avatarId,
+      _id,
+      token: req.token,
+    });
   } catch (ex) {
     const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
     resp.clearCookie(isLoggedInKey);
