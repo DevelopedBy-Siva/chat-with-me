@@ -15,7 +15,6 @@ import {
 } from "../actions/ChatActions";
 import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
-import localStorage from "../../utils/MessageLocal";
 
 const initialState = {
   loading: true,
@@ -169,7 +168,6 @@ export const fetchChats = (id) => {
       .then(({ data }) => {
         const messages = sortAndGroupMsgs(data.messages);
         data.messages = messages;
-        localStorage.saveChat(id, data);
         dispatch(getChats(id, data));
       })
       .catch(() => {

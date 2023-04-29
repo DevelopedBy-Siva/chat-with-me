@@ -60,7 +60,11 @@ const schema = new mongoose.Schema({
   },
   lastMessage: {
     type: LastMessage,
-    default: {},
+    default: {
+      message: "",
+      timestamp: "",
+      uuid: "",
+    },
   },
 });
 

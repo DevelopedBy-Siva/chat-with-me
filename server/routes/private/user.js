@@ -411,7 +411,8 @@ route.get("/contacts", async (req, resp) => {
         avatarId: details.avatarId,
         nickname: found.nickname,
         lastMessage: {
-          ...chatDetails.lastMessage,
+          timestamp: chatDetails.lastMessage.timestamp,
+          uuid: chatDetails.lastMessage.uuid,
           message: decrypt(chatDetails.lastMessage.message),
         },
         isBlocked: found.isBlocked,
@@ -454,7 +455,8 @@ route.get("/contacts", async (req, resp) => {
       admin: grp.admin,
       icon: grp.icon,
       lastMessage: {
-        ...chatDetails.lastMessage,
+        timestamp: chatDetails.lastMessage.timestamp,
+        uuid: chatDetails.lastMessage.uuid,
         message: decrypt(chatDetails.lastMessage.message),
       },
       members: memberDetails,

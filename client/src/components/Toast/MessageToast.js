@@ -16,7 +16,7 @@ export default function MessageToast() {
   return (
     <Toaster
       toastOptions={{
-        duration: 8000,
+        duration: 5000,
         style: {
           padding: 0,
           background: "none",

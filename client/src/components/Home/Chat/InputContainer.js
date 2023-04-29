@@ -11,6 +11,7 @@ import {
   updateMessageSendStatus,
 } from "../../../store/actions/ChatActions";
 import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
+import localStorage from "../../../utils/MessageLocal";
 
 export default function InputContainer({
   chatContainerRef,
@@ -77,6 +78,7 @@ export default function InputContainer({
         isPrivate
       )
     );
+    localStorage.saveMessage(chatId, msgId);
 
     socket.emit("send-message", chat, (isSent) => {
       if (isSent)

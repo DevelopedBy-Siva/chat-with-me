@@ -55,6 +55,8 @@ export default function Chat() {
             isPrivate
           )
         );
+        if (active.val === chatId) localStorage.setItem(chatId, data.msgId);
+
         if (active.val !== chatId && !data.isNotification)
           toast.msg(
             data.message,
@@ -63,7 +65,8 @@ export default function Chat() {
             senderEmail,
             chatId,
             isPrivate,
-            data.sendBy
+            data.sendBy,
+            data.msgId
           );
       }
     );

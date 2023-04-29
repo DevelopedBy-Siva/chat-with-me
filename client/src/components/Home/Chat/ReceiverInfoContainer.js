@@ -34,7 +34,6 @@ import {
 import { toggle_BW_Chats } from "../../../utils/Screens";
 import NicknameInput from "./NicknameInput";
 import { useSocket } from "../../../context/SocketContext";
-import localStorage from "../../../utils/MessageLocal";
 
 const CONTAINER_WIDTH = "280px";
 const options = [
@@ -160,7 +159,6 @@ function InfoContainer({ setInfoVisible, active, chats }) {
           await axios.put(`/chat/leave/${chatId}`).then(() => {
             dispatch(setActive(null, true));
             dispatch(removeUserGroup(chatId));
-            localStorage.deleteChat(chatId);
             notifyGroup(details.name, "left the chat");
             toast.success("Left the group successfully");
           });
@@ -169,7 +167,6 @@ function InfoContainer({ setInfoVisible, active, chats }) {
           await axios.delete(`/chat/${chatId}`).then(() => {
             dispatch(setActive(null, true));
             dispatch(removeUserGroup(chatId));
-            localStorage.deleteChat(chatId);
             toast.success("Group the removed successfully");
           });
 

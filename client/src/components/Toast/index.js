@@ -35,7 +35,8 @@ const notifyMsg = (
   email,
   chatId,
   isPrivate,
-  senderId
+  senderId,
+  msgId
 ) => {
   toast.custom((id) => (
     <MsgToastContainer
@@ -47,6 +48,7 @@ const notifyMsg = (
       isPrivate={isPrivate}
       toastProps={id}
       senderId={senderId}
+      msgId={msgId}
     />
   ));
 };
@@ -85,8 +87,17 @@ const toExpose = {
   success: (message, props) => notify("success", message, props),
   error: (message, props) => notify("error", message, props),
   info: (message, props) => notify("info", message, props),
-  msg: (message, from, avatarId, email, chatId, isPrivate, senderId) =>
-    notifyMsg(message, from, avatarId, email, chatId, isPrivate, senderId),
+  msg: (message, from, avatarId, email, chatId, isPrivate, senderId, msgId) =>
+    notifyMsg(
+      message,
+      from,
+      avatarId,
+      email,
+      chatId,
+      isPrivate,
+      senderId,
+      msgId
+    ),
   remove: () => remove(),
   props: toastProps,
 };
