@@ -34,9 +34,16 @@ route.get("/:chatId", async (req, resp) => {
   messages.forEach((item) => {
     item.message = decrypt(item.message);
   });
-  resp
-    .status(200)
-    .send({ ...data, messages, contactInfos, blockedBy: data.blockedBy });
+  resp.status(200).send({
+    _id: data._id,
+    chatId: data.chatId,
+    contacts: data.contacts,
+    isPrivate: data.isPrivate,
+    lastMessage: data.lastMessage,
+    messages,
+    contactInfos,
+    blockedBy: data.blockedBy,
+  });
 });
 
 /**
@@ -197,8 +204,6 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
         _id: data._id,
         name: data.name,
         admin: data.admin,
-        lastMsg: data.lastMsg,
-        lastMsgTstmp: data.lastMsgTstmp,
         icon: data.icon,
         chatId: data.chatId,
         members: details,

@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { IoClose } from "react-icons/io5";
 import { toast } from "react-hot-toast";
+import { AnimatePresence, motion } from "framer-motion";
 
 import popupsound from "../../assets/sounds/popup.mp3";
 import { getAvatar } from "../../assets/avatars";
 import { getContactNickname } from "../../utils/InputHandler";
 import { setActive } from "../../store/actions/ChatActions";
 import { toggle_BW_Chats } from "../../utils/Screens";
-import { AnimatePresence, motion } from "framer-motion";
+import localStorage from "../../utils/MessageLocal";
 
 export default function MsgToastContainer({
   message = "...",
@@ -20,6 +21,7 @@ export default function MsgToastContainer({
   isPrivate,
   toastProps = {},
   senderId,
+  msgId,
 }) {
   const dispatch = useDispatch();
 
@@ -59,6 +61,7 @@ export default function MsgToastContainer({
     <AnimatePresence key={toastProps.id}>
       {toastProps.visible && (
         <Container
+          onClick={() => localStorage.saveMessage(chatId, msgId)}
           initial={{ opacity: 0, y: -100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ y: -100, opacity: 0 }}

@@ -48,6 +48,7 @@ function authorizeJWT(req, res, next) {
     const payload = jwt.verify(token, SECRET_KEY);
     // Set payload to request
     req.payload = payload;
+    req.token = token;
     res.cookie(cookieNames.isLoggedInKey, "yes", {
       expires: getIsLoggedInExpiryDate(),
     });
@@ -99,10 +100,20 @@ const getIsLoggedInExpiryDate = () => {
   return date;
 };
 
+const authorizeSocket = (token) => {
+  try {
+    jwt.verify(token, SECRET_KEY);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
 module.exports.jwtToken = jwtToken;
 module.exports.login = login;
 module.exports.hash = hashPswd;
 module.exports.authorizeJWT = authorizeJWT;
+module.exports.authorizeSocket = authorizeSocket;
 module.exports.cookies = {
   httpOnlyCookieProps,
   cookieNames,

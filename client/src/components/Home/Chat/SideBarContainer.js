@@ -14,6 +14,7 @@ import {
 import Loader from "../../Loader";
 import { getAvatar } from "../../../assets/avatars";
 import { toggle_BW_Chats } from "../../../utils/Screens";
+import localStorage from "../../../utils/MessageLocal";
 
 export default function SideBar() {
   const {
@@ -77,8 +78,9 @@ function ContactsWrapper({ search, contacts, groups }) {
 
   const { active } = useSelector((state) => state.chats);
 
-  function handleContact(id, isPrivate, _id) {
+  function handleContact(id, isPrivate, _id, lastMessageId) {
     toggle_BW_Chats();
+    localStorage.saveMessage(id, lastMessageId);
     dispatch(setActive(id, isPrivate, _id));
   }
 
@@ -154,21 +156,30 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
           {contactsToRender.values[group].map((data, index) => {
             const {
               name,
-              lastMsg,
+              lastMessage,
               avatarId,
-              lastMsgTstmp,
               nickname,
               icon,
               chatId,
               isPrivate,
               _id,
             } = data;
+
+            const isMessageInQueue = localStorage.isNewMessage(
+              chatId,
+              lastMessage.uuid
+            );
+            const highlightContact = isMessageInQueue ? "new-message" : "";
+
             return (
               <Contact
                 className={active.val === chatId ? "active-contact" : ""}
-                onClick={() => handleContact(chatId, isPrivate, _id)}
+                onClick={() =>
+                  handleContact(chatId, isPrivate, _id, lastMessage.uuid)
+                }
                 key={`V${index}`}
               >
+                {isMessageInQueue && <HighlightContact />}
                 <AvatarContainer>
                   {isContactOnline(_id) === true && <ContactStatus />}
                   {icon ? (
@@ -179,14 +190,16 @@ function GroupedContacts({ contactsToRender, handleContact, group, active }) {
                 </AvatarContainer>
                 <Details>
                   <Wrapper>
-                    <Name>
+                    <Name className={highlightContact}>
                       {nickname && nickname.length > 0 ? nickname : name}
                     </Name>
-                    <LastMsgTmstp>
-                      {getContactsTimestamp(lastMsgTstmp)}
+                    <LastMsgTmstp className={highlightContact}>
+                      {getContactsTimestamp(lastMessage.timestamp)}
                     </LastMsgTmstp>
                   </Wrapper>
-                  <LastMessage>{lastMsg}</LastMessage>
+                  <LastMessage className={highlightContact}>
+                    {lastMessage.message}
+                  </LastMessage>
                 </Details>
               </Contact>
             );
@@ -427,6 +440,10 @@ const Name = styled.span`
   text-overflow: ellipsis;
   text-transform: capitalize;
 
+  &.new-message {
+    font-weight: 700;
+  }
+
   @media (max-width: 920px) {
     font-size: 0.7rem;
   }
@@ -441,6 +458,10 @@ const LastMessage = styled.span`
   text-overflow: ellipsis;
   margin-top: 4px;
 
+  &.new-message {
+    font-weight: 600;
+  }
+
   @media (max-width: 920px) {
     font-size: 0.65rem;
   }
@@ -452,6 +473,10 @@ const LastMsgTmstp = styled.span`
   flex-shrink: 0;
   margin-left: 12px;
   display: block;
+
+  &.new-message {
+    font-weight: 600;
+  }
 `;
 
 const EmptyContacts = styled.span`
@@ -494,4 +519,16 @@ const Icon = styled.span`
   align-items: center;
   font-size: 1.3rem;
   color: #fff;
+`;
+
+const HighlightContact = styled.span`
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: ${(props) => props.theme.txt.main};
 `;

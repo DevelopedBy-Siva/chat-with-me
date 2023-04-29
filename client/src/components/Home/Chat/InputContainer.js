@@ -11,6 +11,7 @@ import {
   updateMessageSendStatus,
 } from "../../../store/actions/ChatActions";
 import { updateLastMsgAndTmstp } from "../../../store/actions/ContactActions";
+import localStorage from "../../../utils/MessageLocal";
 
 export default function InputContainer({
   chatContainerRef,
@@ -42,10 +43,12 @@ export default function InputContainer({
     const { val: chatId } = active;
 
     const createdAt = new Date().toUTCString();
+    const msgId = uuidv4();
     const data = {
       sendBy: details._id,
       message: msg.trim(),
       createdAt,
+      msgId,
     };
 
     let recipients = [];
@@ -65,12 +68,17 @@ export default function InputContainer({
       senderEmail: details.email,
     };
 
-    const msgId = uuidv4();
-
-    dispatch(readyToSendMsg({ ...data, msgId }, chatId, createdAt));
+    dispatch(readyToSendMsg(data, chatId, createdAt));
     dispatch(
-      updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+      updateLastMsgAndTmstp(
+        chatId,
+        data.message,
+        data.createdAt,
+        data.msgId,
+        isPrivate
+      )
     );
+    localStorage.saveMessage(chatId, msgId);
 
     socket.emit("send-message", chat, (isSent) => {
       if (isSent)

@@ -151,20 +151,22 @@ const reducer = (state = initialState, action) => {
         groups: [...groupToKick],
       };
     case LAST_MSG_AND_TMSTP:
-      const { isPrivate, lastMsg, lastMsgTstmp, chatId } = payload;
+      const { isPrivate, lastMsg, lastMsgTstmp, lastMsgId, chatId } = payload;
       const contacts = [...state.contacts];
       const groups = [...state.groups];
       if (isPrivate) {
         const index = contacts.findIndex((i) => i.chatId === chatId);
         if (index !== -1) {
-          contacts[index].lastMsg = lastMsg;
-          contacts[index].lastMsgTstmp = lastMsgTstmp;
+          contacts[index].lastMessage["message"] = lastMsg;
+          contacts[index].lastMessage["timestamp"] = lastMsgTstmp;
+          contacts[index].lastMessage["uuid"] = lastMsgId;
         }
       } else {
         const index = groups.findIndex((i) => i.chatId === chatId);
         if (index !== -1) {
-          groups[index].lastMsg = lastMsg;
-          groups[index].lastMsgTstmp = lastMsgTstmp;
+          groups[index].lastMessage["message"] = lastMsg;
+          groups[index].lastMessage["timestamp"] = lastMsgTstmp;
+          groups[index].lastMessage["uuid"] = lastMsgId;
         }
       }
       return {

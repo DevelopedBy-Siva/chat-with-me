@@ -1,37 +1,23 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
 import FullPageLoading from "../../components/Loader/FullPage";
-import axios from "../../api/axios";
-import { setUser } from "../../store/actions/UserActions";
-import { removeIsLoggedIn } from "../../utils/UserLocal";
+import { LoginProvider, useLoggedIn } from "../../context/LoginContext";
 
 export default function Private() {
-  const [proceed, setProceed] = useState(null);
+  return (
+    <LoginProvider>
+      <Container />
+    </LoginProvider>
+  );
+}
 
-  const dispatch = useDispatch();
+function Container() {
+  const loggedIn = useLoggedIn();
 
-  useEffect(() => {
-    async function startupValidation() {
-      const isValid = await axios
-        .get("/user/")
-        .then(({ data }) => {
-          dispatch(setUser(data));
-          return true;
-        })
-        .catch(() => {
-          removeIsLoggedIn();
-          return false;
-        });
-      setProceed(isValid);
-    }
-    startupValidation();
-  }, [dispatch]);
-
-  return proceed === null ? (
+  return loggedIn === null ? (
     <FullPageLoading />
-  ) : proceed === true ? (
+  ) : loggedIn === true ? (
     <Suspense fallback={<FullPageLoading />}>
       <Outlet />
     </Suspense>

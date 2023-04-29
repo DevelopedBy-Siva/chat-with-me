@@ -46,14 +46,6 @@ const schema = new mongoose.Schema({
     type: [MemberType],
     default: [],
   },
-  lastMsgTstmp: {
-    type: String,
-    default: "",
-  },
-  lastMsg: {
-    type: String,
-    default: "",
-  },
   icon: {
     type: IconType,
     required: true,

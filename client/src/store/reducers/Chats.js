@@ -11,6 +11,7 @@ import {
   SET_ACTIVE,
   MSG_RECEIVED,
   SET_BLOCKED_BY,
+  INITIALISE_CHAT,
 } from "../actions/ChatActions";
 import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
@@ -53,7 +54,7 @@ const reducer = (state = initialState, action) => {
     case GET_CHATS:
       const { data = {}, id } = payload;
       const chats = { ...state.chats };
-      chats[id] = { ...data, messages: sortAndGroupMsgs(data.messages) };
+      chats[id] = { ...data, messages: data.messages };
 
       return { ...state, loading: false, error: null, chats };
     case SET_ACTIVE:
@@ -136,6 +137,20 @@ const reducer = (state = initialState, action) => {
         ...state,
         chats: { ...updateBlockedChats },
       };
+    case INITIALISE_CHAT:
+      const newState = {
+        loading: true,
+        active: {
+          val: null,
+          isPrivate: true,
+          _id: null,
+        },
+        chats: {},
+        error: null,
+      };
+      return {
+        ...newState,
+      };
     default:
       return state;
   }
@@ -151,6 +166,8 @@ export const fetchChats = (id) => {
     axios
       .get(`/chat/${id}`)
       .then(({ data }) => {
+        const messages = sortAndGroupMsgs(data.messages);
+        data.messages = messages;
         dispatch(getChats(id, data));
       })
       .catch(() => {

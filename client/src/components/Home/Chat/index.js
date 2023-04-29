@@ -26,6 +26,12 @@ export default function Chat() {
   useEffect(() => {
     if (!socket) return;
 
+    socket.emit("getOnline");
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
     socket.on(
       "receive-message",
       ({
@@ -41,8 +47,16 @@ export default function Chat() {
 
         dispatch(updateMessageReceived(chatId, data));
         dispatch(
-          updateLastMsgAndTmstp(chatId, data.message, data.createdAt, isPrivate)
+          updateLastMsgAndTmstp(
+            chatId,
+            data.message,
+            data.createdAt,
+            data.msgId,
+            isPrivate
+          )
         );
+        if (active.val === chatId) localStorage.setItem(chatId, data.msgId);
+
         if (active.val !== chatId && !data.isNotification)
           toast.msg(
             data.message,
@@ -51,12 +65,13 @@ export default function Chat() {
             senderEmail,
             chatId,
             isPrivate,
-            data.sendBy
+            data.sendBy,
+            data.msgId
           );
       }
     );
 
-    socket.on("is-online", ({ online = [] }) => {
+    socket.on("online", ({ online = [] }) => {
       dispatch(updateOnlineContacts(online));
     });
 
@@ -66,7 +81,7 @@ export default function Chat() {
 
     return () => {
       socket.off("receive-message");
-      socket.off("is-online");
+      socket.off("online");
       socket.off("new-group");
     };
   }, [socket, active, dispatch]);
