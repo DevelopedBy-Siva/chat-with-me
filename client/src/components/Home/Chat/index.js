@@ -7,6 +7,8 @@ import ChatContainer from "../Chat/ChatContainer";
 import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
 import {
+  addMemberContactInfo,
+  removeChatContactInfo,
   setActive,
   updateMessageReceived,
 } from "../../../store/actions/ChatActions";
@@ -98,10 +100,12 @@ export default function Chat() {
 
     socket.on("leave-chat", ({ chatId, email, admin }) => {
       dispatch(removeMemberFromGroup(chatId, email, admin));
+      dispatch(removeChatContactInfo(chatId, email));
     });
 
     socket.on("new-group-member", ({ chatId, data }) => {
       dispatch(addContactToGroup(chatId, data));
+      dispatch(addMemberContactInfo(chatId, data));
     });
 
     return () => {
