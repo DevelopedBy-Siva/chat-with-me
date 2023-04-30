@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { v4: uuid } = require("uuid");
 
 const MessageType = {
   sendBy: {
@@ -34,7 +33,7 @@ const LastMessage = {
   },
   uuid: {
     type: String,
-    default: uuid(),
+    default: "",
   },
 };
 

@@ -15,6 +15,7 @@ import {
 } from "../../../store/actions/ContactActions";
 import toast from "../../Toast";
 import ToastContainer from "../../Toast/MessageToast";
+import localStorage from "../../../utils/MessageLocal";
 
 export default function Chat() {
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ export default function Chat() {
             isPrivate
           )
         );
-        if (active.val === chatId) localStorage.setItem(chatId, data.msgId);
+        if (active.val === chatId) localStorage.saveMessage(chatId, data.msgId);
 
         if (active.val !== chatId && !data.isNotification)
           toast.msg(

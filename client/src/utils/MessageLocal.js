@@ -3,6 +3,7 @@
  */
 function saveMessage(chatId, msgId) {
   try {
+    if (msgId.length === 0) return;
     localStorage.setItem(chatId, msgId);
   } catch (_) {}
 }

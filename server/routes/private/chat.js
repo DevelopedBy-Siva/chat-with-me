@@ -1,11 +1,12 @@
 const express = require("express");
+const { v4: uuid } = require("uuid");
 
 const ChatCollection = require("../../db/model/Chat");
 const GroupsCollection = require("../../db/model/Groups");
 const UserCollection = require("../../db/model/User");
 const { AppError, ErrorCodes } = require("../../exceptions");
 const { nextAdminIndex } = require("../../utils/validation");
-const { decrypt } = require("../../utils/messages");
+const { decrypt, encrypt } = require("../../utils/messages");
 const { getSocketServer, getConnectionId } = require("../../socket");
 
 const route = express.Router();
@@ -155,7 +156,7 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
     {
       email: contactToAdd,
     },
-    { _id: 1 }
+    { _id: 1, name: 1 }
   );
 
   if (!isInTheContact || !contactToAddDetails)
@@ -171,11 +172,32 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
   );
   if (isAdded.modifiedCount > 0) {
     data.members.push({ email: contactToAdd, ref: contactToAddDetails._id });
+
+    const message = {
+      createdAt: new Date().toUTCString(),
+      isNotification: true,
+      sendBy: user._id,
+      msgId: "",
+      message: encrypt(`${contactToAddDetails.name} is added to the group`),
+    };
+
+    const lastMessage = {
+      message: message.message,
+      timestamp: message.timestamp,
+      uuid: message.msgId,
+    };
+
     await Promise.all([
-      data.save(),
+      await data.save(),
       ChatCollection.updateOne(
         { chatId },
-        { $push: { contacts: contactToAdd } }
+        {
+          $push: {
+            contacts: contactToAdd,
+            messages: message,
+          },
+          $set: { lastMessage: lastMessage },
+        }
       ),
     ]);
 
@@ -191,6 +213,7 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
         if (i.email === contactToAdd) connectionId = i._id;
         else {
           let data = {
+            _id: i._id,
             nickname: null,
             name: i.name,
             email: i.email,
@@ -206,12 +229,28 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
         admin: data.admin,
         icon: data.icon,
         chatId: data.chatId,
+        lastMessage: { ...lastMessage, message: decrypt(lastMessage.message) },
         members: details,
         isPrivate: false,
       };
       const socket = getSocketServer();
-      if (socket)
+      if (socket) {
         socket.to(getConnectionId(connectionId)).emit("new-group", toSend);
+
+        toSend.members.forEach((i) => {
+          const memberConnectionId = i._id;
+          socket
+            .to(getConnectionId(memberConnectionId))
+            .emit("receive-message", {
+              data: { ...message, message: decrypt(message.message) },
+              isPrivate: false,
+              chatId: data.chatId,
+              senderName: "",
+              senderAvatarId: "",
+              senderEmail: "",
+            });
+        });
+      }
     } catch (_) {}
   }
 
