@@ -53,7 +53,7 @@ export default function Group() {
                         <GroupName>{name}</GroupName>
                         <MemberCount>
                           Members <br />
-                          <b>{members.length + 1}</b>
+                          <b>{members.length}</b>
                         </MemberCount>
                       </GroupContainer>
                     );

@@ -439,9 +439,11 @@ const Name = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: capitalize;
+  opacity: 0.8;
 
   &.new-message {
     font-weight: 700;
+    opacity: 1;
   }
 
   @media (max-width: 920px) {
@@ -527,7 +529,7 @@ const HighlightContact = styled.span`
   height: 5px;
   border-radius: 50%;
   position: absolute;
-  left: 7px;
+  left: 0.5rem;
   top: 50%;
   transform: translate(-50%, -50%);
   background: ${(props) => props.theme.txt.main};

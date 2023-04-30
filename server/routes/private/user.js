@@ -559,20 +559,18 @@ route.post("/create-group", async (req, resp) => {
   let details = [];
   let connectionIds = [];
   userData.forEach((i) => {
-    if (i.email !== email) {
-      let data = {
-        nickname: null,
-        name: i.name,
-        email: i.email,
-        avatarId: i.avatarId,
-      };
-      connectionIds.push(getConnectionId(i._id));
-      const exists = currentUserContacts.findIndex(
-        (cur) => cur.email === i.email
-      );
-      if (exists !== -1) data.nickname = currentUserContacts[exists].nickname;
-      details.push(data);
-    }
+    let data = {
+      nickname: null,
+      name: i.name,
+      email: i.email,
+      avatarId: i.avatarId,
+    };
+    connectionIds.push(getConnectionId(i._id));
+    const exists = currentUserContacts.findIndex(
+      (cur) => cur.email === i.email
+    );
+    if (exists !== -1) data.nickname = currentUserContacts[exists].nickname;
+    details.push(data);
   });
 
   const toSend = {

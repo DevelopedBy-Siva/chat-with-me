@@ -120,7 +120,8 @@ function InfoContainer({ setInfoVisible, active, chats }) {
     }
     const index = groups.findIndex((i) => i.chatId === val);
     const data = groups[index];
-    return { ...data, members: [...data.members, { ...details }] };
+    const members = data.members.filter((i) => i.email !== details.email);
+    return { ...data, members: [...members, { ...details }] };
   }
   const {
     name,
