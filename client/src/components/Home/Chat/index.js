@@ -6,10 +6,14 @@ import SideBar from "../Chat/SideBarContainer";
 import ChatContainer from "../Chat/ChatContainer";
 import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
-import { updateMessageReceived } from "../../../store/actions/ChatActions";
+import {
+  setActive,
+  updateMessageReceived,
+} from "../../../store/actions/ChatActions";
 import {
   addNewContact,
   createUserGroup,
+  removeUserGroup,
   updateLastMsgAndTmstp,
   updateOnlineContacts,
 } from "../../../store/actions/ContactActions";
@@ -78,6 +82,11 @@ export default function Chat() {
 
     socket.on("new-group", (data = {}) => {
       dispatch(createUserGroup(data));
+    });
+
+    socket.on("group-deleted", (chatId) => {
+      if (chatId === active.val) dispatch(setActive(null, true));
+      dispatch(removeUserGroup(chatId));
     });
 
     return () => {

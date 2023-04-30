@@ -66,6 +66,15 @@ route.delete("/:chatId", async (req, resp) => {
     UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
   ]);
 
+  try {
+    const socket = getSocketServer();
+    if (socket) {
+      data.members.forEach((i) =>
+        socket.to(getConnectionId(i.ref)).emit("group-deleted", chatId)
+      );
+    }
+  } catch (_) {}
+
   resp.status(201).send();
 });
 
