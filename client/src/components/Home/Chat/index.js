@@ -13,6 +13,7 @@ import {
 import {
   addNewContact,
   createUserGroup,
+  removeMemberFromGroup,
   removeUserGroup,
   updateLastMsgAndTmstp,
   updateOnlineContacts,
@@ -89,10 +90,22 @@ export default function Chat() {
       dispatch(removeUserGroup(chatId));
     });
 
+    socket.on("kicked-from-group", (chatId) => {
+      // if (chatId === active.val) dispatch(setActive(null, true));
+      // dispatch(removeUserGroup(chatId));
+    });
+
+    socket.on("leave-chat", ({ chatId, email, admin }) => {
+      dispatch(removeMemberFromGroup(chatId, email, admin));
+    });
+
     return () => {
       socket.off("receive-message");
       socket.off("online");
       socket.off("new-group");
+      socket.off("group-deleted");
+      socket.off("kicked-from-group");
+      socket.off("leave-chat");
     };
   }, [socket, active, dispatch]);
 

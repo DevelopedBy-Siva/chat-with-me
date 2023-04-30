@@ -1,5 +1,5 @@
 const express = require("express");
-const { v4: uuid } = require("uuid");
+const _ = require("lodash");
 
 const ChatCollection = require("../../db/model/Chat");
 const GroupsCollection = require("../../db/model/Groups");
@@ -82,7 +82,7 @@ route.delete("/:chatId", async (req, resp) => {
  * Leave a Group
  */
 route.put("/leave/:chatId", async (req, resp) => {
-  const { email } = req.payload;
+  const { email, _id, name } = req.payload;
   const chatId = req.params.chatId;
 
   const data = await GroupsCollection.findOne({
@@ -102,14 +102,39 @@ route.put("/leave/:chatId", async (req, resp) => {
       UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
     ]);
 
+    try {
+      const socket = getSocketServer();
+      if (socket) {
+        data.members.forEach((i) =>
+          socket.to(getConnectionId(i.ref)).emit("group-deleted", chatId)
+        );
+      }
+    } catch (_) {}
+
     return resp.status(201).send();
   }
 
+  const message = {
+    createdAt: new Date().toUTCString(),
+    isNotification: true,
+    sendBy: _id,
+    msgId: "",
+    message: encrypt(`${_.capitalize(name)} left the group`),
+  };
+
+  const lastMessage = {
+    message: message.message,
+    timestamp: message.timestamp,
+    uuid: message.msgId,
+  };
+
+  let admin = data.admin;
   const dontLookUpIndex = data.members.findIndex((i) => i.email === email);
   if (dontLookUpIndex !== -1 && data.admin === email) {
     // Generate a Random Admin Index
     const adminIndex = nextAdminIndex(dontLookUpIndex, data.members.length);
     const nextAdmin = data.members[adminIndex].email;
+    admin = nextAdmin;
     await GroupsCollection.updateOne(
       { chatId },
       { $pull: { members: { email } }, $set: { admin: nextAdmin } }
@@ -121,9 +146,35 @@ route.put("/leave/:chatId", async (req, resp) => {
       { email },
       { $pull: { groups: { ref: data._id } } }
     ),
-    ChatCollection.updateOne({ chatId }, { $pull: { contacts: email } }),
+    ChatCollection.updateOne(
+      { chatId },
+      {
+        $pull: { contacts: email },
+        $push: { messages: message },
+        $set: { lastMessage },
+      }
+    ),
     GroupsCollection.updateOne({ chatId }, { $pull: { members: { email } } }),
   ]);
+
+  try {
+    const socket = getSocketServer();
+    if (socket) {
+      data.members.forEach((i) => {
+        socket
+          .to(getConnectionId(i.ref))
+          .emit("leave-chat", { chatId, email, admin });
+        socket.to(getConnectionId(i.ref)).emit("receive-message", {
+          data: { ...message, message: decrypt(message.message) },
+          isPrivate: false,
+          chatId: chatId,
+          senderName: "",
+          senderAvatarId: "",
+          senderEmail: "",
+        });
+      });
+    }
+  } catch (_) {}
 
   resp.status(201).send();
 });
@@ -187,7 +238,9 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
       isNotification: true,
       sendBy: user._id,
       msgId: "",
-      message: encrypt(`${contactToAddDetails.name} is added to the group`),
+      message: encrypt(
+        `${_.capitalize(contactToAddDetails.name)} is added to the group`
+      ),
     };
 
     const lastMessage = {

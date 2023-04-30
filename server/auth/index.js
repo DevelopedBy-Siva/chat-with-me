@@ -28,8 +28,10 @@ async function hashPswd(pswd) {
 /**
  * Generate JWT
  */
-function jwtToken(email, role = DEFAULT_ROLE) {
+function jwtToken(email, name, _id, role = DEFAULT_ROLE) {
   const payload = {
+    _id,
+    name,
     email,
     role,
   };

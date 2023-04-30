@@ -48,7 +48,7 @@ route.post("/login", async (req, resp) => {
       );
 
   // Generate JWT token
-  const token = auth.jwtToken(user.email);
+  const token = auth.jwtToken(user.email, user.name, user._id);
 
   const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
   const expiresAt = expiry();
@@ -97,7 +97,7 @@ route.post("/register", async (req, resp) => {
   const { email, name, description, avatarId, _id } = await document.save();
 
   // Generate JWT token
-  const token = auth.jwtToken(value.email);
+  const token = auth.jwtToken(email, name, _id);
   const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
   const expiresAt = expiry();
   resp.cookie(cookieNames.jwtTokenKey, token, {
