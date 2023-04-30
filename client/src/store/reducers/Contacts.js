@@ -124,7 +124,12 @@ const reducer = (state = initialState, action) => {
       );
       if (groupToAddIndex === -1) return { ...state };
 
-      groupAfterNewContact[groupToAddIndex].members.push(payload.contact);
+      const memeberAlreadyExists = groupAfterNewContact[
+        groupToAddIndex
+      ].members.findIndex((i) => i.email === payload.contact.email);
+
+      if (memeberAlreadyExists === -1)
+        groupAfterNewContact[groupToAddIndex].members.push(payload.contact);
 
       return {
         ...state,

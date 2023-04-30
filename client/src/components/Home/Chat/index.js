@@ -11,6 +11,7 @@ import {
   updateMessageReceived,
 } from "../../../store/actions/ChatActions";
 import {
+  addContactToGroup,
   addNewContact,
   createUserGroup,
   removeMemberFromGroup,
@@ -99,6 +100,10 @@ export default function Chat() {
       dispatch(removeMemberFromGroup(chatId, email, admin));
     });
 
+    socket.on("new-group-member", ({ chatId, data }) => {
+      dispatch(addContactToGroup(chatId, data));
+    });
+
     return () => {
       socket.off("receive-message");
       socket.off("online");
@@ -106,6 +111,7 @@ export default function Chat() {
       socket.off("group-deleted");
       socket.off("kicked-from-group");
       socket.off("leave-chat");
+      socket.off("new-group-member");
     };
   }, [socket, active, dispatch]);
 

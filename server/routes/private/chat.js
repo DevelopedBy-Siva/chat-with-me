@@ -216,7 +216,7 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
     {
       email: contactToAdd,
     },
-    { _id: 1, name: 1 }
+    { _id: 1, name: 1, email: 1, avatarId: 1 }
   );
 
   if (!isInTheContact || !contactToAddDetails)
@@ -250,7 +250,7 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
     };
 
     await Promise.all([
-      await data.save(),
+      data.save(),
       ChatCollection.updateOne(
         { chatId },
         {
@@ -295,22 +295,36 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
         members: details,
         isPrivate: false,
       };
+
+      const sendTo = data.members.map((i) => i.ref);
+      sendTo.push(contactToAddDetails._id);
+
       const socket = getSocketServer();
       if (socket) {
         socket.to(getConnectionId(connectionId)).emit("new-group", toSend);
 
-        toSend.members.forEach((i) => {
-          const memberConnectionId = i._id;
+        const newMember = {
+          _id: contactToAddDetails._id,
+          name: contactToAddDetails.name,
+          avatarId: contactToAddDetails.avatarId,
+          email: contactToAddDetails.email,
+        };
+
+        sendTo.forEach((to) => {
+          const memberConnectionId = getConnectionId(to);
+
           socket
-            .to(getConnectionId(memberConnectionId))
-            .emit("receive-message", {
-              data: { ...message, message: decrypt(message.message) },
-              isPrivate: false,
-              chatId: data.chatId,
-              senderName: "",
-              senderAvatarId: "",
-              senderEmail: "",
-            });
+            .to(memberConnectionId)
+            .emit("new-group-member", { chatId, data: newMember });
+
+          socket.to(memberConnectionId).emit("receive-message", {
+            data: { ...message, message: decrypt(message.message) },
+            isPrivate: false,
+            chatId,
+            senderName: "",
+            senderAvatarId: "",
+            senderEmail: "",
+          });
         });
       }
     } catch (_) {}
