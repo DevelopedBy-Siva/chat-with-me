@@ -7,6 +7,8 @@ export const MSG_SEND_STATUS = "MSG_SEND_STATUS";
 export const MSG_RECEIVED = "MSG_RECEIVED";
 export const SET_BLOCKED_BY = "SET_BLOCKED_BY";
 export const INITIALISE_CHAT = "INITIALISE_CHAT";
+export const REMOVE_CONTACT_INFO = "REMOVE_CONTACT_INFO";
+export const ADD_MEMBER_CONTACT_INFO = "ADD_MEMBER_CONTACT_INFO";
 
 export const getChats = (id, data) => {
   return {
@@ -82,5 +84,25 @@ export const setBlockedBy = (chatId, blockedBy) => {
 export const initialiseChat = () => {
   return {
     type: INITIALISE_CHAT,
+  };
+};
+
+export const removeChatContactInfo = (chatId, email) => {
+  return {
+    type: REMOVE_CONTACT_INFO,
+    payload: {
+      chatId,
+      email,
+    },
+  };
+};
+
+export const addMemberContactInfo = (chatId, data) => {
+  return {
+    type: ADD_MEMBER_CONTACT_INFO,
+    payload: {
+      chatId,
+      data,
+    },
   };
 };

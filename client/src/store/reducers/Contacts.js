@@ -17,6 +17,7 @@ import {
   KICK_FROM_GROUP,
   LAST_MSG_AND_TMSTP,
   IS_ONLINE,
+  REMOVE_MEMBER,
 } from "../actions/ContactActions";
 
 const initialState = {
@@ -123,7 +124,12 @@ const reducer = (state = initialState, action) => {
       );
       if (groupToAddIndex === -1) return { ...state };
 
-      groupAfterNewContact[groupToAddIndex].members.push(payload.contact);
+      const memeberAlreadyExists = groupAfterNewContact[
+        groupToAddIndex
+      ].members.findIndex((i) => i.email === payload.contact.email);
+
+      if (memeberAlreadyExists === -1)
+        groupAfterNewContact[groupToAddIndex].members.push(payload.contact);
 
       return {
         ...state,
@@ -179,6 +185,25 @@ const reducer = (state = initialState, action) => {
         ...state,
         isOnline: [...payload],
       };
+    case REMOVE_MEMBER:
+      let groupsAfterRemovingMember = [...state.groups];
+      const groupIndexToRemoveMember = groupsAfterRemovingMember.findIndex(
+        (i) => i.chatId === payload.chatId
+      );
+      if (groupIndexToRemoveMember !== -1) {
+        let members =
+          groupsAfterRemovingMember[groupIndexToRemoveMember].members;
+        if (Array.isArray(members)) {
+          members = members.filter((m) => m.email !== payload.email);
+          groupsAfterRemovingMember[groupIndexToRemoveMember].members = [
+            ...members,
+          ];
+          if (payload.admin)
+            groupsAfterRemovingMember[groupIndexToRemoveMember].admin =
+              payload.admin;
+        }
+      }
+      return { ...state, groups: [...groupsAfterRemovingMember] };
     default:
       return state;
   }

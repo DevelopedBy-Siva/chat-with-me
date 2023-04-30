@@ -3,6 +3,7 @@
  */
 function saveMessage(chatId, msgId) {
   try {
+    if (msgId.length === 0) return;
     localStorage.setItem(chatId, msgId);
   } catch (_) {}
 }
@@ -21,7 +22,7 @@ function deleteChat(chatId) {
  */
 function isNewMessage(chatId, newMsgId) {
   try {
-    if (newMsgId && newMsgId.length === 0) return false;
+    if (newMsgId.length === 0) return false;
 
     const oldMsgId = localStorage.getItem(chatId);
     if (oldMsgId && oldMsgId === newMsgId) return false;

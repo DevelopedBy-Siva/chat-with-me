@@ -21,6 +21,8 @@ export function orderContactsDesc(searchInput, data) {
   return _.orderBy(
     filteredData,
     function (o) {
+      const timestamp = o.lastMessage.timestamp;
+      if (!timestamp) return Number.MIN_SAFE_INTEGER;
       return new Date(o.lastMessage.timestamp);
     },
     ["desc"]

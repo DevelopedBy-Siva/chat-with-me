@@ -12,6 +12,8 @@ import {
   MSG_RECEIVED,
   SET_BLOCKED_BY,
   INITIALISE_CHAT,
+  REMOVE_CONTACT_INFO,
+  ADD_MEMBER_CONTACT_INFO,
 } from "../actions/ChatActions";
 import { getDateTime_LL_format, sortAndGroupMsgs } from "../../utils/DateTime";
 import toast from "../../components/Toast";
@@ -136,6 +138,35 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         chats: { ...updateBlockedChats },
+      };
+    case REMOVE_CONTACT_INFO:
+      console.log("yes");
+      const updateChatAfterInfoRemoval = { ...state.chats };
+      const chatToUpade = updateChatAfterInfoRemoval[payload.chatId];
+      if (chatToUpade) {
+        console.log(payload.email);
+        const contactInfo = chatToUpade.contactInfos;
+        if (Array.isArray(contactInfo))
+          updateChatAfterInfoRemoval[payload.chatId].contactInfos =
+            contactInfo.filter((i) => i.email !== payload.email);
+      }
+      return {
+        ...state,
+        chats: { ...updateChatAfterInfoRemoval },
+      };
+    case ADD_MEMBER_CONTACT_INFO:
+      const chatToUpdateInfo = { ...state.chats };
+      const chatToAddInfo = chatToUpdateInfo[payload.chatId];
+      if (chatToAddInfo) {
+        const contactInfo = chatToAddInfo.contactInfos;
+        if (Array.isArray(contactInfo))
+          chatToUpdateInfo[payload.chatId].contactInfos.push(payload.data);
+      }
+      return {
+        ...state,
+        chats: {
+          ...chatToUpdateInfo,
+        },
       };
     case INITIALISE_CHAT:
       const newState = {

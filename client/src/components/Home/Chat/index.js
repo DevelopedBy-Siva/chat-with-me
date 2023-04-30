@@ -6,15 +6,25 @@ import SideBar from "../Chat/SideBarContainer";
 import ChatContainer from "../Chat/ChatContainer";
 import LoadingBar from "../../Loader/LoadingBar";
 import { useSocket } from "../../../context/SocketContext";
-import { updateMessageReceived } from "../../../store/actions/ChatActions";
 import {
+  addMemberContactInfo,
+  removeChatContactInfo,
+  setActive,
+  updateMessageReceived,
+} from "../../../store/actions/ChatActions";
+import {
+  addContactToGroup,
   addNewContact,
   createUserGroup,
+  removeMemberFromGroup,
+  removeUserGroup,
   updateLastMsgAndTmstp,
   updateOnlineContacts,
 } from "../../../store/actions/ContactActions";
 import toast from "../../Toast";
 import ToastContainer from "../../Toast/MessageToast";
+import localStorage from "../../../utils/MessageLocal";
+import { toggle_BW_Chats } from "../../../utils/Screens";
 
 export default function Chat() {
   const dispatch = useDispatch();
@@ -55,7 +65,7 @@ export default function Chat() {
             isPrivate
           )
         );
-        if (active.val === chatId) localStorage.setItem(chatId, data.msgId);
+        if (active.val === chatId) localStorage.saveMessage(chatId, data.msgId);
 
         if (active.val !== chatId && !data.isNotification)
           toast.msg(
@@ -79,10 +89,31 @@ export default function Chat() {
       dispatch(createUserGroup(data));
     });
 
+    socket.on("group-deleted", (chatId) => {
+      if (chatId === active.val) {
+        dispatch(setActive(null, true));
+        toggle_BW_Chats(true);
+      }
+      dispatch(removeUserGroup(chatId));
+    });
+
+    socket.on("leave-chat", ({ chatId, email, admin }) => {
+      dispatch(removeMemberFromGroup(chatId, email, admin));
+      dispatch(removeChatContactInfo(chatId, email));
+    });
+
+    socket.on("new-group-member", ({ chatId, data }) => {
+      dispatch(addContactToGroup(chatId, data));
+      dispatch(addMemberContactInfo(chatId, data));
+    });
+
     return () => {
       socket.off("receive-message");
       socket.off("online");
       socket.off("new-group");
+      socket.off("group-deleted");
+      socket.off("leave-chat");
+      socket.off("new-group-member");
     };
   }, [socket, active, dispatch]);
 

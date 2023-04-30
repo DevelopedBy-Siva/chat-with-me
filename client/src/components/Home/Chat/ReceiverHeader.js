@@ -44,7 +44,7 @@ function ReceiverContainer({ contactId }) {
     toggle_BW_Chats(true);
     setTimeout(() => {
       dispatch(setActive(null));
-    }, 300);
+    }, 500);
   }
 
   function isContactOnline(id) {
@@ -134,6 +134,7 @@ const ReceiverAvatarContainer = styled.div`
   margin-left: 5px;
   margin-right: 14px;
   flex-shrink: 0;
+  pointer-events: none;
 
   @media (max-width: 920px) {
     height: 38px;

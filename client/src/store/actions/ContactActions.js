@@ -12,6 +12,7 @@ export const ADD_TO_GROUP = "ADD_TO_GROUP";
 export const KICK_FROM_GROUP = "KICK_FROM_GROUP";
 export const LAST_MSG_AND_TMSTP = "LAST_MSG_AND_TMSTP";
 export const IS_ONLINE = "IS_ONLINE";
+export const REMOVE_MEMBER = "REMOVE_MEMBER";
 
 export const getContacts = (payload) => {
   return {
@@ -125,5 +126,12 @@ export const updateOnlineContacts = (payload) => {
   return {
     type: IS_ONLINE,
     payload,
+  };
+};
+
+export const removeMemberFromGroup = (chatId, email, admin) => {
+  return {
+    type: REMOVE_MEMBER,
+    payload: { chatId, email, admin },
   };
 };
