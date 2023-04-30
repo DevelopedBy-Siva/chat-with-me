@@ -44,7 +44,7 @@ function ReceiverContainer({ contactId }) {
     toggle_BW_Chats(true);
     setTimeout(() => {
       dispatch(setActive(null));
-    }, 300);
+    }, 500);
   }
 
   function isContactOnline(id) {

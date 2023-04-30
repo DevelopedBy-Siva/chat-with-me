@@ -198,8 +198,9 @@ const reducer = (state = initialState, action) => {
           groupsAfterRemovingMember[groupIndexToRemoveMember].members = [
             ...members,
           ];
-          groupsAfterRemovingMember[groupIndexToRemoveMember].admin =
-            payload.admin;
+          if (payload.admin)
+            groupsAfterRemovingMember[groupIndexToRemoveMember].admin =
+              payload.admin;
         }
       }
       return { ...state, groups: [...groupsAfterRemovingMember] };

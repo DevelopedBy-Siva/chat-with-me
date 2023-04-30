@@ -24,6 +24,7 @@ import {
 import toast from "../../Toast";
 import ToastContainer from "../../Toast/MessageToast";
 import localStorage from "../../../utils/MessageLocal";
+import { toggle_BW_Chats } from "../../../utils/Screens";
 
 export default function Chat() {
   const dispatch = useDispatch();
@@ -89,13 +90,11 @@ export default function Chat() {
     });
 
     socket.on("group-deleted", (chatId) => {
-      if (chatId === active.val) dispatch(setActive(null, true));
+      if (chatId === active.val) {
+        dispatch(setActive(null, true));
+        toggle_BW_Chats(true);
+      }
       dispatch(removeUserGroup(chatId));
-    });
-
-    socket.on("kicked-from-group", (chatId) => {
-      // if (chatId === active.val) dispatch(setActive(null, true));
-      // dispatch(removeUserGroup(chatId));
     });
 
     socket.on("leave-chat", ({ chatId, email, admin }) => {
@@ -113,7 +112,6 @@ export default function Chat() {
       socket.off("online");
       socket.off("new-group");
       socket.off("group-deleted");
-      socket.off("kicked-from-group");
       socket.off("leave-chat");
       socket.off("new-group-member");
     };

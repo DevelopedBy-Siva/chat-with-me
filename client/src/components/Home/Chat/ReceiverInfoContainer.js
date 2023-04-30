@@ -411,7 +411,7 @@ function ConfirmMemberKick({ groups, chatId, kickMember, setKickMember }) {
     const contact = kickMember.item;
     setKickMember({ ...kickMember, loading: true, show: false });
     await axios
-      .put(`/chat/kick/${chatId}?contact=${contact}`)
+      .put(`/chat/kick/${chatId}?contact=${contact}&name=${kickMember.name}`)
       .then(({ data }) => {
         if (deleteGroup) {
           dispatch(setActive(null, true));

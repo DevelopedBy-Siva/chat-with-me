@@ -337,8 +337,10 @@ route.put("/add-to-group/:chatId", async (req, resp) => {
  * Leave a Group
  */
 route.put("/kick/:chatId", async (req, resp) => {
+  const { _id } = req.payload;
   const chatId = req.params.chatId;
   const toKick = req.query.contact.trim().toLowerCase();
+  const name = req.query.name;
 
   const data = await GroupsCollection.findOne({
     chatId,
@@ -357,20 +359,76 @@ route.put("/kick/:chatId", async (req, resp) => {
       UserCollection.updateMany({}, { $pull: { groups: { ref: data._id } } }),
     ]);
 
+    try {
+      const socket = getSocketServer();
+      if (socket) {
+        data.members.forEach((i) =>
+          socket.to(getConnectionId(i.ref)).emit("group-deleted", chatId)
+        );
+      }
+    } catch (_) {}
+
     return resp.status(201).send({ status: "group" });
   }
+
+  const message = {
+    createdAt: new Date().toUTCString(),
+    isNotification: true,
+    sendBy: _id,
+    msgId: "",
+    message: encrypt(`${_.capitalize(name)} is kicked out of the group`),
+  };
+
+  const lastMessage = {
+    message: message.message,
+    timestamp: message.timestamp,
+    uuid: message.msgId,
+  };
 
   await Promise.all([
     UserCollection.updateOne(
       { email: toKick },
       { $pull: { groups: { ref: data._id } } }
     ),
-    ChatCollection.updateOne({ chatId }, { $pull: { contacts: toKick } }),
+    ChatCollection.updateOne(
+      { chatId },
+      {
+        $pull: { contacts: toKick },
+        $push: { messages: message },
+        $set: { lastMessage: lastMessage },
+      }
+    ),
     GroupsCollection.updateOne(
       { chatId },
       { $pull: { members: { email: toKick } } }
     ),
   ]);
+
+  try {
+    const socket = getSocketServer();
+    if (socket) {
+      const index = data.members.findIndex((i) => i.email === toKick);
+      if (index !== -1) {
+        const id = data.members[index].ref;
+        socket.to(getConnectionId(id)).emit("group-deleted", chatId);
+      }
+
+      data.members.forEach((i) => {
+        socket
+          .to(getConnectionId(i.ref))
+          .emit("leave-chat", { chatId, email: toKick });
+
+        socket.to(getConnectionId(i.ref)).emit("receive-message", {
+          data: { ...message, message: decrypt(message.message) },
+          isPrivate: false,
+          chatId,
+          senderName: "",
+          senderAvatarId: "",
+          senderEmail: "",
+        });
+      });
+    }
+  } catch (_) {}
 
   resp.status(200).send();
 });

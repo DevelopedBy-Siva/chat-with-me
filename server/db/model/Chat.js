@@ -18,7 +18,6 @@ const MessageType = {
   },
   msgId: {
     type: String,
-    required: true,
   },
 };
 

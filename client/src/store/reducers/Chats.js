@@ -140,9 +140,11 @@ const reducer = (state = initialState, action) => {
         chats: { ...updateBlockedChats },
       };
     case REMOVE_CONTACT_INFO:
+      console.log("yes");
       const updateChatAfterInfoRemoval = { ...state.chats };
       const chatToUpade = updateChatAfterInfoRemoval[payload.chatId];
       if (chatToUpade) {
+        console.log(payload.email);
         const contactInfo = chatToUpade.contactInfos;
         if (Array.isArray(contactInfo))
           updateChatAfterInfoRemoval[payload.chatId].contactInfos =
