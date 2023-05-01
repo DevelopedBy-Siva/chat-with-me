@@ -6,7 +6,8 @@ export const FORGOT_PSWD_SCREEN = {
 
 export function toggle_BW_Chats(goBack = false) {
   const containerRef = document.querySelector(".home-container");
-  containerRef.scrollLeft = !goBack
-    ? containerRef.scrollWidth
-    : -containerRef.scrollWidth;
+  if (containerRef)
+    containerRef.scrollLeft = !goBack
+      ? containerRef.scrollWidth
+      : -containerRef.scrollWidth;
 }
