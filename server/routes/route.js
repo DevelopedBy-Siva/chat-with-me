@@ -10,7 +10,6 @@ const public = require("./public");
 const exceptionHandler = require("../exceptions/expressExceptions");
 const { authorizeJWT } = require("../auth");
 const { AppError } = require("../exceptions");
-const logger = require("../logger");
 
 module.exports = function (app) {
   /**
@@ -22,8 +21,6 @@ module.exports = function (app) {
       credentials: true,
     })
   );
-
-  logger.info("URL: " + config.get("client_url"));
 
   /**
    *  Middleware to decreases API request response size
