@@ -79,10 +79,9 @@ const cookieNames = {
  */
 const httpOnlyCookieProps = {
   httpOnly: true,
-  path: "/",
   secure: true,
   sameSite: "none",
-  domain: "*.onrender.com",
+  domain: "onrender.com",
 };
 
 /**
