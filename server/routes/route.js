@@ -22,8 +22,6 @@ module.exports = function (app) {
     })
   );
 
-  logger.info("URL: " + config.get("client_url"));
-
   /**
    *  Middleware to decreases API request response size
    */
