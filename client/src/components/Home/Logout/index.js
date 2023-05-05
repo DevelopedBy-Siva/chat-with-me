@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import axios from "../../../api/axios";
 import Modal from "../Modal";
-import toast from "../../Toast";
+import { removeIsLoggedIn } from "../../../utils/UserLocal";
 
 const modalStyle = {
   maxWidth: "500px",
@@ -17,7 +16,6 @@ export default function Logout() {
   const navigate = useNavigate();
 
   const noRef = useRef(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     noRef.current.focus();
@@ -25,36 +23,23 @@ export default function Logout() {
 
   const handleNo = (e) => {
     e.preventDefault();
-    if (loading) return;
     return navigate("/", { replace: true });
   };
 
-  const handleLogout = async () => {
-    if (loading) return;
-    setLoading(true);
-    await axios
-      .post("/logout")
-      .then(() => {
-        return (window.location = "/sign-in");
-      })
-      .catch(() => {
-        toast.error(
-          "Something went wrong and the log out failed. Please try again later",
-          toast.props.user.nonPersist
-        );
-        setLoading(false);
-      });
+  const handleLogout = () => {
+    removeIsLoggedIn();
+    return (window.location = "/sign-in");
   };
 
   return (
-    <Modal isLoading={loading} style={modalStyle}>
+    <Modal style={modalStyle}>
       <Container>
         <Description>Are you sure you want to logout?</Description>
         <BtnContainer onSubmit={handleNo}>
-          <Btn type="button" onClick={handleLogout} disabled={loading}>
+          <Btn type="button" onClick={handleLogout}>
             Yes
           </Btn>
-          <Btn ref={noRef} type="submit" onClick={handleNo} disabled={loading}>
+          <Btn ref={noRef} type="submit" onClick={handleNo}>
             No
           </Btn>
         </BtnContainer>

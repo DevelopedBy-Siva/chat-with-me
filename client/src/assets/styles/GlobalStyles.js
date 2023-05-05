@@ -61,6 +61,20 @@ export const GlobalStyles = createGlobalStyle`
     ::-webkit-scrollbar-thumb:hover {
         background-color: #555;
     }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px ${(props) =>
+          props.theme.bg.app} inset !important;
+    }
+    
+    input:-webkit-autofill{
+        -webkit-text-fill-color: ${(props) => props.theme.txt.main} !important;
+        caret-color: ${(props) => props.theme.txt.main};
+    }
+
 `;
 
 export default GlobalStyles;

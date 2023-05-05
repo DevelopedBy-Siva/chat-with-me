@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { setUser } from "../store/actions/UserActions";
-import { removeIsLoggedIn } from "../utils/UserLocal";
+import { isLoggedIn, removeIsLoggedIn } from "../utils/UserLocal";
 import axios from "../api/axios";
 
 const LoginContext = React.createContext();
@@ -18,16 +18,19 @@ export function LoginProvider({ children }) {
 
   useEffect(() => {
     async function startupValidation() {
-      const isValid = await axios
-        .get("/user/")
-        .then(({ data }) => {
-          dispatch(setUser(data));
-          return true;
-        })
-        .catch(() => {
-          removeIsLoggedIn();
-          return false;
-        });
+      let isValid = isLoggedIn();
+      if (isValid) {
+        isValid = await axios
+          .get("/user/")
+          .then(({ data }) => {
+            dispatch(setUser(data));
+            return true;
+          })
+          .catch(() => {
+            removeIsLoggedIn();
+            return false;
+          });
+      }
       setLoggedIn(isValid);
     }
     startupValidation();

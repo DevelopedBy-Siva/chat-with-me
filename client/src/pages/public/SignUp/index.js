@@ -23,7 +23,8 @@ import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
 import retrieveError from "../../../api/ExceptionHandler";
-import { setUser } from "../../../store/actions/UserActions";
+import { updateOneTimeInfo } from "../../../store/actions/UserActions";
+import { setJWTToken } from "../../../utils/UserLocal";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -142,7 +143,8 @@ export default function SignUp() {
     axios
       .post("/register", { ...signupInfo, confirmPassword: undefined })
       .then(({ data }) => {
-        dispatch(setUser(data, true));
+        dispatch(updateOneTimeInfo(true));
+        setJWTToken(data.token);
         return navigate("/");
       })
       .catch((err) => {
@@ -175,7 +177,6 @@ export default function SignUp() {
             name="email"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
             icon={<MdAlternateEmail />}
@@ -187,7 +188,6 @@ export default function SignUp() {
             name="name"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "name")}
             icon={<FaRegUser />}
@@ -199,7 +199,6 @@ export default function SignUp() {
             name="phone"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             inputMode="numeric"
             value={signupInfo.phone}
             disabled={serverData.loading}

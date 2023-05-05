@@ -1,5 +1,6 @@
 const express = require("express");
 const { v4: uuid } = require("uuid");
+
 const {
   validateUser,
   validateNickname,
@@ -10,7 +11,7 @@ const { AppError, ErrorCodes } = require("../../exceptions");
 const UserCollection = require("../../db/model/User");
 const GroupsCollection = require("../../db/model/Groups");
 const ChatCollection = require("../../db/model/Chat");
-const { hash, login, cookies, jwtToken } = require("../../auth");
+const { hash, login } = require("../../auth");
 const { decrypt } = require("../../utils/messages");
 const { getSocketServer, getConnectionId } = require("../../socket");
 
@@ -52,16 +53,6 @@ route.put("/change-pswd", async (req, resp) => {
   // Hash the new password and store it in DB
   const hashedPswd = await hash(value.newPassword);
   await UserCollection.updateOne({ email }, { $set: { password: hashedPswd } });
-
-  // Generate JWT token
-  const token = jwtToken(value.email);
-
-  const { cookieNames, httpOnlyCookieProps, expiry } = cookies;
-  const expiresAt = expiry();
-  resp.cookie(cookieNames.jwtTokenKey, token, {
-    ...httpOnlyCookieProps,
-    expires: expiresAt,
-  });
 
   resp.status(201).send();
 });
@@ -654,10 +645,6 @@ route.delete("/remove", async (req, resp) => {
     ]);
   }
 
-  const { jwtTokenKey, isLoggedInKey } = cookies.cookieNames;
-  resp.clearCookie(jwtTokenKey);
-  resp.clearCookie(isLoggedInKey);
-
   resp.status(201).send();
 });
 
@@ -667,6 +654,7 @@ route.delete("/remove", async (req, resp) => {
 route.get("/", async (req, resp) => {
   try {
     const { email } = req.payload;
+    const token = req.token;
     const user = await UserCollection.findOne({ email });
     const { name, email: mail, description, avatarId, _id } = user;
     return resp.status(200).send({
@@ -675,12 +663,9 @@ route.get("/", async (req, resp) => {
       description,
       avatarId,
       _id,
-      token: req.token,
+      token,
     });
   } catch (ex) {
-    const { isLoggedInKey, jwtTokenKey } = cookies.cookieNames;
-    resp.clearCookie(isLoggedInKey);
-    resp.clearCookie(jwtTokenKey);
     return resp
       .status(403)
       .send(new AppError(ErrorCodes.ERR_FORBIDDEN, "Invalid User"));

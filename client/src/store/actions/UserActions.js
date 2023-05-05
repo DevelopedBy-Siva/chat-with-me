@@ -4,12 +4,11 @@ export const CHANGE_USER_NAME = "CHANGE_USER_NAME";
 export const CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
 export const CHANGE_AVATAR = "CHANGE_AVATAR";
 
-export const setUser = (data, oneTimeInfo) => {
+export const setUser = (data) => {
   return {
     type: SET_USER,
     payload: {
       data,
-      oneTimeInfo,
     },
   };
 };

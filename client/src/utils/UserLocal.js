@@ -3,13 +3,13 @@ import Cookies from "universal-cookie";
 import { DarkTheme, LightTheme } from "../assets/styles/Themes";
 
 const THEME_KEY = "prefered_theme_mode";
-const IS_LOGGED_IN_KEY = "logged_in";
+const JWT_TOKEN_KEY = "access_token";
 
 const cookies = new Cookies();
 
 export function updateTheme(val = "light") {
   try {
-    localStorage.setItem(THEME_KEY, val);
+    cookies.set(THEME_KEY, val);
   } catch (ex) {}
   return val;
 }
@@ -18,7 +18,7 @@ export function getTheme() {
   const allowed = ["light", "dark"];
   let val;
   try {
-    val = localStorage.getItem(THEME_KEY);
+    val = cookies.get(THEME_KEY);
   } catch (ex) {}
   if (allowed.includes(val)) return val;
   return allowed[1];
@@ -30,11 +30,20 @@ export function getStyles(theme) {
 }
 
 export function isLoggedIn() {
-  const isLogged = cookies.get(IS_LOGGED_IN_KEY);
-  if (isLogged === "yes") return true;
+  const isLogged = cookies.get(JWT_TOKEN_KEY);
+  if (isLogged) return true;
   return false;
 }
 
+export function setJWTToken(token) {
+  cookies.set(JWT_TOKEN_KEY, token);
+}
+
+export function getJWTToken() {
+  const token = cookies.get(JWT_TOKEN_KEY);
+  return token;
+}
+
 export function removeIsLoggedIn() {
-  cookies.remove(IS_LOGGED_IN_KEY);
+  cookies.remove(JWT_TOKEN_KEY);
 }

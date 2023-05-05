@@ -25,9 +25,6 @@ const reducer = (state = initialState, action) => {
       };
       data.details = { ...payload.data };
 
-      if (payload.oneTimeInfo !== undefined)
-        data.oneTimeInfo = payload.oneTimeInfo;
-
       return {
         ...data,
       };
