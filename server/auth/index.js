@@ -80,7 +80,7 @@ const cookieNames = {
 const httpOnlyCookieProps = {
   httpOnly: true,
   secure: true,
-  sameSite: "none",
+  sameSite: "lax",
 };
 
 /**
