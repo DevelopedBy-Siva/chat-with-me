@@ -237,13 +237,4 @@ route.post("/logout", (_, resp) => {
   resp.status(201).send();
 });
 
-/**
- * Invalid path route mapping
- */
-route.get("/*", (req, resp) => {
-  resp
-    .status(404)
-    .send(new AppError("INVALID_PATH", `Invalid request path: '${req.path}'`));
-});
-
 module.exports = route;
