@@ -23,7 +23,8 @@ import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
 import retrieveError from "../../../api/ExceptionHandler";
-import { setUser } from "../../../store/actions/UserActions";
+import { updateOneTimeInfo } from "../../../store/actions/UserActions";
+import { setJWTToken } from "../../../utils/UserLocal";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -142,7 +143,8 @@ export default function SignUp() {
     axios
       .post("/register", { ...signupInfo, confirmPassword: undefined })
       .then(({ data }) => {
-        dispatch(setUser(data, true));
+        dispatch(updateOneTimeInfo(true));
+        setJWTToken(data.token);
         return navigate("/");
       })
       .catch((err) => {

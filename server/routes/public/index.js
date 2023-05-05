@@ -50,15 +50,7 @@ route.post("/login", async (req, resp) => {
   // Generate JWT token
   const token = auth.jwtToken(user.email, user.name, user._id);
 
-  const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
-  const expiresAt = expiry();
-
-  resp.cookie(cookieNames.jwtTokenKey, token, {
-    ...httpOnlyCookieProps,
-    expires: expiresAt,
-  });
-  const { name, email: mail, description, avatarId, _id } = user;
-  resp.status(200).send({ name, email: mail, description, avatarId, _id });
+  resp.status(200).send({ token });
 });
 
 /**
@@ -94,17 +86,12 @@ route.post("/register", async (req, resp) => {
   // Create User Document
   const document = new UserCollection({ ...value, password: hashedPswd });
   // Save Document to DB
-  const { email, name, description, avatarId, _id } = await document.save();
+  const { email, name, _id } = await document.save();
 
   // Generate JWT token
   const token = auth.jwtToken(email, name, _id);
-  const { cookieNames, httpOnlyCookieProps, expiry } = auth.cookies;
-  const expiresAt = expiry();
-  resp.cookie(cookieNames.jwtTokenKey, token, {
-    ...httpOnlyCookieProps,
-    expires: expiresAt,
-  });
-  resp.status(200).send({ email, name, description, avatarId, _id });
+
+  resp.status(200).send({ token });
 });
 
 /**
@@ -225,25 +212,6 @@ route.put("/change-pswd", async (req, resp) => {
       .send(new AppError(ErrorCodes.ERR_USR_NOT_FOUND, "User not found"));
 
   resp.status(201).send();
-});
-
-/**
- * Remove HttpOnly Cookie
- */
-route.post("/logout", (_, resp) => {
-  const { jwtTokenKey, isLoggedInKey } = auth.cookies.cookieNames;
-  resp.clearCookie(jwtTokenKey);
-  resp.clearCookie(isLoggedInKey);
-  resp.status(201).send();
-});
-
-/**
- * Invalid path route mapping
- */
-route.get("*", (req, resp) => {
-  resp
-    .status(404)
-    .send(new AppError("INVALID_PATH", `Invalid request path: '${req.path}'`));
 });
 
 module.exports = route;

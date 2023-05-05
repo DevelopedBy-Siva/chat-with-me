@@ -7,6 +7,7 @@ import LoadingSpinner from "../../Loader";
 import axios from "../../../api/axios";
 import retrieveError from "../../../api/ExceptionHandler";
 import toast from "../../Toast";
+import { removeIsLoggedIn } from "../../../utils/UserLocal";
 
 const modalStyle = {
   maxHeight: "310px",
@@ -39,7 +40,10 @@ export default function DeleteAccountScreen({ close }) {
 
     await axios
       .delete("/user/remove")
-      .then(() => (window.location = "/sign-in"))
+      .then(() => {
+        removeIsLoggedIn();
+        return (window.location = "/sign-in");
+      })
       .catch((error) => {
         const { message } = retrieveError(error);
         toast.error(message, toast.props.user.nonPersist);

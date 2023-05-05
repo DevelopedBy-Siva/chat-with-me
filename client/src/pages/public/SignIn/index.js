@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { FiKey } from "react-icons/fi";
@@ -17,11 +16,10 @@ import PageWrapper from "../../../components/Public/common/PageWrapper";
 import UserInputContainer from "../../../components/Public/common/InputContainer";
 import UserButtonContainer from "../../../components/Public/common/ButtonContainer";
 import retrieveError from "../../../api/ExceptionHandler";
-import { setUser } from "../../../store/actions/UserActions";
+import { setJWTToken } from "../../../utils/UserLocal";
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const emailInputRef = useRef(null);
 
@@ -97,7 +95,7 @@ export default function SignIn() {
         },
       })
       .then(({ data }) => {
-        dispatch(setUser(data));
+        setJWTToken(data.token);
         return navigate("/");
       })
       .catch((error) => {
