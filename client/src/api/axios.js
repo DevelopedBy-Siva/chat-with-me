@@ -1,7 +1,6 @@
 import _ from "axios";
 
 const baseURL = process.env.REACT_APP_API_BASEURL + "/api";
-const clientBaseURL = process.env.REACT_APP_CLIENT_URL;
 const apiTimeout = process.env.REACT_APP_API_TIMEOUT;
 
 const axios = _.create({ baseURL });
@@ -19,7 +18,6 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
-    response.headers["Access-Control-Allow-Origin"] = clientBaseURL;
     return response;
   },
   (error) => {
