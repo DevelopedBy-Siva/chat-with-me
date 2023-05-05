@@ -58,17 +58,6 @@ module.exports = function (app) {
   app.use("/api", public);
 
   /**
-   * Invalid path route mapping
-   */
-  app.get("*", (req, resp) => {
-    resp
-      .status(404)
-      .send(
-        new AppError("INVALID_PATH", `Invalid request path: '${req.path}'`)
-      );
-  });
-
-  /**
    * Middleware that handles Route exceptions
    */
   app.use(exceptionHandler);

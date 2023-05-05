@@ -81,7 +81,6 @@ const httpOnlyCookieProps = {
   httpOnly: true,
   secure: true,
   sameSite: "none",
-  domain: "onrender.com",
 };
 
 /**
