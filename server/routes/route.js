@@ -17,8 +17,9 @@ module.exports = function (app) {
    */
   app.use(
     cors({
-      origin: config.get("client_url"),
+      origin: config.get("client_url").split(","),
       credentials: true,
+      methods: ["GET", "PUT", "DELETE", "POST"],
     })
   );
 
