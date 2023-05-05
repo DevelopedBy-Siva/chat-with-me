@@ -128,7 +128,6 @@ export default function SignIn() {
             name="email"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
             icon={<MdAlternateEmail />}

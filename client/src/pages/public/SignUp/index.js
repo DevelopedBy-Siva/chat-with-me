@@ -175,7 +175,6 @@ export default function SignUp() {
             name="email"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "email")}
             icon={<MdAlternateEmail />}
@@ -187,7 +186,6 @@ export default function SignUp() {
             name="name"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             disabled={serverData.loading}
             onInput={(e) => handleInputChange(e, "name")}
             icon={<FaRegUser />}
@@ -199,7 +197,6 @@ export default function SignUp() {
             name="phone"
             type="text"
             spellCheck="false"
-            autoComplete="off"
             inputMode="numeric"
             value={signupInfo.phone}
             disabled={serverData.loading}
