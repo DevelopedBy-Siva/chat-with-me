@@ -26,4 +26,5 @@ socket.connect(server);
 const port = config.PORT;
 server.listen(port, () => {
   logger.info(`Application started at Port ${port}`);
+  logger.info(`App Configs:`, config);
 });
