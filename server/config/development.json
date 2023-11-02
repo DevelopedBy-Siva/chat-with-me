@@ -1,11 +1,7 @@
 {
-  "logging": {
-    "level": "info",
-    "trace": true
-  },
-  "app_secret_key": "default",
-  "db": {
-    "url": "mongodb://localhost/ChatWithMe"
-  },
-  "client_url": "http://localhost:3000"
+  "LOGGING_LEVEL": "info",
+  "LOGGING_LEVEL_TRACE": true,
+  "SECRET_KEY": "default",
+  "DB_URL": "mongodb://localhost/ChatWithMe",
+  "CLIENT_URL": "http://localhost:3000"
 }

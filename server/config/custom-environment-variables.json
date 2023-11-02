@@ -1,12 +1,8 @@
 {
-  "app_port": "PORT",
-  "app_secret_key": "SECRET_KEY",
-  "mail_service": {
-    "user": "MAIL_ID",
-    "pass": "MAIL_PASSWORD"
-  },
-  "db": {
-    "url": "DB_URL"
-  },
-  "client_url": "CLIENT_URL"
+  "PORT": "PORT",
+  "SECRET_KEY": "SECRET_KEY",
+  "MAIL_SERVICE_USER": "MAIL_ID",
+  "MAIL_SERVICE_PASSWORD": "MAIL_PASSWORD",
+  "DB_URL": "DB_URL",
+  "CLIENT_URL": "CLIENT_URL"
 }

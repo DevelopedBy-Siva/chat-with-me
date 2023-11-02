@@ -1,9 +1,9 @@
 const express = require("express");
 const compression = require("compression");
 const cors = require("cors");
-const config = require("config");
 const helmet = require("helmet");
 
+const config = require("../utils/config");
 const chat = require("./private/chat");
 const user = require("./private/user");
 const public = require("./public");
@@ -16,7 +16,7 @@ module.exports = function (app) {
    */
   app.use(
     cors({
-      origin: config.get("client_url").split(","),
+      origin: config.CLIENT_URL.split(","),
     })
   );
 

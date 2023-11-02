@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const config = require("config");
+const config = require("../../utils/config");
 
-const expiryTime = config.get("verify_code_expiry_secs");
+const expiryTime = config.VERIFY_CODE_EXPIRY;
 
 const schema = new mongoose.Schema({
   requestedBy: {

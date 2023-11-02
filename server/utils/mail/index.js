@@ -1,18 +1,18 @@
 const mailer = require("nodemailer");
-const config = require("config");
+const config = require("../config");
 const logger = require("../../logger");
 const { ErrorCodes } = require("../../exceptions");
 const handlebars = require("handlebars");
 const fs = require("fs");
 const path = require("path");
 
-const user = config.get("mail_service.user");
+const user = config.MAIL_SERVICE_USER;
 
 const transport = mailer.createTransport({
-  service: config.get("mail_service.service"),
+  service: config.MAIL_SERVICE_PROVIDER,
   auth: {
     user,
-    pass: config.get("mail_service.pass"),
+    pass: config.MAIL_SERVICE_PASSWORD,
   },
 });
 
@@ -30,7 +30,7 @@ function send(type, data) {
   return new Promise((resolve, reject) => {
     switch (type) {
       case "FORGOT_PSWD":
-        options.subject = `Verify your ${config.get("app_name")} account`;
+        options.subject = `Verify your ${config.APP_NAME} account`;
 
         const emailTemplateSource = fs.readFileSync(
           path.join(__dirname, "/verify_template.hbs"),
@@ -40,7 +40,7 @@ function send(type, data) {
         options.html = template({
           name: data.username,
           code: data.verificationCode,
-          expiry: Math.round(config.get("verify_code_expiry_secs") / 60),
+          expiry: Math.round(config.VERIFY_CODE_EXPIRY / 60),
         });
         break;
       default:

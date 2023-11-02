@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-const config = require("config");
+const config = require("../utils/config");
 const scheduler = require("node-schedule");
 
 const logger = require("../logger");
 const ChatCollection = require("./model/Chat");
 const { AppError, ErrorCodes } = require("../exceptions");
 
-const URL = config.get("db.url");
-const CLEANUP_MSGS_OLDER_THAN = config.get("cleanup_messages_olderthan");
+const URL = config.DB_URL;
+const CLEANUP_MSGS_OLDER_THAN = config.CLEANUP_OLDER_MSGS;
 
 mongoose
   .connect(URL)

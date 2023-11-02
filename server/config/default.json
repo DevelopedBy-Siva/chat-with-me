@@ -1,17 +1,13 @@
 {
-  "app_port": 3000,
-  "app_name": "ChatWithMe",
-  "logging": {
-    "level": "info",
-    "trace": true
-  },
-  "mail_service": {
-    "service": "gmail",
-    "user": "default@gmail.com",
-    "pass": "default_pass"
-  },
-  "verify_code_expiry_secs": 300,
-  "jwt_expiry": "2d",
-  "http_cookie_expiry": 2,
-  "cleanup_messages_olderthan": "1"
+  "PORT": 3000,
+  "APP_NAME": "ChatWithMe",
+  "LOGGING_LEVEL": "info",
+  "LOGGING_LEVEL_TRACE": true,
+  "MAIL_SERVICE_PROVIDER": "gmail",
+  "MAIL_SERVICE_USER": "default@gmail.com",
+  "MAIL_SERVICE_PASSWORD": "default_pass",
+  "VERIFY_CODE_EXPIRY": 300,
+  "JWT_EXPIRY": "2d",
+  "HTTP_COOKIE_EXPIRY": 2,
+  "CLEANUP_OLDER_MSGS": "1"
 }

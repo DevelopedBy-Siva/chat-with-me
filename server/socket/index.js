@@ -1,4 +1,4 @@
-const config = require("config");
+const config = require("../utils/config");
 const { Server } = require("socket.io");
 
 const db = require("./db");
@@ -21,7 +21,7 @@ module.exports.connect = (server) => {
    */
   io = new Server(server, {
     cors: {
-      origin: config.get("client_url"),
+      origin: config.CLIENT_URL,
     },
   });
 

@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
+const config = require("../utils/config");
 const bcrypt = require("bcrypt");
 const { ErrorCodes, AppError } = require("../exceptions");
 
 const DEFAULT_ROLE = "USER";
-const SECRET_KEY = config.get("app_secret_key");
-const JWT_EXPIRY = config.get("jwt_expiry");
+const SECRET_KEY = config.SECRET_KEY;
+const JWT_EXPIRY = config.JWT_EXPIRY;
 
 /**
  * Validates user login password against hashed password in DB

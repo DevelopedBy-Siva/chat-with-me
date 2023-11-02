@@ -1,7 +1,5 @@
 {
-  "logging": {
-    "level": "info",
-    "trace": false
-  },
-  "jwt_expiry": "2 days"
+  "LOGGING_LEVEL": "info",
+  "LOGGING_LEVEL_TRACE": true,
+  "JWT_EXPIRY": "2 days"
 }

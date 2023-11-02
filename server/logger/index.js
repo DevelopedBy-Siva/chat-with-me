@@ -1,9 +1,9 @@
 const winston = require("winston");
-const config = require("config");
+const config = require("../utils/config");
 const { combine, timestamp, json, errors } = winston.format;
 
-const level = config.get("logging.level");
-const stack = config.get("logging.trace");
+const level = config.LOGGING_LEVEL;
+const stack = config.LOGGING_LEVEL_TRACE;
 
 const logger = winston.createLogger({
   level,

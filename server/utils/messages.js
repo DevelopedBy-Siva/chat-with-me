@@ -1,7 +1,7 @@
 const CryptoJS = require("crypto-js");
-const config = require("config");
+const config = require("./config");
 
-const SECRET_KEY = config.get("app_secret_key");
+const SECRET_KEY = config.SECRET_KEY;
 
 /**
  * Encrypt Message
