@@ -8,6 +8,7 @@ const chat = require("./private/chat");
 const user = require("./private/user");
 const public = require("./public");
 const exceptionHandler = require("../exceptions/expressExceptions");
+const { AppError } = require("../exceptions");
 const { authorizeJWT } = require("../auth");
 
 module.exports = function (app) {

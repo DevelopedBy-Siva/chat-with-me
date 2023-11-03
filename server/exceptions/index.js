@@ -2,8 +2,9 @@
  * Application Error Model which takes two arguments, errorCode & errorDescription
  */
 
-class AppError {
+class AppError extends Error {
   constructor(errorCode, errorDescription) {
+    super();
     this.errorCode = String(errorCode);
     this.errorDescription = String(errorDescription);
   }
