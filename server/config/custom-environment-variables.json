@@ -1,5 +1,6 @@
 {
-  "app_port": "PORT",
+  "api_port": "API_PORT",
+  "socker_port": "SOCKET_PORT",
   "app_secret_key": "SECRET_KEY",
   "mail_service": {
     "user": "MAIL_ID",
@@ -8,5 +9,11 @@
   "db": {
     "url": "DB_URL"
   },
-  "client_url": "CLIENT_URL"
+  "client_url": "CLIENT_URL",
+  "sqs": {
+    "region": "AWS_REGION",
+    "key": "AWS_KEY",
+    "secret": "AWS_SECRET",
+    "url": "AWS_URL"
+  }
 }

@@ -5,62 +5,48 @@ const db = require("./db");
 const logger = require("../logger");
 const { authorizeSocket } = require("../auth");
 const { ErrorCodes } = require("../exceptions");
+const messageQueue = require("../services/queue/sqs");
 
 const JOINED_IDS = new Set();
 
 let io;
 
-/**
- * Get SOCKET SERVER
- */
 module.exports.getSocketServer = () => io;
 
 module.exports.connect = (server) => {
-  /**
-   * Socket.io server
-   */
   io = new Server(server, {
     cors: {
       origin: config.get("client_url"),
     },
   });
 
-  /**
-   * Middleware to Authorize and ensures that the use is logged on to a single device
-   */
   io.use((socket, next) => {
     const id = socket.handshake.query.id;
-
-    // Authorise Socket
     const token = socket.handshake.query.token;
+
     if (!authorizeSocket(token))
       return next(new Error(ErrorCodes.ERR_FORBIDDEN));
 
-    // Check whether the user is already connected or not
     const isOn = isUserAlreadyLoggedIn(id);
     if (isOn) return next(new Error(ErrorCodes.ERR_DEVICE_ALREADY_CONNECTED));
+
     next();
   });
 
-  /**
-   * Create Socket.io connection
-   */
   io.on("connection", (socket) => {
-    // Connection ID -> UserId
     const id = socket.handshake.query.id;
     socket.join(id);
     JOINED_IDS.add(id);
 
+    logger.info(`User connected: ${id}`);
+
     socket.on("getOnline", () => {
-      io.emit("online", {
-        online: getOnlineIds(),
-      });
+      io.emit("online", { online: getOnlineIds() });
     });
 
-    socket.on(
-      "send-message",
-      async (
-        {
+    socket.on("send-message", async (payload, callback) => {
+      try {
+        const {
           recipients = [],
           data,
           chatId,
@@ -68,79 +54,105 @@ module.exports.connect = (server) => {
           senderName,
           senderAvatarId,
           senderEmail,
-        },
-        callback
-      ) => {
-        try {
-          // Check contact existed or not, if not add it
-          const exists = await db.addContactIfNotExists(
-            isPrivate,
+        } = payload;
+
+        logger.info(`Message from ${senderEmail} to chat ${chatId}`);
+
+        // Step 1: Save to database (as before)
+        const exists = await db.addContactIfNotExists(
+          isPrivate,
+          recipients,
+          senderEmail,
+          chatId
+        );
+
+        const chat = await db.saveMessageToChatIfExists(data, chatId, [
+          senderEmail,
+        ]);
+
+        if (!chat) {
+          return callback({ success: false, error: "Failed to save message" });
+        }
+
+        // Step 2: NEW - Queue message for delivery (SQS)
+        // For now, we'll do direct delivery, but structure is ready for SQS
+        const useQueue = process.env.USE_SQS === "true";
+
+        if (useQueue) {
+          // Queue it (will implement in Day 3-4)
+          await messageQueue.enqueueMessage({
+            messageId: data.msgId,
+            chatId,
             recipients,
+            data,
+            isPrivate,
             senderEmail,
-            chatId
-          );
+            senderName,
+            senderAvatarId,
+          });
 
-          // Save message to chat
-          const chat = await db.saveMessageToChatIfExists(data, chatId, [
-            senderEmail,
-          ]);
-
-          if (chat) {
-            // If receiver doesn't have this contact, send it
-            let newContact;
-            if (!exists) {
-              newContact = await db.getUserDetails(senderEmail);
-              if (newContact) {
-                newContact.chatId = chatId;
-                newContact.lastMessage = {
-                  message: data.message,
-                  timestamp: data.createdAt,
-                  uuid: data.msgId,
-                };
-              }
+          callback({ success: true, messageId: data.msgId, queued: true });
+        } else {
+          // Direct delivery (current behavior)
+          let newContact;
+          if (!exists) {
+            newContact = await db.getUserDetails(senderEmail);
+            if (newContact) {
+              newContact.chatId = chatId;
+              newContact.lastMessage = {
+                message: data.message,
+                timestamp: data.createdAt,
+                uuid: data.msgId,
+              };
             }
+          }
 
-            if (!isPrivate) {
-              try {
-                const chat = await db.getGroupDetails(chatId);
-                if (!chat) return callback(false);
-                recipients = chat.members
+          // Get recipients for group chats
+          let finalRecipients = recipients;
+          if (!isPrivate) {
+            try {
+              const groupChat = await db.getGroupDetails(chatId);
+              if (groupChat) {
+                finalRecipients = groupChat.members
                   .filter((i) => i.email !== senderEmail)
                   .map((i) => i.ref);
-              } catch (_) {
-                recipients = [];
               }
+            } catch (err) {
+              logger.error("Error getting group details:", err);
             }
+          }
 
-            recipients.forEach((to) => {
-              const broadcastId = getConnectionId(to);
-              socket.broadcast.to(broadcastId).emit("receive-message", {
-                data,
-                chatId,
-                isPrivate,
-                senderName,
-                senderAvatarId,
-                senderEmail,
-                newContact,
-              });
+          // Deliver to recipients
+          finalRecipients.forEach((to) => {
+            const broadcastId = getConnectionId(to);
+            socket.broadcast.to(broadcastId).emit("receive-message", {
+              data,
+              chatId,
+              isPrivate,
+              senderName,
+              senderAvatarId,
+              senderEmail,
+              newContact,
             });
-            callback(true);
-          } else callback(false);
-        } catch (ex) {
-          logger.error(ex);
-          callback(false);
+          });
+
+          callback({ success: true, messageId: data.msgId });
         }
+      } catch (ex) {
+        logger.error("Send message error:", ex);
+        callback({ success: false, error: ex.message });
       }
-    );
+    });
+
     socket.on("disconnect", () => {
       JOINED_IDS.delete(id);
-      io.emit("online", {
-        online: getOnlineIds(),
-      });
+      logger.info(`User disconnected: ${id}`);
+      io.emit("online", { online: getOnlineIds() });
     });
   });
 };
 
+// Keep your existing helper functions
 function getOnlineIds() {
   let onlineIds = [];
   [...JOINED_IDS].forEach((i) => {
@@ -156,14 +168,13 @@ function isUserAlreadyLoggedIn(id) {
   const ids = [...JOINED_IDS];
   const lookup = id.split("--__--")[0];
   const index = ids.findIndex((i) => i.startsWith(lookup));
-  if (index === -1) return false;
-  return true;
+  return index !== -1;
 }
 
 function getConnectionId(id) {
   const ids = [...JOINED_IDS];
   const index = ids.findIndex((i) => i.startsWith(id));
-  if (index === -1) return id;
-  return ids[index];
+  return index === -1 ? id : ids[index];
 }
+
 module.exports.getConnectionId = getConnectionId;

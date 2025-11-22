@@ -3,6 +3,7 @@ const compression = require("compression");
 const cors = require("cors");
 const config = require("config");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const chat = require("./private/chat");
 const user = require("./private/user");
@@ -10,6 +11,23 @@ const public = require("./public");
 const exceptionHandler = require("../exceptions/expressExceptions");
 const { AppError } = require("../exceptions");
 const { authorizeJWT } = require("../auth");
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: "Too many login attempts, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { error: "Too many requests, please slow down." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 module.exports = function (app) {
   /**
@@ -36,20 +54,27 @@ module.exports = function (app) {
    */
   app.use(express.json());
 
+  app.get("/health", (req, res) => {
+    res.status(200).json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   /**
    * Middleware to handle User API calls (PROTECTED ROUTE)
    */
-  app.use("/api/user", authorizeJWT, user);
+  app.use("/api/user", generalLimiter, authorizeJWT, user);
 
   /**
    * Middleware to handle Chat API calls (PROTECTED ROUTE)
    */
-  app.use("/api/chat", authorizeJWT, chat);
+  app.use("/api/chat", generalLimiter, authorizeJWT, chat);
 
   /**
    * Middleware to handle all public API calls
    */
-  app.use("/api", public);
+  app.use("/api", authLimiter, public);
 
   /**
    * Invalid path route mapping

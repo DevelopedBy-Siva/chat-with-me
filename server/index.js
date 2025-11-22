@@ -20,10 +20,12 @@ const server = http.createServer(app);
  */
 socket.connect(server);
 
-/**
- * Server Configuration:- Looks for env variable PORT, and if not found, default port is set
- */
-const port = config.get("app_port");
+const port = config.get("api_port");
 server.listen(port, () => {
-  logger.info(`Application started at Port ${port}`);
+  logger.info(`Development server running on port ${port}`);
+  logger.info(`API: http://localhost:${port}/api`);
+  logger.info(`Socket.io: http://localhost:${port}`);
+  logger.info(`Health: http://localhost:${port}/health`);
 });
+
+module.exports = { app, server };
