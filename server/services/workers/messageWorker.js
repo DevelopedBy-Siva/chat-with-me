@@ -2,6 +2,7 @@ const logger = require("../../logger");
 const messageQueue = require("../queue/sqs");
 const db = require("../../socket/db");
 const { decrypt } = require("../../utils/messages");
+const cloudwatch = require("../monitoring/cloudwatch");
 
 let isRunning = false;
 let pollTimeout = null;
@@ -123,9 +124,11 @@ async function processMessage(message) {
     const result = await deliverMessage(messageData);
 
     if (result.delivered) {
+      cloudwatch.Metrics.messagesDelivered();
       await messageQueue.deleteMessage(receiptHandle);
       logger.info(`Message processed and deleted from queue`);
     } else {
+      cloudwatch.Metrics.messagesFailed();
       logger.warn(`Delivery failed (${result.reason}), will retry`);
     }
   } catch (error) {
@@ -136,6 +139,11 @@ async function processMessage(message) {
 }
 
 async function pollQueue() {
+  const metrics = await messageQueue.getQueueMetrics();
+  if (metrics) {
+    cloudwatch.Metrics.queueDepth(metrics.messagesAvailable);
+    cloudwatch.Metrics.workerProcessing(processingMessages.size);
+  }
   if (!isRunning) {
     logger.info("Polling stopped");
     return;

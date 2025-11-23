@@ -6,6 +6,7 @@ const logger = require("../logger");
 const { authorizeSocket } = require("../auth");
 const { ErrorCodes } = require("../exceptions");
 const messageQueue = require("../services/queue/sqs");
+const cloudwatch = require("../services/monitoring/cloudwatch"); // ADD THIS
 
 const JOINED_IDS = new Set();
 
@@ -47,11 +48,15 @@ module.exports.connect = (server) => {
 
     logger.info(`User connected: ${id}`);
 
+    cloudwatch.Metrics.userConnected();
+    cloudwatch.Metrics.activeUsers(JOINED_IDS.size);
+
     socket.on("getOnline", () => {
       io.emit("online", { online: getOnlineIds() });
     });
 
     socket.on("send-message", async (payload, callback) => {
+      const startTime = Date.now();
       try {
         const {
           recipients = [],
@@ -128,8 +133,15 @@ module.exports.connect = (server) => {
             direct: true,
           });
         }
+
+        cloudwatch.Metrics.messagesQueued();
+        const latency = Date.now() - startTime;
+        cloudwatch.Metrics.apiLatency(latency);
+
+        callback({ success: true, messageId: data.msgId, queued: true });
       } catch (ex) {
         logger.error("Send message error:", ex);
+        cloudwatch.Metrics.apiError();
         callback({ success: false, error: ex.message });
       }
     });
@@ -138,6 +150,9 @@ module.exports.connect = (server) => {
       JOINED_IDS.delete(id);
       logger.info(`User disconnected: ${id}`);
       io.emit("online", { online: getOnlineIds() });
+
+      cloudwatch.Metrics.userDisconnected();
+      cloudwatch.Metrics.activeUsers(JOINED_IDS.size);
     });
   });
 };

@@ -1,13 +1,13 @@
 const express = require("express");
 const http = require("http");
 const config = require("config");
-require("dotenv").config();
 
 const app = express();
 
 const logger = require("./logger");
 const socket = require("./socket");
 const messageWorker = require("./services/workers/messageWorker");
+const cloudwatch = require("./services/monitoring/cloudwatch");
 
 require("./exceptions/globalExceptions");
 require("./db");
@@ -19,11 +19,13 @@ const server = http.createServer(app);
 socket.connect(server);
 
 const port = config.get("api_port");
-server.listen(port, () => {
+server.listen(port, async () => {
   logger.info(`Server running on port ${port}`);
   logger.info(`API: http://localhost:${port}/api`);
   logger.info(`Socket.io: http://localhost:${port}`);
   logger.info(`Health: http://localhost:${port}/health`);
+
+  cloudwatch.initializeCloudWatch();
 
   if (config.get("use_sqs")) {
     logger.info("Starting message worker...");
@@ -37,7 +39,7 @@ server.listen(port, () => {
 async function shutdown(signal) {
   logger.info(`\n${signal} received, shutting down...`);
 
-  if (process.env.USE_SQS === "true") {
+  if (config.get("use_sqs")) {
     await messageWorker.stop();
   }
 

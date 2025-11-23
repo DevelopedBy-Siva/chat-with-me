@@ -9,8 +9,30 @@ const { nextAdminIndex } = require("../../utils/validation");
 const { decrypt, encrypt } = require("../../utils/messages");
 const { getSocketServer, getConnectionId } = require("../../socket");
 const messageWorker = require("../../services/workers/messageWorker");
+const cloudwatch = require("../../services/monitoring/cloudwatch");
 
 const route = express.Router();
+
+/**
+ * Get monitoring metrics
+ */
+route.get("/monitoring/metrics", async (req, resp) => {
+  try {
+    const messageQueue = require("../../services/queue/sqs");
+    const { JOINED_IDS } = require("../../socket");
+
+    const queueMetrics = await messageQueue.getQueueMetrics();
+
+    resp.status(200).send({
+      queue: queueMetrics,
+      activeUsers: JOINED_IDS.size,
+      timestamp: new Date().toISOString(),
+      cloudwatchNamespace: "ChatApp/Production",
+    });
+  } catch (error) {
+    resp.status(500).send({ error: error.message });
+  }
+});
 
 /**
  * Get Worker status
