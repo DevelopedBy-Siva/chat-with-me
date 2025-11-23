@@ -8,8 +8,52 @@ const { AppError, ErrorCodes } = require("../../exceptions");
 const { nextAdminIndex } = require("../../utils/validation");
 const { decrypt, encrypt } = require("../../utils/messages");
 const { getSocketServer, getConnectionId } = require("../../socket");
+const messageWorker = require("../../services/workers/messageWorker");
 
 const route = express.Router();
+
+/**
+ * Get Worker status
+ */
+route.get("/worker/status", async (req, resp) => {
+  const status = messageWorker.getStatus();
+  const metrics = await messageQueue.getQueueMetrics();
+
+  resp.status(200).send({
+    worker: status,
+    queue: metrics,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+/**
+ * Get Queue Metrics
+ */
+route.get("/queue/metrics", async (req, resp) => {
+  const messageQueue = require("../../services/queue/sqs");
+
+  if (!messageQueue.isEnabled()) {
+    return resp.status(200).send({
+      enabled: false,
+      message: "SQS not configured",
+    });
+  }
+
+  try {
+    const metrics = await messageQueue.getQueueMetrics();
+
+    resp.status(200).send({
+      enabled: true,
+      queue: metrics,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    resp.status(500).send({
+      error: "Failed to get queue metrics",
+      message: error.message,
+    });
+  }
+});
 
 /**
  * Get Chats

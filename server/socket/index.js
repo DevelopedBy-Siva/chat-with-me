@@ -14,6 +14,13 @@ let io;
 module.exports.getSocketServer = () => io;
 
 module.exports.connect = (server) => {
+  const sqsEnabled = messageQueue.initializeSQS();
+  if (sqsEnabled) {
+    logger.info("Message queueing enabled (AWS SQS)");
+  } else {
+    logger.info("Direct delivery mode (SQS disabled)");
+  }
+
   io = new Server(server, {
     cors: {
       origin: config.get("client_url"),
@@ -58,7 +65,6 @@ module.exports.connect = (server) => {
 
         logger.info(`Message from ${senderEmail} to chat ${chatId}`);
 
-        // Step 1: Save to database (as before)
         const exists = await db.addContactIfNotExists(
           isPrivate,
           recipients,
@@ -71,72 +77,56 @@ module.exports.connect = (server) => {
         ]);
 
         if (!chat) {
-          return callback({ success: false, error: "Failed to save message" });
+          return callback({
+            success: false,
+            error: "Failed to save message",
+          });
         }
 
-        // Step 2: NEW - Queue message for delivery (SQS)
-        // For now, we'll do direct delivery, but structure is ready for SQS
-        const useQueue = process.env.USE_SQS === "true";
+        if (messageQueue.isEnabled()) {
+          // Queue for delivery via SQS worker
+          const recipientList = isPrivate
+            ? recipients
+            : await getGroupRecipients(chatId, senderEmail);
 
-        if (useQueue) {
-          // Queue it (will implement in Day 3-4)
-          await messageQueue.enqueueMessage({
+          for (const recipientId of recipientList) {
+            await messageQueue.enqueueMessage({
+              messageId: data.msgId,
+              recipientId: recipientId,
+              chatId: chatId,
+              data: data,
+              isPrivate: isPrivate,
+              senderEmail: senderEmail,
+              senderName: senderName,
+              senderAvatarId: senderAvatarId,
+              exists: exists,
+              timestamp: new Date().toISOString(),
+            });
+          }
+
+          callback({
+            success: true,
             messageId: data.msgId,
-            chatId,
+            queued: true,
+            recipients: recipientList.length,
+          });
+        } else {
+          await deliverMessageDirect(socket, {
             recipients,
             data,
+            chatId,
             isPrivate,
             senderEmail,
             senderName,
             senderAvatarId,
+            exists,
           });
 
-          callback({ success: true, messageId: data.msgId, queued: true });
-        } else {
-          // Direct delivery (current behavior)
-          let newContact;
-          if (!exists) {
-            newContact = await db.getUserDetails(senderEmail);
-            if (newContact) {
-              newContact.chatId = chatId;
-              newContact.lastMessage = {
-                message: data.message,
-                timestamp: data.createdAt,
-                uuid: data.msgId,
-              };
-            }
-          }
-
-          // Get recipients for group chats
-          let finalRecipients = recipients;
-          if (!isPrivate) {
-            try {
-              const groupChat = await db.getGroupDetails(chatId);
-              if (groupChat) {
-                finalRecipients = groupChat.members
-                  .filter((i) => i.email !== senderEmail)
-                  .map((i) => i.ref);
-              }
-            } catch (err) {
-              logger.error("Error getting group details:", err);
-            }
-          }
-
-          // Deliver to recipients
-          finalRecipients.forEach((to) => {
-            const broadcastId = getConnectionId(to);
-            socket.broadcast.to(broadcastId).emit("receive-message", {
-              data,
-              chatId,
-              isPrivate,
-              senderName,
-              senderAvatarId,
-              senderEmail,
-              newContact,
-            });
+          callback({
+            success: true,
+            messageId: data.msgId,
+            direct: true,
           });
-
-          callback({ success: true, messageId: data.msgId });
         }
       } catch (ex) {
         logger.error("Send message error:", ex);
@@ -152,7 +142,64 @@ module.exports.connect = (server) => {
   });
 };
 
-// Keep your existing helper functions
+async function getGroupRecipients(chatId, senderEmail) {
+  try {
+    const groupChat = await db.getGroupDetails(chatId);
+    if (groupChat) {
+      return groupChat.members
+        .filter((m) => m.email !== senderEmail)
+        .map((m) => m.ref);
+    }
+  } catch (err) {
+    logger.error("Error getting group recipients:", err);
+  }
+  return [];
+}
+
+async function deliverMessageDirect(socket, payload) {
+  const {
+    recipients,
+    data,
+    chatId,
+    isPrivate,
+    senderEmail,
+    senderName,
+    senderAvatarId,
+    exists,
+  } = payload;
+
+  let newContact;
+  if (!exists) {
+    newContact = await db.getUserDetails(senderEmail);
+    if (newContact) {
+      newContact.chatId = chatId;
+      newContact.lastMessage = {
+        message: data.message,
+        timestamp: data.createdAt,
+        uuid: data.msgId,
+      };
+    }
+  }
+
+  let finalRecipients = recipients;
+  if (!isPrivate) {
+    finalRecipients = await getGroupRecipients(chatId, senderEmail);
+  }
+
+  finalRecipients.forEach((to) => {
+    const connectionId = getConnectionId(to);
+    socket.broadcast.to(connectionId).emit("receive-message", {
+      data,
+      chatId,
+      isPrivate,
+      senderName,
+      senderAvatarId,
+      senderEmail,
+      newContact,
+    });
+  });
+}
+
 function getOnlineIds() {
   let onlineIds = [];
   [...JOINED_IDS].forEach((i) => {
@@ -178,3 +225,5 @@ function getConnectionId(id) {
 }
 
 module.exports.getConnectionId = getConnectionId;
+module.exports.getSocketServer = () => io;
+module.exports.JOINED_IDS = JOINED_IDS;

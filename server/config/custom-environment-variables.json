@@ -14,6 +14,7 @@
     "region": "AWS_REGION",
     "key": "AWS_KEY",
     "secret": "AWS_SECRET",
-    "url": "AWS_URL"
+    "url": "AWS_URL",
+    "dlq_url": "AWS_DLQ_URL"
   }
 }

@@ -1,6 +1,6 @@
 {
-  "api_port": 3000,
-  "socker_port": 3001,
+  "api_port": 5000,
+  "socket_port": 5000,
   "app_name": "ChatWithMe",
   "logging": {
     "level": "info",
@@ -14,5 +14,6 @@
   "verify_code_expiry_secs": 300,
   "jwt_expiry": "2d",
   "http_cookie_expiry": 2,
-  "cleanup_messages_olderthan": "1"
+  "cleanup_messages_olderthan": "1",
+  "use_sqs": true
 }
