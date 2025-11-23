@@ -1,6 +1,6 @@
 {
   "api_port": "API_PORT",
-  "socker_port": "SOCKET_PORT",
+  "socket_port": "SOCKET_PORT",
   "app_secret_key": "SECRET_KEY",
   "mail_service": {
     "user": "MAIL_ID",
