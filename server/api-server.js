@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const app = express();
@@ -8,7 +9,6 @@ require("./exceptions/globalExceptions");
 require("./db");
 require("express-async-errors");
 require("./routes/route")(app);
-require("dotenv").config();
 
 const server = http.createServer(app);
 

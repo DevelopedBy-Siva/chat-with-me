@@ -1,9 +1,9 @@
+require("dotenv").config();
 const http = require("http");
 const logger = require("./logger");
 const config = require("config");
 
 const socket = require("./socket");
-require("dotenv").config();
 
 const server = http.createServer((req, res) => {
   if (req.url === "/health") {
